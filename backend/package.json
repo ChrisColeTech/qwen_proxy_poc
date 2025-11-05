@@ -1,0 +1,20 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cd api-server && npm run dev",
+    "dev:proxy": "concurrently \"npm run dev\" \"npm run proxy\" \"npm run router\" ",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "proxy": "cd qwen-proxy && npm run start",
+    "router": "cd provider-router && npm run dev",
+    "start": "npm run dev"
+  },
+  "dependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

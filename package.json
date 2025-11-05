@@ -1,0 +1,31 @@
+{
+  "name": "root",
+  "version": "1.0.0",
+  "private": true,
+  "author": "Your Name",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\" \"npm run dev:electron:start\"",
+    "build": "npm run build --workspace=frontend && npm run build --workspace=electron",
+    "start": "npm run dev",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "dev:electron": "npm run dev --workspace=electron",
+    "dev:electron:start": "wait-on http://localhost:5173 && npm run dev --workspace=electron",
+    "dev:backend": "npm run dev -w backend || true",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:linux": "npm run build && electron-builder --linux"
+  },
+  "devDependencies": {
+    "@types/electron": "^1.4.38",
+    "concurrently": "^9.2.1",
+    "electron-builder": "^26.0.12",
+    "start-server-and-test": "^2.1.2",
+    "wait-on": "^8.0.5"
+  },
+  "workspaces": [
+    "frontend",
+    "electron",
+    "backend"
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "_comment": "OpenAI function calling format - OpenCode uses standard format",
+  "_url": "POST /v1/chat/completions",
+  "_note": "Our proxy DOES NOT currently support tool calling with Qwen. This is documented for future reference.",
+  "_status": "NOT SUPPORTED",
+  "model": "qwen3-max",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful assistant with access to tools."
+    },
+    {
+      "role": "user",
+      "content": "What's the weather in San Francisco?"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_weather",
+        "description": "Get the current weather for a location",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "The city and state, e.g. San Francisco, CA"
+            },
+            "unit": {
+              "type": "string",
+              "enum": ["celsius", "fahrenheit"],
+              "description": "The temperature unit"
+            }
+          },
+          "required": ["location"]
+        }
+      }
+    }
+  ],
+  "tool_choice": "auto",
+  "stream": true
+}

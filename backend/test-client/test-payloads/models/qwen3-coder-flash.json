@@ -1,0 +1,55 @@
+{
+  "model": "qwen3-coder-flash",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a fast AI coding assistant with access to tools."
+    },
+    {
+      "role": "user",
+      "content": "Show me the directory structure and create a test file"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "list",
+        "description": "Shows a formatted tree view of directory contents",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "Directory path to list"
+            }
+          },
+          "required": ["path"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "write",
+        "description": "Writes a file to the local filesystem",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "file_path": {
+              "type": "string",
+              "description": "The absolute path to the file to write"
+            },
+            "content": {
+              "type": "string",
+              "description": "The content to write to the file"
+            }
+          },
+          "required": ["file_path", "content"]
+        }
+      }
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 2000
+}

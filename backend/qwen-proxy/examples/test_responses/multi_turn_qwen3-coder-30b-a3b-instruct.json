@@ -1,0 +1,14 @@
+{
+  "testName": "multi_turn",
+  "model": "qwen3-coder-30b-a3b-instruct",
+  "timestamp": "2025-10-29T21:00:21.522Z",
+  "content": "Here are the files in the current directory:\n\n*   `package.json`\n*   `README.md`\n*   `src/` (directory)\n*   `tests/` (directory)",
+  "analysis": {
+    "hasXmlToolCall": false,
+    "toolCallsFound": [],
+    "isNaturalLanguage": true,
+    "hasRefusal": false,
+    "responseType": "natural_language_explanation",
+    "contentPreview": "Here are the files in the current directory:\n\n*   `package.json`\n*   `README.md`\n*   `src/` (directory)\n*   `tests/` (directory)"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "Qwen Credential Extractor",
+  "version": "1.0.0",
+  "description": "Automatically extracts Qwen authentication credentials and sends them to the local API server",
+
+  "permissions": [
+    "cookies"
+  ],
+
+  "host_permissions": [
+    "*://*.qwen.ai/*",
+    "http://localhost:3002/*"
+  ],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://chat.qwen.ai/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["http://localhost:*/*", "http://127.0.0.1:*/*"],
+      "js": ["dashboard-bridge.js"],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "icons": {
+    "16": "icon/icon16.png",
+    "48": "icon/icon48.png",
+    "128": "icon/icon128.png"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "_comment": "Multi-turn conversation - OpenCode sends full history",
+  "_source": "Subsequent requests in a conversation",
+  "_url": "POST /v1/chat/completions",
+  "_note": "OpenCode maintains full conversation history client-side and sends everything in each request. This is identical to how RooCode works.",
+  "model": "qwen3-max",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are opencode, an interactive CLI tool that helps users with software engineering tasks.\n\nHere is some useful information about the environment you are running in:\n<env>\n  Working directory: /home/user/project\n  Is directory a git repo: yes\n  Platform: linux\n  Today's date: Thu Oct 30 2025\n</env>"
+    },
+    {
+      "role": "user",
+      "content": "My name is Alice"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello Alice! How can I help you today?"
+    },
+    {
+      "role": "user",
+      "content": "Can you create a hello.txt file?"
+    },
+    {
+      "role": "assistant",
+      "content": "I'll create hello.txt for you.\n\n[Uses Write tool to create file]"
+    },
+    {
+      "role": "user",
+      "content": "What is my name and what file did we create?"
+    }
+  ],
+  "stream": true,
+  "temperature": 0.55,
+  "top_p": 1
+}

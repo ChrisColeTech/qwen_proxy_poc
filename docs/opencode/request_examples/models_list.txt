@@ -1,0 +1,22 @@
+# Models List Request
+
+GET /v1/models
+Host: localhost:3000
+Accept: application/json
+
+---
+
+OpenCode calls this endpoint to discover available models.
+
+Expected response: Standard OpenAI models list format
+- object: "list"
+- data: array of model objects
+
+Each model should include:
+- id: model identifier
+- object: "model"
+- created: timestamp
+- owned_by: provider name
+- metadata: optional additional info (capabilities, limits, etc.)
+
+Our proxy already implements this endpoint correctly.

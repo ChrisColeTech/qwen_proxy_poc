@@ -1,0 +1,21 @@
+{
+  "name": "electron",
+  "version": "1.0.0",
+  "description": "Electron main process",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "tsc && NODE_ENV=development electron .",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "electron": "^27.0.0",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "electron-store": "^8.2.0"
+  }
+}

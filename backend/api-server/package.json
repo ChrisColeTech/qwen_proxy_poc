@@ -1,0 +1,35 @@
+{
+  "name": "api-server",
+  "version": "1.0.0",
+  "description": "Management API server for provider router",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "npx kill-port 3002 && node src/index.js",
+    "dev": "npx kill-port 3002 && node --watch src/index.js",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+  },
+  "keywords": [
+    "api",
+    "management",
+    "provider",
+    "router"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^9.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.18.2",
+    "kill-port": "^2.0.1"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "devDependencies": {
+    "@jest/globals": "^30.2.0",
+    "jest": "^30.2.0",
+    "supertest": "^7.1.4"
+  }
+}

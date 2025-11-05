@@ -1,0 +1,39 @@
+/**
+ * Migration 001: Initial Schema
+ * Creates tables for sessions, requests, responses, metadata
+ *
+ * This migration is a placeholder since the initial schema
+ * is already created by schema.js during initialization.
+ */
+
+module.exports = {
+  name: 'Initial Schema',
+  version: 1,
+
+  /**
+   * Apply migration
+   * The initial schema is already applied by schema.js,
+   * so this is just a tracking placeholder
+   */
+  up(db) {
+    console.log('[Migration 001] Initial schema already exists (created by schema.js)');
+    // No action needed - schema.js already creates all tables
+  },
+
+  /**
+   * Rollback migration
+   * Drops all tables (CAUTION: This destroys all data!)
+   */
+  down(db) {
+    console.log('[Migration 001] Rolling back initial schema');
+    console.warn('[Migration 001] WARNING: This will delete all data!');
+
+    // Drop tables in reverse order of dependencies
+    db.exec('DROP TABLE IF EXISTS responses');
+    db.exec('DROP TABLE IF EXISTS requests');
+    db.exec('DROP TABLE IF EXISTS sessions');
+    db.exec('DROP TABLE IF EXISTS metadata');
+
+    console.log('[Migration 001] Initial schema dropped');
+  }
+};

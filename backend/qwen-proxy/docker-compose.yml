@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  qwen-proxy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: qwen-proxy
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    env_file:
+      - .env.production
+    restart: unless-stopped
+    volumes:
+      # Mount logs directory for persistence
+      - ./logs:/app/logs
+      # Mount custom config if needed
+      # - ./custom-config.js:/app/src/config/custom.js:ro
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - qwen-network
+    # Resource limits (adjust based on your needs)
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Optional: Nginx reverse proxy
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: qwen-proxy-nginx
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  #     - ./ssl:/etc/nginx/ssl:ro
+  #   depends_on:
+  #     - qwen-proxy
+  #   networks:
+  #     - qwen-network
+  #   restart: unless-stopped
+
+  # Optional: Prometheus for metrics
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: qwen-proxy-prometheus
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+  #     - prometheus-data:/prometheus
+  #   command:
+  #     - '--config.file=/etc/prometheus/prometheus.yml'
+  #     - '--storage.tsdb.path=/prometheus'
+  #   networks:
+  #     - qwen-network
+  #   restart: unless-stopped
+
+  # Optional: Grafana for visualization
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: qwen-proxy-grafana
+  #   ports:
+  #     - "3001:3000"
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin
+  #   volumes:
+  #     - grafana-data:/var/lib/grafana
+  #   depends_on:
+  #     - prometheus
+  #   networks:
+  #     - qwen-network
+  #   restart: unless-stopped
+
+networks:
+  qwen-network:
+    driver: bridge
+
+volumes:
+  prometheus-data:
+  grafana-data:

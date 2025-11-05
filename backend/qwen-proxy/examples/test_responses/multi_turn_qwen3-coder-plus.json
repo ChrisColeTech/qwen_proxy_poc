@@ -1,0 +1,14 @@
+{
+  "testName": "multi_turn",
+  "model": "qwen3-coder-plus",
+  "timestamp": "2025-10-29T21:00:15.125Z",
+  "content": "The files in the current directory (`/mnt/d/Projects/qwen_proxy/backend`) are:\n\n- `package.json`\n- `README.md`\n- `src/` (directory)\n- `tests/` (directory)",
+  "analysis": {
+    "hasXmlToolCall": false,
+    "toolCallsFound": [],
+    "isNaturalLanguage": true,
+    "hasRefusal": false,
+    "responseType": "natural_language_explanation",
+    "contentPreview": "The files in the current directory (`/mnt/d/Projects/qwen_proxy/backend`) are:\n\n- `package.json`\n- `README.md`\n- `src/` (directory)\n- `tests/` (directory)"
+  }
+}

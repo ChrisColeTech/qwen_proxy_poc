@@ -1,0 +1,88 @@
+{
+  "model": "qwen3-coder",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant with access to all available tools."
+    },
+    {
+      "role": "user",
+      "content": "Analyze the project structure: list files, find JavaScript files, search for 'export' keyword, and read the package.json"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "bash",
+        "description": "Executes shell commands",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "command": {"type": "string", "description": "The command to execute"}
+          },
+          "required": ["command"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "description": "Reads a file from the local filesystem",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "file_path": {"type": "string", "description": "The absolute path to the file to read"}
+          },
+          "required": ["file_path"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "glob",
+        "description": "Fast file pattern matching tool",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "pattern": {"type": "string", "description": "The glob pattern to match files against"}
+          },
+          "required": ["pattern"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "grep",
+        "description": "Search tool for file contents",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "pattern": {"type": "string", "description": "The regular expression pattern to search for"},
+            "glob": {"type": "string", "description": "Glob pattern to filter files"}
+          },
+          "required": ["pattern"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "list",
+        "description": "Shows a formatted tree view of directory contents",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {"type": "string", "description": "Directory path to list"}
+          },
+          "required": ["path"]
+        }
+      }
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 3000
+}

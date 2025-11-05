@@ -1,0 +1,16 @@
+{
+  "testName": "execute_command",
+  "model": "qwen3-max",
+  "timestamp": "2025-10-30T16:31:32.631Z",
+  "content": "<execute_command>\n<command>npm test</command>\n</execute_command>",
+  "analysis": {
+    "hasXmlToolCall": true,
+    "toolCallsFound": [
+      "execute_command"
+    ],
+    "isNaturalLanguage": false,
+    "hasRefusal": false,
+    "responseType": "xml_tool_call",
+    "contentPreview": "<execute_command>\n<command>npm test</command>\n</execute_command>"
+  }
+}

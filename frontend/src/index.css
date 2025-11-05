@@ -1,0 +1,456 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: Inter, system-ui, sans-serif;
+  }
+}
+
+/* =================================
+   Layout Components
+   ================================= */
+
+/* AppLayout */
+.layout-root {
+  @apply flex flex-col h-screen;
+}
+
+.layout-main {
+  @apply flex-1 overflow-auto;
+}
+
+/* TitleBar */
+.titlebar {
+  @apply flex items-center justify-between h-8 bg-background border-b border-border;
+}
+
+.titlebar-left {
+  @apply flex items-center gap-2 pl-2;
+}
+
+.titlebar-right {
+  @apply flex items-center;
+}
+
+.titlebar-icon {
+  @apply h-4 w-4;
+}
+
+.titlebar-icon-sm {
+  @apply h-4 w-4;
+}
+
+.titlebar-title {
+  @apply text-sm font-semibold;
+}
+
+.titlebar-button {
+  @apply h-8 w-8 inline-flex items-center justify-center hover:bg-accent transition-colors;
+}
+
+.titlebar-button-wide {
+  @apply h-8 w-12 inline-flex items-center justify-center hover:bg-accent transition-colors;
+}
+
+.titlebar-button-close {
+  @apply h-8 w-12 inline-flex items-center justify-center hover:bg-destructive hover:text-destructive-foreground transition-colors;
+}
+
+/* StatusBar */
+.statusbar {
+  @apply flex items-center justify-between h-6 bg-muted/50 border-t border-border/50 px-3 text-xs;
+}
+
+.statusbar-left {
+  @apply flex items-center gap-3;
+}
+
+.statusbar-right {
+  @apply flex items-center gap-3;
+}
+
+.statusbar-alert {
+  @apply flex items-center gap-1 text-destructive;
+}
+
+.statusbar-indicator {
+  @apply flex items-center gap-1 hover:bg-muted/80 px-1.5 py-0.5 rounded transition-colors;
+}
+
+.statusbar-icon {
+  @apply h-3 w-3;
+}
+
+.statusbar-icon-running {
+  @apply h-3 w-3 fill-green-500 text-green-500;
+}
+
+.statusbar-icon-stopped {
+  @apply h-3 w-3 fill-muted-foreground text-muted-foreground;
+}
+
+.statusbar-icon-success {
+  @apply h-3 w-3 text-green-600 dark:text-green-400;
+}
+
+.statusbar-icon-error {
+  @apply h-3 w-3 text-destructive;
+}
+
+.statusbar-text {
+  @apply text-muted-foreground;
+}
+
+/* Sidebar */
+.sidebar {
+  @apply w-12 bg-muted/30 border-border flex flex-col;
+}
+
+.sidebar-left {
+  @apply border-r;
+}
+
+.sidebar-right {
+  @apply border-l;
+}
+
+.sidebar-nav {
+  @apply flex flex-col p-1 gap-1;
+}
+
+.sidebar-item {
+  @apply flex items-center justify-center h-10 w-10 rounded-md transition-colors;
+  @apply text-muted-foreground hover:bg-accent hover:text-accent-foreground;
+}
+
+.sidebar-item-active {
+  @apply bg-accent text-accent-foreground;
+}
+
+.sidebar-icon {
+  @apply h-5 w-5;
+}
+
+/* MainContent */
+.main-content {
+  @apply flex-1 overflow-auto;
+}
+
+/* =================================
+   Page Components
+   ================================= */
+
+/* HomePage */
+.home-container {
+  @apply container mx-auto p-6 max-w-3xl;
+}
+
+.home-content {
+  @apply space-y-6;
+}
+
+/* ExtensionInstallPage */
+.extension-page {
+  @apply min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-primary/20 to-secondary/20;
+}
+
+.extension-card {
+  @apply max-w-2xl w-full;
+}
+
+.extension-header-icon {
+  @apply flex items-center gap-3 mb-2;
+}
+
+.extension-title {
+  @apply text-2xl;
+}
+
+.extension-content {
+  @apply space-y-6;
+}
+
+.extension-steps {
+  @apply space-y-4;
+}
+
+.extension-step {
+  @apply flex gap-4;
+}
+
+.extension-step-number {
+  @apply flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold;
+}
+
+.extension-step-content {
+  @apply flex-1;
+}
+
+.extension-step-title {
+  @apply font-semibold mb-1;
+}
+
+.extension-step-description {
+  @apply text-sm text-muted-foreground;
+}
+
+.extension-code-inline {
+  @apply px-2 py-1 rounded bg-muted text-foreground;
+}
+
+.extension-code-block {
+  @apply block mt-2 px-3 py-2 rounded bg-muted text-xs text-foreground;
+}
+
+.extension-tip {
+  @apply p-4 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900;
+}
+
+.extension-tip-content {
+  @apply flex gap-2;
+}
+
+.extension-tip-icon {
+  @apply h-5 w-5 text-amber-600 dark:text-amber-500 flex-shrink-0;
+}
+
+.extension-tip-title {
+  @apply font-semibold text-amber-900 dark:text-amber-100 mb-1;
+}
+
+.extension-tip-text {
+  @apply text-sm text-amber-800 dark:text-amber-200;
+}
+
+/* =================================
+   Feature Components
+   ================================= */
+
+/* ProxyControlCard */
+.proxy-header {
+  @apply flex items-center justify-between;
+}
+
+.proxy-header-left {
+  @apply flex items-center gap-2;
+}
+
+.proxy-header-right {
+  @apply flex gap-2;
+}
+
+.proxy-icon {
+  @apply h-5 w-5;
+}
+
+.proxy-button {
+  @apply h-8 w-8 inline-flex items-center justify-center rounded-md hover:bg-accent transition-colors disabled:opacity-50 disabled:pointer-events-none;
+}
+
+.proxy-button-icon {
+  @apply h-4 w-4;
+}
+
+.proxy-error {
+  @apply flex items-center gap-2 p-3 text-sm text-destructive bg-destructive/10 rounded-md;
+}
+
+.proxy-error-icon {
+  @apply h-4 w-4;
+}
+
+.proxy-stats {
+  @apply grid grid-cols-2 gap-4 text-sm;
+}
+
+.proxy-stat-label {
+  @apply text-muted-foreground;
+}
+
+.proxy-stat-value {
+  @apply font-medium;
+}
+
+.proxy-endpoint {
+  @apply p-3 bg-muted rounded-md;
+}
+
+.proxy-endpoint-label {
+  @apply text-sm font-medium mb-1;
+}
+
+.proxy-endpoint-code {
+  @apply text-xs;
+}
+
+/* AuthenticationCard */
+.auth-header {
+  @apply flex items-center justify-between;
+}
+
+.auth-header-left {
+  @apply flex items-center gap-2;
+}
+
+.auth-icon {
+  @apply h-5 w-5;
+}
+
+.auth-button {
+  @apply h-8 w-8 inline-flex items-center justify-center rounded-md hover:bg-accent transition-colors disabled:opacity-50 disabled:pointer-events-none;
+}
+
+.auth-button-icon {
+  @apply h-4 w-4;
+}
+
+.auth-error {
+  @apply flex items-center gap-2 p-3 text-sm text-destructive bg-destructive/10 rounded-md;
+}
+
+.auth-error-icon {
+  @apply h-4 w-4;
+}
+
+.auth-credentials-info {
+  @apply text-sm text-muted-foreground;
+}
+
+/* ExtensionInstallModal */
+.modal-header-icon {
+  @apply flex items-center gap-3 mb-2;
+}
+
+.modal-icon {
+  @apply h-8 w-8 text-primary;
+}
+
+.modal-title {
+  @apply text-2xl;
+}
+
+.modal-content {
+  @apply space-y-4 mt-4;
+}
+
+.modal-step {
+  @apply flex gap-4;
+}
+
+.modal-step-number {
+  @apply flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold;
+}
+
+.modal-step-content {
+  @apply flex-1;
+}
+
+.modal-step-title {
+  @apply font-semibold mb-1;
+}
+
+.modal-step-description {
+  @apply text-sm text-muted-foreground;
+}
+
+/* =================================
+   Utility Classes
+   ================================= */
+
+/* Icon Sizes */
+.icon-xs {
+  @apply h-3 w-3;
+}
+
+.icon-sm {
+  @apply h-4 w-4;
+}
+
+.icon-md {
+  @apply h-5 w-5;
+}
+
+.icon-lg {
+  @apply h-6 w-6;
+}
+
+.icon-xl {
+  @apply h-8 w-8;
+}
+
+/* Text Utilities */
+.text-success {
+  @apply text-green-600 dark:text-green-400;
+}
+
+/* Status Colors */
+.status-running {
+  @apply fill-green-500 text-green-500;
+}
+
+.status-stopped {
+  @apply fill-muted-foreground text-muted-foreground;
+}

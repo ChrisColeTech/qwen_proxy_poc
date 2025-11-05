@@ -1,0 +1,27 @@
+# Streaming Response Example
+
+Standard OpenAI Server-Sent Events (SSE) format
+
+Content-Type: text/event-stream
+Cache-Control: no-cache
+Connection: keep-alive
+
+---
+
+data: {"id":"chatcmpl-abc123","object":"chat.completion.chunk","created":1698765432,"model":"qwen3-max","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-abc123","object":"chat.completion.chunk","created":1698765432,"model":"qwen3-max","choices":[{"index":0,"delta":{"content":"4"},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-abc123","object":"chat.completion.chunk","created":1698765432,"model":"qwen3-max","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+
+data: [DONE]
+
+---
+
+Notes:
+- Each line starts with "data: "
+- Followed by JSON object
+- Empty line between events
+- Final event is "data: [DONE]"
+- This is STANDARD OpenAI streaming format
+- Our proxy already implements this correctly

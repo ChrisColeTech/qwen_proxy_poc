@@ -1,0 +1,26 @@
+curl 'https://chat.qwen.ai/api/v2/chat/completions?chat_id=0cac4f88-3ce7-4b19-8ebb-632ca66c512c' \
+  -H 'Accept: */*' \
+  -H 'Accept-Language: en-US,en;q=0.9' \
+  -H 'Cache-Control: no-cache' \
+  -H 'Connection: keep-alive' \
+  -b 'x-ap=na-vancouver-pop; _bl_uid=dUmXCh537e7q862IUbtIcjO9kwbF; sca=546cc3fe; cna=sAqFIfQwsC0CAWjmN2wL4vX1; _c_WBKFRo=hFnZ5bCEM5Pk8bf3NV7NhMoZpKRvZfytjYpIAdtv; _nb_ioWEgULi=; cnaui=8d852373-d39f-4863-93ea-a9c2eba797b3; aui=8d852373-d39f-4863-93ea-a9c2eba797b3; acw_tc=0a03e58617614886302738719e3f7ec505356e46349fc1a1dcea87080adc3d; token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhkODUyMzczLWQzOWYtNDg2My05M2VhLWE5YzJlYmE3OTdiMyIsImxhc3RfcGFzc3dvcmRfY2hhbmdlIjoxNzYxNDg1NDE5LCJleHAiOjE3NjIwOTQ5ODV9.XOQnJFeVWJqbMk4dIR84MNnZmNmHHta2Jb7eSr_k7hU; atpsida=2cbef4d90358ddc56a6df75d_1761490229_8; ssxmod_itna=1-eqAhAKBKD5DK0I5iKi7qitWOw98HDRYDl4BtGRDeq7tiGcD8r40PGOI5fx55bz3Un70_8=fZ7n_dlD0yGqwtx0=7Df40WwmiAxX5o8CBgDvbbCOGy8H7UBxh9qOIGtuK91/71M55CzGGPBqUMSSErDB3DbTf8midbDYYDC4GwDGoD34DiDDpox03Db4D_e=bD7OuidZn=LleDQ4GyDitDKMm=xi3DA4Dj9md09jHPylffDDfQycuKDDNNl0j0DYp=oa28NgFDALKb57G=x0UaDBLqiXh=xDUnHXxao=l26IE3v1FDtqD9npAmR6Ihv7pE_mcGeT9RYS_eF0YlTtKRPBRrY28UGeRx8/RYFq7G0KPqNQO8S_RKx1b_FS4xKDbnHVDBIeYxkOQ2ThjqYTGezi7z04tqNQmNDbqmGe4_kmBPU0k/gxznqXGDD; ssxmod_itna2=1-eqAhAKBKD5DK0I5iKi7qitWOw98HDRYDl4BtGRDeq7tiGcD8r40PGOI5fx55bz3Un70_8=fZ7n_dwDDcAd5mQS2rDLY23WoDBq9DoapaL8681wK/rqRdSb7iB8dYyAk2B0L=Ad90bUiKH0Wux/=Hr9=vQNe7HHDBCbBDx6xqxagD1UacqHfyFDbDGs3rz5RcKaZKOMox75BoHcCOiCb0FyEKOojP68zgH=4QwY9wfg2axnc7hP35Umojf8tKRi5MFPbC1GhZ7svCnNqypeW5CL=/ajzDAaEC=lRY2A3zk0xyxNjc8L=G5ldQDLxok=zox=bt4QNcgD02bYjKCg5ExQY4x4Q_PQQxkYNB41obzftzos8mNP_bj3rarx88i5RO4Ss_TiDTTnnbmrW4_rqR_=BFzrNCe=cDmRGGCCxtTApEAXnaia_lot=8i4Wa6TKNWhW1i/m_Y_L2xk0DizrIkx1aoxeGdSLpEuQkDs14vdDhq7XMfHBuTncN6nQKmzxljXjiz20zxQRBW1xhzOm1h6VT3PExoBDl7=5Axuh3Euqkz6gqnCStM1NnQ3udUSgzgT4Ylx2ZRL1=fE9tl3e05IIT8ITZzxyuseZ41LDl_XgDt3X6q7eKgAHGcPG0M=OPBF4Osi0Mt76bBFPBCpvs1_sIunxcnGXZMcDlkDGXMmylsExlBdWVVVqNBqDxxZ5GKb0sl5oi4=GDD; isg=BPDwNlpvbA2TODAJhoG2SjHvwb5COdSDGr9bhOpAr8s0pZRP0kknExrT_bXFNYxb' \
+  -H 'DNT: 1' \
+  -H 'Origin: https://chat.qwen.ai' \
+  -H 'Pragma: no-cache' \
+  -H 'Referer: https://chat.qwen.ai/c/0cac4f88-3ce7-4b19-8ebb-632ca66c512c' \
+  -H 'Sec-Fetch-Dest: empty' \
+  -H 'Sec-Fetch-Mode: cors' \
+  -H 'Sec-Fetch-Site: same-origin' \
+  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36' \
+  -H $'bx-ua: 231\u0021PHA3O+mUOx4+j3X+UA3GmWEjUq/YvqY2leOxacSC80vTPuB9lMZY9mRWFzrwLEV0PmcfY4rL2y0gtwy/wlEHPqObu95Cl9KHScVmpzq4CZvHvJILJg3LasSVqpHLLKrAHdjevkhz01qTm9AceNEzAEkSOlf03TeAA/i7ItM+rZ0tBx+awnFtzP0GzfN3bsTbcwgYywHOEPaxOTERjf2uGV7EO2t2FOgUBFVxsu/r+/Mep4Dqk+I9xGdFPGkSSglCok+++4mWYi++6Pyno79+8U0Dj+8oBQrIVtdRe8WoNDQTl+QMKB8ftpuuM93V8JDKHIL0B2Ktk63fjoi8fGE+TbA/mB5RTdAWl29mOYCRASE2/nK5FmIH7T39J1qW0IrtktKVdH/Zpvj8Swl7R7vsB8wizHhEiWhLo6topMAS4plTIoWZ3Yd80B6W+4N2NdQQA/jiBtorasQGFEAtLSCWdJ3XS0VZkP+0ov+tsi3F4kUnsPVYTIAabq6FfBtvIk8HnEbD9yNKp8ZtBbHG9DyWySqMmHMVYfqksNn8Mvuq8bGDy/CLA/FvZOwDJqjyHJjLRvXqIwzsX3qr9oGpx9320taP3f2410886ADf24X5RkXGY7jXHe7CO64UV/XoyaHapNaUdjNkn62mRCBisCks4AFFfaeHK0+3qOJOvnmAylfkpwN0fLkVVCA6PZQZy9SasM+V3Zqie+z8GW24sBA4aDV+qFi5w3648n43UsVlC1DAWiNX5Ox38Cd+R3KGkffm8YP5JwZwL+w2qqQwGDNEw8xzQqd+IVXOBYXcPA2eBK1LqDVmNlRRHxJE88PBMlA1ZqI7kjDoAJbayVWoKJ6V0/jKTwGWZY7avJimNtqXUhESzJ7x+OLUI4NP7/WqNodpPrhSuLfwGdshOmqC3a95N0MM5NGtQj9+FdQD9/qkfdTtkxsw8r9+mBWVuKVMzRd4vA5y1DZ6yyANAWR1JI8qC0umLd8eCEDZfZQpsHpAiJDHUT6nXYzgoJ3++PuWfSd2g2H5QWLQ2EJ8Mv567deQGMGYGAmW/vSmeQGbJ8w0hR8Hn4waVJB/WizoPVsxIrMVooXALyzJI3Z+eGI4n5ulHLUabdvhNPMgMNxrMAcX4dLvcc7MoF4GE5uf4YlUPK45YsX/8Z5qb+8D8HmcIh/+KAXCO050wlJOsvnfvxOpGMYGYcGa2WgZU2wYqNm7EEfMuCaurcdPI0EDsmKVb4akmL1R9f0t03VGtDHkLYOn6SIE0NrhymH0dYnvRa5pdvcIiS2K6kZlAqYdQOuY5jSYOuvwyOWj/SuO+32GEQ66U6j6N2/FK6+tRjV0A9AfOBwFkLj1ReZ4yC/0ZlB+kK2v+RmQE0MSRGlT18PAAsn8YuRKLXtzS2KQXWLan5OelMgWa3wsjLRdTLjjmTmAWsVZpvSfWOGa0YWdqedHUvBqN9HCwRB5Fs4kyiMG54vXL/mn5BFJNlFw646FN/zS1L7z6GFLGg/w28yAafKSKi9+fUpQ5E9ERltuSQB69sEVItTeAwW4cr9sXkF7DsbNs6quypATsNPktiSbnhIP+0f8LNW1ldMaPaWB5BRiOiViBxcirrCeXDHe7BuCHpWA3Bvy9pTBJ6inb9+Ab7x+rXI+cvUE1zwlOjT93C1ane/iHnpO' \
+  -H 'bx-umidtoken: T2gATMkyvnXwsCHMqLVhSP2NnuG9oO9Y-o5gMo-6pwOFVaOfzOms_48xjRj4jcAmfoM=' \
+  -H 'bx-v: 2.5.31' \
+  -H 'content-type: application/json; charset=UTF-8' \
+  -H 'sec-ch-ua: "Google Chrome";v="141", "Not?A_Brand";v="8", "Chromium";v="141"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'sec-ch-ua-platform: "Windows"' \
+  -H 'source: web' \
+  -H 'timezone: Sun Oct 26 2025 10:50:29 GMT-0400' \
+  -H 'x-accel-buffering: no' \
+  -H 'x-request-id: e8dd1f18-bdcd-4fe5-9fac-a56a31c83952' \
+  --data-raw '{"stream":true,"incremental_output":true,"chat_id":"0cac4f88-3ce7-4b19-8ebb-632ca66c512c","chat_mode":"normal","model":"qwen3-vl-plus","parent_id":null,"messages":[{"fid":"7c09d7cb-204a-4e1b-8a30-bf00f41c5518","parentId":null,"childrenIds":["9bfe2f09-f713-40fc-a094-83afcde60e6f"],"role":"user","content":"explain law to an alien","user_action":"chat","files":[],"timestamp":1761490228,"models":["qwen3-vl-plus"],"chat_type":"t2t","feature_config":{"thinking_enabled":false,"output_schema":"phase"},"extra":{"meta":{"subChatType":"t2t"}},"sub_chat_type":"t2t","parent_id":null}],"timestamp":1761490229}'

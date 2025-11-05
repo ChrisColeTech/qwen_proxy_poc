@@ -1,0 +1,10 @@
+{
+  "_comment": "Standard OpenAI error response format",
+  "_status": 400,
+  "error": {
+    "message": "Missing required field: messages",
+    "type": "invalid_request_error",
+    "param": "messages",
+    "code": "missing_field"
+  }
+}

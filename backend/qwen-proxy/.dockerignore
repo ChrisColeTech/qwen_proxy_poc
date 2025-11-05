@@ -1,0 +1,59 @@
+# Node modules
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Environment files (except example)
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Tests
+tests/
+coverage/
+*.test.js
+*.spec.js
+jest.config.js
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Build artifacts
+dist/
+build/
+
+# Other
+.dockerignore
+Dockerfile
+docker-compose.yml
+ecosystem.config.js
+qwen-proxy.service
+nginx.conf
+prometheus.yml

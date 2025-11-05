@@ -1,0 +1,38 @@
+{
+  "model": "qwen3-max",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant with access to tools. When the user asks you to run commands or check files, use the appropriate tools."
+    },
+    {
+      "role": "user",
+      "content": "List the files in the current directory using ls -la"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "bash",
+        "description": "Executes shell commands like ls, git, npm, docker, curl, etc. in a bash terminal.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "description": "The command to execute"
+            },
+            "timeout": {
+              "type": "number",
+              "description": "Optional timeout in milliseconds (up to 600000)"
+            }
+          },
+          "required": ["command"]
+        }
+      }
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 2000
+}

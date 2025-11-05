@@ -1,0 +1,41 @@
+{
+  "name": "opencode-test-client",
+  "version": "1.0.0",
+  "description": "Test client that sends identical requests to Qwen proxy as OpenCode",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test tests/**/*.test.js",
+    "dev": "node --watch src/index.js",
+    "test:single": "node src/test-runner.js single",
+    "test:multi": "node src/test-runner.js multi",
+    "test:exact": "node src/test-runner.js exact",
+    "test:all": "node src/test-runner.js all",
+    "test:bash": "node src/test-runner.js bash",
+    "test:read": "node src/test-runner.js read",
+    "test:write": "node src/test-runner.js write",
+    "test:glob": "node src/test-runner.js glob"
+  },
+  "keywords": [
+    "opencode",
+    "qwen",
+    "test-client",
+    "tool-calling"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@ai-sdk/openai": "^2.0.58",
+    "ai": "^5.0.8",
+    "dotenv": "^16.4.7",
+    "glob": "^11.0.3",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

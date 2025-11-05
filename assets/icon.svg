@@ -1,0 +1,39 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="512" cy="512" r="512" fill="#2563EB"/>
+
+  <!-- Inner Circle -->
+  <circle cx="512" cy="512" r="420" fill="#1E40AF"/>
+
+  <!-- Network Nodes representing Proxy/AI -->
+  <!-- Central Node -->
+  <circle cx="512" cy="512" r="60" fill="#FFFFFF"/>
+
+  <!-- Outer Nodes -->
+  <circle cx="512" cy="280" r="40" fill="#60A5FA"/>
+  <circle cx="680" cy="400" r="40" fill="#60A5FA"/>
+  <circle cx="680" cy="624" r="40" fill="#60A5FA"/>
+  <circle cx="512" cy="744" r="40" fill="#60A5FA"/>
+  <circle cx="344" cy="624" r="40" fill="#60A5FA"/>
+  <circle cx="344" cy="400" r="40" fill="#60A5FA"/>
+
+  <!-- Connection Lines -->
+  <line x1="512" y1="512" x2="512" y2="280" stroke="#93C5FD" stroke-width="12" stroke-linecap="round"/>
+  <line x1="512" y1="512" x2="680" y2="400" stroke="#93C5FD" stroke-width="12" stroke-linecap="round"/>
+  <line x1="512" y1="512" x2="680" y2="624" stroke="#93C5FD" stroke-width="12" stroke-linecap="round"/>
+  <line x1="512" y1="512" x2="512" y2="744" stroke="#93C5FD" stroke-width="12" stroke-linecap="round"/>
+  <line x1="512" y1="512" x2="344" y2="624" stroke="#93C5FD" stroke-width="12" stroke-linecap="round"/>
+  <line x1="512" y1="512" x2="344" y2="400" stroke="#93C5FD" stroke-width="12" stroke-linecap="round"/>
+
+  <!-- Redraw nodes to appear on top of lines -->
+  <circle cx="512" cy="512" r="60" fill="#FFFFFF"/>
+  <circle cx="512" cy="280" r="40" fill="#60A5FA"/>
+  <circle cx="680" cy="400" r="40" fill="#60A5FA"/>
+  <circle cx="680" cy="624" r="40" fill="#60A5FA"/>
+  <circle cx="512" cy="744" r="40" fill="#60A5FA"/>
+  <circle cx="344" cy="624" r="40" fill="#60A5FA"/>
+  <circle cx="344" cy="400" r="40" fill="#60A5FA"/>
+
+  <!-- "Q" letter in center node -->
+  <text x="512" y="560" font-family="Arial, sans-serif" font-size="80" font-weight="bold" fill="#1E40AF" text-anchor="middle">Q</text>
+</svg>

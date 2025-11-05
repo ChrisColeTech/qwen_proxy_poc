@@ -1,0 +1,53 @@
+{
+  "_comment": "Standard OpenAI models list response",
+  "_status": 200,
+  "object": "list",
+  "data": [
+    {
+      "id": "qwen3-max",
+      "object": "model",
+      "created": 1698765432,
+      "owned_by": "qwen",
+      "permission": [],
+      "root": "qwen3-max",
+      "parent": null,
+      "metadata": {
+        "name": "Qwen3-Max",
+        "description": "Qwen3-Max is the most advanced model in the Qwen family",
+        "capabilities": {
+          "vision": true,
+          "document": true,
+          "video": true,
+          "audio": true,
+          "citations": true
+        },
+        "chat_types": ["t2t", "t2v", "t2i", "t2a", "t2doc"],
+        "max_context_length": 262144,
+        "max_generation_length": 32768
+      }
+    },
+    {
+      "id": "qwen3-pro",
+      "object": "model",
+      "created": 1698765432,
+      "owned_by": "qwen",
+      "permission": [],
+      "root": "qwen3-pro",
+      "parent": null,
+      "metadata": {
+        "name": "Qwen3-Pro",
+        "description": "Qwen3-Pro offers balanced performance and cost",
+        "capabilities": {
+          "vision": true,
+          "document": true,
+          "video": false,
+          "audio": false,
+          "citations": true
+        },
+        "chat_types": ["t2t", "t2i", "t2doc"],
+        "max_context_length": 131072,
+        "max_generation_length": 16384
+      }
+    }
+  ]
+}

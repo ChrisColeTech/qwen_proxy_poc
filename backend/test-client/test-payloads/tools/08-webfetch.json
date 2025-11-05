@@ -1,0 +1,38 @@
+{
+  "model": "qwen3-coder",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant with access to tools. When the user asks you to fetch web content, use the webfetch tool."
+    },
+    {
+      "role": "user",
+      "content": "Fetch the content from https://api.github.com/users/github and tell me the username"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "webfetch",
+        "description": "Fetches content from a URL and returns it as text",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "The URL to fetch content from"
+            },
+            "prompt": {
+              "type": "string",
+              "description": "The prompt to run on the fetched content"
+            }
+          },
+          "required": ["url", "prompt"]
+        }
+      }
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 2000
+}

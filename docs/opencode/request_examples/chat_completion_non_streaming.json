@@ -1,0 +1,19 @@
+{
+  "_comment": "Standard OpenAI chat completion request - non-streaming",
+  "_source": "What OpenCode sends for non-streaming requests",
+  "_url": "POST /v1/chat/completions",
+  "model": "qwen3-max",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are opencode, an interactive CLI tool that helps users with software engineering tasks."
+    },
+    {
+      "role": "user",
+      "content": "Hello, how are you?"
+    }
+  ],
+  "stream": false,
+  "temperature": 0.55,
+  "top_p": 1
+}

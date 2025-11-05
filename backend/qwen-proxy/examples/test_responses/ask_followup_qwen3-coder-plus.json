@@ -1,0 +1,14 @@
+{
+  "testName": "ask_followup",
+  "model": "qwen3-coder-plus",
+  "timestamp": "2025-10-29T20:59:50.533Z",
+  "content": "Which configuration file would you like me to help you update?",
+  "analysis": {
+    "hasXmlToolCall": false,
+    "toolCallsFound": [],
+    "isNaturalLanguage": true,
+    "hasRefusal": false,
+    "responseType": "natural_language_explanation",
+    "contentPreview": "Which configuration file would you like me to help you update?"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "testName": "list_files",
+  "model": "qwen3-coder-30b-a3b-instruct",
+  "timestamp": "2025-10-30T16:31:19.984Z",
+  "content": "<list_files>\n<path>.</path>\n<recursive>false</recursive>\n</list_files>",
+  "analysis": {
+    "hasXmlToolCall": true,
+    "toolCallsFound": [
+      "lst_fles"
+    ],
+    "isNaturalLanguage": false,
+    "hasRefusal": false,
+    "responseType": "xml_tool_call",
+    "contentPreview": "<list_files>\n<path>.</path>\n<recursive>false</recursive>\n</list_files>"
+  }
+}

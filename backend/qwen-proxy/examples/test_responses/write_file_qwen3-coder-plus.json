@@ -1,0 +1,14 @@
+{
+  "testName": "write_file",
+  "model": "qwen3-coder-plus",
+  "timestamp": "2025-10-30T16:31:44.911Z",
+  "content": "...",
+  "analysis": {
+    "hasXmlToolCall": false,
+    "toolCallsFound": [],
+    "isNaturalLanguage": false,
+    "hasRefusal": false,
+    "responseType": "unknown",
+    "contentPreview": "..."
+  }
+}

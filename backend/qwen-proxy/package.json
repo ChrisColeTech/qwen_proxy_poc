@@ -1,0 +1,48 @@
+{
+  "name": "qwen-proxy-backend",
+  "version": "1.0.0",
+  "description": "OpenAI-compatible proxy for Qwen API",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "npx kill-port 3000 && node src/index.js",
+    "dev": "npx kill-port 3000 && NODE_ENV=development nodemon src/index.js",
+    "test": "NODE_ENV=test jest --verbose --detectOpenHandles",
+    "test:watch": "NODE_ENV=test jest --watch",
+    "test:coverage": "NODE_ENV=test jest --coverage",
+    "test:integration": "NODE_ENV=test jest tests/integration",
+    "test:unit": "NODE_ENV=test jest tests/unit",
+    "lint": "eslint src tests",
+    "validate-config": "node -e \"require('./src/config'); console.log('Configuration is valid!')\"",
+    "docker:build": "docker build -t qwen-proxy .",
+    "docker:run": "docker run -p 3000:3000 --env-file .env qwen-proxy"
+  },
+  "keywords": [
+    "qwen",
+    "openai",
+    "proxy",
+    "api",
+    "chat",
+    "llm"
+  ],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.13.1",
+    "better-sqlite3": "^11.10.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "prom-client": "^15.1.3",
+    "uuid": "^13.0.0",
+    "winston": "^3.18.3"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "nodemon": "^3.0.0",
+    "openai": "^6.7.0",
+    "supertest": "^7.1.4"
+  }
+}

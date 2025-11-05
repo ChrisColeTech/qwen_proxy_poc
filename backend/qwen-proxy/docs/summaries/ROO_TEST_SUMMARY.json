@@ -1,0 +1,14 @@
+{
+  "totalTests": 24,
+  "byModel": {
+    "qwen3-coder-30b-a3b-instruct": 8,
+    "qwen3-coder-plus": 8,
+    "qwen3-max": 8
+  },
+  "byResponseType": {
+    "natural_language_explanation": 24
+  },
+  "xmlToolCallRate": "0.0%",
+  "refusalRate": "0.0%",
+  "naturalLanguageRate": "100.0%"
+}

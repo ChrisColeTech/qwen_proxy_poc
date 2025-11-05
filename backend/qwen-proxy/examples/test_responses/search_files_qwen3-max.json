@@ -1,0 +1,16 @@
+{
+  "testName": "search_files",
+  "model": "qwen3-max",
+  "timestamp": "2025-10-30T16:31:23.814Z",
+  "content": "<search_files>\n<path>.</path>\n<regex>session</regex>\n<file_pattern>*.js</file_pattern>\n</search_files>",
+  "analysis": {
+    "hasXmlToolCall": true,
+    "toolCallsFound": [
+      "search_fles"
+    ],
+    "isNaturalLanguage": false,
+    "hasRefusal": false,
+    "responseType": "xml_tool_call",
+    "contentPreview": "<search_files>\n<path>.</path>\n<regex>session</regex>\n<file_pattern>*.js</file_pattern>\n</search_files>"
+  }
+}

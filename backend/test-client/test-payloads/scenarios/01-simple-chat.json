@@ -1,0 +1,15 @@
+{
+  "model": "qwen3-max",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant."
+    },
+    {
+      "role": "user",
+      "content": "What is 2+2? Just answer directly, no tools needed."
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 2000
+}

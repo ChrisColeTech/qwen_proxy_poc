@@ -1,0 +1,47 @@
+{
+  "model": "qwen3-coder-flash",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant with access to tools. When the user asks you to search for text in files, use the grep tool."
+    },
+    {
+      "role": "user",
+      "content": "Search for the word 'export' in all JavaScript files"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "grep",
+        "description": "A powerful search tool built on ripgrep for searching file contents",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "pattern": {
+              "type": "string",
+              "description": "The regular expression pattern to search for"
+            },
+            "path": {
+              "type": "string",
+              "description": "File or directory to search in"
+            },
+            "glob": {
+              "type": "string",
+              "description": "Glob pattern to filter files"
+            },
+            "output_mode": {
+              "type": "string",
+              "enum": ["content", "files_with_matches", "count"],
+              "description": "Output mode for search results"
+            }
+          },
+          "required": ["pattern"]
+        }
+      }
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 2000
+}

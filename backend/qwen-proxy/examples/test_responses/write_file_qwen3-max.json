@@ -1,0 +1,16 @@
+{
+  "testName": "write_file",
+  "model": "qwen3-max",
+  "timestamp": "2025-10-30T16:31:43.064Z",
+  "content": "I'll create a new file called test.txt with the content \"Hello World\" in the current workspace directory.\n\n<write_to_file>\n<path>test.txt</path>\n<content>Hello World</content>\n<line_count>1</line_count>\n</write_to_file>",
+  "analysis": {
+    "hasXmlToolCall": true,
+    "toolCallsFound": [
+      "wrte_to_fle"
+    ],
+    "isNaturalLanguage": false,
+    "hasRefusal": false,
+    "responseType": "xml_tool_call",
+    "contentPreview": "I'll create a new file called test.txt with the content \"Hello World\" in the current workspace directory.\n\n<write_to_file>\n<path>test.txt</path>\n<content>Hello World</content>\n<line_count>1</line_count>\n</write_to_file>"
+  }
+}

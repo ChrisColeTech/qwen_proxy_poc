@@ -1,0 +1,10 @@
+{
+  "_comment": "Error response when tools are requested (not currently supported)",
+  "_status": 400,
+  "error": {
+    "message": "Tool calling is not currently supported with Qwen models. The Qwen API does not provide native function calling support. Future versions may implement this via prompt engineering.",
+    "type": "unsupported_feature",
+    "param": "tools",
+    "code": "tools_not_supported"
+  }
+}
