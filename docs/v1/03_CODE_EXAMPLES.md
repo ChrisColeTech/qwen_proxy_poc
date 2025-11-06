@@ -84,6 +84,213 @@ export default defineConfig({
 }
 ```
 
+### frontend/tailwind.config.js
+```js
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  darkMode: ['class'],
+  theme: {
+    container: {
+      center: true,
+      padding: '2rem',
+      screens: {
+        '2xl': '1400px'
+      }
+    },
+    extend: {
+      colors: {
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))'
+        },
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))'
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))'
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))'
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))'
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))'
+        },
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))'
+        },
+        chart: {
+          '1': 'hsl(var(--chart-1))',
+          '2': 'hsl(var(--chart-2))',
+          '3': 'hsl(var(--chart-3))',
+          '4': 'hsl(var(--chart-4))',
+          '5': 'hsl(var(--chart-5))'
+        }
+      },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)'
+      },
+      keyframes: {
+        'accordion-down': {
+          from: {
+            height: 0
+          },
+          to: {
+            height: 'var(--radix-accordion-content-height)'
+          }
+        },
+        'accordion-up': {
+          from: {
+            height: 'var(--radix-accordion-content-height)'
+          },
+          to: {
+            height: 0
+          }
+        }
+      },
+      animation: {
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out'
+      }
+    }
+  },
+  plugins: [require("tailwindcss-animate")],
+}
+```
+
+### frontend/src/index.css
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: Inter, system-ui, sans-serif;
+  }
+}
+```
+
+### frontend/src/vite-env.d.ts (TypeScript Declarations)
+```typescript
+/// <reference types="vite/client" />
+
+interface ElectronAPI {
+  qwen: {
+    openLogin: () => Promise<void>;
+    extractCredentials: () => Promise<{ token: string; cookies: string; expiresAt: number }>;
+  };
+  clipboard: {
+    readText: () => Promise<string>;
+    writeText: (text: string) => Promise<void>;
+  };
+  app: {
+    quit: () => void;
+  };
+  window: {
+    minimize: () => void;
+    maximize: () => void;
+    close: () => void;
+    isMaximized: () => Promise<boolean>;
+    onMaximize: (callback: () => void) => void;
+    onUnmaximize: (callback: () => void) => void;
+  };
+  history: {
+    read: () => Promise<any>;
+    add: (entry: any) => Promise<any>;
+    clear: () => Promise<any>;
+  };
+}
+
+interface Window {
+  electronAPI?: ElectronAPI;
+}
+```
+
+**IMPORTANT**: This file extends the Window interface to include Electron API types. Without it, TypeScript will throw errors when accessing `window.electronAPI`. The `?` makes it optional since it's undefined in browser mode.
+
+---
+
 ### electron/package.json
 ```json
 {
@@ -385,16 +592,616 @@ export function usePathConverter(): UsePathConverterReturn
 
 ---
 
-## Phase 7: UI Components - Base Layout
+## Phase 5 (Updated): State Management with Zustand
+
+### frontend/src/types/index.ts
+```typescript
+export * from './path.types';
+export * from './electron.types';
+
+export interface UIState {
+  theme: 'light' | 'dark';
+  sidebarPosition: 'left' | 'right';
+}
+```
+
+### frontend/src/stores/useUIStore.ts
+```typescript
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import type { UIState } from '@/types';
+
+interface UIStore {
+  uiState: UIState;
+  statusMessage: string;
+  setTheme: (theme: 'light' | 'dark') => void;
+  toggleTheme: () => void;
+  setSidebarPosition: (position: 'left' | 'right') => void;
+  toggleSidebarPosition: () => void;
+  setStatusMessage: (message: string) => void;
+}
+
+export const useUIStore = create<UIStore>()(
+  persist(
+    (set) => ({
+      uiState: {
+        theme: 'dark',
+        sidebarPosition: 'left',
+      },
+      statusMessage: 'Ready',
+      setTheme: (theme) =>
+        set((state) => ({
+          uiState: { ...state.uiState, theme },
+        })),
+      toggleTheme: () =>
+        set((state) => ({
+          uiState: {
+            ...state.uiState,
+            theme: state.uiState.theme === 'light' ? 'dark' : 'light',
+          },
+        })),
+      setSidebarPosition: (position) =>
+        set((state) => ({
+          uiState: { ...state.uiState, sidebarPosition: position },
+        })),
+      toggleSidebarPosition: () =>
+        set((state) => ({
+          uiState: {
+            ...state.uiState,
+            sidebarPosition: state.uiState.sidebarPosition === 'left' ? 'right' : 'left',
+          },
+        })),
+      setStatusMessage: (message) => set({ statusMessage: message }),
+    }),
+    {
+      name: 'qwen-proxy-ui-state',
+    }
+  )
+);
+```
+
+### frontend/src/stores/useCredentialsStore.ts
+```typescript
+import { create } from 'zustand';
+import type { QwenCredentials } from '@/types';
+
+interface CredentialsStore {
+  credentials: QwenCredentials | null;
+  loading: boolean;
+  setCredentials: (credentials: QwenCredentials | null) => void;
+  setLoading: (loading: boolean) => void;
+}
+
+export const useCredentialsStore = create<CredentialsStore>((set) => ({
+  credentials: null,
+  loading: false,
+  setCredentials: (credentials) => set({ credentials }),
+  setLoading: (loading) => set({ loading }),
+}));
+```
+
+### frontend/src/stores/useProxyStore.ts
+```typescript
+import { create } from 'zustand';
+import type { ProxyStatusResponse } from '@/types';
+
+interface ProxyStore {
+  status: ProxyStatusResponse | null;
+  loading: boolean;
+  setStatus: (status: ProxyStatusResponse | null) => void;
+  setLoading: (loading: boolean) => void;
+}
+
+export const useProxyStore = create<ProxyStore>((set) => ({
+  status: null,
+  loading: false,
+  setStatus: (status) => set({ status }),
+  setLoading: (loading) => set({ loading }),
+}));
+```
+
+### frontend/src/stores/useAlertStore.ts
+```typescript
+import { create } from 'zustand';
+
+interface AlertStore {
+  alert: {
+    message: string;
+    type: 'success' | 'error';
+  } | null;
+  showAlert: (message: string, type: 'success' | 'error') => void;
+  hideAlert: () => void;
+}
+
+export const useAlertStore = create<AlertStore>((set) => ({
+  alert: null,
+  showAlert: (message, type) => set({ alert: { message, type } }),
+  hideAlert: () => set({ alert: null }),
+}));
+```
+
+### frontend/src/hooks/useDarkMode.ts
+```typescript
+import { useEffect } from 'react';
+import { useUIStore } from '@/stores/useUIStore';
+
+export function useDarkMode() {
+  const theme = useUIStore((state) => state.uiState.theme);
+  const toggleTheme = useUIStore((state) => state.toggleTheme);
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove('light', 'dark');
+    root.classList.add(theme);
+  }, [theme]);
+
+  return { theme, toggleTheme };
+}
+```
+
+---
+
+## Phase 6 (Updated): Enhanced UI Components
+
+### Custom Component: frontend/src/components/ui/environment-badge.tsx
+```typescript
+import { Badge } from '@/components/ui/badge';
+import { credentialsService } from '@/services/credentialsService';
+
+export function EnvironmentBadge() {
+  const isElectron = credentialsService.isElectron();
+
+  return (
+    <Badge variant="outline" className="gap-1.5 text-xs h-5">
+      <span className="h-1.5 w-1.5 rounded-full bg-current animate-pulse" />
+      {isElectron ? 'Desktop' : 'Browser'}
+    </Badge>
+  );
+}
+```
+
+### Custom Component: frontend/src/components/ui/status-badge.tsx
+```typescript
+import { Badge } from '@/components/ui/badge';
+
+type Status = 'active' | 'inactive' | 'expired' | 'running' | 'stopped';
+
+interface StatusBadgeProps {
+  status: Status;
+  children?: React.ReactNode;
+}
+
+export function StatusBadge({ status, children }: StatusBadgeProps) {
+  const variantMap: Record<Status, 'default' | 'secondary' | 'destructive'> = {
+    active: 'default',
+    running: 'default',
+    inactive: 'secondary',
+    stopped: 'secondary',
+    expired: 'destructive',
+  };
+
+  return (
+    <Badge variant={variantMap[status]}>
+      {children || status.charAt(0).toUpperCase() + status.slice(1)}
+    </Badge>
+  );
+}
+```
+
+### Custom Component: frontend/src/components/ui/status-indicator.tsx
+```typescript
+import { cn } from '@/lib/utils';
+
+interface StatusIndicatorProps {
+  status: 'success' | 'warning' | 'error' | 'inactive';
+  pulse?: boolean;
+  className?: string;
+}
+
+export function StatusIndicator({
+  status,
+  pulse = false,
+  className
+}: StatusIndicatorProps) {
+  const colorMap = {
+    success: 'bg-green-500',
+    warning: 'bg-yellow-500',
+    error: 'bg-red-500',
+    inactive: 'bg-gray-400',
+  };
+
+  return (
+    <div
+      className={cn(
+        'h-2 w-2 rounded-full',
+        colorMap[status],
+        pulse && 'animate-pulse',
+        className
+      )}
+    />
+  );
+}
+```
+
+---
+
+## Phase 7 (Updated): Enhanced Layout Components
 
 ### frontend/src/components/layout/AppLayout.tsx
 ```typescript
+import { TitleBar } from './TitleBar';
+import { StatusBar } from './StatusBar';
+import { Sidebar } from './Sidebar';
+import { useUIStore } from '@/stores/useUIStore';
+
 interface AppLayoutProps {
   children: React.ReactNode;
-  statusMessage?: string;
+  activeRoute: string;
+  onNavigate: (route: string) => void;
 }
 
-export function AppLayout({ children, statusMessage }: AppLayoutProps)
+export function AppLayout({ children, activeRoute, onNavigate }: AppLayoutProps) {
+  const sidebarPosition = useUIStore((state) => state.uiState.sidebarPosition);
+
+  return (
+    <div className="h-screen flex flex-col">
+      <TitleBar />
+      <div className="flex-1 flex overflow-hidden">
+        {sidebarPosition === 'left' && (
+          <Sidebar activeRoute={activeRoute} onNavigate={onNavigate} />
+        )}
+        <main className="flex-1 overflow-auto">
+          {children}
+        </main>
+        {sidebarPosition === 'right' && (
+          <Sidebar activeRoute={activeRoute} onNavigate={onNavigate} />
+        )}
+      </div>
+      <StatusBar />
+    </div>
+  );
+}
+```
+
+### frontend/src/components/layout/Sidebar.tsx
+```typescript
+import { Home, BookOpen, Blocks, Cpu } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useUIStore } from '@/stores/useUIStore';
+
+interface SidebarProps {
+  activeRoute: string;
+  onNavigate: (route: string) => void;
+}
+
+interface NavItem {
+  id: string;
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  route: string;
+}
+
+const navItems: NavItem[] = [
+  { id: 'home', icon: Home, label: 'Home', route: '/' },
+  { id: 'guide', icon: BookOpen, label: 'Quick Guide', route: '/guide' },
+  { id: 'providers', icon: Blocks, label: 'Providers', route: '/providers' },
+  { id: 'models', icon: Cpu, label: 'Models', route: '/models' },
+];
+
+export function Sidebar({ activeRoute, onNavigate }: SidebarProps) {
+  const sidebarPosition = useUIStore((state) => state.uiState.sidebarPosition);
+
+  return (
+    <div className={cn(
+      'w-12 bg-card flex flex-col items-center pt-2',
+      sidebarPosition === 'left' ? 'border-r' : 'border-l'
+    )}>
+      {navItems.map((item) => {
+        const Icon = item.icon;
+        const isActive = activeRoute === item.route;
+
+        return (
+          <button
+            key={item.id}
+            onClick={() => onNavigate(item.route)}
+            title={item.label}
+            className={cn(
+              'w-full h-12 flex items-center justify-center transition-colors relative group',
+              isActive
+                ? 'text-foreground'
+                : 'text-muted-foreground hover:text-foreground'
+            )}
+          >
+            {isActive && (
+              <div className={cn(
+                'absolute w-0.5 h-12 bg-primary',
+                sidebarPosition === 'left' ? 'left-0' : 'right-0'
+              )} />
+            )}
+            <Icon className="h-6 w-6" />
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+```
+
+### frontend/src/components/layout/TitleBar.tsx
+```typescript
+import { Moon, Sun, PanelLeft, PanelRight } from 'lucide-react';
+import { VscChromeMinimize, VscChromeMaximize, VscChromeClose } from 'react-icons/vsc';
+import { useUIStore } from '@/stores/useUIStore';
+
+export function TitleBar() {
+  const theme = useUIStore((state) => state.uiState.theme);
+  const sidebarPosition = useUIStore((state) => state.uiState.sidebarPosition);
+  const toggleTheme = useUIStore((state) => state.toggleTheme);
+  const toggleSidebarPosition = useUIStore((state) => state.toggleSidebarPosition);
+
+  const handleMinimize = () => {
+    if (window.electronAPI) {
+      window.electronAPI.window.minimize();
+    }
+  };
+
+  const handleMaximize = () => {
+    if (window.electronAPI) {
+      window.electronAPI.window.maximize();
+    }
+  };
+
+  const handleClose = () => {
+    if (window.electronAPI) {
+      window.electronAPI.window.close();
+    }
+  };
+
+  return (
+    <div
+      className="h-10 bg-background border-b border-border flex items-center justify-between"
+      style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
+    >
+      <div className="flex items-center gap-2 px-4">
+        <span className="text-sm font-semibold">Qwen Proxy</span>
+      </div>
+
+      <div className="flex items-center h-full" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+        <button
+          className="h-full w-12 flex items-center justify-center hover:bg-accent transition-colors"
+          onClick={toggleSidebarPosition}
+          title={sidebarPosition === 'left' ? 'Move sidebar to right' : 'Move sidebar to left'}
+        >
+          {sidebarPosition === 'left' ? (
+            <PanelRight className="h-4 w-4" />
+          ) : (
+            <PanelLeft className="h-4 w-4" />
+          )}
+        </button>
+
+        <button
+          className="h-full w-12 flex items-center justify-center hover:bg-accent transition-colors"
+          onClick={toggleTheme}
+          title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+        >
+          {theme === 'light' ? (
+            <Moon className="h-4 w-4" />
+          ) : (
+            <Sun className="h-4 w-4" />
+          )}
+        </button>
+
+        <button
+          className="h-full w-12 flex items-center justify-center hover:bg-accent transition-colors"
+          onClick={handleMinimize}
+          title="Minimize window"
+        >
+          <VscChromeMinimize className="h-4 w-4" />
+        </button>
+
+        <button
+          className="h-full w-12 flex items-center justify-center hover:bg-accent transition-colors"
+          onClick={handleMaximize}
+          title="Maximize window"
+        >
+          <VscChromeMaximize className="h-4 w-4" />
+        </button>
+
+        <button
+          className="h-full w-12 flex items-center justify-center hover:bg-destructive hover:text-destructive-foreground transition-colors"
+          onClick={handleClose}
+          title="Close window"
+        >
+          <VscChromeClose className="h-4 w-4" />
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+### frontend/src/components/layout/StatusBar.tsx
+```typescript
+import { useUIStore } from '@/stores/useUIStore';
+import { useCredentialsStore } from '@/stores/useCredentialsStore';
+import { useProxyStore } from '@/stores/useProxyStore';
+import { EnvironmentBadge } from '@/components/ui/environment-badge';
+import { StatusBadge } from '@/components/ui/status-badge';
+
+export function StatusBar() {
+  const statusMessage = useUIStore((state) => state.statusMessage);
+  const credentials = useCredentialsStore((state) => state.credentials);
+  const proxyStatus = useProxyStore((state) => state.status);
+
+  const credentialStatus = credentials
+    ? credentials.isExpired
+      ? 'expired'
+      : 'active'
+    : 'inactive';
+
+  const isProxyRunning = proxyStatus?.qwenProxy?.running || false;
+
+  return (
+    <div className="h-6 bg-muted border-t border-border px-4 flex items-center justify-between text-xs">
+      <div className="flex items-center gap-2">
+        <EnvironmentBadge />
+        <div className="h-3 w-px bg-border" />
+        <StatusBadge status={credentialStatus} />
+        <div className="h-3 w-px bg-border" />
+        <StatusBadge status={isProxyRunning ? 'running' : 'stopped'} />
+      </div>
+      <span className="text-muted-foreground">{statusMessage}</span>
+    </div>
+  );
+}
+```
+
+### frontend/src/App.tsx (Updated with Routing)
+```typescript
+import { useState } from 'react';
+import { useDarkMode } from '@/hooks/useDarkMode';
+import { AppLayout } from '@/components/layout/AppLayout';
+import { HomePage } from '@/pages/HomePage';
+import { QuickGuidePage } from '@/pages/QuickGuidePage';
+import { ProvidersPage } from '@/pages/ProvidersPage';
+import { ModelsPage } from '@/pages/ModelsPage';
+
+function App() {
+  useDarkMode();
+  const [currentRoute, setCurrentRoute] = useState('/');
+
+  const renderPage = () => {
+    switch (currentRoute) {
+      case '/':
+        return <HomePage />;
+      case '/guide':
+        return <QuickGuidePage />;
+      case '/providers':
+        return <ProvidersPage />;
+      case '/models':
+        return <ModelsPage />;
+      default:
+        return <HomePage />;
+    }
+  };
+
+  return (
+    <AppLayout activeRoute={currentRoute} onNavigate={setCurrentRoute}>
+      {renderPage()}
+    </AppLayout>
+  );
+}
+
+export default App;
+```
+
+### Page Components
+
+### frontend/src/pages/HomePage.tsx
+```typescript
+import { useCredentialPolling } from '@/hooks/useCredentialPolling';
+import { StatusAlert } from '@/components/features/alerts/StatusAlert';
+import { SystemControlCard } from '@/components/features/system/SystemControlCard';
+import { ConnectionGuideCard } from '@/components/features/stats/ConnectionGuideCard';
+import { ProvidersListCard } from '@/components/features/providers/ProvidersListCard';
+import { ModelsListCard } from '@/components/features/models/ModelsListCard';
+
+export function HomePage() {
+  useCredentialPolling();
+
+  return (
+    <div className="container max-w-7xl mx-auto p-6 space-y-6">
+      <StatusAlert />
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          <SystemControlCard />
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <ProvidersListCard />
+            <ModelsListCard />
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <ConnectionGuideCard />
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+### frontend/src/pages/QuickGuidePage.tsx (Placeholder)
+```typescript
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { BookOpen } from 'lucide-react';
+
+export function QuickGuidePage() {
+  return (
+    <div className="container max-w-7xl mx-auto p-6 space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <BookOpen className="h-5 w-5" />
+            Quick Guide
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground">Quick guide content coming soon...</p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+```
+
+### frontend/src/pages/ProvidersPage.tsx (Placeholder)
+```typescript
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Blocks } from 'lucide-react';
+
+export function ProvidersPage() {
+  return (
+    <div className="container max-w-7xl mx-auto p-6 space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Blocks className="h-5 w-5" />
+            Providers
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground">Providers content coming soon...</p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+```
+
+### frontend/src/pages/ModelsPage.tsx (Placeholder)
+```typescript
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Cpu } from 'lucide-react';
+
+export function ModelsPage() {
+  return (
+    <div className="container max-w-7xl mx-auto p-6 space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Cpu className="h-5 w-5" />
+            Models
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground">Models content coming soon...</p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
 ```
 
 ---

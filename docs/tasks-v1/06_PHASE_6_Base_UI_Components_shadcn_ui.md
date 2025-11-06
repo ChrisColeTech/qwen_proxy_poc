@@ -9,6 +9,11 @@
 - `frontend/src/components/ui/popover.tsx` (via shadcn CLI)
 - `frontend/src/components/ui/command.tsx` (via shadcn CLI)
 - `frontend/src/components/ui/dialog.tsx` (via shadcn CLI)
+- `frontend/src/components/ui/badge.tsx` (via shadcn CLI)
+- `frontend/src/components/ui/alert.tsx` (via shadcn CLI)
+- `frontend/src/components/ui/environment-badge.tsx` (custom component)
+- `frontend/src/components/ui/status-badge.tsx` (custom component)
+- `frontend/src/components/ui/status-indicator.tsx` (custom component)
 
 ## Files to Modify:
 - `frontend/src/lib/utils.ts` (already created in Phase 1 by shadcn init)
@@ -34,8 +39,8 @@ cd frontend
 # Initialize shadcn/ui (use -d flag for defaults/non-interactive)
 npx shadcn@latest init -d
 
-# Add all required components
-npx shadcn@latest add button input textarea label card popover command dialog
+# Add all required shadcn components
+npx shadcn@latest add button input textarea label card popover command dialog badge alert
 
 cd ..
 ```
@@ -49,14 +54,40 @@ This creates:
 2. **Verify components created**
    ```bash
    ls frontend/src/components/ui/
-   # Should see: button.tsx, input.tsx, label.tsx, card.tsx, etc.
+   # Should see: button.tsx, input.tsx, label.tsx, card.tsx, badge.tsx, alert.tsx, etc.
    ```
 
-3. **Verify theme support**
+3. **Create custom status components**
+
+   **Create environment-badge.tsx:**
+   - Location: `frontend/src/components/ui/environment-badge.tsx`
+   - Purpose: Display whether app is running in Desktop (Electron) or Browser mode
+   - Implementation:
+     - Uses Badge component from shadcn
+     - Detects environment via credentialsService.isElectron()
+     - Shows animated pulse indicator
+     - Displays "Desktop" or "Browser" text
+
+   **Create status-badge.tsx:**
+   - Location: `frontend/src/components/ui/status-badge.tsx`
+   - Purpose: Reusable status badge for various states
+   - Implementation:
+     - Accepts status prop: 'active' | 'inactive' | 'expired' | 'running' | 'stopped'
+     - Maps status to Badge variants (default, secondary, destructive)
+     - Auto-capitalizes status text or accepts custom children
+
+   **Create status-indicator.tsx:**
+   - Location: `frontend/src/components/ui/status-indicator.tsx`
+   - Purpose: Visual indicator for connection/service status
+   - Implementation:
+     - Small colored dot with optional pulse animation
+     - Color-coded: green (success), yellow (warning), red (error), gray (inactive)
+
+4. **Verify theme support**
    - Components should respond to light/dark theme
    - Check that Tailwind theme variables are applied
 
-4. **Verify TypeScript compilation**
+5. **Verify TypeScript compilation**
    ```bash
    cd frontend
    npm run build
@@ -91,7 +122,7 @@ This creates:
 - `frontend/src/lib/utils.ts` with cn() utility
 - `frontend/components.json` config file
 
-## Structure After Phase 3:
+## Structure After Phase 6:
 
 ```
 frontend/src/
@@ -104,4 +135,9 @@ frontend/src/
 │       ├── card.tsx
 │       ├── popover.tsx
 │       ├── command.tsx
-│       └── dialog.tsx
+│       ├── dialog.tsx
+│       ├── badge.tsx
+│       ├── alert.tsx
+│       ├── environment-badge.tsx (custom)
+│       ├── status-badge.tsx (custom)
+│       └── status-indicator.tsx (custom)

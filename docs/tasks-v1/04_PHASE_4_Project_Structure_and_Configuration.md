@@ -218,7 +218,7 @@ export default {
 }
 
 ```
-5. **frontend/src/index.css** - Add Tailwind directives and theme variables
+5. **frontend/src/index.css** - Add Tailwind directives and theme variables (CRITICAL for theming)
 ```css
 @tailwind base;
 @tailwind components;
@@ -293,7 +293,52 @@ export default {
 
 ```
 
-6. **electron/tsconfig.json** - Configure CommonJS output for Electron
+6. **frontend/src/vite-env.d.ts** - Add Electron API TypeScript declarations (CRITICAL)
+
+### frontend/src/vite-env.d.ts
+```typescript
+/// <reference types="vite/client" />
+
+interface ElectronAPI {
+  qwen: {
+    openLogin: () => Promise<void>;
+    extractCredentials: () => Promise<{ token: string; cookies: string; expiresAt: number }>;
+  };
+  clipboard: {
+    readText: () => Promise<string>;
+    writeText: (text: string) => Promise<void>;
+  };
+  app: {
+    quit: () => void;
+  };
+  window: {
+    minimize: () => void;
+    maximize: () => void;
+    close: () => void;
+    isMaximized: () => Promise<boolean>;
+    onMaximize: (callback: () => void) => void;
+    onUnmaximize: (callback: () => void) => void;
+  };
+  history: {
+    read: () => Promise<any>;
+    add: (entry: any) => Promise<any>;
+    clear: () => Promise<any>;
+  };
+}
+
+interface Window {
+  electronAPI?: ElectronAPI;
+}
+```
+
+**Why this is CRITICAL:**
+- Extends the Window interface with Electron API types
+- Prevents TypeScript errors: `Property 'electronAPI' does not exist on type 'Window'`
+- Enables autocomplete for `window.electronAPI` methods
+- Makes API optional (`?`) so it works in both Electron and browser modes
+- Required for TitleBar window controls, useAuth hook, and all Electron IPC
+
+7. **electron/tsconfig.json** - Configure CommonJS output for Electron
 
 ### electron/tsconfig.json
 ```json
@@ -326,15 +371,42 @@ export default {
 - `frontend/tsconfig.json` - Update with path aliases
 - `frontend/tsconfig.app.json` - Already has path aliases
 - `frontend/tsconfig.node.json` ✅ Created by Vite
-- `frontend/tailwind.config.js` - Update with theme config
+- `frontend/tailwind.config.js` - **CRITICAL**: Update with theme config, darkMode, and animations
 - `frontend/postcss.config.js` ✅ Created by Tailwind init
 - `frontend/index.html` ✅ Created by Vite
-- `frontend/src/index.css` - Update with Tailwind and theme
+- `frontend/src/index.css` - **CRITICAL**: Update with Tailwind directives and CSS variables for light/dark themes
 - `frontend/src/main.tsx` ✅ Created by Vite
-- `frontend/src/vite-env.d.ts` ✅ Created by Vite
+- `frontend/src/vite-env.d.ts` - **CRITICAL**: Update with Electron API type declarations
 - `backend/package.json` - Updated
 - `electron/package.json` - Create with CommonJS config
 - `electron/tsconfig.json` - Create with CommonJS target
+
+## CSS Requirements (IMPORTANT)
+
+The `frontend/src/index.css` and `frontend/tailwind.config.js` files are **critical** for the entire theming system to work. These files define:
+
+1. **CSS Custom Properties** (CSS Variables):
+   - All color tokens for light and dark themes
+   - Border radius variables
+   - Chart color variables
+
+2. **Tailwind Configuration**:
+   - darkMode: ['class'] - Enables class-based dark mode toggling
+   - Extended color palette using HSL color space
+   - Custom animations for UI components
+   - Border radius utilities
+
+3. **Base Styles**:
+   - Default border colors
+   - Body background and text colors
+   - Font family (Inter, system-ui)
+
+**Without these CSS configurations, the following will not work:**
+- Theme switching (light/dark mode)
+- shadcn/ui components styling
+- Custom component colors (badges, status indicators)
+- Layout component borders and backgrounds
+- Smooth transitions and animations
 
 ## Integration Points:
 - Node.js runtime
