@@ -1,4 +1,4 @@
-import { Server, CheckCircle2, XCircle, Info } from 'lucide-react';
+import { Server, CheckCircle2, XCircle } from 'lucide-react';
 import {
   Dialog,
   DialogContent,

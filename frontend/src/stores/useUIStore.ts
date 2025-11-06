@@ -5,12 +5,14 @@ import { useLayoutEffect } from 'react';
 export type ScreenType = 'home' | 'extension-install';
 export type Theme = 'light' | 'dark';
 export type SidebarSide = 'left' | 'right';
+export type NavPage = 'dashboard' | 'proxy' | 'credentials' | 'providers' | 'models' | 'api-server';
 
 interface UIState {
   theme: Theme;
   sidebarCollapsed: boolean;
   sidebarSide: SidebarSide;
   currentScreen: ScreenType;
+  currentPage: NavPage;
   panelSizes: Record<string, number>;
 }
 
@@ -23,6 +25,7 @@ interface UIStore {
   setSidebarSide: (side: SidebarSide) => void;
   toggleSidebarSide: () => void;
   setCurrentScreen: (screen: ScreenType) => void;
+  setCurrentPage: (page: NavPage) => void;
   setPanelSize: (panelId: string, size: number) => void;
 }
 
@@ -59,6 +62,7 @@ export const useUIStore = create<UIStore>()(
         sidebarCollapsed: false,
         sidebarSide: 'left',
         currentScreen: 'home',
+        currentPage: 'dashboard',
         panelSizes: {},
       },
       setTheme: (theme: Theme) => {
@@ -103,6 +107,11 @@ export const useUIStore = create<UIStore>()(
       setCurrentScreen: (screen: ScreenType) => {
         set((state) => ({
           uiState: { ...state.uiState, currentScreen: screen },
+        }));
+      },
+      setCurrentPage: (page: NavPage) => {
+        set((state) => ({
+          uiState: { ...state.uiState, currentPage: page },
         }));
       },
       setPanelSize: (panelId: string, size: number) => {

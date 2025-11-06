@@ -454,3 +454,361 @@
 .status-stopped {
   @apply fill-muted-foreground text-muted-foreground;
 }
+
+/* =================================
+   Data Table Component
+   ================================= */
+
+.data-table-container {
+  @apply w-full overflow-x-auto border border-border rounded-lg;
+}
+
+.data-table {
+  @apply w-full border-collapse;
+}
+
+.data-table-header {
+  @apply bg-muted/50;
+}
+
+.data-table-header-row {
+  @apply border-b border-border;
+}
+
+.data-table-header-cell {
+  @apply px-4 py-3 text-left text-sm font-semibold text-foreground;
+}
+
+.data-table-body {
+  @apply divide-y divide-border;
+}
+
+.data-table-row {
+  @apply hover:bg-muted/30 transition-colors;
+}
+
+.data-table-cell {
+  @apply px-4 py-3 text-sm text-foreground;
+}
+
+.data-table-empty {
+  @apply p-8 text-center border border-border rounded-lg bg-muted/20;
+}
+
+.data-table-empty-text {
+  @apply text-sm text-muted-foreground;
+}
+
+/* =================================
+   Code Block Component
+   ================================= */
+
+.code-block {
+  @apply rounded-lg border border-border overflow-hidden;
+}
+
+.code-block-title {
+  @apply px-4 py-2 text-xs font-semibold bg-muted/50 border-b border-border text-foreground;
+}
+
+.code-block-pre {
+  @apply p-4 overflow-x-auto bg-muted/20;
+}
+
+.code-block-code {
+  @apply text-xs font-mono text-foreground;
+}
+
+/* =================================
+   Page Patterns
+   ================================= */
+
+.page-header {
+  @apply flex items-center justify-between mb-6;
+}
+
+.page-header-title {
+  @apply flex items-center gap-3;
+}
+
+.page-header-actions {
+  @apply flex items-center gap-2;
+}
+
+.page-section {
+  @apply space-y-4;
+}
+
+.page-section-header {
+  @apply flex items-center gap-2 mb-3;
+}
+
+.page-section-title {
+  @apply text-sm font-semibold text-foreground;
+}
+
+.page-section-description {
+  @apply text-sm text-muted-foreground;
+}
+
+/* API Endpoint Display */
+.api-endpoint {
+  @apply inline-flex items-center gap-2 px-2 py-1 rounded bg-muted font-mono text-xs;
+}
+
+.api-endpoint-method {
+  @apply font-semibold;
+}
+
+.api-endpoint-method-get {
+  @apply text-blue-600 dark:text-blue-400;
+}
+
+.api-endpoint-method-post {
+  @apply text-green-600 dark:text-green-400;
+}
+
+.api-endpoint-method-put {
+  @apply text-orange-600 dark:text-orange-400;
+}
+
+.api-endpoint-method-delete {
+  @apply text-red-600 dark:text-red-400;
+}
+
+.api-endpoint-path {
+  @apply text-foreground;
+}
+
+/* Status Badge */
+.status-badge {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium;
+}
+
+.status-badge-success {
+  @apply bg-green-500/10 text-green-600 dark:text-green-400;
+}
+
+.status-badge-error {
+  @apply bg-red-500/10 text-red-600 dark:text-red-400;
+}
+
+.status-badge-warning {
+  @apply bg-yellow-500/10 text-yellow-600 dark:text-yellow-400;
+}
+
+.status-badge-info {
+  @apply bg-blue-500/10 text-blue-600 dark:text-blue-400;
+}
+
+/* =================================
+   Models Page
+   ================================= */
+
+.models-container {
+  @apply max-w-7xl mx-auto py-8 px-6;
+}
+
+.models-error-card {
+  @apply mb-6;
+}
+
+.models-error-text {
+  @apply text-sm text-muted-foreground;
+}
+
+.page-header-icon {
+  @apply h-8 w-8 text-primary;
+}
+
+.page-header-title-text {
+  @apply text-3xl font-bold text-foreground;
+}
+
+.page-header-subtitle {
+  @apply text-sm text-muted-foreground mt-1;
+}
+
+/* Models Table Styles */
+.models-table-name {
+  @apply space-y-1;
+}
+
+.models-table-name-primary {
+  @apply font-medium text-foreground;
+}
+
+.models-table-name-secondary {
+  @apply text-xs text-muted-foreground font-mono;
+}
+
+.models-table-description {
+  @apply text-sm text-muted-foreground max-w-md truncate;
+}
+
+.models-table-capabilities {
+  @apply flex flex-wrap gap-1;
+}
+
+.models-table-capability-badge {
+  @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium;
+  @apply bg-primary/10 text-primary border border-primary/20;
+}
+
+.models-table-providers {
+  @apply text-sm;
+}
+
+.models-table-provider-count {
+  @apply text-foreground font-medium;
+}
+
+.models-table-empty {
+  @apply text-muted-foreground italic;
+}
+
+/* Models Info Section */
+.models-info-content {
+  @apply space-y-4;
+}
+
+.models-info-list {
+  @apply space-y-6;
+}
+
+.models-info-item {
+  @apply flex gap-4;
+}
+
+.models-info-badge {
+  @apply flex items-center justify-center h-8 w-8 rounded-full bg-primary text-primary-foreground text-sm font-bold flex-shrink-0;
+}
+
+.models-info-item-title {
+  @apply text-sm font-semibold text-foreground mb-1;
+}
+
+.models-info-item-text {
+  @apply text-sm text-muted-foreground leading-relaxed;
+}
+
+/* Models API Documentation */
+.models-api-content {
+  @apply space-y-8;
+}
+
+.models-api-section {
+  @apply space-y-4;
+}
+
+.models-api-header {
+  @apply space-y-2;
+}
+
+.models-api-description {
+  @apply text-sm text-muted-foreground;
+}
+
+.models-api-section-title {
+  @apply text-base font-semibold text-foreground;
+}
+
+/* =================================
+   Credentials Page
+   ================================= */
+
+.credentials-error-header {
+  @apply flex items-center gap-2;
+}
+
+.credentials-error-icon {
+  @apply h-5 w-5 text-destructive;
+}
+
+.credentials-status-content {
+  @apply space-y-4;
+}
+
+.credentials-status-row {
+  @apply flex items-center justify-between;
+}
+
+.credentials-status-label {
+  @apply text-sm font-medium;
+}
+
+.credentials-status-value {
+  @apply text-sm text-muted-foreground;
+}
+
+.credentials-security-header {
+  @apply flex items-center gap-2;
+}
+
+.credentials-security-icon {
+  @apply h-5 w-5 text-primary;
+}
+
+.credentials-login-button-container {
+  @apply mt-3;
+}
+
+.credentials-notes-list {
+  @apply space-y-3 text-sm text-muted-foreground;
+}
+
+.credentials-notes-item {
+  @apply text-sm text-muted-foreground;
+}
+
+.credentials-notes-label {
+  @apply text-foreground;
+}
+
+/* =================================
+   API Server Page
+   ================================= */
+
+.api-endpoint-description {
+  @apply text-sm text-muted-foreground;
+}
+
+.api-server-status-content {
+  @apply space-y-3;
+}
+
+.api-server-status-row {
+  @apply flex items-center justify-between text-sm;
+}
+
+.api-server-status-label {
+  @apply text-muted-foreground;
+}
+
+.api-server-status-value {
+  @apply font-medium;
+}
+
+.api-server-status-online {
+  @apply flex items-center gap-1 text-green-600 dark:text-green-400;
+}
+
+.api-server-status-offline {
+  @apply flex items-center gap-1 text-destructive;
+}
+
+.api-server-error-box {
+  @apply mt-4 p-3 bg-destructive/10 rounded-md;
+}
+
+.api-server-error-text {
+  @apply text-sm text-destructive;
+}
+
+.api-server-endpoints-content {
+  @apply space-y-6;
+}
+
+.api-server-examples-section {
+  @apply space-y-4;
+}

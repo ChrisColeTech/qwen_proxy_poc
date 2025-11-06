@@ -1,22 +1,40 @@
-import { type ReactNode, useState } from 'react';
 import { TitleBar } from './TitleBar';
 import { StatusBar } from './StatusBar';
 import { Sidebar } from './Sidebar';
 import { useUIStore } from '@/stores/useUIStore';
-import { cn } from '@/lib/utils';
+import { HomePage } from '@/pages/HomePage';
+import { ProxyStatusPage } from '@/pages/ProxyStatusPage';
+import { CredentialsPage } from '@/pages/CredentialsPage';
+import { ProvidersPage } from '@/pages/ProvidersPage';
+import { ModelsPage } from '@/pages/ModelsPage';
+import { ApiServerPage } from '@/pages/ApiServerPage';
 
-interface AppLayoutProps {
-  children: ReactNode;
-}
-
-export function AppLayout({ children }: AppLayoutProps) {
-  const [activeNavItem, setActiveNavItem] = useState('dashboard');
+export function AppLayout() {
   const sidebarSide = useUIStore((state) => state.uiState.sidebarSide);
+  const currentPage = useUIStore((state) => state.uiState.currentPage);
+  const setCurrentPage = useUIStore((state) => state.setCurrentPage);
 
   const handleNavigate = (itemId: string) => {
-    setActiveNavItem(itemId);
-    // TODO: Implement actual navigation logic
-    console.log('Navigate to:', itemId);
+    setCurrentPage(itemId as any);
+  };
+
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'dashboard':
+        return <HomePage />;
+      case 'proxy':
+        return <ProxyStatusPage />;
+      case 'credentials':
+        return <CredentialsPage />;
+      case 'providers':
+        return <ProvidersPage />;
+      case 'models':
+        return <ModelsPage />;
+      case 'api-server':
+        return <ApiServerPage />;
+      default:
+        return <HomePage />;
+    }
   };
 
   return (
@@ -24,13 +42,13 @@ export function AppLayout({ children }: AppLayoutProps) {
       <TitleBar />
       <div className="flex flex-1 overflow-hidden">
         {sidebarSide === 'left' && (
-          <Sidebar activeItem={activeNavItem} onNavigate={handleNavigate} />
+          <Sidebar activeItem={currentPage} onNavigate={handleNavigate} />
         )}
         <main className="layout-main">
-          {children}
+          {renderPage()}
         </main>
         {sidebarSide === 'right' && (
-          <Sidebar activeItem={activeNavItem} onNavigate={handleNavigate} />
+          <Sidebar activeItem={currentPage} onNavigate={handleNavigate} />
         )}
       </div>
       <StatusBar />

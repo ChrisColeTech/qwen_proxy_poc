@@ -1,4 +1,4 @@
-import { Layers, Info } from 'lucide-react';
+import { Layers } from 'lucide-react';
 import {
   Dialog,
   DialogContent,

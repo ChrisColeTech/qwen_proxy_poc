@@ -1,6 +1,5 @@
 import { Toaster } from 'sonner';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { HomePage } from '@/pages/HomePage';
 import { ExtensionInstallPage } from '@/pages/ExtensionInstallPage';
 import { useUIStore, useThemeSync } from '@/stores/useUIStore';
 
@@ -15,19 +14,11 @@ export function App() {
   const renderScreen = () => {
     switch (currentScreen) {
       case 'home':
-        return (
-          <AppLayout>
-            <HomePage />
-          </AppLayout>
-        );
+        return <AppLayout />;
       case 'extension-install':
         return <ExtensionInstallPage />;
       default:
-        return (
-          <AppLayout>
-            <HomePage />
-          </AppLayout>
-        );
+        return <AppLayout />;
     }
   };
 
