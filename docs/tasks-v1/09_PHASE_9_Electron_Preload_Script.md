@@ -13,17 +13,41 @@
 
 ## Tasks:
 
-1. **Create preload.ts** with contextBridge
-   - See `docs/v1/03_CODE_EXAMPLES.md` → Phase 7 → preload.ts
-   - Copy complete file content
-   - Implements:
-     - Exposes `electronAPI` on window object
-     - Clipboard methods (readText, writeText)
-     - Window controls (minimize, maximize, close)
-     - App controls (quit)
-     - History methods (read, add, clear)
-   - Uses contextBridge for security
-   - Uses ipcRenderer.invoke for async, .send for sync
+1. **Create preload.ts** with comprehensive contextBridge API
+   - See `docs/v1/03_CODE_EXAMPLES.md` → Electron section
+   - Implements **Qwen API**:
+     - `qwen.openLogin()` - Open Qwen login window
+     - `qwen.extractCredentials()` - Extract credentials from session
+     - Returns: Promise<{ token, cookies, expiresAt }>
+
+   - Implements **Clipboard API**:
+     - `clipboard.readText()` - Read from clipboard
+     - `clipboard.writeText(text)` - Write to clipboard
+     - All async with Promise returns
+
+   - Implements **App Controls API**:
+     - `app.quit()` - Quit application
+     - Uses ipcRenderer.send (fire-and-forget)
+
+   - Implements **Window Controls API**:
+     - `window.minimize()` - Hide window to tray
+     - `window.maximize()` - Toggle maximize/unmaximize
+     - `window.close()` - Close window
+     - `window.isMaximized()` - Query maximized state (async)
+     - `window.onMaximize(callback)` - Listen for maximize events
+     - `window.onUnmaximize(callback)` - Listen for unmaximize events
+
+   - Implements **History API**:
+     - `history.read()` - Load history from file
+     - `history.add(entry)` - Add/update history entry
+     - `history.clear()` - Clear all history
+     - All async with Promise returns
+
+   - **Security**:
+     - Uses contextBridge.exposeInMainWorld for secure exposure
+     - Context isolation enabled
+     - No direct access to Node.js or Electron APIs
+     - All communication through IPC only
 
 2. **Verify preload path in main.ts**
    ```typescript
@@ -66,11 +90,16 @@
 
 ## Validation:
 
-- [x] window.electronAPI exists in renderer
+- [x] window.electronAPI exists in renderer (check dev tools console)
+- [x] Qwen login window opens on openLogin()
+- [x] Credentials extraction works after login
 - [x] Clipboard read/write works
 - [x] Window controls work (minimize, maximize, close)
-- [x] History persistence works via electron-store
-- [x] No security warnings (contextIsolation works)
+- [x] Window maximize events trigger callbacks
+- [x] History persistence works (read, add, clear)
+- [x] App quit works
+- [x] No security warnings (contextIsolation enabled)
+- [x] TypeScript autocomplete works for all methods
 
 ## Structure After Phase 7:
 
