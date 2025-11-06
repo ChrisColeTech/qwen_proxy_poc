@@ -18,21 +18,22 @@ Click the "Connect" button in the System Control card on the Home page. This wil
 
 ### Step 2: Start the Proxy Server
 
-Once authenticated, click the "Start" button to launch the proxy server. The server will run on port 3000.
+Once authenticated, click the "Start" button to launch the proxy servers.
 
 **What happens:**
-- Qwen Proxy starts first (port 3000) - OpenAI-compatible API endpoint
-- Provider Router starts automatically (port 3001) - Backend routing service
+- Provider Router starts first (port 3001) - OpenAI-compatible API endpoint
+- Qwen Proxy starts automatically (port 3000) - Qwen API backend
+- API Server starts (port 3002) - Management API
 - Status indicators show when servers are ready
 - Database connections are initialized
 - Session management is activated
 
 ### Step 3: Configure Your OpenAI Client
 
-Point your OpenAI SDK or any OpenAI-compatible client to the proxy endpoint.
+Point your OpenAI SDK or any OpenAI-compatible client to the provider router endpoint.
 
 **Configuration:**
-- **Base URL:** `http://localhost:3000/v1`
+- **Base URL:** `http://localhost:3001/v1`
 - **API Key:** Use any non-empty string (not validated)
 - **Model:** `qwen3-max` (or any available Qwen model)
 
@@ -51,7 +52,7 @@ Point your OpenAI SDK or any OpenAI-compatible client to the proxy endpoint.
 import OpenAI from 'openai';
 
 const client = new OpenAI({
-  baseURL: 'http://localhost:3000/v1',
+  baseURL: 'http://localhost:3001/v1',
   apiKey: 'any-key'  // Required but not validated
 });
 
@@ -71,7 +72,7 @@ console.log(response.choices[0].message.content);
 from openai import OpenAI
 
 client = OpenAI(
-    base_url='http://localhost:3000/v1',
+    base_url='http://localhost:3001/v1',
     api_key='any-key'  # Required but not validated
 )
 
@@ -88,7 +89,7 @@ print(response.choices[0].message.content)
 ### cURL
 
 ```bash
-curl http://localhost:3000/v1/chat/completions \
+curl http://localhost:3001/v1/chat/completions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer any-key" \
   -d '{
@@ -249,11 +250,16 @@ If you see "no such column" errors:
 - Verify database file exists and is accessible
 
 ### Connection Errors
-If the proxy won't start:
+If the proxy servers won't start:
 - Check ports 3000-3002 are available
 - Verify Node.js is installed
 - Check backend logs for startup errors
 - Ensure database directory is writable
+
+If you can't connect to the API:
+- Ensure you're using port 3001 (provider router), not 3000 (qwen proxy)
+- Check that all backend servers are running
+- Verify the provider router is healthy: `curl http://localhost:3001/health`
 
 ## Additional Resources
 

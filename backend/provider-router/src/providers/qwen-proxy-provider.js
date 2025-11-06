@@ -41,7 +41,6 @@ export class QwenProxyProvider extends BaseProvider {
       if (stream) {
         return response.data
       } else {
-        logger.debug('Qwen Proxy response:', response.data)
         return response.data
       }
     } catch (error) {

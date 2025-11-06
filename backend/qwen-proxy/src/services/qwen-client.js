@@ -204,28 +204,30 @@ class QwenClient {
         headers,
       };
 
-      // Qwen ALWAYS returns SSE format, even when stream=false
-      // For streaming, set responseType to 'stream' to get raw stream
-      // For non-streaming, we still need to parse SSE but can do it synchronously
+      // Qwen returns different formats for streaming vs non-streaming:
+      // - Streaming: SSE format (Server-Sent Events)
+      // - Non-streaming: Plain JSON with format: {success, request_id, data: {...}}
       if (stream) {
         requestConfig.responseType = 'stream';
+        const response = await this.axiosInstance.post(url, qwenPayload, requestConfig);
+        return response;
       } else {
-        // For non-streaming, we get the full SSE response as text and need to parse it
-        requestConfig.responseType = 'text';
+        // For non-streaming, extract the 'data' field from the JSON response
+        const response = await this.axiosInstance.post(url, qwenPayload, requestConfig);
+
+        // Qwen returns: {success: bool, request_id: string, data: {actual response}}
+        // We need to extract and return just the 'data' field
+        if (response.data && response.data.success && response.data.data) {
+          return {
+            ...response,
+            data: response.data.data
+          };
+        }
+
+        // If format is unexpected, log warning and return as-is
+        console.warn('[QwenClient] Unexpected response format:', JSON.stringify(response.data).substring(0, 200));
+        return response;
       }
-
-      const response = await this.axiosInstance.post(url, qwenPayload, requestConfig);
-
-      // For non-streaming mode, parse the SSE data into a structured response
-      if (!stream) {
-        const parsedData = this._parseSSEResponse(response.data);
-        return {
-          ...response,
-          data: parsedData
-        };
-      }
-
-      return response;
     } catch (error) {
       // Log API error
       const transformedError = this._handleError(error, 'Failed to send message to Qwen API');
