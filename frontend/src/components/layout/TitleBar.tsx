@@ -1,10 +1,12 @@
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, PanelLeft, PanelRight } from 'lucide-react';
 import { VscChromeMinimize, VscChromeMaximize, VscChromeClose } from 'react-icons/vsc';
 import { useUIStore } from '@/stores/useUIStore';
 
 export function TitleBar() {
   const theme = useUIStore((state) => state.uiState.theme);
+  const sidebarPosition = useUIStore((state) => state.uiState.sidebarPosition);
   const toggleTheme = useUIStore((state) => state.toggleTheme);
+  const toggleSidebarPosition = useUIStore((state) => state.toggleSidebarPosition);
 
   const handleMinimize = () => {
     if (window.electronAPI) {
@@ -34,6 +36,18 @@ export function TitleBar() {
       </div>
 
       <div className="flex items-center h-full" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+        <button
+          className="h-full w-12 flex items-center justify-center hover:bg-accent transition-colors"
+          onClick={toggleSidebarPosition}
+          title={sidebarPosition === 'left' ? 'Move sidebar to right' : 'Move sidebar to left'}
+        >
+          {sidebarPosition === 'left' ? (
+            <PanelRight className="h-4 w-4" />
+          ) : (
+            <PanelLeft className="h-4 w-4" />
+          )}
+        </button>
+
         <button
           className="h-full w-12 flex items-center justify-center hover:bg-accent transition-colors"
           onClick={toggleTheme}
