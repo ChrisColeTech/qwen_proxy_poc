@@ -1,5 +1,4 @@
 import { useCredentialPolling } from '@/hooks/useCredentialPolling';
-import { EnvironmentBadge } from '@/components/ui/environment-badge';
 import { StatusAlert } from '@/components/features/alerts/StatusAlert';
 import { AuthenticationCard } from '@/components/features/authentication/AuthenticationCard';
 import { ProxyControlCard } from '@/components/features/proxy/ProxyControlCard';
@@ -15,14 +14,6 @@ export function HomePage() {
   return (
     <div className="container max-w-7xl mx-auto p-6 space-y-6">
       <StatusAlert />
-
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-          <p className="text-sm text-muted-foreground">Manage your Qwen proxy connection</p>
-        </div>
-        <EnvironmentBadge />
-      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
