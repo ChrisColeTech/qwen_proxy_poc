@@ -67,7 +67,7 @@ const client = new OpenAI({
 });
 
 const response = await client.chat.completions.create({
-  model: 'qwen-max',
+  model: 'qwen3-max',
   messages: [
     { role: 'user', content: 'Hello! How are you?' }
   ]
@@ -83,7 +83,7 @@ client = OpenAI(
 )
 
 response = client.chat.completions.create(
-    model='qwen-max',
+    model='qwen3-max',
     messages=[
         {'role': 'user', 'content': 'Hello! How are you?'}
     ]
@@ -95,7 +95,7 @@ print(response.choices[0].message.content)`,
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer any-key" \\
   -d '{
-    "model": "qwen-max",
+    "model": "qwen3-max",
     "messages": [
       {"role": "user", "content": "Hello!"}
     ]

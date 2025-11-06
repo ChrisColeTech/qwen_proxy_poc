@@ -169,11 +169,10 @@ function extractParentId(qwenResponse) {
  *   input_tokens: 33,
  *   output_tokens: 838,
  *   total_tokens: 871,
- *   input_tokens_details: {...},
- *   output_tokens_details: {...}
+ *   prompt_tokens_details: {...}
  * }
  *
- * Qwen format (non-streaming): DOES NOT EXIST - Qwen doesn't return usage for non-streaming
+ * Qwen format (non-streaming): Same as streaming (parsed from SSE)
  *
  * OpenAI format:
  * {
@@ -188,8 +187,9 @@ function extractParentId(qwenResponse) {
 function extractUsage(qwenResponse) {
   // Try multiple locations where usage might be
   // 1. Direct on response (streaming chunks have this)
-  // 2. In response.data (non-streaming, but Qwen doesn't provide it there)
-  // 3. In choices[0] for streaming chunks
+  // 2. In response.data (non-streaming, parsed from SSE)
+  // 3. In response.data.usage (our parsed format)
+  // 4. In choices[0] for streaming chunks
   let usage = qwenResponse.usage ||
               qwenResponse.data?.usage ||
               qwenResponse.choices?.[0]?.usage ||

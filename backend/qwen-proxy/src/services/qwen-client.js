@@ -137,8 +137,18 @@ class QwenClient {
         headers,
       });
 
+      // DEBUG: Log the actual response
+      console.log('[DEBUG] Qwen API response type:', typeof response.data);
+      console.log('[DEBUG] Response status:', response.status);
+      console.log('[DEBUG] Response data (first 500 chars):',
+        typeof response.data === 'string'
+          ? response.data.substring(0, 500)
+          : JSON.stringify(response.data).substring(0, 500)
+      );
+
       // Response format: { success: true, request_id: "...", data: { id: "chat-id" } }
       if (!response.data.success || !response.data.data?.id) {
+        console.log('[DEBUG] Full response.data:', response.data);
         throw new QwenAPIError(
           'Invalid response from create chat endpoint: missing chat ID',
           response.status
@@ -194,12 +204,26 @@ class QwenClient {
         headers,
       };
 
-      // For streaming, set responseType to 'stream'
+      // Qwen ALWAYS returns SSE format, even when stream=false
+      // For streaming, set responseType to 'stream' to get raw stream
+      // For non-streaming, we still need to parse SSE but can do it synchronously
       if (stream) {
         requestConfig.responseType = 'stream';
+      } else {
+        // For non-streaming, we get the full SSE response as text and need to parse it
+        requestConfig.responseType = 'text';
       }
 
       const response = await this.axiosInstance.post(url, qwenPayload, requestConfig);
+
+      // For non-streaming mode, parse the SSE data into a structured response
+      if (!stream) {
+        const parsedData = this._parseSSEResponse(response.data);
+        return {
+          ...response,
+          data: parsedData
+        };
+      }
 
       return response;
     } catch (error) {
@@ -212,6 +236,70 @@ class QwenClient {
 
       throw transformedError;
     }
+  }
+
+  /**
+   * Parse SSE (Server-Sent Events) response data into structured format
+   * Qwen returns SSE format even for non-streaming requests
+   *
+   * @param {string} sseData - Raw SSE data string
+   * @returns {Object} Parsed response with choices, parent_id, message_id, and usage
+   * @private
+   */
+  _parseSSEResponse(sseData) {
+    const lines = sseData.split('\n');
+    let content = '';
+    let parentId = null;
+    let messageId = null;
+    let usage = null;
+
+    for (const line of lines) {
+      if (!line.startsWith('data: ')) continue;
+
+      const dataStr = line.substring(6).trim();
+      if (!dataStr) continue;
+
+      try {
+        const data = JSON.parse(dataStr);
+
+        // Extract parent_id and message_id from response.created
+        if (data['response.created']) {
+          parentId = data['response.created'].parent_id;
+          messageId = data['response.created'].response_id;
+        }
+
+        // Extract content from choices
+        if (data.choices && data.choices[0] && data.choices[0].delta) {
+          const delta = data.choices[0].delta;
+          if (delta.content) {
+            content += delta.content;
+          }
+
+          // Update usage info (take the latest one)
+          if (data.usage) {
+            usage = data.usage;
+          }
+        }
+      } catch (e) {
+        // Skip lines that aren't valid JSON
+        continue;
+      }
+    }
+
+    // Return in Qwen's expected response format
+    return {
+      parent_id: parentId,
+      message_id: messageId,
+      choices: [
+        {
+          message: {
+            role: 'assistant',
+            content: content
+          }
+        }
+      ],
+      usage: usage
+    };
   }
 
   /**

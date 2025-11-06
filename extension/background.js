@@ -62,11 +62,10 @@ async function extractCredentials() {
       console.warn('[Background] Failed to decode JWT expiration, using default 30 days');
     }
 
-    // Build cookie string
-    const cookieParts = [];
-    if (token) cookieParts.push(`token=${token}`);
-    if (umidTokenCookie) cookieParts.push(`bx-umidtoken=${umidTokenCookie.value}`);
-    const cookieString = cookieParts.join('; ');
+    // Build cookie string with ALL cookies
+    const cookieString = cookies
+      .map(c => `${c.name}=${c.value}`)
+      .join('; ');
 
     // Build credentials object
     const credentials = {
