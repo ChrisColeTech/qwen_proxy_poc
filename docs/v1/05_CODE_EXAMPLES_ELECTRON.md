@@ -1,6 +1,90 @@
 # Code Examples - Electron
 
-This document contains complete code examples for the Electron main process and preload script.
+This document contains complete code examples for the Electron main process, preload script, and build configuration.
+
+---
+
+## electron-builder.json
+
+Complete electron-builder configuration for cross-platform distribution.
+
+```json
+{
+  "appId": "com.qwen.proxy.poc",
+  "productName": "Qwen Proxy",
+  "directories": {
+    "output": "dist",
+    "buildResources": "electron/assets"
+  },
+  "files": [
+    "electron/dist/**/*",
+    "frontend/dist/**/*",
+    "electron/assets/**/*"
+  ],
+  "extraMetadata": {
+    "main": "electron/dist/main.js"
+  },
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "electron/assets/icons/win/icon.ico"
+  },
+  "mac": {
+    "target": [
+      {
+        "target": "dmg",
+        "arch": ["x64", "arm64"]
+      }
+    ],
+    "icon": "electron/assets/icons/mac/icon.icns",
+    "category": "public.app-category.utilities"
+  },
+  "linux": {
+    "target": [
+      {
+        "target": "AppImage",
+        "arch": ["x64"]
+      },
+      {
+        "target": "deb",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "electron/assets/icons/png",
+    "category": "Utility"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true
+  },
+  "dmg": {
+    "contents": [
+      {
+        "x": 130,
+        "y": 220
+      },
+      {
+        "x": 410,
+        "y": 220,
+        "type": "link",
+        "path": "/Applications"
+      }
+    ]
+  }
+}
+```
+
+**Platform-Specific Notes:**
+- **Windows**: NSIS installer with user-configurable install location
+- **macOS**: Universal DMG with both x64 and arm64 (Apple Silicon) support
+- **Linux**: AppImage (portable) and deb (Debian/Ubuntu) packages
+- **Icons**: Each platform uses its native icon format (ICO, ICNS, PNG)
 
 ---
 

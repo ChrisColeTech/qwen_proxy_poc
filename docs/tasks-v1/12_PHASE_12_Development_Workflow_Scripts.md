@@ -14,13 +14,20 @@
 
 ## Tasks:
 
-1. **Verify root package.json has correct dev scripts**
-   - See `docs/v1/03_CODE_EXAMPLES.md` → Phase 10 → Root package.json
-   - Should have:
-     - `dev`: Run frontend and Electron concurrently
-     - `build`: Build both workspaces
-     - `start`: Start Electron (production mode)
-   - Scripts already added in Phase 1
+1. **Verify root package.json has correct dev scripts** ✅
+   - See `docs/v1/05_CODE_EXAMPLES_ELECTRON.md` → electron-builder.json
+   - Scripts implemented:
+     - `dev`: Run backend, frontend, and Electron concurrently with wait-on
+     - `build`: Build frontend and Electron workspaces sequentially
+     - `start`: Alias for dev (starts all three processes)
+     - `dev:frontend`: Start Vite dev server on port 5173
+     - `dev:electron`: Build and start Electron in development mode
+     - `dev:electron:start`: Wait for frontend server before starting Electron
+     - `dev:backend`: Start backend API server (optional)
+     - `dist`: Build and create distributable packages for current platform
+     - `dist:win`: Build Windows NSIS installer
+     - `dist:mac`: Build macOS DMG (x64 + arm64)
+     - `dist:linux`: Build Linux AppImage and deb packages
 
 2. **Test development workflow**
    ```bash
@@ -65,13 +72,45 @@
 
 ## Validation:
 
-- [x] `npm run dev` starts both processes
-- [x] Frontend HMR works
-- [x] Electron loads frontend correctly
-- [x] `npm run build` builds both workspaces
-- [x] `npm run start` runs production mode
-- [x] Color-coded output (blue for frontend, green for Electron)
+- [x] `npm run dev` starts all three processes (backend, frontend, Electron)
+- [x] wait-on ensures Electron starts after frontend server is ready
+- [x] Frontend HMR works (hot module replacement on save)
+- [x] Electron loads frontend correctly from localhost:5173
+- [x] `npm run build` builds both frontend and Electron workspaces
+- [x] `npm run start` runs full development environment
+- [x] `npm run dist` creates distributable package for current platform
+- [x] `npm run dist:win` creates Windows NSIS installer
+- [x] `npm run dist:mac` creates macOS DMG (x64 + arm64 universal)
+- [x] `npm run dist:linux` creates AppImage and deb packages
+- [x] Color-coded output from concurrently (distinguishes processes)
+- [x] Backend runs on port 3002 (optional - can fail gracefully)
+- [x] Frontend runs on port 5173
+- [x] Vite polling enabled for WSL/Windows file system compatibility
 
-## Structure After Phase 10:
+## Script Flow:
 
-- No new files (package.json scripts verified)
+**Development (`npm run dev`):**
+```
+1. Backend starts on port 3002 (fails gracefully if not needed)
+2. Frontend Vite dev server starts on port 5173
+3. wait-on waits for http://localhost:5173 to respond
+4. Electron builds TypeScript (tsc) and starts
+5. Electron loads http://localhost:5173
+```
+
+**Production Build (`npm run build`):**
+```
+1. Frontend builds to frontend/dist/
+2. Electron builds to electron/dist/
+```
+
+**Distribution (`npm run dist`):**
+```
+1. Runs npm run build
+2. electron-builder packages app based on electron-builder.json
+3. Creates installer in dist/ directory
+```
+
+## Structure After Phase 12:
+
+- No new files (package.json scripts verified and documented)

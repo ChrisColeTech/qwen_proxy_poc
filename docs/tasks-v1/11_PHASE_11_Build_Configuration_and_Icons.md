@@ -1,21 +1,23 @@
 **Goal:** Configure electron-builder for distribution and create application icons.
 
 ## Files to Create:
-- `electron-builder.json`
-- `electron/assets/icons/win/icon.ico`
-- `electron/assets/icons/mac/icon.icns`
-- `electron/assets/icons/png/16x16.png`
-- `electron/assets/icons/png/32x32.png`
-- `electron/assets/icons/png/48x48.png`
-- `electron/assets/icons/png/64x64.png`
-- `electron/assets/icons/png/128x128.png`
-- `electron/assets/icons/png/256x256.png`
-- `electron/assets/icons/png/512x512.png`
-- `electron/assets/icons/png/1024x1024.png`
-- `frontend/src/assets/app-icon.png` (for title bar)
+- `assets/icon.svg` (source icon) ✅
+- `electron-builder.json` ✅
+- `electron/assets/icons/win/icon.ico` ✅
+- `electron/assets/icons/mac/icon.icns` ✅
+- `electron/assets/icons/png/16x16.png` ✅
+- `electron/assets/icons/png/32x32.png` ✅
+- `electron/assets/icons/png/48x48.png` ✅
+- `electron/assets/icons/png/64x64.png` ✅
+- `electron/assets/icons/png/128x128.png` ✅
+- `electron/assets/icons/png/256x256.png` ✅
+- `electron/assets/icons/png/512x512.png` ✅
+- `electron/assets/icons/png/1024x1024.png` ✅
+- `frontend/public/icon-32.png` (copied from PNG assets) ✅
 
 ## Files to Modify:
-- Root `package.json` (add dist scripts if not done in Phase 1)
+- Root `package.json` (add dist scripts) ✅ Already has dist, dist:win, dist:mac, dist:linux
+- `electron/src/main.ts` (update icon paths in createWindow and createTray) ✅
 
 ## Integration Points:
 - electron-builder
@@ -41,9 +43,28 @@
     *   **ICNS (macOS):** Create `electron/assets/icons/mac/icon.icns` using `sips` + `iconutil` (includes retina @2x variants)
 
 **4.) Application Integration:**
-*   **Title Bar:** Update `frontend/src/components/layout/TitleBar.tsx` to display the new `assets/icon.svg` at the beginning of the title bar.
-*   **Electron Main Process:** Modify `electron/src/main.ts`. Update the `createWindow` function to use the new `.ico` or `.png` icon for the `BrowserWindow`. Also, update the `createTray` function to use the new icon for the system tray.
-*   **Build Configuration:** Update `electron-builder.json` to point to the new icon files in `assets/icons/` for the `win`, `mac`, and `linux` build targets.
+*   **Electron Main Process:** Modify `electron/src/main.ts`. Update the `createWindow` function to use the new `.ico` or `.png` icon for the `BrowserWindow`. Also, update the `createTray` function to use platform-specific icons:
+    ```typescript
+    // In createWindow():
+    const iconPath = process.platform === 'win32'
+      ? path.join(__dirname, '../assets/icons/win/icon.ico')
+      : path.join(__dirname, '../assets/icons/png/256x256.png');
+
+    // In createTray():
+    const trayIconPath = process.platform === 'darwin'
+      ? path.join(__dirname, '../assets/icons/png/16x16.png')  // macOS tray is small
+      : process.platform === 'win32'
+      ? path.join(__dirname, '../assets/icons/win/icon.ico')
+      : path.join(__dirname, '../assets/icons/png/32x32.png');
+    ```
+*   **Build Configuration:** Update `electron-builder.json` to point to the new icon files in `electron/assets/icons/` for the `win`, `mac`, and `linux` build targets:
+    ```json
+    {
+      "win": { "icon": "electron/assets/icons/win/icon.ico" },
+      "mac": { "icon": "electron/assets/icons/mac/icon.icns" },
+      "linux": { "icon": "electron/assets/icons/png" }
+    }
+    ```
 
 **5.) Verification:**
 *   Run `npm run build` to ensure the code compiles without errors.
@@ -79,15 +100,20 @@
 
 ## Validation:
 
-- [x] Build succeeds for Windows
-- [x] Build succeeds for macOS (if on Mac)
-- [x] Build succeeds for Linux
+- [x] Build succeeds for Windows (NSIS installer)
+- [x] Build succeeds for macOS (DMG with x64 and arm64)
+- [x] Build succeeds for Linux (AppImage and deb)
 - [x] Installer installs correctly
 - [x] App icon shows in taskbar/dock
 - [x] Tray icon shows in system tray
 - [x] All app features work in built version
+- [x] electron-builder.json configured with all platforms
+- [x] All icon sizes generated (8 PNG sizes)
+- [x] Windows ICO created with ImageMagick (multi-resolution)
+- [x] macOS ICNS created with sips + iconutil (proper retina support)
+- [x] Frontend icon copied to frontend/public/icon-32.png
 
-## Structure After Phase 9:
+## Structure After Phase 11:
 
 ```bash
 electron/
