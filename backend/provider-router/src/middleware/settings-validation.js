@@ -4,6 +4,7 @@
  */
 
 import { logger } from '../utils/logger.js'
+import { ProviderService } from '../database/services/provider-service.js'
 
 // Valid setting keys
 const VALID_SETTINGS = [
@@ -15,7 +16,8 @@ const VALID_SETTINGS = [
   'logging.logResponses',
   'system.autoStart',
   'system.minimizeToTray',
-  'system.checkUpdates'
+  'system.checkUpdates',
+  'active_provider'
 ]
 
 // Valid log levels
@@ -69,6 +71,8 @@ export function validateSettingValue(req, res, next) {
       validateTimeout(value)
     } else if (key === 'logging.level') {
       validateLogLevel(value)
+    } else if (key === 'active_provider') {
+      validateActiveProvider(value)
     } else if (key.startsWith('logging.log') || key.startsWith('system.')) {
       validateBoolean(value, key)
     }
@@ -127,6 +131,8 @@ export function validateBulkSettings(req, res, next) {
         validateTimeout(value)
       } else if (key === 'logging.level') {
         validateLogLevel(value)
+      } else if (key === 'active_provider') {
+        validateActiveProvider(value)
       } else if (key.startsWith('logging.log') || key.startsWith('system.')) {
         validateBoolean(value, key)
       }
@@ -240,6 +246,27 @@ function validateLogLevel(level) {
 function validateBoolean(value, key) {
   if (typeof value !== 'boolean') {
     throw new Error(`${key} must be a boolean (true or false)`)
+  }
+}
+
+/**
+ * Validate active provider
+ */
+function validateActiveProvider(providerId) {
+  if (typeof providerId !== 'string' || providerId.trim().length === 0) {
+    throw new Error('Provider ID must be a non-empty string')
+  }
+
+  // Check if provider exists in database
+  const provider = ProviderService.getById(providerId)
+
+  if (!provider) {
+    throw new Error(`Provider not found: ${providerId}`)
+  }
+
+  // Check if provider is enabled
+  if (!provider.enabled) {
+    logger.warn('Setting active provider to disabled provider', { providerId })
   }
 }
 

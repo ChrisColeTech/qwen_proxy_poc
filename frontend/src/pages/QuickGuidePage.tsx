@@ -1,325 +1,496 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { BookOpen, Package, Layers, Code, Copy, Check, ExternalLink } from 'lucide-react';
-import { useState } from 'react';
+import { StatusIndicator } from '@/components/ui/status-indicator';
+import {
+  BookOpen,
+  Copy,
+  Check,
+  Play,
+  ArrowRight,
+  Network,
+  Database,
+  RefreshCw,
+  Zap,
+  Settings,
+  CheckCircle2,
+  XCircle
+} from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { apiService } from '@/services/api.service';
 
-const SETUP_STEPS = [
-  {
-    number: 1,
-    title: 'Authenticate with Qwen',
-    description: 'Click the "Connect" button in the System Control card on the Home page. This will open a browser window where you can log in to your Qwen account.',
-    details: [
-      'Credentials are automatically extracted after login',
-      'Token and cookies are securely stored',
-      'Expiration date is tracked automatically'
-    ]
-  },
-  {
-    number: 2,
-    title: 'Start the Proxy Server',
-    description: 'Once authenticated, click the "Start" button to launch the proxy server. The server will run on port 3000.',
-    details: [
-      'Qwen Proxy starts first (port 3000)',
-      'Provider Router starts automatically (port 3001)',
-      'Status indicators show when servers are ready'
-    ]
-  },
-  {
-    number: 3,
-    title: 'Configure Your OpenAI Client',
-    description: 'Point your OpenAI SDK or any OpenAI-compatible client to the proxy endpoint.',
-    details: [
-      'Base URL: http://localhost:3000/v1',
-      'API Key: Use any non-empty string',
-      'All OpenAI SDK features are supported'
-    ]
-  }
-];
+interface Provider {
+  id: string;
+  name: string;
+  type: string;
+  enabled: boolean;
+}
 
-const TECH_STACK = {
-  frontend: [
-    { name: 'React', version: '18.3.1', description: 'UI library' },
-    { name: 'TypeScript', version: '5.9.3', description: 'Type safety' },
-    { name: 'Vite', version: '7.1.7', description: 'Build tool' },
-    { name: 'Tailwind CSS', version: '3.4.18', description: 'Styling' },
-    { name: 'Zustand', version: '5.0.8', description: 'State management' }
-  ],
-  uiComponents: [
-    { name: 'shadcn/ui', description: 'Base components' },
-    { name: 'Radix UI', description: 'Headless primitives' },
-    { name: 'lucide-react', version: '0.552.0', description: 'Icons' },
-    { name: 'react-icons', version: '5.5.0', description: 'VSCode icons' },
-    { name: 'cmdk', version: '1.1.1', description: 'Command menu' }
-  ],
-  desktop: [
-    { name: 'Electron', version: '27.0.0', description: 'Desktop runtime' },
-    { name: 'electron-builder', version: '26.0.12', description: 'Packaging' }
-  ]
-};
-
-const CODE_EXAMPLES = {
-  javascript: `import OpenAI from 'openai';
-
-const client = new OpenAI({
-  baseURL: 'http://localhost:3000/v1',
-  apiKey: 'any-key'  // Required but not validated
-});
-
-const response = await client.chat.completions.create({
-  model: 'qwen3-max',
-  messages: [
-    { role: 'user', content: 'Hello! How are you?' }
-  ]
-});
-
-console.log(response.choices[0].message.content);`,
-
-  python: `from openai import OpenAI
-
-client = OpenAI(
-    base_url='http://localhost:3000/v1',
-    api_key='any-key'  # Required but not validated
-)
-
-response = client.chat.completions.create(
-    model='qwen3-max',
-    messages=[
-        {'role': 'user', 'content': 'Hello! How are you?'}
-    ]
-)
-
-print(response.choices[0].message.content)`,
-
-  curl: `curl http://localhost:3000/v1/chat/completions \\
-  -H "Content-Type: application/json" \\
-  -H "Authorization: Bearer any-key" \\
-  -d '{
-    "model": "qwen3-max",
-    "messages": [
-      {"role": "user", "content": "Hello!"}
-    ]
-  }'`
-};
-
-function CodeBlock({ code, language }: { code: string; language: string }) {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  return (
-    <div className="relative">
-      <div className="flex items-center justify-between bg-muted/50 border-b border-border px-4 py-2">
-        <span className="text-xs font-medium text-muted-foreground uppercase">{language}</span>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleCopy}
-          className="h-7 px-2"
-        >
-          {copied ? (
-            <>
-              <Check className="h-3 w-3 mr-1" />
-              Copied
-            </>
-          ) : (
-            <>
-              <Copy className="h-3 w-3 mr-1" />
-              Copy
-            </>
-          )}
-        </Button>
-      </div>
-      <pre className="p-4 overflow-x-auto">
-        <code className="text-xs font-mono text-foreground">{code}</code>
-      </pre>
-    </div>
-  );
+interface Model {
+  id: string;
+  name?: string;
 }
 
 export function QuickGuidePage() {
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [activeProvider, setActiveProvider] = useState<string>('');
+  const [providers, setProviders] = useState<Provider[]>([]);
+  const [models, setModels] = useState<Model[]>([]);
+  const [loadingModels, setLoadingModels] = useState(false);
+  const [loadingProviders, setLoadingProviders] = useState(false);
+  const [testResponse, setTestResponse] = useState<string>('');
+  const [loadingTest, setLoadingTest] = useState(false);
+
+  useEffect(() => {
+    loadProviders();
+    loadModels();
+  }, []);
+
+  const loadProviders = async () => {
+    setLoadingProviders(true);
+    try {
+      const result = await apiService.getProviders();
+      if (result.success && result.data) {
+        setProviders(result.data);
+      }
+
+      const settings = await apiService.getSettings();
+      if (settings.success && settings.data) {
+        setActiveProvider(settings.data.active_provider || '');
+      }
+    } catch (error) {
+      console.error('Failed to load providers:', error);
+    } finally {
+      setLoadingProviders(false);
+    }
+  };
+
+  const loadModels = async () => {
+    setLoadingModels(true);
+    try {
+      const response = await fetch('http://localhost:3001/v1/models');
+      const data = await response.json();
+      if (data.data) {
+        setModels(data.data.slice(0, 5)); // Show first 5 models
+      }
+    } catch (error) {
+      console.error('Failed to load models:', error);
+    } finally {
+      setLoadingModels(false);
+    }
+  };
+
+  const handleTestChat = async () => {
+    setLoadingTest(true);
+    setTestResponse('');
+    try {
+      const response = await fetch('http://localhost:3001/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer any-key'
+        },
+        body: JSON.stringify({
+          model: 'qwen3-max',
+          messages: [{ role: 'user', content: 'Say hello in one sentence' }]
+        })
+      });
+      const data = await response.json();
+      if (data.choices && data.choices[0]) {
+        setTestResponse(data.choices[0].message.content);
+      }
+    } catch (error) {
+      console.error('Failed to test chat:', error);
+      setTestResponse('Error: Could not connect to Provider Router');
+    } finally {
+      setLoadingTest(false);
+    }
+  };
+
+  const handleSwitchProvider = async (providerId: string) => {
+    try {
+      await apiService.updateSetting('active_provider', providerId);
+      setActiveProvider(providerId);
+      setTestResponse(''); // Clear previous response
+    } catch (error) {
+      console.error('Failed to switch provider:', error);
+    }
+  };
+
+  const handleCopy = (code: string) => {
+    navigator.clipboard.writeText(code);
+    setCopiedCode(code);
+    setTimeout(() => setCopiedCode(null), 2000);
+  };
+
   return (
-    <div className="container max-w-7xl mx-auto p-6 space-y-8">
+    <div className="container max-w-6xl mx-auto p-6 space-y-6">
       {/* Header */}
-      <div>
+      <div className="space-y-2">
         <h1 className="text-3xl font-bold flex items-center gap-3">
-          <BookOpen className="h-8 w-8" />
+          <BookOpen className="h-8 w-8 text-primary" />
           Quick Start Guide
         </h1>
-        <p className="text-muted-foreground mt-2">
-          Get started with Qwen Proxy in three simple steps. Learn about the tech stack and see code examples.
+        <p className="text-muted-foreground">
+          Learn how to use the Provider Router with interactive examples
         </p>
       </div>
 
-      {/* Setup Steps */}
+      {/* Step 1: Getting Models */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Code className="h-5 w-5" />
-            Setup Steps
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {SETUP_STEPS.map((step) => (
-            <div key={step.number} className="flex gap-4">
-              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
-                {step.number}
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold">
+                1
               </div>
-              <div className="flex-1 space-y-2">
-                <h3 className="font-semibold text-lg">{step.title}</h3>
-                <p className="text-sm text-muted-foreground">{step.description}</p>
-                <ul className="space-y-1 ml-4">
-                  {step.details.map((detail, idx) => (
-                    <li key={idx} className="text-xs text-muted-foreground flex items-start gap-2">
-                      <span className="text-primary mt-0.5">•</span>
-                      {detail}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-
-      {/* Code Examples */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Code className="h-5 w-5" />
-            Code Examples
-          </CardTitle>
+              Get Available Models
+            </CardTitle>
+            <Button
+              onClick={loadModels}
+              disabled={loadingModels}
+              size="icon"
+              variant="outline"
+              title="Refresh models"
+              className="h-8 w-8"
+            >
+              <RefreshCw className={`h-4 w-4 ${loadingModels ? 'animate-spin' : ''}`} />
+            </Button>
+          </div>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="space-y-4">
-            <div>
-              <h3 className="font-semibold mb-3">JavaScript / TypeScript</h3>
-              <CodeBlock code={CODE_EXAMPLES.javascript} language="JavaScript" />
-            </div>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            The Provider Router exposes an OpenAI-compatible endpoint at <code className="px-2 py-0.5 bg-muted rounded text-xs font-mono">http://localhost:3001/v1</code>.
+            First, check which models are available:
+          </p>
 
-            <div>
-              <h3 className="font-semibold mb-3">Python</h3>
-              <CodeBlock code={CODE_EXAMPLES.python} language="Python" />
+          {/* Interactive Demo */}
+          <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Database className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium">Available Models</span>
+              </div>
+              {loadingModels && (
+                <Badge variant="secondary" className="gap-1">
+                  <RefreshCw className="h-3 w-3 animate-spin" />
+                  Loading...
+                </Badge>
+              )}
+              {!loadingModels && models.length > 0 && (
+                <Badge variant="secondary" className="gap-1">
+                  <CheckCircle2 className="h-3 w-3 text-green-500" />
+                  {models.length} models
+                </Badge>
+              )}
             </div>
+            {models.length > 0 && (
+              <div className="space-y-2">
+                {models.map((model) => (
+                  <div key={model.id} className="flex items-center justify-between bg-background rounded px-3 py-2">
+                    <code className="text-xs font-mono">{model.id}</code>
+                    <Badge variant="outline" className="text-xs">Ready</Badge>
+                  </div>
+                ))}
+              </div>
+            )}
+            {!loadingModels && models.length === 0 && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <XCircle className="h-4 w-4" />
+                <span>No models available. Make sure the Provider Router is running.</span>
+              </div>
+            )}
+          </div>
 
-            <div>
-              <h3 className="font-semibold mb-3">cURL</h3>
-              <CodeBlock code={CODE_EXAMPLES.curl} language="bash" />
+          {/* Code Example */}
+          <div className="space-y-2">
+            <div className="text-sm font-medium">Try it yourself:</div>
+            <div className="relative">
+              <pre className="bg-muted rounded-lg p-4 text-xs font-mono overflow-x-auto">
+                <code className="text-foreground">
+{`curl http://localhost:3001/v1/models \\
+  -H "Authorization: Bearer any-key"`}
+                </code>
+              </pre>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => handleCopy('curl http://localhost:3001/v1/models \\\n  -H "Authorization: Bearer any-key"')}
+                className="absolute top-2 right-2 h-7 w-7"
+                title="Copy code"
+              >
+                {copiedCode === 'curl http://localhost:3001/v1/models \\\n  -H "Authorization: Bearer any-key"' ? (
+                  <Check className="h-3.5 w-3.5 text-green-500" />
+                ) : (
+                  <Copy className="h-3.5 w-3.5" />
+                )}
+              </Button>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Tech Stack */}
-      <div className="grid md:grid-cols-3 gap-6">
-        {/* Frontend Stack */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Package className="h-4 w-4" />
-              Frontend
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {TECH_STACK.frontend.map((pkg) => (
-                <div key={pkg.name} className="flex items-start justify-between gap-2">
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium truncate">{pkg.name}</div>
-                    <div className="text-xs text-muted-foreground">{pkg.description}</div>
-                  </div>
-                  <Badge variant="secondary" className="text-xs shrink-0">
-                    v{pkg.version}
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* UI Components */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Layers className="h-4 w-4" />
-              UI Framework
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {TECH_STACK.uiComponents.map((pkg) => (
-                <div key={pkg.name} className="flex items-start justify-between gap-2">
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium truncate">{pkg.name}</div>
-                    <div className="text-xs text-muted-foreground">{pkg.description}</div>
-                  </div>
-                  {pkg.version && (
-                    <Badge variant="secondary" className="text-xs shrink-0">
-                      v{pkg.version}
-                    </Badge>
-                  )}
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Desktop Runtime */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Package className="h-4 w-4" />
-              Desktop
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {TECH_STACK.desktop.map((pkg) => (
-                <div key={pkg.name} className="flex items-start justify-between gap-2">
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium truncate">{pkg.name}</div>
-                    <div className="text-xs text-muted-foreground">{pkg.description}</div>
-                  </div>
-                  <Badge variant="secondary" className="text-xs shrink-0">
-                    v{pkg.version}
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Additional Resources */}
+      {/* Step 2: Test Chat Completion */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <ExternalLink className="h-5 w-5" />
-            Additional Resources
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold">
+                2
+              </div>
+              Send a Chat Completion
+            </CardTitle>
+            <Button
+              onClick={handleTestChat}
+              disabled={loadingTest}
+              size="icon"
+              variant="default"
+              title="Test chat completion"
+              className="h-8 w-8"
+            >
+              {loadingTest ? (
+                <RefreshCw className="h-4 w-4 animate-spin" />
+              ) : (
+                <Play className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            Send a chat completion request to the active provider. The Provider Router automatically routes your request based on the configured provider.
+          </p>
+
+          {/* Interactive Demo */}
+          <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Zap className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium">Test Response</span>
+              </div>
+              {loadingTest && (
+                <Badge variant="secondary" className="gap-1">
+                  <RefreshCw className="h-3 w-3 animate-spin" />
+                  Waiting...
+                </Badge>
+              )}
+            </div>
+            {testResponse && (
+              <div className="bg-background rounded px-4 py-3 text-sm">
+                {testResponse}
+              </div>
+            )}
+            {!testResponse && !loadingTest && (
+              <div className="text-sm text-muted-foreground text-center py-8">
+                Click the <Play className="inline h-3 w-3 mx-1" /> button to test a chat completion
+              </div>
+            )}
+          </div>
+
+          {/* Code Example */}
+          <div className="space-y-2">
+            <div className="text-sm font-medium">Try it yourself:</div>
+            <div className="relative">
+              <pre className="bg-muted rounded-lg p-4 text-xs font-mono overflow-x-auto">
+                <code className="text-foreground">
+{`curl http://localhost:3001/v1/chat/completions \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer any-key" \\
+  -d '{
+    "model": "qwen3-max",
+    "messages": [
+      {"role": "user", "content": "Say hello in one sentence"}
+    ]
+  }'`}
+                </code>
+              </pre>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => handleCopy('curl http://localhost:3001/v1/chat/completions \\\n  -H "Content-Type: application/json" \\\n  -H "Authorization: Bearer any-key" \\\n  -d \'{\n    "model": "qwen3-max",\n    "messages": [\n      {"role": "user", "content": "Say hello in one sentence"}\n    ]\n  }\'')}
+                className="absolute top-2 right-2 h-7 w-7"
+                title="Copy code"
+              >
+                {copiedCode?.includes('chat/completions') ? (
+                  <Check className="h-3.5 w-3.5 text-green-500" />
+                ) : (
+                  <Copy className="h-3.5 w-3.5" />
+                )}
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Step 3: Switch Providers */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold">
+              3
+            </div>
+            Switch Between Providers
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            The Provider Router can route to different AI backends. Switch providers dynamically without restarting:
+          </p>
+
+          {/* Interactive Demo */}
+          <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Network className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium">Available Providers</span>
+              </div>
+              {loadingProviders && (
+                <Badge variant="secondary" className="gap-1">
+                  <RefreshCw className="h-3 w-3 animate-spin" />
+                  Loading...
+                </Badge>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              {providers.map((provider) => {
+                const isActive = provider.id === activeProvider;
+                return (
+                  <div
+                    key={provider.id}
+                    className={`flex items-center justify-between bg-background rounded px-4 py-3 transition-colors ${
+                      isActive ? 'ring-2 ring-primary' : ''
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <StatusIndicator status={isActive ? 'active' : provider.enabled ? 'inactive' : 'disabled'} />
+                      <div>
+                        <div className="text-sm font-medium">{provider.name}</div>
+                        <div className="text-xs text-muted-foreground">{provider.type}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {isActive && (
+                        <Badge variant="default" className="text-xs">Active</Badge>
+                      )}
+                      {!isActive && provider.enabled && (
+                        <Button
+                          onClick={() => handleSwitchProvider(provider.id)}
+                          size="icon"
+                          variant="outline"
+                          title="Switch to this provider"
+                          className="h-7 w-7"
+                        >
+                          <ArrowRight className="h-3.5 w-3.5" />
+                        </Button>
+                      )}
+                      {!provider.enabled && (
+                        <Badge variant="outline" className="text-xs">Disabled</Badge>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {providers.length === 0 && !loadingProviders && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <XCircle className="h-4 w-4" />
+                <span>No providers configured. Check the Providers page.</span>
+              </div>
+            )}
+          </div>
+
+          {/* Code Example */}
+          <div className="space-y-2">
+            <div className="text-sm font-medium">Via API:</div>
+            <div className="relative">
+              <pre className="bg-muted rounded-lg p-4 text-xs font-mono overflow-x-auto">
+                <code className="text-foreground">
+{`curl -X PUT http://localhost:3002/api/settings/active_provider \\
+  -H "Content-Type: application/json" \\
+  -d '{"value": "qwen-proxy-default"}'`}
+                </code>
+              </pre>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => handleCopy('curl -X PUT http://localhost:3002/api/settings/active_provider \\\n  -H "Content-Type: application/json" \\\n  -d \'{"value": "qwen-proxy-default"}\'')}
+                className="absolute top-2 right-2 h-7 w-7"
+                title="Copy code"
+              >
+                {copiedCode?.includes('active_provider') ? (
+                  <Check className="h-3.5 w-3.5 text-green-500" />
+                ) : (
+                  <Copy className="h-3.5 w-3.5" />
+                )}
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Next Steps */}
+      <Card className="border-primary/20 bg-primary/5">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Settings className="h-4 w-4" />
+            Next Steps
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex gap-3 items-start">
+            <div className="h-1.5 w-1.5 rounded-full bg-primary mt-2 shrink-0" />
+            <div className="text-sm text-muted-foreground">
+              Explore the <span className="font-medium text-foreground">Providers</span> page to add, configure, and test different AI backends
+            </div>
+          </div>
+          <div className="flex gap-3 items-start">
+            <div className="h-1.5 w-1.5 rounded-full bg-primary mt-2 shrink-0" />
+            <div className="text-sm text-muted-foreground">
+              Check the <span className="font-medium text-foreground">Models</span> page to see all available models and their capabilities
+            </div>
+          </div>
+          <div className="flex gap-3 items-start">
+            <div className="h-1.5 w-1.5 rounded-full bg-primary mt-2 shrink-0" />
+            <div className="text-sm text-muted-foreground">
+              View the <span className="font-medium text-foreground">Activity</span> page to monitor requests, responses, and provider performance
+            </div>
+          </div>
+          <div className="flex gap-3 items-start">
+            <div className="h-1.5 w-1.5 rounded-full bg-primary mt-2 shrink-0" />
+            <div className="text-sm text-muted-foreground">
+              Visit the <span className="font-medium text-foreground">Settings</span> page to customize server configuration and behavior
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Quick Reference */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <BookOpen className="h-4 w-4" />
+            Quick Reference
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-2 gap-4 text-sm">
+          <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <h3 className="font-semibold">Documentation</h3>
-              <ul className="space-y-1 text-muted-foreground">
-                <li>• OpenAI API Reference</li>
-                <li>• Qwen API Documentation</li>
-                <li>• Electron Documentation</li>
-              </ul>
+              <div className="text-sm font-medium">Endpoints</div>
+              <div className="space-y-1 text-xs text-muted-foreground font-mono">
+                <div className="bg-muted px-3 py-2 rounded">Provider Router: :3001</div>
+                <div className="bg-muted px-3 py-2 rounded">API Server: :3002</div>
+                <div className="bg-muted px-3 py-2 rounded">Qwen Proxy: :3000</div>
+              </div>
             </div>
             <div className="space-y-2">
-              <h3 className="font-semibold">Features</h3>
-              <ul className="space-y-1 text-muted-foreground">
-                <li>• OpenAI-compatible API</li>
-                <li>• Automatic credential management</li>
-                <li>• Multi-provider support</li>
-                <li>• Desktop and web compatibility</li>
-              </ul>
+              <div className="text-sm font-medium">Key Paths</div>
+              <div className="space-y-1 text-xs text-muted-foreground font-mono">
+                <div className="bg-muted px-3 py-2 rounded">/v1/models</div>
+                <div className="bg-muted px-3 py-2 rounded">/v1/chat/completions</div>
+                <div className="bg-muted px-3 py-2 rounded">/v1/providers</div>
+              </div>
             </div>
           </div>
         </CardContent>
