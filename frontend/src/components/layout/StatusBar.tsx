@@ -1,21 +1,24 @@
-import { useUIStore } from '@/stores/useUIStore';
-import { useCredentialsStore } from '@/stores/useCredentialsStore';
 import { useProxyStore } from '@/stores/useProxyStore';
+import { useLifecycleStore } from '@/stores/useLifecycleStore';
 import { EnvironmentBadge } from '@/components/ui/environment-badge';
 import { StatusBadge } from '@/components/ui/status-badge';
+import { AlertCircle } from 'lucide-react';
 
 export function StatusBar() {
-  const statusMessage = useUIStore((state) => state.statusMessage);
-  const credentials = useCredentialsStore((state) => state.credentials);
   const proxyStatus = useProxyStore((state) => state.status);
+  const lifecycleMessage = useLifecycleStore((state) => state.message);
+  const lifecycleError = useLifecycleStore((state) => state.error);
 
-  const credentialStatus = credentials
-    ? credentials.isExpired
-      ? 'expired'
-      : 'active'
-    : 'inactive';
+  const credentialStatus = proxyStatus?.credentials?.valid
+    ? 'authenticated'
+    : proxyStatus?.credentials
+    ? 'invalid'
+    : 'none';
 
-  const isProxyRunning = proxyStatus?.qwenProxy?.running || false;
+  const isProxyRunning = proxyStatus?.providerRouter?.running || false;
+
+  const displayMessage = lifecycleError || lifecycleMessage;
+  const isError = !!lifecycleError;
 
   return (
     <div className="h-6 bg-muted border-t border-border px-4 flex items-center justify-between text-xs">
@@ -26,7 +29,12 @@ export function StatusBar() {
         <div className="h-3 w-px bg-border" />
         <StatusBadge status={isProxyRunning ? 'running' : 'stopped'} />
       </div>
-      <span className="text-muted-foreground">{statusMessage}</span>
+      {displayMessage && (
+        <div className={`flex items-center gap-1.5 ${isError ? 'text-destructive' : 'text-muted-foreground'}`}>
+          {isError && <AlertCircle className="h-3 w-3" />}
+          <span>{displayMessage}</span>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,9 +1,14 @@
-export function formatUptime(ms: number | undefined): string {
-  if (!ms) return 'N/A';
+export function formatUptime(seconds: number | undefined): string {
+  if (!seconds) return 'N/A';
 
-  const seconds = Math.floor(ms / 1000);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (days > 0) {
+    const remainingHours = hours % 24;
+    return `${days}d ${remainingHours}h`;
+  }
 
   if (hours > 0) {
     const remainingMinutes = minutes % 60;
@@ -21,8 +26,18 @@ export function formatUptime(ms: number | undefined): string {
 export function formatDate(timestamp: number | null | undefined): string {
   if (!timestamp) return 'N/A';
 
-  const date = new Date(timestamp);
-  return date.toLocaleString();
+  // Handle Unix timestamps (seconds) by converting to milliseconds
+  const ms = timestamp < 10000000000 ? timestamp * 1000 : timestamp;
+  const date = new Date(ms);
+
+  // Format without seconds for cleaner display
+  return date.toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric'
+  });
 }
 
 export function formatBytes(bytes: number): string {

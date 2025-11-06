@@ -29,6 +29,13 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+
+    /* Status colors */
+    --status-success: 142 76% 36%;
+    --status-info: 221 83% 53%;
+    --status-warning: 45 93% 47%;
+    --status-error: 0 84% 60%;
+    --status-neutral: 0 0% 45%;
   }
 
   .dark {
@@ -56,6 +63,13 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
+    /* Status colors - dark mode */
+    --status-success: 142 71% 45%;
+    --status-info: 217 91% 60%;
+    --status-warning: 45 93% 58%;
+    --status-error: 0 72% 51%;
+    --status-neutral: 0 0% 63%;
   }
 }
 
@@ -67,4 +81,300 @@
     @apply bg-background text-foreground;
     font-family: Inter, system-ui, sans-serif;
   }
+}
+
+@layer utilities {
+  .status-success {
+    color: hsl(var(--status-success));
+  }
+  .status-success-dot {
+    background-color: hsl(var(--status-success));
+  }
+  .status-info {
+    color: hsl(var(--status-info));
+  }
+  .status-info-dot {
+    background-color: hsl(var(--status-info));
+  }
+  .status-warning {
+    color: hsl(var(--status-warning));
+  }
+  .status-warning-dot {
+    background-color: hsl(var(--status-warning));
+  }
+  .status-error {
+    color: hsl(var(--status-error));
+  }
+  .status-error-dot {
+    background-color: hsl(var(--status-error));
+  }
+  .status-neutral {
+    color: hsl(var(--status-neutral));
+  }
+  .status-neutral-dot {
+    background-color: hsl(var(--status-neutral));
+  }
+}
+
+/* Providers Page */
+.providers-container {
+  @apply container max-w-7xl mx-auto p-6 space-y-6;
+}
+
+.providers-header {
+  @apply space-y-2;
+}
+
+.providers-header-title {
+  @apply text-3xl font-bold flex items-center gap-3;
+}
+
+.providers-header-subtitle {
+  @apply text-muted-foreground;
+}
+
+.providers-actions {
+  @apply flex items-center gap-2;
+}
+
+.providers-grid {
+  @apply grid gap-4 md:grid-cols-2 lg:grid-cols-3;
+}
+
+/* Provider Card */
+.provider-card {
+  @apply border rounded-lg bg-card transition-all;
+}
+
+.provider-card-active {
+  @apply ring-2 ring-primary shadow-sm;
+}
+
+.provider-card-header {
+  @apply p-4 space-y-3;
+}
+
+.provider-card-title {
+  @apply flex items-center gap-2 text-lg font-semibold;
+}
+
+.provider-card-badges {
+  @apply flex items-center gap-2 flex-wrap;
+}
+
+.provider-card-description {
+  @apply text-sm text-muted-foreground;
+}
+
+.provider-card-actions {
+  @apply p-4 pt-0 flex flex-col gap-2;
+}
+
+.provider-card-test-result {
+  @apply rounded-lg p-3 text-sm flex items-center gap-2 border;
+}
+
+.provider-card-test-success {
+  @apply bg-primary/10 border-primary/20 text-foreground;
+}
+
+.provider-card-test-error {
+  @apply bg-destructive/10 border-destructive/20 text-foreground;
+}
+
+/* Quick Guide Page */
+.quick-guide-container {
+  @apply container max-w-6xl mx-auto p-6 space-y-6;
+}
+
+.quick-guide-header {
+  @apply space-y-2;
+}
+
+.quick-guide-title {
+  @apply text-3xl font-bold flex items-center gap-3;
+}
+
+.quick-guide-subtitle {
+  @apply text-muted-foreground;
+}
+
+/* Step Components */
+.step-card-header-row {
+  @apply flex items-center justify-between;
+}
+
+.step-card-title {
+  @apply flex items-center gap-2 text-lg;
+}
+
+.step-number-badge {
+  @apply flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold;
+}
+
+.step-description {
+  @apply text-sm text-muted-foreground;
+}
+
+.step-inline-code {
+  @apply px-2 py-0.5 bg-muted rounded text-xs font-mono;
+}
+
+/* Interactive Demo Areas */
+.demo-container {
+  @apply rounded-lg border border-border bg-muted/30 p-4 space-y-3;
+}
+
+.demo-header {
+  @apply flex items-center justify-between;
+}
+
+.demo-label {
+  @apply flex items-center gap-2;
+}
+
+.demo-label-text {
+  @apply text-sm font-medium;
+}
+
+.demo-content {
+  @apply bg-background rounded px-4 py-3 text-sm;
+}
+
+.demo-empty-state {
+  @apply text-sm text-muted-foreground text-center py-8;
+}
+
+.demo-error-state {
+  @apply flex items-center gap-2 text-sm text-muted-foreground;
+}
+
+/* Model List */
+.model-list-container {
+  @apply space-y-2;
+}
+
+.model-item {
+  @apply flex items-center justify-between bg-background rounded px-3 py-2;
+}
+
+.model-item-code {
+  @apply text-xs font-mono;
+}
+
+/* Provider Switch List */
+.provider-switch-list {
+  @apply space-y-2;
+}
+
+.provider-switch-item {
+  @apply flex items-center justify-between bg-background rounded px-4 py-3 transition-colors;
+}
+
+.provider-switch-item-active {
+  @apply ring-2 ring-primary;
+}
+
+.provider-switch-info {
+  @apply flex items-center gap-3;
+}
+
+.provider-switch-details {
+  @apply space-y-0;
+}
+
+.provider-switch-name {
+  @apply text-sm font-medium;
+}
+
+.provider-switch-type {
+  @apply text-xs text-muted-foreground;
+}
+
+.provider-switch-actions {
+  @apply flex items-center gap-2;
+}
+
+/* Code Blocks */
+.code-block-container {
+  @apply space-y-2;
+}
+
+.code-block-label {
+  @apply text-sm font-medium;
+}
+
+.code-block-wrapper {
+  @apply relative;
+}
+
+.code-block-pre {
+  @apply bg-muted rounded-lg p-4 text-xs font-mono overflow-x-auto;
+}
+
+.code-block-code {
+  @apply text-foreground;
+}
+
+.code-block-copy-button {
+  @apply absolute top-2 right-2 h-7 w-7;
+}
+
+/* Next Steps Card */
+.next-steps-card {
+  @apply border-primary/20 bg-primary/5;
+}
+
+.next-steps-title {
+  @apply flex items-center gap-2 text-base;
+}
+
+.next-steps-list {
+  @apply space-y-3;
+}
+
+.next-steps-item {
+  @apply flex gap-3 items-start;
+}
+
+.next-steps-bullet {
+  @apply h-1.5 w-1.5 rounded-full bg-primary mt-2 shrink-0;
+}
+
+.next-steps-text {
+  @apply text-sm text-muted-foreground;
+}
+
+.next-steps-emphasis {
+  @apply font-medium text-foreground;
+}
+
+/* Quick Reference */
+.quick-reference-grid {
+  @apply grid md:grid-cols-2 gap-4;
+}
+
+.quick-reference-section {
+  @apply space-y-2;
+}
+
+.quick-reference-title {
+  @apply text-sm font-medium;
+}
+
+.quick-reference-list {
+  @apply space-y-1 text-xs text-muted-foreground font-mono;
+}
+
+.quick-reference-item {
+  @apply bg-muted px-3 py-2 rounded;
+}
+
+/* Status Icons - override hardcoded colors */
+.status-icon-success {
+  @apply text-primary;
+}
+
+.status-icon-inline {
+  @apply inline h-3 w-3 mx-1;
 }

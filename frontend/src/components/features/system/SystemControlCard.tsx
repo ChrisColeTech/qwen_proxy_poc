@@ -1,31 +1,34 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { StatusIndicator } from '@/components/ui/status-indicator';
-import { useAuth } from '@/hooks/useAuth';
+import { useCredentialActions } from '@/hooks/useCredentialActions';
 import { useProxyControl } from '@/hooks/useProxyControl';
-import { useCredentialsStore } from '@/stores/useCredentialsStore';
+import { useLiveUptime } from '@/hooks/useLiveUptime';
+import { useProviderRouterLifecycle } from '@/hooks/useProviderRouterLifecycle';
 import { useProxyStore } from '@/stores/useProxyStore';
 import { useAlertStore } from '@/stores/useAlertStore';
 import { formatDate, formatUptime } from '@/utils/formatters';
-import { truncateToken, truncateCookies } from '@/utils/string.utils';
-import { Activity, LogIn, LogOut, Play, Square, Copy } from 'lucide-react';
+import { Activity, LogIn, Play, Square, Copy, AlertCircle } from 'lucide-react';
 
 export function SystemControlCard() {
-  const { handleConnect, handleRevoke, loading: authLoading } = useAuth();
+  const { handleConnect, loading: authLoading } = useCredentialActions();
   const { handleStart, handleStop, loading: proxyLoading } = useProxyControl();
-  const credentials = useCredentialsStore((state) => state.credentials);
+  const { state: lifecycleState, message: lifecycleMessage, error: lifecycleError } = useProviderRouterLifecycle();
   const proxyStatus = useProxyStore((state) => state.status);
   const showAlert = useAlertStore((state) => state.showAlert);
 
-  const credentialStatus = credentials
-    ? credentials.isExpired
-      ? 'expired'
-      : 'active'
-    : 'inactive';
+  const credentials = proxyStatus?.credentials;
+  const credentialStatus = credentials?.valid
+    ? 'authenticated'
+    : credentials
+    ? 'invalid'
+    : 'none';
 
-  const isProxyRunning = proxyStatus?.qwenProxy?.running || false;
-  const port = proxyStatus?.qwenProxy?.port;
-  const uptime = proxyStatus?.qwenProxy?.uptime;
+  // Use Provider Router (main entry point) instead of Qwen Proxy
+  const isProxyRunning = proxyStatus?.providerRouter?.running || false;
+  const port = proxyStatus?.providerRouter?.port;
+  const initialUptime = proxyStatus?.providerRouter?.uptime;
+  const uptime = useLiveUptime(initialUptime);
   const endpointUrl = port ? `http://localhost:${port}` : '';
 
   const handleCopy = async () => {
@@ -54,19 +57,6 @@ export function SystemControlCard() {
             >
               <LogIn className="h-4 w-4" />
             </Button>
-
-            {credentials && (
-              <Button
-                onClick={handleRevoke}
-                disabled={authLoading}
-                size="icon"
-                variant="destructive"
-                title="Revoke credentials"
-                className="h-8 w-8"
-              >
-                <LogOut className="h-4 w-4" />
-              </Button>
-            )}
 
             {!isProxyRunning ? (
               <Button
@@ -103,46 +93,49 @@ export function SystemControlCard() {
               {credentialStatus.charAt(0).toUpperCase() + credentialStatus.slice(1)}
             </span>
           </div>
-          {credentials && (
+          {credentials?.valid && credentials.expiresAt && (
             <span className="text-sm text-muted-foreground">
               Expires {formatDate(credentials.expiresAt)}
             </span>
           )}
         </div>
 
-        {credentials && (
-          <div className="space-y-3 pl-6">
-            <div className="space-y-1">
-              <div className="text-xs text-muted-foreground">Token</div>
-              <code className="block bg-muted px-3 py-2 rounded text-xs font-mono">
-                {truncateToken(credentials.token)}
-              </code>
-            </div>
-            <div className="space-y-1">
-              <div className="text-xs text-muted-foreground">Cookies</div>
-              <code className="block bg-muted px-3 py-2 rounded text-xs font-mono">
-                {truncateCookies(credentials.cookies)}
-              </code>
-            </div>
-          </div>
-        )}
 
         <div className="h-px bg-border" />
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Proxy Server</span>
-            <StatusIndicator status={isProxyRunning ? 'running' : 'stopped'} />
-            <span className="text-sm font-medium">
-              {isProxyRunning ? 'Running' : 'Stopped'}
-            </span>
-          </div>
-          <div className="flex items-center gap-3 text-sm text-muted-foreground">
-            {port && <span>Port {port}</span>}
-            {isProxyRunning && uptime !== undefined && (
-              <span>Uptime {formatUptime(uptime)}</span>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Proxy Server</span>
+              {lifecycleState === 'starting' || lifecycleState === 'stopping' ? (
+                <>
+                  <Activity className="h-3 w-3 animate-spin text-primary" />
+                  <span className="text-sm font-medium">
+                    {lifecycleState === 'starting' ? 'Starting...' : 'Stopping...'}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <StatusIndicator status={isProxyRunning ? 'running' : 'stopped'} />
+                  <span className="text-sm font-medium">
+                    {isProxyRunning ? 'Running' : 'Stopped'}
+                  </span>
+                </>
+              )}
+            </div>
+            {isProxyRunning && uptime !== undefined && lifecycleState === 'running' && (
+              <span className="text-sm text-muted-foreground">
+                Uptime {formatUptime(uptime)}
+              </span>
             )}
           </div>
+
+          {lifecycleError && (
+            <div className="flex items-center gap-2 rounded-lg bg-destructive/10 p-2 text-xs text-destructive">
+              <AlertCircle className="h-3 w-3 shrink-0" />
+              <span>{lifecycleError}</span>
+            </div>
+          )}
         </div>
 
         {isProxyRunning && endpointUrl && (

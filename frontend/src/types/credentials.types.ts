@@ -1,10 +1,11 @@
 // Types for credential management matching /api/qwen/credentials endpoints
 
 export interface QwenCredentials {
-  token: string;
-  cookies: string;
+  hasCredentials: boolean;
   expiresAt: number | null;
-  isExpired: boolean;
+  isValid: boolean;
+  createdAt: number;
+  updatedAt: number;
 }
 
 export interface SetCredentialsRequest {

@@ -1,11 +1,11 @@
-import { useCredentialPolling } from '@/hooks/useCredentialPolling';
+import { useProxyStatus } from '@/hooks/useProxyStatus';
 import { StatusAlert } from '@/components/features/alerts/StatusAlert';
 import { SystemControlCard } from '@/components/features/system/SystemControlCard';
 import { ProvidersListCard } from '@/components/features/providers/ProvidersListCard';
 import { ModelsListCard } from '@/components/features/models/ModelsListCard';
 
 export function HomePage() {
-  useCredentialPolling();
+  useProxyStatus();
 
   return (
     <div className="container max-w-7xl mx-auto p-6 space-y-6">

@@ -34,9 +34,8 @@ export interface ProxyStatusResponse {
     total: number;
   };
   credentials?: {
-    hasCredentials: boolean;
-    isValid: boolean;
-    expiresAt?: number;
+    valid: boolean;
+    expiresAt: number | null;
   };
   message: string;
 }
