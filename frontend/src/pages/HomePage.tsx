@@ -1,9 +1,6 @@
 import { useCredentialPolling } from '@/hooks/useCredentialPolling';
 import { StatusAlert } from '@/components/features/alerts/StatusAlert';
-import { AuthenticationCard } from '@/components/features/authentication/AuthenticationCard';
-import { ProxyControlCard } from '@/components/features/proxy/ProxyControlCard';
-import { CredentialsDetailCard } from '@/components/features/credentials/CredentialsDetailCard';
-import { SystemStatsCard } from '@/components/features/stats/SystemStatsCard';
+import { SystemControlCard } from '@/components/features/system/SystemControlCard';
 import { ConnectionGuideCard } from '@/components/features/stats/ConnectionGuideCard';
 import { ProvidersListCard } from '@/components/features/providers/ProvidersListCard';
 import { ModelsListCard } from '@/components/features/models/ModelsListCard';
@@ -17,9 +14,7 @@ export function HomePage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <AuthenticationCard />
-          <ProxyControlCard />
-          <CredentialsDetailCard />
+          <SystemControlCard />
 
           <div className="grid md:grid-cols-2 gap-6">
             <ProvidersListCard />
@@ -28,7 +23,6 @@ export function HomePage() {
         </div>
 
         <div className="space-y-6">
-          <SystemStatsCard />
           <ConnectionGuideCard />
         </div>
       </div>
