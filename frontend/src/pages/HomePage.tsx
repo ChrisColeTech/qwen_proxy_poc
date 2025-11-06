@@ -1,63 +1,46 @@
-import { useEffect, useState } from 'react';
+import { useCredentialPolling } from '@/hooks/useCredentialPolling';
+import { EnvironmentBadge } from '@/components/ui/environment-badge';
+import { StatusAlert } from '@/components/features/alerts/StatusAlert';
 import { AuthenticationCard } from '@/components/features/authentication/AuthenticationCard';
 import { ProxyControlCard } from '@/components/features/proxy/ProxyControlCard';
-import { StatusCard } from '@/components/features/dashboard/StatusCard';
-import { MainContent } from '@/components/layout/MainContent';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ServerOff } from 'lucide-react';
-import { API_BASE_URL, API_SERVER_PORT } from '@/config/api.config';
+import { CredentialsDetailCard } from '@/components/features/credentials/CredentialsDetailCard';
+import { SystemStatsCard } from '@/components/features/stats/SystemStatsCard';
+import { ConnectionGuideCard } from '@/components/features/stats/ConnectionGuideCard';
+import { ProvidersListCard } from '@/components/features/providers/ProvidersListCard';
+import { ModelsListCard } from '@/components/features/models/ModelsListCard';
 
 export function HomePage() {
-  const [apiConnected, setApiConnected] = useState(true);
-
-  useEffect(() => {
-    const checkApiHealth = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/health`);
-        setApiConnected(response.ok);
-      } catch {
-        setApiConnected(false);
-      }
-    };
-
-    checkApiHealth();
-    const interval = setInterval(checkApiHealth, 10000);
-    return () => clearInterval(interval);
-  }, []);
+  useCredentialPolling();
 
   return (
-    <MainContent>
-      <div className="home-container">
-        <div className="home-content">
-          {!apiConnected ? (
-            <Card>
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <ServerOff className="h-5 w-5 text-destructive" />
-                  <CardTitle>API Server Offline</CardTitle>
-                </div>
-                <CardDescription>
-                  Cannot connect to the API server on port {API_SERVER_PORT}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Cannot connect to the API server on port {API_SERVER_PORT}. Please ensure the API server is running.
-                </p>
-                <code className="block mt-2 p-2 bg-muted rounded text-xs">
-                  cd backend/api-server && npm run dev
-                </code>
-              </CardContent>
-            </Card>
-          ) : (
-            <>
-              <StatusCard />
-              <AuthenticationCard />
-              <ProxyControlCard />
-            </>
-          )}
+    <div className="container max-w-7xl mx-auto p-6 space-y-6">
+      <StatusAlert />
+
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
+          <p className="text-sm text-muted-foreground">Manage your Qwen proxy connection</p>
+        </div>
+        <EnvironmentBadge />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          <AuthenticationCard />
+          <ProxyControlCard />
+          <CredentialsDetailCard />
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <ProvidersListCard />
+            <ModelsListCard />
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <SystemStatsCard />
+          <ConnectionGuideCard />
         </div>
       </div>
-    </MainContent>
+    </div>
   );
 }

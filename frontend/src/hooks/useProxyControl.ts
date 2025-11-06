@@ -1,54 +1,56 @@
 import { useState } from 'react';
-import { proxyService } from '@/services/proxy.service';
+import { proxyService } from '@/services/proxyService';
 import { useProxyStore } from '@/stores/useProxyStore';
+import { useAlertStore } from '@/stores/useAlertStore';
+import { useUIStore } from '@/stores/useUIStore';
 
 export function useProxyControl() {
-  const { setStatus, setError } = useProxyStore();
-  const [starting, setStarting] = useState(false);
-  const [stopping, setStopping] = useState(false);
-  const [error, setLocalError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const setStatus = useProxyStore((state) => state.setStatus);
+  const showAlert = useAlertStore((state) => state.showAlert);
+  const setStatusMessage = useUIStore((state) => state.setStatusMessage);
 
-  const startProxy = async () => {
-    setStarting(true);
-    setLocalError(null);
-    setError(null);
+  const handleStart = async () => {
+    setLoading(true);
+    setStatusMessage('Starting proxy server...');
     try {
-      const status = await proxyService.startProxy();
+      const response = await proxyService.startProxy();
+      showAlert(response.message, 'success');
+
+      // Refresh status
+      const status = await proxyService.getStatus();
       setStatus(status);
-      return status;
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to start proxy';
-      setLocalError(message);
-      setError(message);
-      throw err;
+
+      const port = status.qwenProxy?.port;
+      setStatusMessage(port ? `Proxy running on port ${port}` : 'Proxy running');
+    } catch (error) {
+      console.error('Error starting proxy:', error);
+      showAlert('Failed to start proxy server', 'error');
+      setStatusMessage('Failed to start proxy');
     } finally {
-      setStarting(false);
+      setLoading(false);
     }
   };
 
-  const stopProxy = async () => {
-    setStopping(true);
-    setLocalError(null);
-    setError(null);
+  const handleStop = async () => {
+    setLoading(true);
+    setStatusMessage('Stopping proxy server...');
     try {
-      const status = await proxyService.stopProxy();
+      const response = await proxyService.stopProxy();
+      showAlert(response.message, 'success');
+
+      // Refresh status
+      const status = await proxyService.getStatus();
       setStatus(status);
-      return status;
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to stop proxy';
-      setLocalError(message);
-      setError(message);
-      throw err;
+      setStatusMessage('Proxy stopped');
+    } catch (error) {
+      console.error('Error stopping proxy:', error);
+      showAlert('Failed to stop proxy server', 'error');
+      setStatusMessage('Failed to stop proxy');
     } finally {
-      setStopping(false);
+      setLoading(false);
     }
   };
 
-  return {
-    startProxy,
-    stopProxy,
-    starting,
-    stopping,
-    error,
-  };
+  return { handleStart, handleStop, loading };
 }

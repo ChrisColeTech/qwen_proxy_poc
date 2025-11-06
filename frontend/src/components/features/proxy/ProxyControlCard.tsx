@@ -1,94 +1,91 @@
-import { Server, AlertCircle, Play, Square } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { StatusBadge } from '@/components/ui/status-badge';
 import { useProxyControl } from '@/hooks/useProxyControl';
-import { useProxyStatus } from '@/hooks/useProxyStatus';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useProxyStore } from '@/stores/useProxyStore';
+import { useAlertStore } from '@/stores/useAlertStore';
+import { formatUptime } from '@/utils/formatters';
+import { Server, Play, Square, Copy } from 'lucide-react';
 
 export function ProxyControlCard() {
-  const { status, loading: statusLoading } = useProxyStatus();
-  const { startProxy, stopProxy, starting, stopping, error } = useProxyControl();
+  const { handleStart, handleStop, loading } = useProxyControl();
+  const proxyStatus = useProxyStore((state) => state.status);
+  const showAlert = useAlertStore((state) => state.showAlert);
 
-  const handleStart = async () => {
-    try {
-      await startProxy();
-    } catch (err) {
-      console.error('Failed to start proxy:', err);
+  const isRunning = proxyStatus?.qwenProxy?.running || false;
+  const port = proxyStatus?.qwenProxy?.port;
+  const uptime = proxyStatus?.qwenProxy?.uptime;
+
+  const endpointUrl = port ? `http://localhost:${port}` : '';
+
+  const handleCopy = async () => {
+    if (endpointUrl) {
+      await navigator.clipboard.writeText(endpointUrl);
+      showAlert('Endpoint URL copied to clipboard', 'success');
     }
-  };
-
-  const handleStop = async () => {
-    try {
-      await stopProxy();
-    } catch (err) {
-      console.error('Failed to stop proxy:', err);
-    }
-  };
-
-  const getUptime = () => {
-    if (!status.isRunning || !status.startedAt) return 'N/A';
-    const seconds = Math.floor((Date.now() - status.startedAt) / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    if (hours > 0) return `${hours}h ${minutes % 60}m`;
-    if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
-    return `${seconds}s`;
   };
 
   return (
     <Card>
       <CardHeader>
-        <div className="proxy-header">
-          <div className="proxy-header-left">
-            <Server className="proxy-icon" />
-            <CardTitle>Proxy Server</CardTitle>
-          </div>
-          <div className="proxy-header-right">
-            <button
-              onClick={handleStart}
-              disabled={status.isRunning || starting || stopping || statusLoading}
-              className="proxy-button"
-              title={starting ? 'Starting proxy...' : 'Start proxy server'}
-            >
-              <Play className="proxy-button-icon" />
-            </button>
-            <button
-              onClick={handleStop}
-              disabled={!status.isRunning || starting || stopping || statusLoading}
-              className="proxy-button"
-              title={stopping ? 'Stopping proxy...' : 'Stop proxy server'}
-            >
-              <Square className="proxy-button-icon" />
-            </button>
-          </div>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Server className="h-4 w-4" />
+            Proxy Server
+          </CardTitle>
+          <StatusBadge status={isRunning ? 'running' : 'stopped'} />
         </div>
-        <CardDescription>
-          Control the OpenAI-to-Qwen proxy server
-        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {error && (
-          <div className="proxy-error">
-            <AlertCircle className="proxy-error-icon" />
-            <span>{error}</span>
+        <div className="grid grid-cols-2 gap-4 text-sm">
+          <div className="space-y-1">
+            <div className="text-xs text-muted-foreground">Port</div>
+            <div className="font-medium">{port || 'N/A'}</div>
           </div>
-        )}
-
-        {status.isRunning && (
-          <div className="proxy-stats">
-            <div>
-              <p className="proxy-stat-label">Port</p>
-              <p className="proxy-stat-value">{status.port}</p>
-            </div>
-            <div>
-              <p className="proxy-stat-label">Uptime</p>
-              <p className="proxy-stat-value">{getUptime()}</p>
-            </div>
+          <div className="space-y-1">
+            <div className="text-xs text-muted-foreground">Uptime</div>
+            <div className="font-medium">{isRunning ? formatUptime(uptime) : 'N/A'}</div>
           </div>
-        )}
+        </div>
 
-        {status.isRunning && (
-          <div className="proxy-endpoint">
-            <p className="proxy-endpoint-label">Proxy Endpoint</p>
-            <code className="proxy-endpoint-code">http://localhost:{status.port}</code>
+        <div className="flex gap-2">
+          <Button
+            onClick={handleStart}
+            disabled={loading || isRunning}
+            size="icon"
+            variant="default"
+            title="Start proxy server"
+          >
+            <Play className="h-4 w-4" />
+          </Button>
+
+          <Button
+            onClick={handleStop}
+            disabled={loading || !isRunning}
+            size="icon"
+            variant="destructive"
+            title="Stop proxy server"
+          >
+            <Square className="h-4 w-4" />
+          </Button>
+        </div>
+
+        {isRunning && endpointUrl && (
+          <div className="space-y-2">
+            <div className="text-xs text-muted-foreground">Endpoint</div>
+            <div className="flex items-center gap-2">
+              <code className="flex-1 rounded bg-muted px-3 py-2 text-xs font-mono">
+                {endpointUrl}
+              </code>
+              <Button
+                onClick={handleCopy}
+                size="icon"
+                variant="outline"
+                title="Copy endpoint URL"
+              >
+                <Copy className="h-3 w-3" />
+              </Button>
+            </div>
           </div>
         )}
       </CardContent>

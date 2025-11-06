@@ -1,105 +1,73 @@
-import { Moon, Sun, PanelLeft, PanelRight } from 'lucide-react';
-import { VscChromeMinimize, VscChromeMaximize, VscChromeRestore, VscChromeClose } from 'react-icons/vsc';
+import { Moon, Sun } from 'lucide-react';
+import { VscChromeMinimize, VscChromeMaximize, VscChromeClose } from 'react-icons/vsc';
 import { useUIStore } from '@/stores/useUIStore';
-import { useState, useEffect } from 'react';
 
 export function TitleBar() {
   const theme = useUIStore((state) => state.uiState.theme);
-  const sidebarSide = useUIStore((state) => state.uiState.sidebarSide);
   const toggleTheme = useUIStore((state) => state.toggleTheme);
-  const toggleSidebarSide = useUIStore((state) => state.toggleSidebarSide);
-  const [isMaximized, setIsMaximized] = useState(false);
-
-  useEffect(() => {
-    // Listen for maximize/unmaximize events from Electron
-    const handleMaximize = () => setIsMaximized(true);
-    const handleUnmaximize = () => setIsMaximized(false);
-
-    // Check initial state
-    if (window.electronAPI?.window.isMaximized) {
-      window.electronAPI.window.isMaximized().then(setIsMaximized);
-    }
-
-    // Listen for events
-    if (window.electronAPI?.window.onMaximize) {
-      window.electronAPI.window.onMaximize(handleMaximize);
-    }
-    if (window.electronAPI?.window.onUnmaximize) {
-      window.electronAPI.window.onUnmaximize(handleUnmaximize);
-    }
-  }, []);
 
   const handleMinimize = () => {
-    window.electronAPI?.window.minimize();
+    if (window.electronAPI) {
+      window.electronAPI.window.minimize();
+    }
   };
 
   const handleMaximize = () => {
-    window.electronAPI?.window.maximize();
+    if (window.electronAPI) {
+      window.electronAPI.window.maximize();
+    }
   };
 
   const handleClose = () => {
-    window.electronAPI?.window.close();
+    if (window.electronAPI) {
+      window.electronAPI.window.close();
+    }
   };
 
   return (
     <div
-      className="titlebar"
+      className="h-10 bg-background border-b border-border flex items-center justify-between"
       style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
     >
-      {/* Left: App icon and title */}
-      <div className="titlebar-left">
-        <img src="/qwen-icon.svg" alt="Qwen Proxy" className="titlebar-icon" />
-        <span className="titlebar-title">Qwen Proxy</span>
+      <div className="flex items-center gap-2 px-4">
+        <span className="text-sm font-semibold">Qwen Proxy</span>
       </div>
 
-      {/* Right: Sidebar side toggle, theme toggle and window controls */}
-      <div className="titlebar-right" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+      <div className="flex items-center h-full" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
         <button
-          onClick={toggleSidebarSide}
-          className="titlebar-button"
-          title={sidebarSide === 'left' ? 'Move sidebar to right' : 'Move sidebar to left'}
-        >
-          {sidebarSide === 'left' ? (
-            <PanelLeft className="titlebar-icon-sm" />
-          ) : (
-            <PanelRight className="titlebar-icon-sm" />
-          )}
-        </button>
-
-        <button
+          className="h-full w-12 flex items-center justify-center hover:bg-accent transition-colors"
           onClick={toggleTheme}
-          className="titlebar-button"
-          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
         >
-          {theme === 'dark' ? (
-            <Sun className="titlebar-icon-sm" />
+          {theme === 'light' ? (
+            <Moon className="h-4 w-4" />
           ) : (
-            <Moon className="titlebar-icon-sm" />
+            <Sun className="h-4 w-4" />
           )}
         </button>
 
         <button
+          className="h-full w-12 flex items-center justify-center hover:bg-accent transition-colors"
           onClick={handleMinimize}
-          className="titlebar-button-wide"
-          title="Minimize"
+          title="Minimize window"
         >
-          <VscChromeMinimize size={16} />
+          <VscChromeMinimize className="h-4 w-4" />
         </button>
 
         <button
+          className="h-full w-12 flex items-center justify-center hover:bg-accent transition-colors"
           onClick={handleMaximize}
-          className="titlebar-button-wide"
-          title={isMaximized ? 'Restore' : 'Maximize'}
+          title="Maximize window"
         >
-          {isMaximized ? <VscChromeRestore size={16} /> : <VscChromeMaximize size={16} />}
+          <VscChromeMaximize className="h-4 w-4" />
         </button>
 
         <button
+          className="h-full w-12 flex items-center justify-center hover:bg-destructive hover:text-destructive-foreground transition-colors"
           onClick={handleClose}
-          className="titlebar-button-close"
-          title="Close"
+          title="Close window"
         >
-          <VscChromeClose size={16} />
+          <VscChromeClose className="h-4 w-4" />
         </button>
       </div>
     </div>

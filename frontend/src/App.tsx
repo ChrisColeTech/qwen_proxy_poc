@@ -1,31 +1,15 @@
-import { Toaster } from 'sonner';
+import { useDarkMode } from '@/hooks/useDarkMode';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { ExtensionInstallPage } from '@/pages/ExtensionInstallPage';
-import { useUIStore, useThemeSync } from '@/stores/useUIStore';
+import { HomePage } from '@/pages/HomePage';
 
-export function App() {
-  // Sync theme with document element
-  useThemeSync();
-
-  // Get current screen from UI store
-  const currentScreen = useUIStore((state) => state.uiState.currentScreen);
-
-  // Render appropriate screen based on state
-  const renderScreen = () => {
-    switch (currentScreen) {
-      case 'home':
-        return <AppLayout />;
-      case 'extension-install':
-        return <ExtensionInstallPage />;
-      default:
-        return <AppLayout />;
-    }
-  };
+function App() {
+  useDarkMode();
 
   return (
-    <>
-      {renderScreen()}
-      <Toaster position="bottom-right" />
-    </>
+    <AppLayout>
+      <HomePage />
+    </AppLayout>
   );
 }
+
+export default App;

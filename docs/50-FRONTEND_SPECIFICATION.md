@@ -1,8 +1,81 @@
 # Qwen Proxy - Frontend Specification Document
 
-**Version**: 1.0
-**Date**: November 5, 2025
+**Version**: 2.0 (Architecture Corrections Applied)
+**Date**: November 6, 2025
 **Purpose**: Complete specification of frontend features, functionality, and architecture
+
+---
+
+## 🔴 CRITICAL: Version 2.0 Updates (November 6, 2025)
+
+### What Changed and Why
+
+**This specification was updated based on critical architecture violations found in the initial implementation.**
+
+#### Violations Found in Initial Implementation:
+1. **51 shadcn/ui bypass violations** - Custom CSS classes (`.btn-primary`, `.card-base`) instead of shadcn components
+2. **11 unnecessary child components** - Excessive fragmentation (ProxyControlCard split into 4 files)
+3. **62+ custom CSS classes** - 389-line index.css with duplicate functionality
+4. **6 unused shadcn components** - Button, Card, Badge, Alert installed but not used
+
+#### Corrections Applied in Version 2.0:
+
+**1. Added shadcn/ui Component Requirements (NEW Section)**
+   - Explicit rules: ALWAYS use shadcn Button, Card, Badge, Alert components
+   - Clear examples showing correct vs incorrect usage
+   - Forbidden patterns: Custom `.btn-*`, `.card-*`, `.alert-*` CSS classes
+
+**2. Added Component Consolidation Guidelines (NEW Section)**
+   - Rule: Default to single-file components unless reused 2+ times
+   - Business logic → hooks, NOT components
+   - Inline small presentation logic (<5 lines)
+   - NO AuthButtons.tsx, ProxyInfoGrid.tsx, or similar single-use children
+
+**3. Added CSS Architecture Rules (NEW Section)**
+   - Target: <200 lines in index.css (was 389 lines)
+   - Maximum: 20 custom CSS classes (was 62+ classes)
+   - Use Tailwind utilities first, custom CSS only for animations
+   - Explicit list of what NOT to create as CSS classes
+
+**4. Updated Component Architecture Section**
+   - Marked AuthenticationCard as CONSOLIDATED (no child files)
+   - Marked ProxyControlCard as CONSOLIDATED (no child files)
+   - Added specific line count targets (~80-100 lines)
+   - Emphasized shadcn component usage in all features
+
+**5. Updated File Structure Section**
+   - Added warning comments: "⚠️ NO AuthButtons.tsx or AuthCardFooter.tsx"
+   - Added utils/ directory for utility functions
+   - Added useAuth hook requirement
+   - Clear annotations on consolidated structure
+
+**6. Enhanced Success Criteria**
+   - Split into Functional Requirements and Architecture Requirements
+   - Added "Architecture Anti-Patterns (Must Avoid)" section
+   - Added comprehensive validation checklist
+   - Specific file counts and line limits
+
+### Implementation Impact
+
+**Before (Version 1.0 Violations):**
+```
+❌ 4 button files with .btn-primary CSS
+❌ 5 card files with .card-base CSS
+❌ 11 single-use child components
+❌ 389 lines of custom CSS
+❌ 62+ custom CSS classes
+```
+
+**After (Version 2.0 Requirements):**
+```
+✅ All buttons use shadcn Button component
+✅ All cards use shadcn Card components
+✅ 2 consolidated components (no children)
+✅ <200 lines in index.css
+✅ <20 custom CSS classes
+```
+
+**Bottom Line:** Version 2.0 prevents the architecture violations that occurred in the initial implementation by providing explicit guidance on shadcn/ui usage, component consolidation, and CSS architecture.
 
 ---
 
@@ -362,6 +435,157 @@ The Qwen Proxy frontend is a desktop/web application that provides a user interf
 
 ## Component Architecture
 
+### CRITICAL RULES FOR COMPONENT STRUCTURE
+
+#### Component Consolidation Guidelines
+**IMPORTANT**: Avoid unnecessary component fragmentation. Follow these rules:
+
+1. **Default to Single-File Components**
+   - Keep related UI in one file unless there's a clear reuse case
+   - Target: <100 lines per component file
+   - Only split when a child component is used in 2+ parent components
+
+2. **When to Split Components**
+   - ✅ Component is reused in multiple places
+   - ✅ Component has complex isolated logic that can be extracted
+   - ✅ File exceeds 125 lines and has clear separation of concerns
+   - ❌ Component is only used once in a parent
+   - ❌ Child component is <30 lines of pure presentation
+   - ❌ Business logic that should be a hook instead
+
+3. **Business Logic Belongs in Hooks**
+   - If a "component" is primarily business logic, extract to a custom hook
+   - Example: Authentication handlers → `useAuth()` hook, not `AuthButtons` component
+   - Keep components focused on presentation and composition
+
+4. **Inline Small Presentation Logic**
+   - Footer text (< 5 lines) → inline in parent JSX
+   - Simple formatting helpers → inline or utility function
+   - Status rendering (<10 lines) → inline with ternary/conditional
+
+### shadcn/ui Component Requirements
+
+#### CRITICAL: Always Use shadcn/ui Components
+**The project uses shadcn/ui as the component foundation. NEVER bypass it with custom CSS.**
+
+1. **Required shadcn/ui Components**
+   - ✅ USE: `Button` from `@/components/ui/button`
+   - ✅ USE: `Card`, `CardHeader`, `CardTitle`, `CardContent`, `CardFooter` from `@/components/ui/card`
+   - ✅ USE: `Badge` from `@/components/ui/badge` (install if needed)
+   - ✅ USE: `Alert`, `AlertTitle`, `AlertDescription` from `@/components/ui/alert` (install if needed)
+   - ✅ USE: `Input`, `Label`, `Textarea` for form elements
+   - ❌ NEVER: Create `.btn-primary`, `.btn-danger` CSS classes
+   - ❌ NEVER: Create `.card-base`, `.card-header` div structures
+   - ❌ NEVER: Create custom alert/badge CSS classes
+
+2. **Button Usage**
+   ```typescript
+   // ✅ CORRECT
+   import { Button } from '@/components/ui/button'
+   <Button variant="default">Connect</Button>
+   <Button variant="destructive">Revoke</Button>
+   <Button variant="secondary">Cancel</Button>
+
+   // ❌ WRONG - Do not create custom button CSS
+   <button className="btn-primary">Connect</button>
+   <button className="btn-danger">Revoke</button>
+   ```
+
+3. **Card Usage**
+   ```typescript
+   // ✅ CORRECT
+   import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+
+   <Card>
+     <CardHeader>
+       <div className="flex items-center gap-3">
+         <Icon className="h-5 w-5 text-primary" />
+         <CardTitle>Title</CardTitle>
+       </div>
+     </CardHeader>
+     <CardContent>
+       {/* content */}
+     </CardContent>
+   </Card>
+
+   // ❌ WRONG - Do not create custom card div structures
+   <div className="card-base">
+     <div className="card-header">
+       <h2 className="card-header-title">Title</h2>
+     </div>
+     <div className="card-content">...</div>
+   </div>
+   ```
+
+4. **Badge/Status Indicators**
+   ```typescript
+   // ✅ CORRECT - Create a StatusBadge component using shadcn Badge
+   import { Badge } from '@/components/ui/badge'
+
+   <Badge variant={isActive ? "default" : "secondary"}>
+     {isActive ? "Active" : "Inactive"}
+   </Badge>
+
+   // ❌ WRONG - Do not use span with custom CSS classes
+   <span className="status-badge-active">Active</span>
+   <span className="status-badge-inactive">Inactive</span>
+   ```
+
+5. **Alert Usage**
+   ```typescript
+   // ✅ CORRECT
+   import { Alert, AlertDescription } from '@/components/ui/alert'
+
+   <Alert variant={type === 'error' ? 'destructive' : 'default'}>
+     <AlertDescription>{message}</AlertDescription>
+   </Alert>
+
+   // ❌ WRONG - Do not create custom alert with CSS classes
+   <div className="status-alert status-alert-success">
+     <span className="status-alert-message">{message}</span>
+   </div>
+   ```
+
+### CSS Architecture Rules
+
+#### CRITICAL: Minimize Custom CSS Classes
+
+1. **Use Tailwind Utilities First**
+   - Default to Tailwind utility classes (e.g., `flex items-center gap-2`)
+   - Only create custom CSS classes when:
+     - Pattern repeats 3+ times across different components
+     - Complex animation/transition that's reusable
+     - Component-specific styling that's too complex for inline
+
+2. **What NOT to Create as CSS Classes**
+   - ❌ Layout utilities (use Tailwind: `flex`, `grid`, `space-y-4`)
+   - ❌ Spacing utilities (use Tailwind: `p-4`, `m-2`, `gap-3`)
+   - ❌ Color utilities (use theme variables: `text-primary`, `bg-card`)
+   - ❌ Button styles (use shadcn Button component)
+   - ❌ Card styles (use shadcn Card component)
+   - ❌ Single-use component styles (inline Tailwind classes)
+
+3. **Custom CSS Class Limit**
+   - Target: <20 custom CSS classes in index.css
+   - Categories allowed:
+     - Theme variables and base styles (required)
+     - Animation keyframes (@keyframes)
+     - Complex reusable patterns (used 3+ times)
+   - **Red flag**: If index.css exceeds 200 lines, you're doing it wrong
+
+4. **Component-Scoped Styling Pattern**
+   ```typescript
+   // ✅ CORRECT - Inline Tailwind for unique component styling
+   <div className="flex items-center gap-3 p-4 rounded-lg bg-card border border-border">
+     <Icon className="h-5 w-5 text-primary" />
+     <span className="text-sm font-medium">Content</span>
+   </div>
+
+   // ❌ WRONG - Creating custom CSS class for one-time use
+   // index.css: .proxy-info-item { ... }
+   <div className="proxy-info-item">...</div>
+   ```
+
 ### Page Components
 
 #### HomePage (`/pages/HomePage.tsx`)
@@ -369,6 +593,7 @@ The Qwen Proxy frontend is a desktop/web application that provides a user interf
 - Composes all feature components
 - Manages page-level layout
 - Initiates credential polling hook
+- **RULE**: Keep all pages and components under 125 lines by using component composition
 
 ### Layout Components
 
@@ -376,86 +601,82 @@ The Qwen Proxy frontend is a desktop/web application that provides a user interf
 - Root layout container
 - Full-height flexbox layout
 - Wraps: TitleBar, main content, StatusBar
-- Background gradient
+- Background gradient (use Tailwind gradient utilities)
+- **RULE**: No custom CSS classes for layout, use Tailwind
 
 #### TitleBar (`/components/layout/TitleBar.tsx`)
 - Custom title bar
 - App logo and title
-- Theme toggle button
+- Theme toggle button (use shadcn Button)
 - Window controls (Electron only)
 - Draggable region
+- **RULE**: Use shadcn Button for all buttons
 
 #### StatusBar (`/components/layout/StatusBar.tsx`)
 - Bottom status bar
-- Status indicator dot
+- Status indicator dot (inline Tailwind, animated)
 - Status text message
+- **RULE**: No custom CSS classes, use Tailwind utilities
 
 ### Feature Components
 
-#### Authentication Card (`/components/features/authentication/AuthenticationCard.tsx`)
-- Main authentication UI
-- Status display
-- Action buttons
-- Instructions footer
-
-#### AuthButtons (`/components/features/authentication/AuthButtons.tsx`)
-- Connect/Re-authenticate button
-- Revoke button
-- Loading states
-
-#### AuthCardFooter (`/components/features/authentication/AuthCardFooter.tsx`)
-- Instructions text
-- Info icon
-- Contextual guidance
+#### AuthenticationCard (`/components/features/authentication/AuthenticationCard.tsx`)
+- **CONSOLIDATED COMPONENT** (no separate child files)
+- Uses shadcn Card, CardHeader, CardTitle, CardContent
+- Status display using StatusBadge component
+- Buttons using shadcn Button with variants
+- Instructions footer (inline, not separate component)
+- Authentication logic extracted to `useAuth` hook
+- **TARGET**: ~80-100 lines total (consolidated)
+- **RULE**: Do NOT split into AuthButtons.tsx or AuthCardFooter.tsx
+- **RULE**: Extract business logic to hooks, not components
 
 #### ProxyControlCard (`/components/features/proxy/ProxyControlCard.tsx`)
-- Main proxy control UI
-- Status display
-- Info grid
-- Action buttons
-
-#### ProxyInfoGrid (`/components/features/proxy/ProxyInfoGrid.tsx`)
-- Port number display
-- Uptime display
-- Icon headers
-
-#### ProxyControlButtons (`/components/features/proxy/ProxyControlButtons.tsx`)
-- Start button
-- Stop button
-- Loading states
-
-#### ProxyEndpointInfo (`/components/features/proxy/ProxyEndpointInfo.tsx`)
-- Proxy URL display
-- Configuration instructions
+- **CONSOLIDATED COMPONENT** (no separate child files)
+- Uses shadcn Card components
+- Proxy info grid (inline, not separate component)
+- Control buttons using shadcn Button (inline, not separate component)
+- Endpoint info (inline, not separate component)
+- Uses `useProxyControl` hook for business logic
+- **TARGET**: ~80-100 lines total (consolidated)
+- **RULE**: Do NOT split into ProxyInfoGrid.tsx, ProxyControlButtons.tsx, or ProxyEndpointInfo.tsx
 
 #### SystemStatsCard (`/components/features/stats/SystemStatsCard.tsx`)
-- System status overview
-- Credentials status
-- Proxy status
-- Mode indicator
+- Uses shadcn Card components
+- System status overview grid
+- StatusBadge components for visual indicators
+- **RULE**: Use Tailwind grid utilities, no custom CSS
 
 #### ConnectionGuideCard (`/components/features/stats/ConnectionGuideCard.tsx`)
-- Quick start guide
-- Numbered steps
-- Instructional content
+- Uses shadcn Card components
+- Numbered steps list
+- **RULE**: Inline styling with Tailwind
 
 #### CredentialsDetailCard (`/components/features/credentials/CredentialsDetailCard.tsx`)
-- Detailed credential display
-- Token preview
-- Expiration date
-- Cookie string preview
+- Uses shadcn Card components
+- Token/cookie display with truncation (utility function, not component)
+- **RULE**: Only shown when credentials exist
 
 #### StatusAlert (`/components/features/alerts/StatusAlert.tsx`)
-- Success/error alerts
-- Icon and message
-- Color-coded styling
+- **MUST USE** shadcn Alert, AlertDescription components
+- Success/error variants using Alert variant prop
+- Icon and message composition
+- **RULE**: No custom CSS classes, use shadcn Alert variants
+- **TARGET**: <30 lines
 
 ### UI Components
 
+#### StatusBadge (`/components/ui/status-badge.tsx`)
+- **MUST CREATE**: Wrapper around shadcn Badge component
+- Variants: active, inactive, expired, running, stopped
+- Uses shadcn Badge as foundation with custom variants
+- **RULE**: Compose from shadcn Badge, don't create custom CSS
+
 #### EnvironmentBadge (`/components/ui/EnvironmentBadge.tsx`)
+- **MUST USE** shadcn Badge as foundation
 - Desktop/Browser mode indicator
-- Animated pulse dot
-- Color-coded badge
+- Animated pulse dot (CSS animation)
+- **RULE**: Compose from shadcn Badge component
 
 ---
 
@@ -710,53 +931,184 @@ The Qwen Proxy frontend is a desktop/web application that provides a user interf
 --border: 215 25% 35%;                /* Dark borders */
 ```
 
-### CSS Class Conventions
+### CSS Architecture & Best Practices
 
-**Naming Pattern**: `.[component]-[element]-[modifier]`
+#### 1. Primary Styling Approach
+**Use Tailwind utility classes for all component styling.**
 
-**Examples**:
-- `.card-base` - Base card styling
-- `.card-hover` - Card hover state
-- `.card-header` - Card header area
-- `.btn-primary` - Primary button
-- `.btn-danger` - Danger button
-- `.status-badge-active` - Active status badge
-- `.title-bar-button` - Title bar button
-- `.page-container` - Page container
+```typescript
+// ✅ CORRECT - Inline Tailwind utilities
+<div className="flex items-center justify-between p-4 bg-card rounded-lg border border-border">
+  <span className="text-sm font-medium text-foreground">Status</span>
+  <Badge variant="default">Active</Badge>
+</div>
 
-### Key CSS Classes
+// ❌ WRONG - Custom CSS classes
+<div className="status-container">
+  <span className="status-label">Status</span>
+  <span className="status-badge-active">Active</span>
+</div>
+```
 
-**Layout Classes**:
-- `.app-layout` - Full-height app container
-- `.page-container` - Max-width content container
-- `.page-grid` - Grid layout for dashboard
-- `.flex-layout-center` - Centered flex layout
+#### 2. Custom CSS - Only When Necessary
+Create custom CSS classes ONLY for:
 
-**Card Classes**:
-- `.card-base` - Base card with gradient, shadow, border
-- `.card-hover` - Hover effect on cards
-- `.card-header` - Card header with icon and title
-- `.card-content` - Card content padding
+**A. Reusable Animations**
+```css
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
 
-**Button Classes**:
-- `.btn-primary` - Primary action button (indigo/purple gradient)
-- `.btn-success` - Success action button (emerald gradient)
-- `.btn-danger` - Danger action button (red)
-- `.btn-spinner` - Loading spinner in buttons
+.animate-pulse-dot {
+  animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+```
 
-**Status Classes**:
-- `.status-badge-active` - Active status (green pulse)
-- `.status-badge-inactive` - Inactive status (gray)
-- `.status-badge-expired` - Expired status (red)
-- `.status-badge-running` - Running status (green pulse)
-- `.status-badge-stopped` - Stopped status (gray)
+**B. Complex Patterns Used 3+ Times**
+```css
+/* Only if this exact pattern appears in 3+ components */
+.glass-effect {
+  @apply backdrop-blur-sm bg-white/10 border border-white/20;
+}
+```
 
-**Title Bar Classes**:
-- `.title-bar` - Title bar container
-- `.title-bar-logo` - App logo container
-- `.title-bar-button` - Title bar action button
-- `.title-bar-button-close` - Close button (red hover)
-- `.title-bar-button-icon` - Button icon styling
+**C. Base/Reset Styles**
+```css
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  @apply bg-background text-foreground;
+}
+```
+
+#### 3. What NOT to Create as CSS Classes
+
+**❌ NEVER create custom classes for:**
+- Buttons (use shadcn Button)
+- Cards (use shadcn Card)
+- Badges (use shadcn Badge)
+- Alerts (use shadcn Alert)
+- Form elements (use shadcn Input, Label, Textarea)
+- Layout containers (use Tailwind: `flex`, `grid`, `container`)
+- Spacing utilities (use Tailwind: `p-4`, `m-2`, `gap-3`, `space-y-4`)
+- Color utilities (use Tailwind with theme vars: `bg-primary`, `text-foreground`)
+- Typography (use Tailwind: `text-sm`, `font-medium`, `leading-6`)
+
+#### 4. index.css Structure & Limits
+
+**Target: <200 lines total in index.css**
+
+**Required sections:**
+```css
+/* 1. Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 2. CSS Custom Properties (theme variables) */
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    /* ... other theme variables */
+  }
+
+  .dark {
+    --background: 222 47% 4%;
+    /* ... dark theme variables */
+  }
+}
+
+/* 3. Base/reset styles */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* 4. Reusable animations (if needed) */
+@layer utilities {
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .animate-pulse-dot {
+    animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+/* 5. Complex reusable patterns (MAX 5 classes) */
+@layer components {
+  /* Only add if pattern used 3+ times across different components */
+}
+```
+
+**Red Flags:**
+- ❌ index.css over 200 lines → You're creating too many custom classes
+- ❌ More than 20 custom classes → Use Tailwind utilities instead
+- ❌ Classes like `.btn-*`, `.card-*`, `.alert-*` → Use shadcn components
+- ❌ Single-use component classes → Inline Tailwind instead
+
+#### 5. Component Styling Pattern
+
+**Pattern 1: Simple Components (Most Common)**
+```typescript
+// No custom CSS needed - use Tailwind utilities
+export const SimpleCard = () => (
+  <Card>
+    <CardHeader>
+      <CardTitle className="flex items-center gap-2">
+        <Icon className="h-5 w-5 text-primary" />
+        Title
+      </CardTitle>
+    </CardHeader>
+    <CardContent className="space-y-3">
+      <p className="text-sm text-muted-foreground">Content here</p>
+    </CardContent>
+  </Card>
+)
+```
+
+**Pattern 2: Components with Animation**
+```typescript
+// Custom animation in index.css, applied via Tailwind
+export const StatusIndicator = () => (
+  <div className="flex items-center gap-2">
+    <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse-dot" />
+    <span className="text-sm">Active</span>
+  </div>
+)
+```
+
+**Pattern 3: Complex Reusable Pattern (Rare)**
+```typescript
+// Only if this exact pattern used 3+ times
+// Add to index.css: .glass-card { @apply backdrop-blur-sm bg-white/10 ... }
+export const GlassCard = () => (
+  <div className="glass-card p-4 rounded-lg">
+    {/* content */}
+  </div>
+)
+```
+
+### Styling Checklist for Implementation
+
+Before writing any CSS class, ask:
+1. ☑️ Can I use a shadcn component? (Button, Card, Badge, Alert, etc.)
+2. ☑️ Can I use Tailwind utilities? (`flex`, `bg-card`, `p-4`, etc.)
+3. ☑️ Is this pattern used 3+ times across different components?
+4. ☑️ Is this a complex animation that can't be done inline?
+
+If all answers are NO, use inline Tailwind utilities. Do NOT create a custom CSS class.
 
 ---
 
@@ -804,6 +1156,10 @@ The Qwen Proxy frontend is a desktop/web application that provides a user interf
 
 ## File Structure
 
+### CRITICAL: Consolidated Component Structure
+
+**Follow this structure exactly. Do NOT create additional child component files.**
+
 ```
 frontend/
 ├── public/
@@ -813,60 +1169,66 @@ frontend/
 │   ├── components/
 │   │   ├── features/
 │   │   │   ├── alerts/
-│   │   │   │   └── StatusAlert.tsx
+│   │   │   │   └── StatusAlert.tsx                    # Uses shadcn Alert (<30 lines)
 │   │   │   ├── authentication/
-│   │   │   │   ├── AuthenticationCard.tsx
-│   │   │   │   ├── AuthButtons.tsx
-│   │   │   │   └── AuthCardFooter.tsx
+│   │   │   │   └── AuthenticationCard.tsx             # CONSOLIDATED (~80-100 lines)
+│   │   │   │                                          # ⚠️ NO AuthButtons.tsx or AuthCardFooter.tsx
 │   │   │   ├── credentials/
-│   │   │   │   └── CredentialsDetailCard.tsx
+│   │   │   │   └── CredentialsDetailCard.tsx          # Uses shadcn Card
 │   │   │   ├── proxy/
-│   │   │   │   ├── ProxyControlCard.tsx
-│   │   │   │   ├── ProxyControlButtons.tsx
-│   │   │   │   ├── ProxyInfoGrid.tsx
-│   │   │   │   └── ProxyEndpointInfo.tsx
+│   │   │   │   └── ProxyControlCard.tsx               # CONSOLIDATED (~80-100 lines)
+│   │   │   │                                          # ⚠️ NO ProxyInfoGrid, ProxyControlButtons, or ProxyEndpointInfo
 │   │   │   └── stats/
-│   │   │       ├── ConnectionGuideCard.tsx
-│   │   │       └── SystemStatsCard.tsx
+│   │   │       ├── ConnectionGuideCard.tsx            # Uses shadcn Card
+│   │   │       └── SystemStatsCard.tsx                # Uses shadcn Card
 │   │   ├── layout/
-│   │   │   ├── AppLayout.tsx
-│   │   │   ├── StatusBar.tsx
-│   │   │   └── TitleBar.tsx
+│   │   │   ├── AppLayout.tsx                          # Tailwind layout, no custom CSS
+│   │   │   ├── StatusBar.tsx                          # Tailwind utilities
+│   │   │   └── TitleBar.tsx                           # Uses shadcn Button
 │   │   └── ui/
-│   │       └── EnvironmentBadge.tsx
+│   │       ├── badge.tsx                              # shadcn Badge (install via CLI)
+│   │       ├── button.tsx                             # shadcn Button (existing)
+│   │       ├── card.tsx                               # shadcn Card (existing)
+│   │       ├── alert.tsx                              # shadcn Alert (install via CLI)
+│   │       ├── status-badge.tsx                       # MUST CREATE: wraps shadcn Badge
+│   │       └── environment-badge.tsx                  # Uses shadcn Badge as foundation
 │   │
 │   ├── contexts/
-│   │   └── ThemeContext.tsx
+│   │   └── ThemeContext.tsx                           # Theme state management
 │   │
 │   ├── hooks/
-│   │   ├── useCredentialPolling.ts
-│   │   ├── useProxyControl.ts
-│   │   └── useProxyStatus.ts
+│   │   ├── useAuth.ts                                 # ⚠️ MUST CREATE: auth logic from AuthButtons
+│   │   ├── useCredentialPolling.ts                    # Credential polling logic
+│   │   ├── useProxyControl.ts                         # Proxy control logic
+│   │   └── useProxyStatus.ts                          # Proxy status polling
 │   │
 │   ├── pages/
-│   │   └── HomePage.tsx
+│   │   └── HomePage.tsx                               # Composes all feature components
 │   │
 │   ├── services/
-│   │   ├── authService.ts
-│   │   ├── browser-extension.service.ts
-│   │   ├── credentials.service.ts
-│   │   └── proxy.service.ts
+│   │   ├── authService.ts                             # Electron/browser auth handling
+│   │   ├── browser-extension.service.ts               # Extension integration
+│   │   ├── credentials.service.ts                     # Credentials API
+│   │   └── proxy.service.ts                           # Proxy API
 │   │
 │   ├── stores/
-│   │   ├── useAlertStore.ts
-│   │   ├── useCredentialsStore.ts
-│   │   └── useProxyStore.ts
+│   │   ├── useAlertStore.ts                           # Alert state (Zustand)
+│   │   ├── useCredentialsStore.ts                     # Credentials state (Zustand)
+│   │   └── useProxyStore.ts                           # Proxy state (Zustand)
 │   │
 │   ├── types/
-│   │   ├── alert.types.ts
-│   │   ├── credentials.types.ts
-│   │   ├── electron-api.types.ts
-│   │   └── proxy.types.ts
+│   │   ├── alert.types.ts                             # Alert type definitions
+│   │   ├── credentials.types.ts                       # Credentials type definitions
+│   │   ├── electron-api.types.ts                      # Electron API types
+│   │   └── proxy.types.ts                             # Proxy type definitions
 │   │
-│   ├── App.tsx                        # Root component
-│   ├── main.tsx                       # Entry point
-│   ├── index.css                      # Global styles and CSS classes
-│   └── vite-env.d.ts
+│   ├── utils/
+│   │   └── string.utils.ts                            # String helpers (truncation, etc.)
+│   │
+│   ├── App.tsx                                        # Root component with providers
+│   ├── main.tsx                                       # Entry point
+│   ├── index.css                                      # <200 lines: theme vars + minimal custom CSS
+│   └── vite-env.d.ts                                  # Vite type definitions
 │
 ├── index.html
 ├── package.json
@@ -877,6 +1239,33 @@ frontend/
 ├── tailwind.config.js
 └── postcss.config.js
 ```
+
+### File Structure Rules
+
+1. **Component Files**
+   - Each feature component is a SINGLE file (no child components unless reused elsewhere)
+   - Target: <100 lines per component
+   - Maximum: 125 lines per file
+
+2. **UI Components (`/components/ui/`)**
+   - Only shadcn/ui components belong here
+   - Install via shadcn CLI: `npx shadcn@latest add [component]`
+   - Custom wrappers (like `status-badge.tsx`) must compose from shadcn components
+
+3. **Hooks (`/hooks/`)**
+   - Business logic extracted from components
+   - Reusable state management and effects
+   - Example: `useAuth` contains authentication handlers, NOT `AuthButtons` component
+
+4. **Utils (`/utils/`)**
+   - Pure utility functions (no React hooks)
+   - String manipulation, formatting, validation
+   - Example: `truncate(str, length)` instead of `TruncateText` component
+
+5. **index.css**
+   - Target: <200 lines
+   - Theme variables + base styles + minimal animations
+   - No component-specific CSS classes (use Tailwind)
 
 ---
 
@@ -1064,6 +1453,7 @@ frontend/
 
 A successful frontend implementation should:
 
+### Functional Requirements
 1. ✅ Extract credentials in both Electron and Browser modes
 2. ✅ Store credentials to backend API
 3. ✅ Poll and display credential status
@@ -1074,10 +1464,63 @@ A successful frontend implementation should:
 8. ✅ Support light and dark themes with toggle
 9. ✅ Work seamlessly in both Electron and browser environments
 10. ✅ Have professional, polished UI with smooth interactions
-11. ✅ Follow architecture guide rules (no hardcoded colors, theme variables only)
-12. ✅ Have all files under 125 lines
-13. ✅ Use semantic CSS class names (no inline Tailwind)
-14. ✅ Provide clear user guidance and instructions
+11. ✅ Provide clear user guidance and instructions
+
+### Architecture Requirements (CRITICAL)
+12. ✅ **Use shadcn/ui components exclusively** - NO custom button/card/alert CSS classes
+13. ✅ **All buttons use shadcn Button** with proper variants (default, destructive, secondary)
+14. ✅ **All cards use shadcn Card** components (Card, CardHeader, CardTitle, CardContent)
+15. ✅ **All badges use shadcn Badge** or custom wrappers that compose from Badge
+16. ✅ **All alerts use shadcn Alert** components
+17. ✅ **index.css under 200 lines** - theme variables, base styles, minimal animations only
+18. ✅ **Maximum 20 custom CSS classes** - use Tailwind utilities for everything else
+19. ✅ **No component fragmentation** - consolidated single files for AuthenticationCard and ProxyControlCard
+20. ✅ **Business logic in hooks** - useAuth for auth logic, NOT AuthButtons component
+21. ✅ **All files under 125 lines** - if exceeding, split logically or extract to hooks
+22. ✅ **Inline Tailwind utilities** for component-specific styling (flex, gap, p-4, etc.)
+
+### Architecture Anti-Patterns (Must Avoid)
+❌ Creating `.btn-primary`, `.btn-danger` CSS classes
+❌ Creating `.card-base`, `.card-header` div structures
+❌ Creating `.status-badge-*` CSS classes (use StatusBadge component)
+❌ Creating single-use child components (AuthButtons.tsx, ProxyInfoGrid.tsx, etc.)
+❌ Putting business logic in components instead of hooks
+❌ Creating custom CSS for layout/spacing (use Tailwind)
+❌ index.css over 200 lines or 20+ custom classes
+❌ Component files over 125 lines
+
+### Validation Checklist
+Before considering implementation complete, verify:
+
+**Component Structure:**
+- [ ] AuthenticationCard is a single file (~80-100 lines)
+- [ ] ProxyControlCard is a single file (~80-100 lines)
+- [ ] No AuthButtons.tsx, AuthCardFooter.tsx, ProxyInfoGrid.tsx, ProxyControlButtons.tsx, or ProxyEndpointInfo.tsx files exist
+- [ ] All feature components use shadcn Card components
+- [ ] All buttons use shadcn Button component with variants
+
+**CSS Architecture:**
+- [ ] index.css is under 200 lines total
+- [ ] Fewer than 20 custom CSS classes defined
+- [ ] No `.btn-*`, `.card-*`, `.alert-*`, or `.status-badge-*` classes in CSS
+- [ ] All component styling uses Tailwind utilities or shadcn components
+
+**Business Logic:**
+- [ ] Authentication logic extracted to `useAuth` hook
+- [ ] Proxy control logic in `useProxyControl` hook
+- [ ] Components focused on presentation and composition
+
+**shadcn/ui Usage:**
+- [ ] Button component from `@/components/ui/button` used for all buttons
+- [ ] Card, CardHeader, CardTitle, CardContent from `@/components/ui/card` used for all cards
+- [ ] Badge from `@/components/ui/badge` used for status indicators
+- [ ] Alert from `@/components/ui/alert` used for notifications
+
+**File Organization:**
+- [ ] No unnecessary child component files
+- [ ] Utils directory exists for pure utility functions
+- [ ] Hooks directory contains extracted business logic
+- [ ] All files under 125 lines
 
 ---
 

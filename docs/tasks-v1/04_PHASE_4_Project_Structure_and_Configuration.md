@@ -26,18 +26,13 @@ All complete file contents are in `docs/v1/03_CODE_EXAMPLES.md`. Update these fi
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
-    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-popover": "^1.1.15",
-    "@radix-ui/react-slot": "^1.2.3",
-    "axios": "^1.13.0",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
+    "@radix-ui/react-slot": "^1.2.4",
     "cmdk": "^1.1.1",
-    "lucide-react": "^0.548.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-icons": "^5.5.0",
-    "tailwind-merge": "^2.6.0"
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
@@ -46,11 +41,16 @@ All complete file contents are in `docs/v1/03_CODE_EXAMPLES.md`. Update these fi
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^5.0.4",
     "autoprefixer": "^10.4.21",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "eslint": "^9.36.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.22",
     "globals": "^16.4.0",
+    "lucide-react": "^0.552.0",
     "postcss": "^8.5.6",
+    "react-icons": "^5.5.0",
+    "tailwind-merge": "^2.6.0",
     "tailwindcss": "^3.4.18",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "~5.9.3",
@@ -58,6 +58,7 @@ All complete file contents are in `docs/v1/03_CODE_EXAMPLES.md`. Update these fi
     "vite": "^7.1.7"
   }
 }
+
 
 ```
 

@@ -306,7 +306,7 @@ router.get('/status', (req, res) => {
   // Query database directly for dashboard data
   let providers = []
   let models = []
-  let credentials = { valid: false }
+  let credentials = { valid: false, expiresAt: null }
 
   try {
     providers = ProviderService.getAll()
@@ -318,7 +318,10 @@ router.get('/status', (req, res) => {
       const now = Math.floor(Date.now() / 1000)
       const isExpired = credData.expires_at && credData.expires_at <= now
       const hasRequiredFields = !!(credData.token && credData.cookies)
-      credentials = { valid: hasRequiredFields && !isExpired }
+      credentials = {
+        valid: hasRequiredFields && !isExpired,
+        expiresAt: credData.expires_at || null
+      }
     }
   } catch (error) {
     console.error('[Status] Error fetching dashboard data from database:', error)

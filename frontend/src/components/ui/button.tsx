@@ -47,12 +47,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
-        {...props}
+        {...props as any}
       />
     )
   }
 )
 Button.displayName = "Button"
 
-// eslint-disable-next-line react-refresh/only-export-components
 export { Button, buttonVariants }

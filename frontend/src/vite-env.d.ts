@@ -1,8 +1,17 @@
 /// <reference types="vite/client" />
 
-import type { QwenCredentials } from './types/credentials.types';
-
 interface ElectronAPI {
+  qwen: {
+    openLogin: () => Promise<void>;
+    extractCredentials: () => Promise<{ token: string; cookies: string; expiresAt: number }>;
+  };
+  clipboard: {
+    readText: () => Promise<string>;
+    writeText: (text: string) => Promise<void>;
+  };
+  app: {
+    quit: () => void;
+  };
   window: {
     minimize: () => void;
     maximize: () => void;
@@ -11,16 +20,13 @@ interface ElectronAPI {
     onMaximize: (callback: () => void) => void;
     onUnmaximize: (callback: () => void) => void;
   };
-  qwen: {
-    openLogin: () => Promise<void>;
-    extractCredentials: () => Promise<QwenCredentials>;
+  history: {
+    read: () => Promise<any>;
+    add: (entry: any) => Promise<any>;
+    clear: () => Promise<any>;
   };
 }
 
-declare global {
-  interface Window {
-    electronAPI?: ElectronAPI;
-  }
+interface Window {
+  electronAPI?: ElectronAPI;
 }
-
-export {};

@@ -1,24 +1,16 @@
 import { create } from 'zustand';
-import type { ProxyStatus } from '@/types/proxy.types';
+import type { ProxyStatusResponse } from '@/types';
 
-interface ProxyState {
-  status: ProxyStatus;
+interface ProxyStore {
+  status: ProxyStatusResponse | null;
   loading: boolean;
-  error: string | null;
-  setStatus: (status: ProxyStatus) => void;
+  setStatus: (status: ProxyStatusResponse | null) => void;
   setLoading: (loading: boolean) => void;
-  setError: (error: string | null) => void;
 }
 
-export const useProxyStore = create<ProxyState>()((set) => ({
-  status: {
-    isRunning: false,
-    port: undefined,
-    startedAt: undefined,
-  },
+export const useProxyStore = create<ProxyStore>((set) => ({
+  status: null,
   loading: false,
-  error: null,
   setStatus: (status) => set({ status }),
   setLoading: (loading) => set({ loading }),
-  setError: (error) => set({ error }),
 }));

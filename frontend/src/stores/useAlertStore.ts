@@ -1,14 +1,16 @@
 import { create } from 'zustand';
-import type { Alert, AlertType } from '@/types/alert.types';
 
-interface AlertState {
-  alert: Alert | null;
-  showAlert: (type: AlertType, message: string) => void;
+interface AlertStore {
+  alert: {
+    message: string;
+    type: 'success' | 'error';
+  } | null;
+  showAlert: (message: string, type: 'success' | 'error') => void;
   hideAlert: () => void;
 }
 
-export const useAlertStore = create<AlertState>()((set) => ({
+export const useAlertStore = create<AlertStore>((set) => ({
   alert: null,
-  showAlert: (type, message) => set({ alert: { type, message } }),
+  showAlert: (message, type) => set({ alert: { message, type } }),
   hideAlert: () => set({ alert: null }),
 }));

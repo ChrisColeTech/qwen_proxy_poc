@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chrome Extension Installation - Qwen Proxy</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      padding: 3rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: #667eea;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 2rem;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    li {
+      margin-bottom: 0.75rem;
+    }
+
+    code {
+      background: #f5f5f5;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+    }
+
+    .note {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 1rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+    }
+
+    .success {
+      background: #d4edda;
+      border-left: 4px solid #28a745;
+      padding: 1rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+    }
+
+    a {
+      color: #667eea;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Chrome Extension Installation</h1>
+    <p class="subtitle">Set up the Qwen Proxy credential extractor extension</p>
+
+    <h2>Prerequisites</h2>
+    <ul>
+      <li>Google Chrome browser</li>
+      <li>Qwen Proxy application running</li>
+      <li>Extension files downloaded</li>
+    </ul>
+
+    <h2>Installation Steps</h2>
+    <ol>
+      <li>Open Chrome and navigate to <code>chrome://extensions/</code></li>
+      <li>Enable <strong>Developer mode</strong> using the toggle in the top right corner</li>
+      <li>Click <strong>Load unpacked</strong> button</li>
+      <li>Navigate to the extension directory and select it</li>
+      <li>Grant the required permissions when prompted</li>
+    </ol>
+
+    <div class="note">
+      <strong>Note:</strong> The extension needs access to cookies on chat.qwen.ai to extract authentication tokens.
+    </div>
+
+    <h2>Verification</h2>
+    <ol>
+      <li>Look for the Qwen Proxy extension icon in your Chrome toolbar</li>
+      <li>Navigate to <code>https://chat.qwen.ai</code></li>
+      <li>Log in with your Qwen credentials</li>
+      <li>The extension will automatically extract and send credentials to the proxy</li>
+      <li>Return to the Qwen Proxy dashboard to verify connection</li>
+    </ol>
+
+    <div class="success">
+      <strong>Success!</strong> Once installed, the extension will automatically detect when you log in to chat.qwen.ai and extract your credentials.
+    </div>
+
+    <h2>Troubleshooting</h2>
+    <ul>
+      <li>If the extension doesn't appear, try reloading it from the extensions page</li>
+      <li>Make sure the Qwen Proxy API server is running on port 3002</li>
+      <li>Check the browser console for any error messages</li>
+      <li>Verify that Developer mode is enabled</li>
+    </ul>
+
+    <p style="margin-top: 2rem; text-align: center;">
+      <a href="/">← Back to Dashboard</a>
+    </p>
+  </div>
+</body>
+</html>

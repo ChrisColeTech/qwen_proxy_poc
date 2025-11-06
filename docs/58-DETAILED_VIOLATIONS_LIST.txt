@@ -1,0 +1,205 @@
+================================================================================
+DETAILED VIOLATIONS - LINE BY LINE BREAKDOWN
+================================================================================
+
+================================================================================
+SECTION 1: BUTTON COMPONENT VIOLATIONS (4 total)
+================================================================================
+
+VIOLATION 1.1
+File: /src/components/features/authentication/AuthButtons.tsx
+Line 48: <button onClick={handleConnect} disabled={loading} className="btn-primary">
+Issue: Using HTML button with .btn-primary instead of shadcn Button
+Fix: Import Button from '@/components/ui/button'; use Button variant="default"
+
+VIOLATION 1.2
+File: /src/components/features/authentication/AuthButtons.tsx
+Line 53: <button onClick={handleRevoke} disabled={loading} className="btn-danger">
+Issue: Using HTML button with .btn-danger instead of shadcn Button
+Fix: Use Button variant="destructive"
+
+VIOLATION 1.3
+File: /src/components/features/proxy/ProxyControlButtons.tsx
+Line 13: className="btn-primary"
+Issue: Using HTML button with .btn-primary
+Fix: Use Button variant="default"
+
+VIOLATION 1.4
+File: /src/components/features/proxy/ProxyControlButtons.tsx
+Line 21: className="btn-danger"
+Issue: Using HTML button with .btn-danger
+Fix: Use Button variant="destructive"
+
+CSS Definition (to remove):
+File: /src/index.css
+Lines 279-289:
+  .btn-primary { ... }
+  .btn-danger { ... }
+  .auth-buttons { ... }
+
+================================================================================
+SECTION 2: CARD STRUCTURE VIOLATIONS (29+ total instances)
+================================================================================
+
+VIOLATION 2.1
+File: /src/components/features/authentication/AuthenticationCard.tsx
+Lines 25-42: Entire card structure
+  Uses div with .card-base, .card-header, .card-header-icon, .card-header-title, .card-content
+
+Issue: Using div structure with custom card classes instead of shadcn Card
+Fix: Replace with Card, CardHeader, CardTitle, CardContent components
+
+VIOLATION 2.2
+File: /src/components/features/proxy/ProxyControlCard.tsx
+Lines 18-31: Card structure
+  Uses same pattern with card-base, card-header, etc.
+
+VIOLATION 2.3
+File: /src/components/features/stats/SystemStatsCard.tsx
+Lines 11-35: Card structure
+
+VIOLATION 2.4
+File: /src/components/features/stats/ConnectionGuideCard.tsx
+Lines 5-28: Card structure
+
+VIOLATION 2.5
+File: /src/components/features/credentials/CredentialsDetailCard.tsx
+Lines 20-43: Card structure
+
+CSS Definitions (to remove):
+File: /src/index.css
+Lines 229-263:
+  .card-base, .card-header, .card-header-icon, .card-header-title
+  .card-content, .card-footer, .card-footer-icon, .card-footer-text
+  .card-info-text
+
+================================================================================
+SECTION 3: STATUS BADGE VIOLATIONS (5 total instances)
+================================================================================
+
+VIOLATION 3.1
+File: /src/components/features/authentication/AuthenticationCard.tsx
+Line 11: span with class status-badge-inactive
+Line 14: span with class status-badge-expired
+Line 16: span with class status-badge-active
+
+VIOLATION 3.2
+File: /src/components/features/proxy/ProxyControlCard.tsx
+Line 12: span with class status-badge-active
+Line 14: span with class status-badge-inactive
+
+Issue: Using span with CSS class instead of StatusBadge component
+Solution: Create /src/components/ui/status-badge.tsx with variant support
+
+CSS Definitions (to convert to component):
+File: /src/index.css
+Lines 266-276:
+  .status-badge-active, .status-badge-inactive, .status-badge-expired
+
+================================================================================
+SECTION 4: ALERT/NOTIFICATION VIOLATIONS
+================================================================================
+
+VIOLATION 4.1
+File: /src/components/features/alerts/StatusAlert.tsx
+Lines 12-22: Alert structure using 7 custom CSS classes
+
+  CSS classes: status-alert, status-alert-success, status-alert-error
+              status-alert-content, status-alert-icon, status-alert-message
+              status-alert-close
+
+Issue: 7 custom CSS classes for alert styling
+Fix: Create AlertBox component or refactor with proper structure
+
+CSS Definitions to refactor:
+File: /src/index.css
+Lines 196-223
+
+================================================================================
+SECTION 5: ENVIRONMENT BADGE VIOLATIONS
+================================================================================
+
+VIOLATION 5.1
+File: /src/components/ui/EnvironmentBadge.tsx
+Lines 7-12: Badge structure
+
+CSS classes: environment-badge, environment-badge-desktop/browser
+            environment-badge-dot, environment-badge-text
+
+Issue: Using CSS classes instead of composed shadcn components
+Fix: Compose from smaller shadcn components
+
+CSS Definitions to refactor:
+File: /src/index.css
+Lines 168-194
+
+================================================================================
+SECTION 6: COMPONENT FRAGMENTATION VIOLATIONS
+================================================================================
+
+VIOLATION 6.1 - ProxyControlCard Fragmentation
+Location: /src/components/features/proxy/
+
+Current: 4 files, 125 lines total
+  ProxyControlCard.tsx (32 lines)
+  ProxyInfoGrid.tsx (38 lines) - only used in ProxyControlCard
+  ProxyControlButtons.tsx (27 lines) - only used in ProxyControlCard
+  ProxyEndpointInfo.tsx (28 lines) - only used in ProxyControlCard
+
+Recommendation: Consolidate into 1 file, 100 lines
+Time to fix: 2 hours
+
+VIOLATION 6.2 - AuthenticationCard Fragmentation
+Location: /src/components/features/authentication/
+
+Current: 3 files, 120 lines total
+  AuthenticationCard.tsx (44 lines)
+  AuthButtons.tsx (59 lines) - only used in AuthenticationCard
+  AuthCardFooter.tsx (17 lines) - only used in AuthenticationCard
+
+Issue: AuthButtons contains business logic - should be a hook!
+Recommendation: Extract logic to hook, consolidate to 1-2 files
+Time to fix: 2 hours
+
+================================================================================
+SECTION 7: CUSTOM CSS CLASS BLOAT
+================================================================================
+
+File: /src/index.css
+Total Lines: 389
+Custom Classes: 62+
+
+Categories:
+  Layout classes: 9 (lines 77-162)
+  Card classes: 9 (lines 229-263)
+  Button classes: 3 (lines 279-289)
+  Alert classes: 7 (lines 196-223)
+  Badge classes: 10 (lines 168-194, 266-276)
+  Domain classes: 24 (lines 292-390)
+
+Total reduction possible: 150+ lines (389 to ~200)
+
+Key issue: 62 custom classes duplicate shadcn/ui and Tailwind functionality
+
+================================================================================
+VIOLATION SUMMARY
+================================================================================
+
+CRITICAL: 51 violations
+  - 4 button violations
+  - 29 card violations
+  - 5 badge violations
+  - 7 alert violations
+  - 6 environment badge CSS classes
+
+HIGH: 11+ components to consolidate
+  - ProxyControlCard: 3 children
+  - AuthenticationCard: 2 children
+  - 62+ custom CSS classes
+
+MEDIUM: 10 unused components
+  - 6 installed but unused
+  - 4 single-use feature cards
+
+Total Effort: 15-20 hours
+Total Impact: 250+ lines to refactor
