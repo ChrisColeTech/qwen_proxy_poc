@@ -97,13 +97,19 @@ async function postCredentials(credentials) {
 
   console.log('[Background] POSTing credentials to:', apiUrl);
 
+  // Backend expects expiresAt in seconds (Unix timestamp), but we use milliseconds internally
+  const backendCredentials = {
+    ...credentials,
+    expiresAt: Math.floor(credentials.expiresAt / 1000),
+  };
+
   try {
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(credentials),
+      body: JSON.stringify(backendCredentials),
     });
 
     if (!response.ok) {

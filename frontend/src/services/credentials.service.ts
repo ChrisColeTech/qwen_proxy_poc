@@ -20,7 +20,12 @@ class CredentialsService {
   }
 
   async saveCredentials(credentials: QwenCredentials): Promise<{ success: boolean }> {
-    return apiService.post<{ success: boolean }>('/api/qwen/credentials', credentials);
+    // Backend expects expiresAt in seconds (Unix timestamp), but frontend uses milliseconds
+    const backendCredentials = {
+      ...credentials,
+      expiresAt: Math.floor(credentials.expiresAt / 1000),
+    };
+    return apiService.post<{ success: boolean }>('/api/qwen/credentials', backendCredentials);
   }
 
   async deleteCredentials(): Promise<{ success: boolean }> {
