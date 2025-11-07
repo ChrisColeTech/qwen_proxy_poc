@@ -17,7 +17,7 @@ const isElectron = () => {
 
 const mainNavItems: NavItem[] = [
   { id: 'home', icon: Home, label: 'Home', route: '/' },
-  { id: 'guide-api', icon: Code, label: 'API Guide', route: '/guide/api' },
+  { id: 'guide-api', icon: Code, label: 'API Guide', route: '/guide/api', requiresServer: true },
   { id: 'providers', icon: Network, label: 'Providers', route: '/providers', requiresServer: true },
   { id: 'models', icon: Database, label: 'Models', route: '/models', requiresServer: true },
   { id: 'chat', icon: MessageSquare, label: 'Chat', route: '/chat', requiresServer: true },
