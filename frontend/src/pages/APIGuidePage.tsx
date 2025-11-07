@@ -78,9 +78,6 @@ export function APIGuidePage({}: GuidePageProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Quick Start Examples</CardTitle>
-          <CardDescription>
-            Choose your programming language and copy the example code
-          </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="python" className="w-full">
