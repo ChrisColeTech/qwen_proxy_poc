@@ -10,10 +10,11 @@ export function ModelsListCard() {
 
   // Group models by provider
   const modelsByProvider = models.reduce((acc, model) => {
-    if (!acc[model.providerId]) {
-      acc[model.providerId] = [];
+    const providerId = model.providerId || 'unknown';
+    if (!acc[providerId]) {
+      acc[providerId] = [];
     }
-    acc[model.providerId].push(model);
+    acc[providerId].push(model);
     return acc;
   }, {} as Record<string, typeof models>);
 

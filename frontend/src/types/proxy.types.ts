@@ -1,16 +1,21 @@
-// Types for proxy management matching /api/proxy/* endpoints
+// Types for proxy management matching /api/proxy/* and /api/providers/* endpoints
 
 export interface Provider {
   id: string;
   name: string;
-  baseUrl: string;
+  type: 'lm-studio' | 'qwen-proxy' | 'qwen-direct' | string;
   enabled: boolean;
+  priority?: number;
+  description?: string;
+  baseUrl?: string;
+  created_at?: number;
+  updated_at?: number;
 }
 
 export interface Model {
   id: string;
-  name: string;
-  providerId: string;
+  name?: string;
+  providerId?: string;
 }
 
 export interface ProxyServerInfo {

@@ -1,14 +1,6 @@
-export interface Provider {
-  id: string;
-  name: string;
-  type: string;
-  enabled: boolean;
-}
-
-export interface Model {
-  id: string;
-  name?: string;
-}
+// Re-export shared types from proxy.types
+export type { Provider, Model } from './proxy.types';
+import type { Provider, Model } from './proxy.types';
 
 export interface ModelsStepProps {
   models: Model[];

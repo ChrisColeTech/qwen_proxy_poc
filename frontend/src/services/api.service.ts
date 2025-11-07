@@ -1,16 +1,6 @@
-const API_BASE = 'http://localhost:3002';
+export type { Provider } from '@/types/proxy.types';
 
-// Types
-export interface Provider {
-  id: string;
-  name: string;
-  type: 'lm-studio' | 'qwen-proxy' | 'qwen-direct';
-  enabled: boolean;
-  priority: number;
-  description?: string;
-  created_at: number;
-  updated_at: number;
-}
+const API_BASE = 'http://localhost:3002';
 
 export interface ProviderConfig {
   [key: string]: string | number | boolean;
