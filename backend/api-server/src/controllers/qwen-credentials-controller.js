@@ -59,9 +59,13 @@ export async function setCredentials(req, res, next) {
   // If response was successful, emit event
   if (res.statusCode >= 200 && res.statusCode < 300) {
     const credentialsStatus = getCredentialsStatus()
+    // Emit with nested structure to match frontend TypeScript interface
     eventEmitter.emitCredentialsUpdated({
       action: 'updated',
-      ...credentialsStatus
+      credentials: {
+        valid: credentialsStatus.isValid,
+        expiresAt: credentialsStatus.expiresAt
+      }
     })
   }
 }
@@ -86,11 +90,13 @@ export async function deleteCredentials(req, res, next) {
 
   // If response was successful, emit event
   if (res.statusCode >= 200 && res.statusCode < 300) {
+    // Emit with nested structure to match frontend TypeScript interface
     eventEmitter.emitCredentialsUpdated({
       action: 'deleted',
-      hasCredentials: false,
-      isValid: false,
-      expiresAt: null
+      credentials: {
+        valid: false,
+        expiresAt: null
+      }
     })
   }
 }

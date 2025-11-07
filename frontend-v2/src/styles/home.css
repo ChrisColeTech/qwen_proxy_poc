@@ -1,0 +1,120 @@
+/* HomePage styles */
+
+.home-container {
+  @apply container max-w-6xl py-8 space-y-6;
+}
+
+/* Unified Control Card */
+.home-unified-content {
+  @apply space-y-6;
+}
+
+.home-section {
+  @apply space-y-4;
+}
+
+.home-section-header {
+  @apply flex items-center justify-between;
+}
+
+.home-section-title {
+  @apply flex items-center gap-2 text-sm font-semibold text-muted-foreground uppercase tracking-wide;
+}
+
+.home-section-divider {
+  @apply border-t border-border;
+}
+
+.credentials-info-section-compact {
+  @apply space-y-3 text-sm;
+}
+
+.credentials-logged-out-section-compact {
+  @apply space-y-3;
+}
+
+/* Status Card */
+.home-status-header {
+  @apply flex items-center justify-between;
+}
+
+.home-status-title {
+  @apply flex items-center gap-2;
+}
+
+.home-status-content {
+  @apply space-y-6;
+}
+
+.home-status-indicator {
+  @apply flex items-center gap-3;
+}
+
+.home-status-badge {
+  @apply flex items-center gap-2;
+}
+
+.home-status-label {
+  @apply text-2xl font-bold;
+}
+
+.home-status-label-inactive {
+  @apply text-2xl font-bold text-muted-foreground;
+}
+
+.home-uptime-section {
+  @apply space-y-2 text-sm;
+}
+
+.home-uptime-row {
+  @apply flex items-center gap-2;
+}
+
+.home-uptime-label {
+  @apply text-muted-foreground;
+}
+
+.home-uptime-value {
+  @apply font-medium;
+}
+
+.home-control-buttons {
+  @apply flex gap-2;
+}
+
+.home-start-button {
+  @apply flex items-center gap-2;
+}
+
+.home-stop-button {
+  @apply flex items-center gap-2;
+}
+
+.home-button-icon-spin {
+  @apply animate-spin;
+}
+
+/* Stats Cards */
+.home-stats-grid {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-4;
+}
+
+.home-stats-card-content {
+  @apply pt-6;
+}
+
+.home-stats-card-inner {
+  @apply flex flex-col items-center text-center space-y-2;
+}
+
+.home-stats-icon {
+  @apply h-8 w-8 text-primary;
+}
+
+.home-stats-value {
+  @apply text-3xl font-bold;
+}
+
+.home-stats-label {
+  @apply text-sm text-muted-foreground;
+}

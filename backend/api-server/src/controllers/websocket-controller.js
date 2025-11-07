@@ -109,7 +109,11 @@ export function initializeWebSocket(io) {
     // Emit full status on initial connection
     try {
       const fullStatus = getFullStatus()
-      socket.emit('proxy:status', fullStatus)
+      // Wrap in 'status' key to match event-emitter format and frontend TypeScript interface
+      socket.emit('proxy:status', {
+        status: fullStatus,
+        timestamp: new Date().toISOString()
+      })
       logger.info(`[WebSocket] Sent initial status to client: ${socket.id}`)
     } catch (error) {
       logger.error('[WebSocket] Error sending initial status:', error)

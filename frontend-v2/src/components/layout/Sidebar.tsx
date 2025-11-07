@@ -1,4 +1,4 @@
-import { Home, BookOpen, Blocks, Cpu, Activity } from 'lucide-react';
+import { Home, BookOpen, Blocks, Cpu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useUIStore } from '@/stores/useUIStore';
 import { cn } from '@/lib/utils';
@@ -13,7 +13,6 @@ const navItems = [
   { route: '/guide', icon: BookOpen, label: 'Quick Guide' },
   { route: '/providers', icon: Blocks, label: 'Providers' },
   { route: '/models', icon: Cpu, label: 'Models' },
-  { route: '/websocket', icon: Activity, label: 'WebSocket Demo' },
 ];
 
 export function Sidebar({ activeRoute, onNavigate }: SidebarProps) {

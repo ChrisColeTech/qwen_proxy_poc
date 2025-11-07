@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { useDarkMode } from '@/hooks/useDarkMode';
+import { useWebSocket } from '@/hooks/useWebSocket';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { HomePage } from '@/pages/HomePage';
 import { QuickGuidePage } from '@/pages/QuickGuidePage';
 import { ProvidersPage } from '@/pages/ProvidersPage';
 import { ModelsPage } from '@/pages/ModelsPage';
-import { WebSocketDemoPage } from '@/pages/WebSocketDemoPage';
 
 function App() {
   useDarkMode();
+  useWebSocket(); // Initialize WebSocket connection at app level
   const [currentRoute, setCurrentRoute] = useState('/');
 
   const renderPage = () => {
@@ -21,8 +22,6 @@ function App() {
         return <ProvidersPage />;
       case '/models':
         return <ModelsPage />;
-      case '/websocket':
-        return <WebSocketDemoPage />;
       default:
         return <HomePage />;
     }

@@ -9,7 +9,7 @@ interface UseWebSocketOptions {
 }
 
 export function useWebSocket(options: UseWebSocketOptions = {}) {
-  const { url = 'http://localhost:3002', autoConnect = true } = options;
+  const { url = import.meta.env.VITE_WS_URL || 'http://localhost:3002', autoConnect = true } = options;
 
   const [connectionStatus, setConnectionStatus] = useState<WebSocketConnectionStatus>(
     websocketService.getStatus()

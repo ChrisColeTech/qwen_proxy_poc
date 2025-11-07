@@ -26,7 +26,13 @@ export const useProxyStore = create<ProxyStore>((set) => ({
   setLoading: (loading) => set({ loading }),
   setConnected: (connected) => set({ connected }),
   updateFromProxyStatus: (event) => set({
-    wsProxyStatus: event.status,
+    wsProxyStatus: {
+      ...event.status,
+      credentials: event.status.credentials ? {
+        valid: event.status.credentials.valid,
+        expiresAt: event.status.credentials.expiresAt ? event.status.credentials.expiresAt * 1000 : null, // Convert seconds to milliseconds
+      } : { valid: false, expiresAt: null },
+    },
     lastUpdate: Date.now()
   }),
   updateFromCredentials: (event) => set((state) => {
@@ -34,7 +40,10 @@ export const useProxyStore = create<ProxyStore>((set) => ({
     return {
       wsProxyStatus: {
         ...state.wsProxyStatus,
-        credentials: event.credentials,
+        credentials: {
+          valid: event.credentials.valid,
+          expiresAt: event.credentials.expiresAt ? event.credentials.expiresAt * 1000 : null, // Convert seconds to milliseconds
+        },
       },
       lastUpdate: Date.now(),
     };

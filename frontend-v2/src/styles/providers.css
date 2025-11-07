@@ -1,0 +1,92 @@
+/* ProvidersPage styles */
+
+.providers-container {
+  @apply container max-w-6xl py-8 space-y-6;
+}
+
+.providers-loading {
+  @apply pt-6 flex items-center justify-center gap-2 text-muted-foreground;
+}
+
+.providers-loading-spinner {
+  @apply animate-spin;
+}
+
+.providers-header {
+  @apply flex items-center justify-between;
+}
+
+.providers-title {
+  @apply text-3xl font-bold flex items-center gap-2;
+}
+
+.providers-description {
+  @apply text-muted-foreground mt-1;
+}
+
+.providers-refresh-icon {
+  @apply mr-2;
+}
+
+.providers-refresh-spin {
+  @apply animate-spin;
+}
+
+/* Summary Cards */
+.providers-summary-grid {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-4;
+}
+
+.providers-summary-header {
+  @apply pb-3;
+}
+
+.providers-summary-title {
+  @apply text-sm font-medium text-muted-foreground;
+}
+
+.providers-summary-value {
+  @apply text-3xl font-bold;
+}
+
+.providers-summary-value-enabled {
+  @apply text-3xl font-bold text-primary;
+}
+
+.providers-summary-value-disabled {
+  @apply text-3xl font-bold text-muted-foreground;
+}
+
+/* Table */
+.providers-empty-state {
+  @apply text-center py-8 text-muted-foreground;
+}
+
+.providers-table-name {
+  @apply font-medium;
+}
+
+.providers-table-actions-header {
+  @apply text-right;
+}
+
+.providers-table-actions {
+  @apply text-right;
+}
+
+.providers-table-actions-buttons {
+  @apply flex items-center justify-end gap-2;
+}
+
+.providers-table-spinner {
+  @apply animate-spin;
+}
+
+.providers-table-delete {
+  @apply text-destructive;
+}
+
+/* Dialog */
+.providers-dialog-spinner {
+  @apply mr-2 animate-spin;
+}

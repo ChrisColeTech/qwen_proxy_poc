@@ -45,7 +45,8 @@ class EventEmitterService extends EventEmitter {
    * @param {object} status - Proxy status data
    */
   emitProxyStatus(status) {
-    this.emitToClients('proxy:status', status)
+    // Wrap in 'status' key to match frontend TypeScript interface
+    this.emitToClients('proxy:status', { status })
   }
 
   /**
