@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useProxyStatus } from '@/hooks/useProxyStatus';
 import { useProxyStore } from '@/stores/useProxyStore';
 import { useAlertStore } from '@/stores/useAlertStore';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -30,19 +30,6 @@ export function APIGuidePage({}: GuidePageProps) {
 
   return (
     <div className="page-container">
-      {/* Header Card */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="card-title-with-icon">
-            <Code className="icon-sm" />
-            API Integration Guide
-          </CardTitle>
-          <CardDescription>
-            Use the proxy with any OpenAI-compatible library. No API key validation required.
-          </CardDescription>
-        </CardHeader>
-      </Card>
-
       {/* Base URL Card */}
       <Card>
         <CardHeader>
