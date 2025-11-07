@@ -1,4 +1,4 @@
-import { Activity, Globe, Monitor, Code, Network, Database, MessageSquare, Settings } from 'lucide-react';
+import { Activity, HelpCircle, Code, Network, Database, MessageSquare, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUIStore } from '@/stores/useUIStore';
 
@@ -14,18 +14,37 @@ interface NavItem {
   route: string;
 }
 
-const navItems: NavItem[] = [
+const isElectron = () => {
+  return typeof window !== 'undefined' && (window as any).electronAPI;
+};
+
+const mainNavItems: NavItem[] = [
   { id: 'home', icon: Activity, label: 'Home', route: '/' },
-  { id: 'guide-browser', icon: Globe, label: 'Browser Guide', route: '/guide/browser' },
-  { id: 'guide-desktop', icon: Monitor, label: 'Desktop Guide', route: '/guide/desktop' },
   { id: 'guide-api', icon: Code, label: 'API Guide', route: '/guide/api' },
   { id: 'providers', icon: Network, label: 'Providers', route: '/providers' },
   { id: 'models', icon: Database, label: 'Models', route: '/models' },
   { id: 'chat', icon: MessageSquare, label: 'Chat', route: '/chat' },
 ];
 
+const guideNavItems: NavItem[] = [
+  { id: 'guide-browser', icon: HelpCircle, label: 'Browser Guide', route: '/guide/browser' },
+  { id: 'guide-desktop', icon: HelpCircle, label: 'Desktop Guide', route: '/guide/desktop' },
+];
+
 export function Sidebar({ activeRoute, onNavigate }: SidebarProps) {
   const sidebarPosition = useUIStore((state) => state.uiState.sidebarPosition);
+
+  // Filter guide items based on environment
+  const activeGuideItem = guideNavItems.find(item => {
+    if (isElectron()) {
+      // In Electron, show Desktop Guide
+      return item.id === 'guide-desktop';
+    } else {
+      // In browser, show Browser Guide
+      return item.id === 'guide-browser';
+    }
+  });
+
   const isSettingsActive = activeRoute === '/settings';
 
   return (
@@ -33,7 +52,7 @@ export function Sidebar({ activeRoute, onNavigate }: SidebarProps) {
       'w-12 bg-card flex flex-col items-center pt-2',
       sidebarPosition === 'left' ? 'border-r' : 'border-l'
     )}>
-      {navItems.map((item) => {
+      {mainNavItems.map((item) => {
         const Icon = item.icon;
         const isActive = activeRoute === item.route;
 
@@ -60,11 +79,32 @@ export function Sidebar({ activeRoute, onNavigate }: SidebarProps) {
         );
       })}
 
+      {activeGuideItem && (
+        <button
+          onClick={() => onNavigate(activeGuideItem.route)}
+          title={activeGuideItem.label}
+          className={cn(
+            'w-full h-12 flex items-center justify-center transition-colors relative group mt-auto border-t border-border',
+            activeRoute === activeGuideItem.route
+              ? 'text-foreground'
+              : 'text-muted-foreground hover:text-foreground'
+          )}
+        >
+          {activeRoute === activeGuideItem.route && (
+            <div className={cn(
+              'absolute w-0.5 h-12 bg-primary',
+              sidebarPosition === 'left' ? 'left-0' : 'right-0'
+            )} />
+          )}
+          <activeGuideItem.icon className="h-6 w-6" />
+        </button>
+      )}
+
       <button
         onClick={() => onNavigate('/settings')}
         title="Settings"
         className={cn(
-          'w-full h-12 flex items-center justify-center transition-colors relative group mt-auto mb-2 border-t border-border pt-2',
+          'w-full h-12 flex items-center justify-center transition-colors relative group mb-2',
           isSettingsActive
             ? 'text-foreground'
             : 'text-muted-foreground hover:text-foreground'

@@ -156,19 +156,207 @@ ipcMain.handle('qwen:open-login', async () => {
 
     qwenLoginWindow.loadURL('https://chat.qwen.ai');
 
-    // Listen for navigation events to detect successful login
-    qwenLoginWindow.webContents.on('did-navigate', async (event, url) => {
-      console.log('[Qwen Login] Navigated to:', url);
+    // Inject monitoring script when page loads
+    qwenLoginWindow.webContents.on('did-finish-load', async () => {
+      if (!qwenLoginWindow) return;
+      console.log('[Qwen Login] Page loaded, injecting monitor script...');
 
-      // Check if user has authentication cookies (just for logging, don't auto-close)
-      if (url.includes('chat.qwen.ai')) {
-        const cookies = await session.defaultSession.cookies.get({ domain: '.qwen.ai' });
-        const hasAuthCookie = cookies.some(c => c.name === 'token' || c.name === 'bx-umidtoken');
+      // Inject a content script to monitor for login (similar to Chrome extension)
+      await qwenLoginWindow.webContents.executeJavaScript(`
+        (function() {
+          console.log('[Qwen Monitor] Script injected');
 
-        if (hasAuthCookie) {
-          console.log('[Qwen Login] User appears to be logged in (found auth cookies)');
-        } else {
-          console.log('[Qwen Login] No auth cookies found yet, waiting for login...');
+          let hasShownNotification = false;
+
+          function showNotification(message, isError = false) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = \`
+              position: fixed;
+              top: 20px;
+              right: 20px;
+              padding: 12px 20px;
+              background: \${isError ? '#ef4444' : '#10b981'};
+              color: white;
+              border-radius: 8px;
+              font-family: system-ui, -apple-system, sans-serif;
+              font-size: 14px;
+              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+              z-index: 999999;
+              animation: slideIn 0.3s ease-out;
+            \`;
+
+            const style = document.createElement('style');
+            style.textContent = \`
+              @keyframes slideIn {
+                from { transform: translateX(400px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+              }
+              @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(400px); opacity: 0; }
+              }
+            \`;
+            document.head.appendChild(style);
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+              notification.style.animation = 'slideOut 0.3s ease-out';
+              setTimeout(() => notification.remove(), 300);
+            }, 3000);
+          }
+
+          function isLoggedIn() {
+            const url = window.location.href;
+            if (url.includes('/login') || url.includes('/signin')) {
+              return false;
+            }
+
+            // Check for user profile elements
+            const hasUserProfile = document.querySelector('[data-user-id]') !== null ||
+                                   document.querySelector('.user-profile') !== null ||
+                                   document.querySelector('[class*="avatar"]') !== null ||
+                                   document.querySelector('[class*="Avatar"]') !== null ||
+                                   document.querySelector('button[class*="user"]') !== null;
+
+            return hasUserProfile;
+          }
+
+          function checkLogin() {
+            if (isLoggedIn() && !hasShownNotification) {
+              console.log('[Qwen Monitor] Login detected! Signaling main process...');
+              hasShownNotification = true;
+              showNotification('Qwen credentials detected! Extracting...');
+              // Signal to main process via title change
+              setTimeout(() => {
+                document.title = 'QWEN_LOGIN_DETECTED';
+              }, 100);
+            }
+          }
+
+          // Check immediately
+          checkLogin();
+
+          // Watch for DOM changes
+          const observer = new MutationObserver(() => {
+            checkLogin();
+          });
+
+          observer.observe(document.body, {
+            childList: true,
+            subtree: true
+          });
+
+          // Poll URL changes
+          let lastUrl = window.location.href;
+          setInterval(() => {
+            if (window.location.href !== lastUrl) {
+              lastUrl = window.location.href;
+              console.log('[Qwen Monitor] URL changed:', lastUrl);
+              checkLogin();
+            }
+          }, 1000);
+        })();
+      `);
+    });
+
+    // Listen for page title changes (our signal from the injected script)
+    qwenLoginWindow.webContents.on('page-title-updated', async (event, title) => {
+      if (title === 'QWEN_LOGIN_DETECTED') {
+        console.log('[Qwen Login] Login detected via monitor script!');
+        console.log('[Qwen Login] Waiting 2 seconds for cookies to settle...');
+
+        // Wait 2 seconds like the Chrome extension
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        console.log('[Qwen Login] Extracting credentials...');
+
+        try {
+          // Extract credentials
+          const allCookies = await session.defaultSession.cookies.get({ domain: '.qwen.ai' });
+          console.log('[Qwen Login] Found cookies:', allCookies.length);
+
+          const cookieString = allCookies.map(c => `${c.name}=${c.value}`).join('; ');
+          const umidToken = allCookies.find(c => c.name === 'bx-umidtoken')?.value;
+          const tokenCookie = allCookies.find(c => c.name === 'token');
+
+          if (!tokenCookie && !umidToken) {
+            throw new Error('No authentication tokens found');
+          }
+
+          // Decode JWT token to get actual token expiration (like Chrome extension does)
+          let expiresAt = Date.now() + (30 * 24 * 60 * 60 * 1000); // Default 30 days
+          if (tokenCookie?.value) {
+            try {
+              // JWT format: header.payload.signature
+              const parts = tokenCookie.value.split('.');
+              if (parts.length === 3) {
+                const payload = parts[1];
+                const decoded = JSON.parse(Buffer.from(payload, 'base64').toString());
+                if (decoded.exp) {
+                  expiresAt = decoded.exp * 1000; // Convert seconds to milliseconds
+                  console.log('[Qwen Login] JWT token expires:', new Date(expiresAt).toISOString());
+                } else {
+                  console.warn('[Qwen Login] No exp field in JWT, using default 30 days');
+                }
+              }
+            } catch (error) {
+              console.warn('[Qwen Login] Failed to decode JWT, using default 30 days:', error);
+            }
+          }
+
+          const credentials = {
+            token: umidToken || tokenCookie?.value,
+            cookies: cookieString,
+            expiresAt: Math.floor(expiresAt / 1000), // Convert milliseconds to seconds for backend
+          };
+
+          console.log('[Qwen Login] Sending credentials to backend...');
+          console.log('[Qwen Login] Expires:', new Date(expiresAt).toISOString());
+
+          // Send credentials to backend
+          const response = await fetch('http://localhost:3002/api/qwen/credentials', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(credentials),
+          });
+
+          if (response.ok) {
+            console.log('[Qwen Login] Credentials sent successfully');
+            // Show success notification in the window
+            if (qwenLoginWindow && !qwenLoginWindow.isDestroyed()) {
+              await qwenLoginWindow.webContents.executeJavaScript(`
+                (function() {
+                  const notification = document.createElement('div');
+                  notification.textContent = 'Qwen credentials saved successfully!';
+                  notification.style.cssText = \`
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 12px 20px;
+                    background: #10b981;
+                    color: white;
+                    border-radius: 8px;
+                    font-family: system-ui, -apple-system, sans-serif;
+                    font-size: 14px;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    z-index: 999999;
+                    animation: slideIn 0.3s ease-out;
+                  \`;
+                  document.body.appendChild(notification);
+                  setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.3s ease-out';
+                    setTimeout(() => notification.remove(), 300);
+                  }, 3000);
+                })();
+              `);
+            }
+          } else {
+            const errorText = await response.text();
+            console.error('[Qwen Login] Failed to send credentials:', errorText);
+          }
+        } catch (error) {
+          console.error('[Qwen Login] Failed to extract credentials:', error);
         }
       }
     });

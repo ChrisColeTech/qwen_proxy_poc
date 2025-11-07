@@ -24,14 +24,19 @@ export function useCredentialActions() {
       }
 
       if (credentialsService.isElectron()) {
+        // Open login window - it will auto-extract and send credentials to backend
         await window.electronAPI?.qwen.openLogin();
-        const extracted = await window.electronAPI?.qwen.extractCredentials();
 
-        if (extracted) {
-          await credentialsService.setCredentials(extracted);
-          await refreshStatus();
+        // Refresh status to check if credentials were added
+        await refreshStatus();
+        const currentStatus = useProxyStore.getState().status;
+
+        if (currentStatus?.credentials?.valid) {
           showAlert('Credentials connected successfully', 'success');
           setStatusMessage('Connected to Qwen');
+        } else {
+          showAlert('Failed to extract credentials. Please try again.', 'error');
+          setStatusMessage('Failed to connect');
         }
       } else {
         const extensionInstalled = await browserExtensionService.isExtensionInstalled();
