@@ -109,11 +109,74 @@ export function ChatTestCard({ providerRouterUrl, activeModel }: ChatTestCardPro
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="custom" className="w-full">
+        <Tabs defaultValue="quick" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="custom">Custom Chat</TabsTrigger>
             <TabsTrigger value="quick">Quick Test</TabsTrigger>
+            <TabsTrigger value="custom">Custom Chat</TabsTrigger>
           </TabsList>
+
+          {/* Quick Test Tab */}
+          <TabsContent value="quick" className="mt-4 space-y-4">
+            <CodeBlock
+              label="Try it yourself:"
+              code={`curl ${providerRouterUrl || 'http://localhost:3001'}/v1/chat/completions \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer any-key" \\
+  -d '{
+    "model": "${modelToUse}",
+    "messages": [
+      {"role": "user", "content": "Say hello in one sentence"}
+    ]
+  }'`}
+            />
+
+            <p className="step-description">
+              Send a chat completion request to the active provider. The Provider Router automatically routes your request based on the configured provider.
+            </p>
+
+            <div className="demo-container">
+              <div className="demo-header">
+                <div className="demo-label">
+                  <Zap className="h-4 w-4 text-primary" />
+                  <span className="demo-label-text">Test Response</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary" className="gap-1">
+                    <Database className="h-3 w-3" />
+                    {modelToUse}
+                  </Badge>
+                  {quickLoading && (
+                    <Badge variant="secondary" className="gap-1">
+                      <RefreshCw className="h-3 w-3 animate-spin" />
+                      Waiting...
+                    </Badge>
+                  )}
+                  <Button
+                    onClick={handleQuickTest}
+                    disabled={quickLoading}
+                    size="icon"
+                    variant="outline"
+                    title="Test chat completion"
+                    className="h-7 w-7"
+                  >
+                    {quickLoading ? (
+                      <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <Play className="h-3.5 w-3.5" />
+                    )}
+                  </Button>
+                </div>
+              </div>
+              {quickResponse && (
+                <div className="demo-content">{quickResponse}</div>
+              )}
+              {!quickResponse && !quickLoading && (
+                <div className="demo-empty-state">
+                  Click the <Play className="status-icon-inline" /> button above to test a chat completion
+                </div>
+              )}
+            </div>
+          </TabsContent>
 
           {/* Custom Chat Tab */}
           <TabsContent value="custom" className="mt-4 space-y-4">
@@ -209,69 +272,6 @@ export function ChatTestCard({ providerRouterUrl, activeModel }: ChatTestCardPro
                 </div>
               </div>
             )}
-          </TabsContent>
-
-          {/* Quick Test Tab */}
-          <TabsContent value="quick" className="mt-4 space-y-4">
-            <CodeBlock
-              label="Try it yourself:"
-              code={`curl ${providerRouterUrl || 'http://localhost:3001'}/v1/chat/completions \\
-  -H "Content-Type: application/json" \\
-  -H "Authorization: Bearer any-key" \\
-  -d '{
-    "model": "${modelToUse}",
-    "messages": [
-      {"role": "user", "content": "Say hello in one sentence"}
-    ]
-  }'`}
-            />
-
-            <p className="step-description">
-              Send a chat completion request to the active provider. The Provider Router automatically routes your request based on the configured provider.
-            </p>
-
-            <div className="demo-container">
-              <div className="demo-header">
-                <div className="demo-label">
-                  <Zap className="h-4 w-4 text-primary" />
-                  <span className="demo-label-text">Test Response</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge variant="secondary" className="gap-1">
-                    <Database className="h-3 w-3" />
-                    {modelToUse}
-                  </Badge>
-                  {quickLoading && (
-                    <Badge variant="secondary" className="gap-1">
-                      <RefreshCw className="h-3 w-3 animate-spin" />
-                      Waiting...
-                    </Badge>
-                  )}
-                  <Button
-                    onClick={handleQuickTest}
-                    disabled={quickLoading}
-                    size="icon"
-                    variant="outline"
-                    title="Test chat completion"
-                    className="h-7 w-7"
-                  >
-                    {quickLoading ? (
-                      <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-                    ) : (
-                      <Play className="h-3.5 w-3.5" />
-                    )}
-                  </Button>
-                </div>
-              </div>
-              {quickResponse && (
-                <div className="demo-content">{quickResponse}</div>
-              )}
-              {!quickResponse && !quickLoading && (
-                <div className="demo-empty-state">
-                  Click the <Play className="status-icon-inline" /> button above to test a chat completion
-                </div>
-              )}
-            </div>
           </TabsContent>
         </Tabs>
       </CardContent>
