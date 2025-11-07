@@ -6,6 +6,7 @@
 import { SettingsService } from '../database/services/settings-service.js'
 import { logger } from '../utils/logger.js'
 import { updateEnvFile, bulkUpdateEnvFile } from '../utils/env-writer.js'
+import { validateIfNeeded } from '../utils/settings-validator.js'
 
 // Settings that require server restart to apply
 const RESTART_REQUIRED_SETTINGS = [
@@ -137,6 +138,30 @@ export async function updateSetting(req, res, next) {
     const { key } = req.params
     const { value } = req.body
 
+    // Basic validation
+    if (!key || key.trim().length === 0) {
+      return res.status(400).json({
+        error: 'Validation failed',
+        message: 'Setting key is required'
+      })
+    }
+
+    if (value === undefined || value === null) {
+      return res.status(400).json({
+        error: 'Validation failed',
+        message: 'Setting value is required'
+      })
+    }
+
+    // Optional validation for critical settings
+    const validation = validateIfNeeded(key, value)
+    if (!validation.valid) {
+      return res.status(400).json({
+        error: 'Validation failed',
+        message: validation.error
+      })
+    }
+
     logger.info('Update setting', { key, value })
 
     // Update in database
@@ -168,6 +193,13 @@ export async function bulkUpdateSettings(req, res, next) {
   try {
     const { settings } = req.body
 
+    if (!settings || typeof settings !== 'object') {
+      return res.status(400).json({
+        error: 'Validation failed',
+        message: 'Settings object is required'
+      })
+    }
+
     logger.info('Bulk update settings', { count: Object.keys(settings).length })
 
     const updated = []
@@ -177,6 +209,16 @@ export async function bulkUpdateSettings(req, res, next) {
     // Update each setting
     for (const [key, value] of Object.entries(settings)) {
       try {
+        // Optional validation for critical settings
+        const validation = validateIfNeeded(key, value)
+        if (!validation.valid) {
+          errors.push({
+            key,
+            error: validation.error
+          })
+          continue
+        }
+
         await SettingsService.set(key, value)
         updated.push(key)
 

@@ -15,7 +15,7 @@ export function ModelsPage() {
 
   useEffect(() => {
     loadModels();
-  }, [settings.active_provider]); // Reload when provider changes
+  }, [loadModels, settings.active_provider]); // Reload when provider changes
 
   const handleSelectModel = async (modelId: string) => {
     await setActiveModel(modelId);

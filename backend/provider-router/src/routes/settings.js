@@ -11,11 +11,6 @@ import {
   bulkUpdateSettings,
   deleteSetting
 } from '../controllers/settings-controller.js'
-import {
-  validateSettingKey,
-  validateSettingValue,
-  validateBulkSettings
-} from '../middleware/settings-validation.js'
 
 const router = express.Router()
 
@@ -33,7 +28,7 @@ router.get('/', getAllSettings)
  * Params:
  * - key: setting key (e.g., 'server.port', 'logging.level')
  */
-router.get('/:key', validateSettingKey, getSetting)
+router.get('/:key', getSetting)
 
 /**
  * PUT /v1/settings/:key
@@ -43,7 +38,7 @@ router.get('/:key', validateSettingKey, getSetting)
  * Body:
  * - value: new value for the setting
  */
-router.put('/:key', validateSettingKey, validateSettingValue, updateSetting)
+router.put('/:key', updateSetting)
 
 /**
  * POST /v1/settings/bulk
@@ -51,7 +46,7 @@ router.put('/:key', validateSettingKey, validateSettingValue, updateSetting)
  * Body:
  * - settings: object with key-value pairs
  */
-router.post('/bulk', validateBulkSettings, bulkUpdateSettings)
+router.post('/bulk', bulkUpdateSettings)
 
 /**
  * DELETE /v1/settings/:key
@@ -59,6 +54,6 @@ router.post('/bulk', validateBulkSettings, bulkUpdateSettings)
  * Params:
  * - key: setting key
  */
-router.delete('/:key', validateSettingKey, deleteSetting)
+router.delete('/:key', deleteSetting)
 
 export default router

@@ -17,7 +17,8 @@ const VALID_SETTINGS = [
   'system.autoStart',
   'system.minimizeToTray',
   'system.checkUpdates',
-  'active_provider'
+  'active_provider',
+  'active_model'
 ]
 
 // Valid log levels
@@ -73,6 +74,8 @@ export function validateSettingValue(req, res, next) {
       validateLogLevel(value)
     } else if (key === 'active_provider') {
       validateActiveProvider(value)
+    } else if (key === 'active_model') {
+      validateActiveModel(value)
     } else if (key.startsWith('logging.log') || key.startsWith('system.')) {
       validateBoolean(value, key)
     }
@@ -133,6 +136,8 @@ export function validateBulkSettings(req, res, next) {
         validateLogLevel(value)
       } else if (key === 'active_provider') {
         validateActiveProvider(value)
+      } else if (key === 'active_model') {
+        validateActiveModel(value)
       } else if (key.startsWith('logging.log') || key.startsWith('system.')) {
         validateBoolean(value, key)
       }
@@ -268,6 +273,17 @@ function validateActiveProvider(providerId) {
   if (!provider.enabled) {
     logger.warn('Setting active provider to disabled provider', { providerId })
   }
+}
+
+/**
+ * Validate active model
+ */
+function validateActiveModel(modelId) {
+  if (typeof modelId !== 'string' || modelId.trim().length === 0) {
+    throw new Error('Model ID must be a non-empty string')
+  }
+  // Model validation is lenient - we just ensure it's a non-empty string
+  // The actual model existence check happens when making API calls
 }
 
 export {
