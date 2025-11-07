@@ -285,28 +285,45 @@ ipcMain.handle('qwen:open-login', async () => {
           }
 
           // Decode JWT token to get actual token expiration (like Chrome extension does)
+          // Helper function to decode JWT with base64url support
+          const decodeJWT = (token: string) => {
+            try {
+              const parts = token.split('.');
+              if (parts.length !== 3) {
+                throw new Error('Invalid JWT format');
+              }
+              const payload = parts[1];
+              // Convert base64url to base64 (replace - with +, _ with /)
+              const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+              // Add padding if needed
+              const padded = base64 + '=='.substring(0, (4 - base64.length % 4) % 4);
+              const decoded = JSON.parse(Buffer.from(padded, 'base64').toString());
+              return decoded;
+            } catch (error) {
+              console.error('[Qwen Login] JWT decode failed:', error);
+              return null;
+            }
+          };
+
+          // Get token expiration - decode the 'token' cookie specifically (it's the JWT)
           let expiresAt = Date.now() + (30 * 24 * 60 * 60 * 1000); // Default 30 days
           if (tokenCookie?.value) {
-            try {
-              // JWT format: header.payload.signature
-              const parts = tokenCookie.value.split('.');
-              if (parts.length === 3) {
-                const payload = parts[1];
-                const decoded = JSON.parse(Buffer.from(payload, 'base64').toString());
-                if (decoded.exp) {
-                  expiresAt = decoded.exp * 1000; // Convert seconds to milliseconds
-                  console.log('[Qwen Login] JWT token expires:', new Date(expiresAt).toISOString());
-                } else {
-                  console.warn('[Qwen Login] No exp field in JWT, using default 30 days');
-                }
-              }
-            } catch (error) {
-              console.warn('[Qwen Login] Failed to decode JWT, using default 30 days:', error);
+            const decoded = decodeJWT(tokenCookie.value);
+            if (decoded && decoded.exp) {
+              expiresAt = decoded.exp * 1000; // Convert seconds to milliseconds
+              console.log('[Qwen Login] JWT token expires:', new Date(expiresAt).toISOString());
+            } else {
+              console.warn('[Qwen Login] No exp field in JWT or decode failed, using default 30 days');
             }
+          } else {
+            console.warn('[Qwen Login] No token cookie found for expiration, using default 30 days');
           }
 
+          // Use umidToken if available, otherwise fall back to token (matching Chrome extension logic)
+          const actualToken = umidToken || tokenCookie?.value;
+
           const credentials = {
-            token: umidToken || tokenCookie?.value,
+            token: actualToken,
             cookies: cookieString,
             expiresAt: Math.floor(expiresAt / 1000), // Convert milliseconds to seconds for backend
           };
@@ -409,19 +426,35 @@ ipcMain.handle('qwen:extract-credentials', async () => {
       throw new Error('No authentication tokens found.');
     }
 
+    // Helper function to decode JWT with base64url support (same as in login handler)
+    const decodeJWT = (token: string) => {
+      try {
+        const parts = token.split('.');
+        if (parts.length !== 3) {
+          throw new Error('Invalid JWT format');
+        }
+        const payload = parts[1];
+        // Convert base64url to base64 (replace - with +, _ with /)
+        const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+        // Add padding if needed
+        const padded = base64 + '=='.substring(0, (4 - base64.length % 4) % 4);
+        const decoded = JSON.parse(Buffer.from(padded, 'base64').toString());
+        return decoded;
+      } catch (error) {
+        console.error('[Qwen Extract] JWT decode failed:', error);
+        return null;
+      }
+    };
+
     // Decode JWT token to get expiration
     let expiresAt: number | null = null;
     if (tokenCookie?.value) {
-      try {
-        // Decode JWT (format: header.payload.signature)
-        const parts = tokenCookie.value.split('.');
-        if (parts.length === 3) {
-          const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
-          expiresAt = payload.exp * 1000; // Convert seconds to milliseconds
-          console.log('[Qwen Extract] Decoded JWT expiration:', new Date(expiresAt).toISOString());
-        }
-      } catch (error) {
-        console.log('[Qwen Extract] Could not decode JWT:', error);
+      const decoded = decodeJWT(tokenCookie.value);
+      if (decoded && decoded.exp) {
+        expiresAt = decoded.exp * 1000; // Convert seconds to milliseconds
+        console.log('[Qwen Extract] Decoded JWT expiration:', new Date(expiresAt).toISOString());
+      } else {
+        console.log('[Qwen Extract] No exp field in JWT or decode failed');
       }
     }
 
@@ -432,6 +465,7 @@ ipcMain.handle('qwen:extract-credentials', async () => {
         const expiry = c.expirationDate ? c.expirationDate * 1000 : null;
         return expiry && expiry > (max || 0) ? expiry : max;
       }, null) || (Date.now() + (30 * 24 * 60 * 60 * 1000));
+      console.log('[Qwen Extract] Using fallback expiration:', new Date(expiresAt).toISOString());
     }
 
     const credentials = {
