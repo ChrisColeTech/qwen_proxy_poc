@@ -6,14 +6,7 @@
 import { SettingsService } from '../database/services/settings-service.js'
 import { logger } from '../utils/logger.js'
 import { updateEnvFile, bulkUpdateEnvFile } from '../utils/env-writer.js'
-import { validateIfNeeded } from '../utils/settings-validator.js'
-
-// Settings that require server restart to apply
-const RESTART_REQUIRED_SETTINGS = [
-  'server.port',
-  'server.host',
-  'logging.level'
-]
+import { validateIfNeeded, requiresRestart } from '../utils/settings-validator.js'
 
 // Default settings
 const DEFAULT_SETTINGS = {
@@ -42,13 +35,6 @@ const SETTINGS_CATEGORIES = {
 function getCategoryFromKey(key) {
   const prefix = key.split('.')[0]
   return prefix || 'unknown'
-}
-
-/**
- * Check if setting requires restart
- */
-function requiresRestart(key) {
-  return RESTART_REQUIRED_SETTINGS.includes(key)
 }
 
 /**
@@ -279,6 +265,5 @@ export async function deleteSetting(req, res, next) {
 
 export {
   SETTINGS_CATEGORIES,
-  DEFAULT_SETTINGS,
-  RESTART_REQUIRED_SETTINGS
+  DEFAULT_SETTINGS
 }

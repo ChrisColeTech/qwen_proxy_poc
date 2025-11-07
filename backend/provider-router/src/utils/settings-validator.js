@@ -10,6 +10,13 @@ const CRITICAL_VALIDATIONS = {
   'logging.level': validateLogLevel
 }
 
+// Settings that require server restart to apply
+const RESTART_REQUIRED_SETTINGS = [
+  'server.port',
+  'server.host',
+  'logging.level'
+]
+
 /**
  * Validate setting if it has critical validation requirements
  * Returns: { valid: boolean, error?: string }
@@ -28,6 +35,14 @@ export function validateIfNeeded(key, value) {
   } catch (error) {
     return { valid: false, error: error.message }
   }
+}
+
+/**
+ * Check if setting requires server restart to apply
+ * Returns: boolean
+ */
+export function requiresRestart(key) {
+  return RESTART_REQUIRED_SETTINGS.includes(key)
 }
 
 // Validation functions (moved from middleware)

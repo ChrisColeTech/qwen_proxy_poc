@@ -3,6 +3,7 @@ import { useProxyStatus } from '@/hooks/useProxyStatus';
 import { useSettingsStore } from '@/stores/useSettingsStore';
 import { useChatTest } from '@/hooks/useChatTest';
 import { ChatCompletionStep } from '@/components/features/quick-guide/ChatCompletionStep';
+import { CustomChat } from '@/components/features/chat/CustomChat';
 
 export function ChatPage() {
   useProxyStatus();
@@ -21,6 +22,10 @@ export function ChatPage() {
 
   return (
     <div className="page-container">
+      <CustomChat
+        providerRouterUrl={providerRouterUrl || ''}
+        activeModel={settings.active_model}
+      />
       <ChatCompletionStep
         response={testResponse}
         loading={loading}
