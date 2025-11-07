@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useProxyStatus } from '@/hooks/useProxyStatus';
 import { useSettingsStore } from '@/stores/useSettingsStore';
 import { useModels } from '@/hooks/useModels';
-import { ModelsStep } from '@/components/features/quick-guide/ModelsStep';
+import { ModelsCard } from '@/components/features/models/ModelsCard';
 
 export function ModelsPage() {
   useProxyStatus();
@@ -23,11 +23,11 @@ export function ModelsPage() {
 
   return (
     <div className="page-container">
-      <ModelsStep
+      <ModelsCard
         models={models}
         loading={loading}
         onRefresh={loadModels}
-        providerRouterUrl={providerRouterUrl}
+        providerRouterUrl={providerRouterUrl || ''}
         activeModel={settings.active_model}
         onSelectModel={handleSelectModel}
       />

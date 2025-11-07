@@ -25,9 +25,17 @@ export function StatusBadge({ status, children }: StatusBadgeProps) {
   };
 
   return (
-    <div className={cn('flex items-center gap-1.5 text-xs font-medium', textClass[status])}>
-      <span className={cn('h-1.5 w-1.5 rounded-full', dotClass[status])} />
-      {children || status.charAt(0).toUpperCase() + status.slice(1)}
+    <div className={cn('flex items-center font-medium min-w-0', textClass[status])} style={{
+      gap: 'clamp(0.25rem, 0.5vw, 0.375rem)',
+      fontSize: 'inherit'
+    }}>
+      <span className={cn('rounded-full flex-shrink-0', dotClass[status])} style={{
+        height: 'clamp(0.25rem, 1vw, 0.375rem)',
+        width: 'clamp(0.25rem, 1vw, 0.375rem)'
+      }} />
+      <span className="whitespace-nowrap">
+        {children || status.charAt(0).toUpperCase() + status.slice(1)}
+      </span>
     </div>
   );
 }

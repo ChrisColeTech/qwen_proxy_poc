@@ -31,30 +31,37 @@ export function StatusBar() {
         <EnvironmentBadge />
         <div className="statusbar-separator" />
         <StatusBadge status={credentialStatus} />
-        <div className="statusbar-separator" />
-        <StatusBadge status={isProxyRunning ? 'running' : 'stopped'} />
         {activeProvider && (
           <>
             <div className="statusbar-separator" />
-            <Badge variant="secondary" className="h-4 text-xs px-1.5">
-              {activeProvider}
+            <Badge variant="secondary" className="flex-shrink-0 min-w-0" style={{
+              height: 'clamp(0.875rem, 2vw, 1rem)',
+              paddingLeft: 'clamp(0.25rem, 0.5vw, 0.375rem)',
+              paddingRight: 'clamp(0.25rem, 0.5vw, 0.375rem)',
+              fontSize: 'inherit'
+            }}>
+              <span className="whitespace-nowrap">{activeProvider}</span>
             </Badge>
           </>
         )}
         {activeModel && (
           <>
             <div className="statusbar-separator" />
-            <Badge variant="secondary" className="h-4 text-xs px-1.5">
-              {activeModel}
+            <Badge variant="secondary" className="flex-shrink-0 min-w-0" style={{
+              height: 'clamp(0.875rem, 2vw, 1rem)',
+              paddingLeft: 'clamp(0.25rem, 0.5vw, 0.375rem)',
+              paddingRight: 'clamp(0.25rem, 0.5vw, 0.375rem)',
+              fontSize: 'inherit'
+            }}>
+              <span className="whitespace-nowrap">{activeModel}</span>
             </Badge>
           </>
         )}
       </div>
       {displayMessage && (
-        <div className={isError ? 'statusbar-item-error' : 'statusbar-item'}>
-          {isError && <AlertCircle className="statusbar-icon" />}
-          <span>{displayMessage}</span>
-        </div>
+        <StatusBadge status={isError ? 'invalid' : isProxyRunning ? 'running' : 'stopped'}>
+          {displayMessage}
+        </StatusBadge>
       )}
     </div>
   );

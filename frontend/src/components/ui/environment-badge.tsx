@@ -4,9 +4,17 @@ export function EnvironmentBadge() {
   const isElectron = credentialsService.isElectron();
 
   return (
-    <div className="flex items-center gap-1.5 text-xs font-medium status-info">
-      <span className="h-1.5 w-1.5 rounded-full status-info-dot" />
-      {isElectron ? 'Desktop' : 'Browser'}
+    <div className="flex items-center font-medium min-w-0 status-info" style={{
+      gap: 'clamp(0.25rem, 0.5vw, 0.375rem)',
+      fontSize: 'inherit'
+    }}>
+      <span className="rounded-full flex-shrink-0 status-info-dot" style={{
+        height: 'clamp(0.25rem, 1vw, 0.375rem)',
+        width: 'clamp(0.25rem, 1vw, 0.375rem)'
+      }} />
+      <span className="whitespace-nowrap">
+        {isElectron ? 'Desktop' : 'Browser'}
+      </span>
     </div>
   );
 }

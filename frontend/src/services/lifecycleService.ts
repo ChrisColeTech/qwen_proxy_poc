@@ -30,11 +30,11 @@ export function startLifecycleMonitoring(targetState: 'running' | 'stopped') {
   // Set initial transition state
   if (targetState === 'running') {
     console.log('[LifecycleService] Setting state to starting');
-    setState('starting', 'Starting Provider Router...');
+    setState('starting', 'Starting...');
     useAlertStore.showAlert('Starting proxy server...', 'success');
   } else {
     console.log('[LifecycleService] Setting state to stopping');
-    setState('stopping', 'Stopping Provider Router...');
+    setState('stopping', 'Stopping...');
     useAlertStore.showAlert('Stopping proxy server...', 'success');
   }
 
@@ -48,12 +48,12 @@ export function startLifecycleMonitoring(targetState: 'running' | 'stopped') {
       const isRunning = status.providerRouter?.running;
       if (targetState === 'running' && isRunning) {
         const port = status.providerRouter?.port;
-        const message = port ? `Provider Router running on port ${port}` : 'Provider Router running';
+        const message = port ? `Running :${port}` : 'Running';
         setState('running', message);
         useAlertStore.showAlert('Proxy server started successfully', 'success');
         cleanup();
       } else if (targetState === 'stopped' && !isRunning) {
-        setState('stopped', 'Provider Router stopped');
+        setState('stopped', 'Stopped');
         useAlertStore.showAlert('Proxy server stopped successfully', 'success');
         cleanup();
       }
@@ -67,9 +67,9 @@ export function startLifecycleMonitoring(targetState: 'running' | 'stopped') {
 
   // Timeout protection
   timeoutHandle = setTimeout(() => {
-    const errorMessage = `Provider Router ${targetState === 'running' ? 'start' : 'stop'} operation timed out after 30 seconds`;
+    const errorMessage = `${targetState === 'running' ? 'Start' : 'Stop'} timeout (30s)`;
     setError(errorMessage);
-    useAlertStore.showAlert(errorMessage, 'error');
+    useAlertStore.showAlert(`Provider Router ${targetState === 'running' ? 'start' : 'stop'} operation timed out after 30 seconds`, 'error');
     cleanup();
   }, LIFECYCLE_TIMEOUT);
 }
