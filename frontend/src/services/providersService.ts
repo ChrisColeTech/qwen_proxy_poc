@@ -1,5 +1,5 @@
 import type { Provider } from '@/types/quick-guide.types';
-import { apiService } from './api.service';
+import { apiService } from '@/services/api.service';
 
 export const providersService = {
   getProviders: async (): Promise<Provider[]> => {

@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Play, RefreshCw, Zap } from 'lucide-react';
 import type { ChatCompletionStepProps } from '@/types/quick-guide.types';
-import { CodeBlock } from './CodeBlock';
+import { CodeBlock } from '@/components/features/quick-guide/CodeBlock';
 
 export function ChatCompletionStep({ response, loading, onTest, providerRouterUrl }: ChatCompletionStepProps) {
   return (

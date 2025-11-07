@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Code } from 'lucide-react';
 import { CodeBlock } from '@/components/features/quick-guide/CodeBlock';
 import { pythonExample, nodeExample, curlExample } from '@/lib/api-guide-examples';
-import { BaseUrlSection } from './BaseUrlSection';
+import { BaseUrlSection } from '@/components/features/api-guide/BaseUrlSection';
 
 interface CodeExamplesCardProps {
   baseUrl: string;

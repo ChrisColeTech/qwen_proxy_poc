@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { StatusIndicator } from '@/components/ui/status-indicator';
 import { Network, RefreshCw, ArrowRight, XCircle } from 'lucide-react';
 import type { ProviderSwitchStepProps } from '@/types/quick-guide.types';
-import { CodeBlock } from './CodeBlock';
+import { CodeBlock } from '@/components/features/quick-guide/CodeBlock';
 
 export function ProviderSwitchStep({ providers, activeProvider, loading, onSwitch, apiBaseUrl }: ProviderSwitchStepProps) {
   return (

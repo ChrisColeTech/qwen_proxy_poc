@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle } from 'lucide-react';
 import { supportedEndpoints } from '@/lib/api-guide-examples';
-import { EndpointItem } from './EndpointItem';
+import { EndpointItem } from '@/components/features/api-guide/EndpointItem';
 
 export function SupportedEndpointsCard() {
   return (

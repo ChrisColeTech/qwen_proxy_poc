@@ -25,16 +25,16 @@ export function StatusBar() {
   const isError = !!lifecycleError;
 
   return (
-    <div className="h-6 bg-muted border-t border-border px-4 flex items-center justify-between text-xs">
-      <div className="flex items-center gap-2">
+    <div className="statusbar">
+      <div className="statusbar-left">
         <EnvironmentBadge />
-        <div className="h-3 w-px bg-border" />
+        <div className="statusbar-separator" />
         <StatusBadge status={credentialStatus} />
-        <div className="h-3 w-px bg-border" />
+        <div className="statusbar-separator" />
         <StatusBadge status={isProxyRunning ? 'running' : 'stopped'} />
         {activeProvider && (
           <>
-            <div className="h-3 w-px bg-border" />
+            <div className="statusbar-separator" />
             <Badge variant="secondary" className="h-4 text-xs px-1.5">
               {activeProvider}
             </Badge>
@@ -42,8 +42,8 @@ export function StatusBar() {
         )}
       </div>
       {displayMessage && (
-        <div className={`flex items-center gap-1.5 ${isError ? 'text-destructive' : 'text-muted-foreground'}`}>
-          {isError && <AlertCircle className="h-3 w-3" />}
+        <div className={isError ? 'statusbar-item-error' : 'statusbar-item'}>
+          {isError && <AlertCircle className="statusbar-icon" />}
           <span>{displayMessage}</span>
         </div>
       )}

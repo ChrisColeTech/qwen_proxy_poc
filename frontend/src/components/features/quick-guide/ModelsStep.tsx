@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Database, RefreshCw, CheckCircle2, XCircle } from 'lucide-react';
 import type { ModelsStepProps } from '@/types/quick-guide.types';
-import { CodeBlock } from './CodeBlock';
+import { CodeBlock } from '@/components/features/quick-guide/CodeBlock';
 
 export function ModelsStep({ models, loading, onRefresh, providerRouterUrl }: ModelsStepProps) {
   return (

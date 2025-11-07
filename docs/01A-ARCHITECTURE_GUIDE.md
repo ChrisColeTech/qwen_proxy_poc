@@ -391,7 +391,61 @@ frontend/
 
 ## 5. CSS Architecture & Styling System
 
-### 5.1 NO Inline Tailwind Rule
+### 5.1 Modular CSS File Organization
+
+**Critical Rule: CSS must be organized in modular, domain-specific files**
+
+**CSS File Structure:**
+```
+frontend/src/
+├── index.css                    # Theme variables, global resets, imports only
+├── styles/
+│   ├── layout.css              # Layout components (AppLayout, Sidebar, TitleBar, StatusBar)
+│   ├── pages.css               # Page-level styles (HomePage, ChatPage, etc.)
+│   ├── system-features.css     # System feature components
+│   ├── quick-guide.css         # Quick guide feature components
+│   ├── api-guide.css           # API guide feature components
+│   └── ui-components.css       # Custom UI component styles
+```
+
+**File Size Limit: Maximum 125 lines per file**
+
+**Why Modular CSS:**
+1. **Maintainability**: Easy to find and update related styles
+2. **Collaboration**: Multiple developers can work on different features without conflicts
+3. **Code Review**: Smaller files are easier to review
+4. **Performance**: Potential for better code splitting
+5. **Organization**: Styles co-located with their domain/feature
+
+**❌ WRONG - Everything in index.css:**
+```css
+/* index.css - 1000+ lines */
+.sidebar { ... }
+.titlebar { ... }
+.home-page { ... }
+.chat-page { ... }
+.config-form { ... }
+/* ... hundreds more lines ... */
+```
+
+**✅ CORRECT - Modular organization:**
+```css
+/* index.css - Theme variables and imports only */
+@import './styles/layout.css';
+@import './styles/pages.css';
+@import './styles/system-features.css';
+
+/* styles/layout.css - 80 lines */
+.sidebar { ... }
+.titlebar { ... }
+.statusbar { ... }
+
+/* styles/pages.css - 95 lines */
+.home-page { ... }
+.chat-page { ... }
+```
+
+### 5.2 NO Inline Tailwind Rule
 
 **Critical Rule: NEVER use inline Tailwind classes in components**
 
@@ -408,7 +462,7 @@ frontend/
   <span className="header-title">Title</span>
 </div>
 
-// In index.css:
+// In styles/layout.css:
 .header-container {
   @apply flex items-center justify-between p-4 bg-background;
 }
@@ -425,7 +479,7 @@ frontend/
 4. **Theme Support**: All colors use theme variables automatically
 5. **Enforceability**: Easy to code review and enforce
 
-### 5.2 Custom CSS Class Naming Convention
+### 5.3 Custom CSS Class Naming Convention
 
 **Pattern: `.[component]-[element]-[modifier]`**
 
@@ -464,7 +518,81 @@ frontend/
 .icon-xl                      /* Size: 64px */
 ```
 
-### 5.3 Theme Variable System
+### 5.4 Component and File Size Standards
+
+**Maximum File Size: 125 lines**
+
+**Why This Limit:**
+1. **Readability**: Files fit on a single screen view
+2. **Single Responsibility**: Forces proper separation of concerns
+3. **Code Review**: Easier to review smaller, focused files
+4. **Maintainability**: Smaller files are easier to understand and modify
+5. **Testing**: Smaller components are easier to test
+
+**Apply to all file types:**
+- ✅ Component files (.tsx)
+- ✅ CSS files (.css)
+- ✅ Service files (.ts)
+- ✅ Store files (.ts)
+- ✅ Type files (.ts)
+
+**❌ WRONG - Massive component file:**
+```tsx
+// HomePage.tsx - 350 lines
+export function HomePage() {
+  // Inline helper functions (50 lines)
+  const handleSomething = () => { ... }
+
+  // Inline sub-components (100 lines)
+  const InlineCard = () => { ... }
+  const InlineForm = () => { ... }
+
+  // Complex business logic (80 lines)
+  useEffect(() => { ... }, []);
+
+  // Massive JSX (120 lines)
+  return <div>...</div>
+}
+```
+
+**✅ CORRECT - Modular approach:**
+```tsx
+// HomePage.tsx - 45 lines
+import { WelcomeSection } from '@/components/features/home/WelcomeSection';
+import { QuickActionsCard } from '@/components/features/home/QuickActionsCard';
+import { StatusOverview } from '@/components/features/home/StatusOverview';
+
+export function HomePage() {
+  return (
+    <div className="home-page">
+      <WelcomeSection />
+      <QuickActionsCard />
+      <StatusOverview />
+    </div>
+  );
+}
+
+// components/features/home/WelcomeSection.tsx - 35 lines
+// components/features/home/QuickActionsCard.tsx - 50 lines
+// components/features/home/StatusOverview.tsx - 60 lines
+```
+
+**When to Extract:**
+- Component exceeds 125 lines → Extract sub-components
+- Business logic in component → Move to service or custom hook
+- Complex calculations → Extract to utility functions
+- Inline interfaces → Move to types/ directory
+- Repeated patterns → Extract to shared component
+
+**NO Inline Business Logic:**
+- ❌ NEVER write complex logic directly in components
+- ❌ NEVER define helper functions inside component bodies
+- ❌ NEVER define sub-components inside other components
+- ✅ ALWAYS extract business logic to services
+- ✅ ALWAYS extract reusable logic to custom hooks
+- ✅ ALWAYS define sub-components in separate files
+
+### 5.5 Theme Variable System
 
 **Available Theme Variables:**
 ```css
@@ -517,7 +645,7 @@ border-destructive     /* Error borders */
 }
 ```
 
-### 5.4 Dark Mode Support
+### 5.6 Dark Mode Support
 
 **Automatic via Theme Variables:**
 - All colors defined in `:root` for light mode

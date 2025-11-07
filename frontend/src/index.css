@@ -3,9 +3,7 @@
    Architecture: Modular CSS organized by layer
    ============================================================================ */
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* IMPORTANT: All @import must come before @tailwind and any other CSS */
 
 /* Base Styles - Theme variables and global resets */
 @import './styles/base/theme.css';
@@ -13,10 +11,27 @@
 /* Utility Classes - Common utilities used across the app */
 @import './styles/utilities/common.css';
 
-/* Page Styles - Page-specific styling */
+/* Layout Styles - Core layout components */
+@import './styles/layout.css';
+
+/* Page Styles - Page-level styling */
+@import './styles/pages.css';
 @import './styles/pages/providers.css';
 @import './styles/pages/quick-guide.css';
 
-/* Component Styles - Reusable component styling */
+/* Feature Component Styles - Domain-specific components */
+@import './styles/system-features.css';
+@import './styles/quick-guide.css';
+@import './styles/api-guide.css';
+
+/* UI Component Styles - Reusable UI components */
+@import './styles/ui-components.css';
+
+/* Legacy Component Styles - To be refactored */
 @import './styles/components/steps.css';
 @import './styles/components/guide.css';
+
+/* Tailwind Directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

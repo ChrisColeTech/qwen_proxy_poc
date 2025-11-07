@@ -6,9 +6,9 @@ import { useProviderRouterLifecycle } from '@/hooks/useProviderRouterLifecycle';
 import { useProxyStore } from '@/stores/useProxyStore';
 import { useAlertStore } from '@/stores/useAlertStore';
 import { Activity } from 'lucide-react';
-import { CredentialsSection } from './CredentialsSection';
-import { ProxyServerSection } from './ProxyServerSection';
-import { EndpointUrlSection } from './EndpointUrlSection';
+import { CredentialsSection } from '@/components/features/system/CredentialsSection';
+import { ProxyServerSection } from '@/components/features/system/ProxyServerSection';
+import { EndpointUrlSection } from '@/components/features/system/EndpointUrlSection';
 
 export function SystemControlCard() {
   const { handleConnect, loading: authLoading } = useCredentialActions();

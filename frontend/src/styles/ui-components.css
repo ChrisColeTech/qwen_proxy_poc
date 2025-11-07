@@ -1,0 +1,140 @@
+/* UI Components: Status Indicator & Status Badge */
+
+/* Status Badge Container */
+.status-badge-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Status Badge Dot */
+.status-badge-dot {
+  height: 0.375rem;
+  width: 0.375rem;
+  border-radius: 50%;
+}
+
+/* Status Badge Variants - Text */
+.status-badge-success {
+  color: hsl(var(--status-success));
+}
+
+.status-badge-error {
+  color: hsl(var(--status-error));
+}
+
+.status-badge-neutral {
+  color: hsl(var(--status-neutral));
+}
+
+.status-badge-info {
+  color: hsl(var(--status-info));
+}
+
+.status-badge-warning {
+  color: hsl(var(--status-warning));
+}
+
+/* Status Badge Variants - Dots */
+.status-badge-success-dot {
+  background-color: hsl(var(--status-success));
+}
+
+.status-badge-error-dot {
+  background-color: hsl(var(--status-error));
+}
+
+.status-badge-neutral-dot {
+  background-color: hsl(var(--status-neutral));
+}
+
+.status-badge-info-dot {
+  background-color: hsl(var(--status-info));
+}
+
+.status-badge-warning-dot {
+  background-color: hsl(var(--status-warning));
+}
+
+/* Status Indicator */
+.status-indicator {
+  height: 0.5rem;
+  width: 0.5rem;
+  border-radius: 50%;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Status Indicator Variants */
+.status-indicator-success {
+  background-color: hsl(var(--status-success));
+}
+
+.status-indicator-error {
+  background-color: hsl(var(--status-error));
+}
+
+.status-indicator-neutral {
+  background-color: hsl(var(--status-neutral));
+}
+
+.status-indicator-info {
+  background-color: hsl(var(--status-info));
+}
+
+.status-indicator-warning {
+  background-color: hsl(var(--status-warning));
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Reused Status Classes */
+.status-success {
+  color: hsl(var(--status-success));
+}
+
+.status-success-dot {
+  background-color: hsl(var(--status-success));
+}
+
+.status-error {
+  color: hsl(var(--status-error));
+}
+
+.status-error-dot {
+  background-color: hsl(var(--status-error));
+}
+
+.status-neutral {
+  color: hsl(var(--status-neutral));
+}
+
+.status-neutral-dot {
+  background-color: hsl(var(--status-neutral));
+}
+
+.status-info {
+  color: hsl(var(--status-info));
+}
+
+.status-info-dot {
+  background-color: hsl(var(--status-info));
+}
+
+.status-warning {
+  color: hsl(var(--status-warning));
+}
+
+.status-warning-dot {
+  background-color: hsl(var(--status-warning));
+}
