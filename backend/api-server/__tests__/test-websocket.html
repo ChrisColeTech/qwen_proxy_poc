@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Test Client</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .connected {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .events {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .event {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 4px solid #007bff;
+            background-color: #f8f9fa;
+        }
+        .event-type {
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        .event-time {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .event-data {
+            font-family: monospace;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 3px;
+            overflow-x: auto;
+            font-size: 0.9em;
+        }
+        .clear-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .clear-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>WebSocket Test Client</h1>
+    <div id="status" class="status disconnected">Disconnected</div>
+    <button class="clear-button" onclick="clearEvents()">Clear Events</button>
+    <div class="events" id="events">
+        <p>Connecting to WebSocket server...</p>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+        const eventsDiv = document.getElementById('events');
+        const statusDiv = document.getElementById('status');
+        let eventCount = 0;
+
+        function clearEvents() {
+            eventsDiv.innerHTML = '';
+            eventCount = 0;
+        }
+
+        function addEvent(type, data) {
+            eventCount++;
+            const eventDiv = document.createElement('div');
+            eventDiv.className = 'event';
+            eventDiv.innerHTML = `
+                <div class="event-type">#${eventCount} - ${type}</div>
+                <div class="event-time">${new Date().toLocaleTimeString()}</div>
+                <div class="event-data">${JSON.stringify(data, null, 2)}</div>
+            `;
+            eventsDiv.insertBefore(eventDiv, eventsDiv.firstChild);
+        }
+
+        // Connect to Socket.io server
+        const socket = io('http://localhost:3002', {
+            transports: ['websocket', 'polling']
+        });
+
+        socket.on('connect', () => {
+            console.log('Connected to WebSocket server');
+            statusDiv.textContent = 'Connected - Socket ID: ' + socket.id;
+            statusDiv.className = 'status connected';
+            addEvent('connection', { socketId: socket.id, status: 'connected' });
+        });
+
+        socket.on('disconnect', (reason) => {
+            console.log('Disconnected:', reason);
+            statusDiv.textContent = 'Disconnected - Reason: ' + reason;
+            statusDiv.className = 'status disconnected';
+            addEvent('disconnection', { reason, status: 'disconnected' });
+        });
+
+        socket.on('error', (error) => {
+            console.error('Socket error:', error);
+            addEvent('error', { error: error.toString() });
+        });
+
+        // Listen for all event types
+        socket.on('proxy:status', (data) => {
+            console.log('Received proxy:status:', data);
+            addEvent('proxy:status', data);
+        });
+
+        socket.on('credentials:updated', (data) => {
+            console.log('Received credentials:updated:', data);
+            addEvent('credentials:updated', data);
+        });
+
+        socket.on('providers:updated', (data) => {
+            console.log('Received providers:updated:', data);
+            addEvent('providers:updated', data);
+        });
+
+        socket.on('models:updated', (data) => {
+            console.log('Received models:updated:', data);
+            addEvent('models:updated', data);
+        });
+    </script>
+</body>
+</html>

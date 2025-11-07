@@ -10,6 +10,8 @@ import path from 'path'
 import { promisify } from 'util'
 import config from '../config.js'
 import { ProviderService, ModelService, QwenCredentialsService } from '../../../provider-router/src/database/services/index.js'
+import { eventEmitter } from '../services/event-emitter.js'
+import { setProxyStatusGetter } from '../controllers/websocket-controller.js'
 
 const execAsync = promisify(exec)
 
@@ -28,6 +30,74 @@ let qwenProxyProcess = null
 let qwenProxyStartTime = null
 
 /**
+ * Helper function to get current proxy status
+ * This is used by the WebSocket controller to send status on connection
+ */
+function getCurrentProxyStatus() {
+  const providerRouterRunning = proxyProcess !== null && isProcessRunning(proxyProcess.pid)
+  const qwenProxyRunning = qwenProxyProcess !== null && isProcessRunning(qwenProxyProcess.pid)
+
+  const providerRouterUptime = proxyStartTime && providerRouterRunning ? Math.floor((Date.now() - proxyStartTime) / 1000) : 0
+  const qwenProxyUptime = qwenProxyStartTime && qwenProxyRunning ? Math.floor((Date.now() - qwenProxyStartTime) / 1000) : 0
+
+  const allRunning = providerRouterRunning && qwenProxyRunning
+  const anyRunning = providerRouterRunning || qwenProxyRunning
+
+  // Query database for dashboard data
+  let providers = []
+  let models = []
+  let credentials = { valid: false, expiresAt: null }
+
+  try {
+    providers = ProviderService.getAll()
+    models = ModelService.getAll()
+
+    const credData = QwenCredentialsService.getCredentials()
+    if (credData) {
+      const now = Math.floor(Date.now() / 1000)
+      const isExpired = credData.expires_at && credData.expires_at <= now
+      const hasRequiredFields = !!(credData.token && credData.cookies)
+      credentials = {
+        valid: hasRequiredFields && !isExpired,
+        expiresAt: credData.expires_at || null
+      }
+    }
+  } catch (error) {
+    console.error('[Proxy Control] Error fetching status data:', error)
+  }
+
+  return {
+    status: allRunning ? 'running' : (anyRunning ? 'partial' : 'stopped'),
+    providerRouter: {
+      running: providerRouterRunning,
+      port: config.proxy.providerRouterPort,
+      pid: providerRouterRunning ? proxyProcess.pid : null,
+      uptime: providerRouterUptime
+    },
+    qwenProxy: {
+      running: qwenProxyRunning,
+      port: config.proxy.qwenProxyPort,
+      pid: qwenProxyRunning ? qwenProxyProcess.pid : null,
+      uptime: qwenProxyUptime
+    },
+    providers: {
+      items: providers,
+      total: providers.length,
+      enabled: providers.filter(p => p.enabled).length
+    },
+    models: {
+      items: models,
+      total: models.length
+    },
+    credentials,
+    message: allRunning ? 'All proxy servers are running' : (anyRunning ? 'Some proxy servers are running' : 'Proxy servers are not running')
+  }
+}
+
+// Register the status getter with WebSocket controller
+setProxyStatusGetter(getCurrentProxyStatus)
+
+/**
  * POST /api/proxy/start
  * Start the provider-router proxy server
  */
@@ -37,7 +107,7 @@ router.post('/start', async (req, res) => {
     const providerRouterRunning = isProcessRunning(proxyProcess.pid)
     const qwenProxyRunning = qwenProxyProcess && isProcessRunning(qwenProxyProcess.pid)
 
-    return res.json({
+    const responseData = {
       success: true,
       status: 'running',
       providerRouter: {
@@ -53,7 +123,12 @@ router.post('/start', async (req, res) => {
         pid: qwenProxyRunning ? qwenProxyProcess.pid : null
       },
       message: 'Proxy servers are already running'
-    })
+    }
+
+    // Emit status event (even though no change, client may be out of sync)
+    eventEmitter.emitProxyStatus(responseData)
+
+    return res.json(responseData)
   }
 
   try {
@@ -135,7 +210,7 @@ router.post('/start', async (req, res) => {
     const providerRouterRunning = proxyProcess !== null && isProcessRunning(proxyProcess.pid)
     const qwenProxyRunning = qwenProxyProcess !== null && isProcessRunning(qwenProxyProcess.pid)
 
-    res.json({
+    const responseData = {
       success: true,
       status: 'starting',
       providerRouter: {
@@ -151,7 +226,12 @@ router.post('/start', async (req, res) => {
         uptime: 0
       },
       message: 'Proxy servers are starting (qwen-proxy started first, provider-router starting now)'
-    })
+    }
+
+    // Emit proxy status change event
+    eventEmitter.emitProxyStatus(responseData)
+
+    res.json(responseData)
   } catch (error) {
     console.error('[Proxy Control] Error starting proxy:', error)
     proxyProcess = null
@@ -187,7 +267,7 @@ router.post('/start', async (req, res) => {
 router.post('/stop', (req, res) => {
   // Check if proxy is running
   if (!proxyProcess) {
-    return res.json({
+    const responseData = {
       success: true,
       status: 'stopped',
       providerRouter: {
@@ -203,7 +283,12 @@ router.post('/stop', (req, res) => {
         uptime: 0
       },
       message: 'Proxy servers are not running'
-    })
+    }
+
+    // Emit status event
+    eventEmitter.emitProxyStatus(responseData)
+
+    return res.json(responseData)
   }
 
   try {
@@ -228,7 +313,7 @@ router.post('/stop', (req, res) => {
       proxyProcess = null
       proxyStartTime = null
 
-      res.json({
+      const responseData = {
         success: true,
         status: 'stopped',
         providerRouter: {
@@ -244,7 +329,12 @@ router.post('/stop', (req, res) => {
           uptime: 0
         },
         message: 'Proxy servers stopped successfully'
-      })
+      }
+
+      // Emit proxy status change event
+      eventEmitter.emitProxyStatus(responseData)
+
+      res.json(responseData)
     } else {
       throw new Error('Failed to send kill signal to process')
     }
@@ -257,7 +347,7 @@ router.post('/stop', (req, res) => {
     qwenProxyProcess = null
     qwenProxyStartTime = null
 
-    res.status(500).json({
+    const responseData = {
       success: false,
       status: 'error',
       error: `Failed to stop proxy server: ${error.message}`,
@@ -274,7 +364,12 @@ router.post('/stop', (req, res) => {
         uptime: 0
       },
       message: `Failed to stop proxy server: ${error.message}`
-    })
+    }
+
+    // Emit status event even on error
+    eventEmitter.emitProxyStatus(responseData)
+
+    res.status(500).json(responseData)
   }
 })
 
