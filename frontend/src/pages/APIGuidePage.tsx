@@ -6,9 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Code, Copy, CheckCircle, AlertCircle, Activity } from 'lucide-react';
+import { Code, Copy, CheckCircle, Activity } from 'lucide-react';
 import { CodeBlock } from '@/components/features/quick-guide/CodeBlock';
-import { pythonExample, nodeExample, curlExample, supportedEndpoints, commonIssues } from '@/lib/api-guide-examples';
+import { pythonExample, nodeExample, curlExample, supportedEndpoints } from '@/lib/api-guide-examples';
 import type { GuidePageProps } from '@/types/quick-guide.types';
 
 export function APIGuidePage({}: GuidePageProps) {
@@ -138,28 +138,6 @@ export function APIGuidePage({}: GuidePageProps) {
         </CardContent>
       </Card>
 
-      {/* Common Issues */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <AlertCircle className="h-4 w-4" />
-            Troubleshooting
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {commonIssues.map((issue, i) => (
-              <div key={i} className="flex items-start gap-3 bg-muted/30 rounded-lg p-3">
-                <AlertCircle className="h-4 w-4 text-orange-500 mt-0.5 shrink-0" />
-                <div className="space-y-1 flex-1">
-                  <p className="text-sm font-medium">{issue.error}</p>
-                  <p className="text-xs text-muted-foreground">→ {issue.solution}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }
