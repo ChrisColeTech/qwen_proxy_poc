@@ -1,3 +1,5 @@
+import { cn } from '@/lib/utils';
+
 type Status = 'authenticated' | 'none' | 'invalid' | 'running' | 'stopped';
 
 interface StatusBadgeProps {
@@ -23,8 +25,8 @@ export function StatusBadge({ status, children }: StatusBadgeProps) {
   };
 
   return (
-    <div className={`flex items-center gap-1.5 text-xs font-medium ${textClass[status]}`}>
-      <span className={`h-1.5 w-1.5 rounded-full ${dotClass[status]}`} />
+    <div className={cn('flex items-center gap-1.5 text-xs font-medium', textClass[status])}>
+      <span className={cn('h-1.5 w-1.5 rounded-full', dotClass[status])} />
       {children || status.charAt(0).toUpperCase() + status.slice(1)}
     </div>
   );

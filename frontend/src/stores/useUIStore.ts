@@ -4,11 +4,13 @@ import type { UIState } from '@/types';
 interface UIStore {
   uiState: UIState;
   statusMessage: string;
+  currentRoute: string;
   setTheme: (theme: 'light' | 'dark') => void;
   toggleTheme: () => void;
   setSidebarPosition: (position: 'left' | 'right') => void;
   toggleSidebarPosition: () => void;
   setStatusMessage: (message: string) => void;
+  setCurrentRoute: (route: string) => void;
   loadSettings: () => Promise<void>;
 }
 
@@ -62,6 +64,7 @@ export const useUIStore = create<UIStore>((set, get) => ({
     sidebarPosition: 'left',
   },
   statusMessage: 'Ready',
+  currentRoute: '/',
   setTheme: async (theme) => {
     const currentState = get().uiState;
     const newState: UIState = { ...currentState, theme };
@@ -113,6 +116,7 @@ export const useUIStore = create<UIStore>((set, get) => ({
     }
   },
   setStatusMessage: (message) => set({ statusMessage: message }),
+  setCurrentRoute: (route) => set({ currentRoute: route }),
   loadSettings: async () => {
     try {
       const uiState = await loadUIState();

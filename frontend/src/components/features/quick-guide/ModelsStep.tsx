@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Database, RefreshCw, CheckCircle2, XCircle } from 'lucide-react';
 import type { ModelsStepProps } from '@/types/quick-guide.types';
 import { CodeBlock } from '@/components/features/quick-guide/CodeBlock';
+import { cn } from '@/lib/utils';
 
 export function ModelsStep({ models, loading, onRefresh, providerRouterUrl }: ModelsStepProps) {
   return (
@@ -54,7 +55,7 @@ export function ModelsStep({ models, loading, onRefresh, providerRouterUrl }: Mo
                 title="Refresh models"
                 className="h-7 w-7"
               >
-                <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={cn('h-3.5 w-3.5', loading && 'animate-spin')} />
               </Button>
             </div>
           </div>

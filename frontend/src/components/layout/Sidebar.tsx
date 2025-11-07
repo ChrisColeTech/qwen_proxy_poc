@@ -1,7 +1,6 @@
 import { Home, HelpCircle, Code, Network, Database, MessageSquare, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUIStore } from '@/stores/useUIStore';
-import type { SidebarProps } from '@/types/layout.types';
 
 interface NavItem {
   id: string;
@@ -27,8 +26,10 @@ const guideNavItems: NavItem[] = [
   { id: 'guide-desktop', icon: HelpCircle, label: 'Desktop Guide', route: '/guide/desktop' },
 ];
 
-export function Sidebar({ activeRoute, onNavigate }: SidebarProps) {
+export function Sidebar() {
   const sidebarPosition = useUIStore((state) => state.uiState.sidebarPosition);
+  const activeRoute = useUIStore((state) => state.currentRoute);
+  const setCurrentRoute = useUIStore((state) => state.setCurrentRoute);
 
   // Filter guide items based on environment
   const activeGuideItem = guideNavItems.find(item => {
@@ -56,7 +57,7 @@ export function Sidebar({ activeRoute, onNavigate }: SidebarProps) {
           return (
             <button
               key={item.id}
-              onClick={() => onNavigate(item.route)}
+              onClick={() => setCurrentRoute(item.route)}
               title={item.label}
               className={cn(
                 'w-full h-12 flex items-center justify-center transition-colors relative group',
@@ -78,7 +79,7 @@ export function Sidebar({ activeRoute, onNavigate }: SidebarProps) {
 
         {activeGuideItem && (
           <button
-            onClick={() => onNavigate(activeGuideItem.route)}
+            onClick={() => setCurrentRoute(activeGuideItem.route)}
             title={activeGuideItem.label}
             className={cn(
               'w-full h-12 flex items-center justify-center transition-colors relative group mt-auto border-t border-border',
@@ -98,7 +99,7 @@ export function Sidebar({ activeRoute, onNavigate }: SidebarProps) {
         )}
 
         <button
-          onClick={() => onNavigate('/settings')}
+          onClick={() => setCurrentRoute('/settings')}
           title="Settings"
           className={cn(
             'w-full h-12 flex items-center justify-center transition-colors relative group mb-2',

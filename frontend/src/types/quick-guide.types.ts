@@ -28,7 +28,3 @@ export interface CodeBlockProps {
   label: string;
   code: string;
 }
-
-export interface GuidePageProps {
-  onNavigate: (route: string) => void;
-}

@@ -2,9 +2,8 @@ import { useProxyStatus } from '@/hooks/useProxyStatus';
 import { useProxyStore } from '@/stores/useProxyStore';
 import { CodeExamplesCard } from '@/components/features/api-guide/CodeExamplesCard';
 import { SupportedEndpointsCard } from '@/components/features/api-guide/SupportedEndpointsCard';
-import type { GuidePageProps } from '@/types/quick-guide.types';
 
-export function APIGuidePage({}: GuidePageProps) {
+export function APIGuidePage() {
   useProxyStatus();
   const proxyStatus = useProxyStore((state) => state.status);
 

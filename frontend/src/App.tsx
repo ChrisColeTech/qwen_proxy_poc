@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { useUIStore } from '@/stores/useUIStore';
 import { AppLayout } from '@/components/layout/AppLayout';
@@ -14,7 +14,7 @@ import { SettingsPage } from '@/pages/SettingsPage';
 
 function App() {
   useDarkMode();
-  const [currentRoute, setCurrentRoute] = useState('/');
+  const currentRoute = useUIStore((state) => state.currentRoute);
 
   useEffect(() => {
     // Load settings once on mount
@@ -24,13 +24,13 @@ function App() {
   const renderPage = () => {
     switch (currentRoute) {
       case '/':
-        return <HomePage onNavigate={setCurrentRoute} />;
+        return <HomePage />;
       case '/guide/browser':
-        return <BrowserGuidePage onNavigate={setCurrentRoute} />;
+        return <BrowserGuidePage />;
       case '/guide/desktop':
-        return <DesktopGuidePage onNavigate={setCurrentRoute} />;
+        return <DesktopGuidePage />;
       case '/guide/api':
-        return <APIGuidePage onNavigate={setCurrentRoute} />;
+        return <APIGuidePage />;
       case '/providers':
         return <ProvidersPage />;
       case '/models':
@@ -40,13 +40,13 @@ function App() {
       case '/settings':
         return <SettingsPage />;
       default:
-        return <HomePage onNavigate={setCurrentRoute} />;
+        return <HomePage />;
     }
   };
 
   return (
     <>
-      <AppLayout activeRoute={currentRoute} onNavigate={setCurrentRoute}>
+      <AppLayout>
         {renderPage()}
       </AppLayout>
       <Toaster />

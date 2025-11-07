@@ -1,11 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Network, Database, Zap, ArrowRight, Compass } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useUIStore } from '@/stores/useUIStore';
 
-interface ExploreSectionProps {
-  onNavigate: (route: string) => void;
-}
-
-export function ExploreSection({ onNavigate }: ExploreSectionProps) {
+export function ExploreSection() {
+  const setCurrentRoute = useUIStore((state) => state.setCurrentRoute);
   const features = [
     {
       icon: Network,
@@ -46,11 +45,11 @@ export function ExploreSection({ onNavigate }: ExploreSectionProps) {
               <div
                 key={feature.route}
                 className="p-4 rounded-lg border bg-card hover:bg-muted/50 transition-colors cursor-pointer group"
-                onClick={() => onNavigate(feature.route)}
+                onClick={() => setCurrentRoute(feature.route)}
               >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between">
-                    <Icon className={`h-5 w-5 ${feature.color}`} />
+                    <Icon className={cn('h-5 w-5', feature.color)} />
                     <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
                   </div>
                   <div>

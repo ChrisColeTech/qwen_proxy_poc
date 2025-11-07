@@ -2,11 +2,7 @@ import { useProxyStatus } from '@/hooks/useProxyStatus';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookOpen } from 'lucide-react';
 
-interface QuickGuidePageProps {
-  onNavigate: (route: string) => void;
-}
-
-export function QuickGuidePage({}: QuickGuidePageProps) {
+export function QuickGuidePage() {
   useProxyStatus();
 
   return (
