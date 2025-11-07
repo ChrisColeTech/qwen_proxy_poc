@@ -11,7 +11,7 @@ interface NavItem {
 }
 
 const isElectron = () => {
-  return typeof window !== 'undefined' && (window as any).electronAPI;
+  return typeof window !== 'undefined' && window.electronAPI;
 };
 
 const mainNavItems: NavItem[] = [

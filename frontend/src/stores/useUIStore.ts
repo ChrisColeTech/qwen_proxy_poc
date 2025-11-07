@@ -13,14 +13,14 @@ interface UIStore {
 }
 
 function isElectron() {
-  return typeof window !== 'undefined' && (window as any).electronAPI;
+  return typeof window !== 'undefined' && window.electronAPI;
 }
 
 async function saveUIState(uiState: UIState) {
   const electron = isElectron();
   console.log('[UIStore] Saving UI state:', uiState, 'isElectron:', !!electron);
-  if (electron) {
-    await (window as any).electronAPI.settings.set('uiState', uiState);
+  if (electron && window.electronAPI) {
+    await window.electronAPI.settings.set('uiState', uiState);
     console.log('[UIStore] Saved to electron-store');
   } else {
     localStorage.setItem('qwen-proxy-ui-state', JSON.stringify(uiState));
@@ -31,8 +31,8 @@ async function saveUIState(uiState: UIState) {
 async function loadUIState(): Promise<UIState> {
   const electron = isElectron();
   console.log('[UIStore] Loading UI state, isElectron:', !!electron);
-  if (electron) {
-    const stored = await (window as any).electronAPI.settings.get('uiState');
+  if (electron && window.electronAPI) {
+    const stored = await window.electronAPI.settings.get('uiState') as UIState | null;
     console.log('[UIStore] Loaded from electron-store:', stored);
     return stored || { theme: 'dark', sidebarPosition: 'left' };
   } else {

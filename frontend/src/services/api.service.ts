@@ -191,9 +191,9 @@ export const apiService = {
     }
   },
 
-  async updateProviderConfigKey(id: string, key: string, value: any, isSensitive?: boolean) {
+  async updateProviderConfigKey(id: string, key: string, value: string | number | boolean, isSensitive?: boolean) {
     try {
-      const body: any = { value };
+      const body: { value: string | number | boolean; is_sensitive?: boolean } = { value };
       if (isSensitive !== undefined) {
         body.is_sensitive = isSensitive;
       }
