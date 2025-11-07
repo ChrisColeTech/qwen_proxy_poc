@@ -29,6 +29,12 @@
   .status-neutral-dot {
     background-color: hsl(var(--status-neutral));
   }
+  .status-purple {
+    color: hsl(var(--status-purple));
+  }
+  .status-purple-dot {
+    background-color: hsl(var(--status-purple));
+  }
 }
 
 /* Page Layout */

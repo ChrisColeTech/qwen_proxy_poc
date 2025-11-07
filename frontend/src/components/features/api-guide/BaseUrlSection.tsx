@@ -33,7 +33,7 @@ export function BaseUrlSection({ baseUrl }: BaseUrlSectionProps) {
           className="h-10 w-10 shrink-0"
         >
           {copiedUrl ? (
-            <CheckCircle className="h-4 w-4 text-green-500" />
+            <CheckCircle className="h-4 w-4 status-success" />
           ) : (
             <Copy className="h-4 w-4" />
           )}

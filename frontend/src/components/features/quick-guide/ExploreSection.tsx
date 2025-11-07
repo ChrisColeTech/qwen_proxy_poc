@@ -12,21 +12,21 @@ export function ExploreSection({ onNavigate }: ExploreSectionProps) {
       title: 'Manage Providers',
       description: 'Switch between AI backends (Qwen, LM Studio, etc.) without restarting',
       route: '/providers',
-      color: 'text-blue-500'
+      color: 'status-info'
     },
     {
       icon: Database,
       title: 'Explore Models',
       description: 'View all available models from your active provider in real-time',
       route: '/models',
-      color: 'text-purple-500'
+      color: 'status-purple'
     },
     {
       icon: Zap,
       title: 'Test Chat API',
       description: 'Interactive testing interface for chat completions with instant results',
       route: '/chat',
-      color: 'text-green-500'
+      color: 'status-success'
     }
   ];
 
