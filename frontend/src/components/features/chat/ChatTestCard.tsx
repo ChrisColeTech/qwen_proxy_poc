@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { MessageSquare, Send, RefreshCw, Database, ChevronDown, ChevronRight, Brain, Play, Zap } from 'lucide-react';
+import { MessageSquare, Send, RefreshCw, ChevronDown, ChevronRight, Brain, Play, Zap } from 'lucide-react';
 import { CodeBlock } from '@/components/features/quick-guide/CodeBlock';
 
 interface ChatTestCardProps {
@@ -129,10 +129,6 @@ export function ChatTestCard({ providerRouterUrl, activeModel }: ChatTestCardPro
                   <span className="demo-label-text">Test Response</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant="secondary" className="gap-1">
-                    <Database className="h-3 w-3" />
-                    {modelToUse}
-                  </Badge>
                   {quickLoading && (
                     <Badge variant="secondary" className="gap-1">
                       <RefreshCw className="h-3 w-3 animate-spin" />
@@ -173,13 +169,7 @@ export function ChatTestCard({ providerRouterUrl, activeModel }: ChatTestCardPro
             </p>
 
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <label className="text-sm font-medium">Your Prompt</label>
-                <Badge variant="secondary" className="gap-1">
-                  <Database className="h-3 w-3" />
-                  {modelToUse}
-                </Badge>
-              </div>
+              <label className="text-sm font-medium">Your Prompt</label>
               <Textarea
                 value={customPrompt}
                 onChange={(e) => setCustomPrompt(e.target.value)}
@@ -265,7 +255,7 @@ export function ChatTestCard({ providerRouterUrl, activeModel }: ChatTestCardPro
           {/* Try It Yourself Tab */}
           <TabsContent value="curl" className="mt-4 space-y-4">
             <p className="step-description">
-              Use this curl command to test the chat completion endpoint directly from your terminal. The command uses the active model <Badge variant="secondary" className="inline-flex gap-1 align-middle mx-1"><Database className="h-3 w-3" />{modelToUse}</Badge> and connects to the Provider Router at <code className="text-xs bg-muted px-1.5 py-0.5 rounded">{providerRouterUrl || 'http://localhost:3001'}</code>.
+              Use this curl command to test the chat completion endpoint directly from your terminal. The model and provider shown in the status bar will be used automatically.
             </p>
 
             <CodeBlock
