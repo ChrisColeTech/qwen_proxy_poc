@@ -1,0 +1,16 @@
+/* Quick Guide Page */
+.quick-guide-container {
+  @apply container max-w-6xl mx-auto p-6 space-y-6;
+}
+
+.quick-guide-header {
+  @apply space-y-2;
+}
+
+.quick-guide-title {
+  @apply text-3xl font-bold flex items-center gap-3;
+}
+
+.quick-guide-subtitle {
+  @apply text-muted-foreground;
+}
