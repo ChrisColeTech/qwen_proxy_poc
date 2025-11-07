@@ -265,7 +265,7 @@ export function ChatTestCard({ providerRouterUrl, activeModel }: ChatTestCardPro
           {/* Try It Yourself Tab */}
           <TabsContent value="curl" className="mt-4 space-y-4">
             <p className="step-description">
-              Use this curl command to test the chat completion endpoint directly from your terminal.
+              Use this curl command to test the chat completion endpoint directly from your terminal. The command uses the active model <Badge variant="secondary" className="inline-flex gap-1 align-middle mx-1"><Database className="h-3 w-3" />{modelToUse}</Badge> and connects to the Provider Router at <code className="text-xs bg-muted px-1.5 py-0.5 rounded">{providerRouterUrl || 'http://localhost:3001'}</code>.
             </p>
 
             <CodeBlock
@@ -280,24 +280,6 @@ export function ChatTestCard({ providerRouterUrl, activeModel }: ChatTestCardPro
     ]
   }'`}
             />
-
-            <div className="demo-container">
-              <div className="demo-header">
-                <div className="demo-label">
-                  <Database className="h-4 w-4 text-primary" />
-                  <span className="demo-label-text">Active Model</span>
-                </div>
-                <Badge variant="secondary" className="gap-1">
-                  <Database className="h-3 w-3" />
-                  {modelToUse}
-                </Badge>
-              </div>
-              <div className="demo-content">
-                <p className="text-sm text-muted-foreground">
-                  The curl command above will send a request to your active provider using the <code className="text-xs bg-muted px-1 py-0.5 rounded">{modelToUse}</code> model. Make sure the Provider Router is running on <code className="text-xs bg-muted px-1 py-0.5 rounded">{providerRouterUrl || 'http://localhost:3001'}</code>.
-                </p>
-              </div>
-            </div>
           </TabsContent>
         </Tabs>
       </CardContent>
