@@ -110,26 +110,14 @@ export function ChatTestCard({ providerRouterUrl, activeModel }: ChatTestCardPro
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="quick" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="quick">Quick Test</TabsTrigger>
             <TabsTrigger value="custom">Custom Chat</TabsTrigger>
+            <TabsTrigger value="curl">Try It Yourself</TabsTrigger>
           </TabsList>
 
           {/* Quick Test Tab */}
           <TabsContent value="quick" className="mt-4 space-y-4">
-            <CodeBlock
-              label="Try it yourself:"
-              code={`curl ${providerRouterUrl || 'http://localhost:3001'}/v1/chat/completions \\
-  -H "Content-Type: application/json" \\
-  -H "Authorization: Bearer any-key" \\
-  -d '{
-    "model": "${modelToUse}",
-    "messages": [
-      {"role": "user", "content": "Say hello in one sentence"}
-    ]
-  }'`}
-            />
-
             <p className="step-description">
               Send a chat completion request to the active provider. The Provider Router automatically routes your request based on the configured provider.
             </p>
@@ -272,6 +260,44 @@ export function ChatTestCard({ providerRouterUrl, activeModel }: ChatTestCardPro
                 </div>
               </div>
             )}
+          </TabsContent>
+
+          {/* Try It Yourself Tab */}
+          <TabsContent value="curl" className="mt-4 space-y-4">
+            <p className="step-description">
+              Use this curl command to test the chat completion endpoint directly from your terminal.
+            </p>
+
+            <CodeBlock
+              label="Copy and run in your terminal:"
+              code={`curl ${providerRouterUrl || 'http://localhost:3001'}/v1/chat/completions \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer any-key" \\
+  -d '{
+    "model": "${modelToUse}",
+    "messages": [
+      {"role": "user", "content": "Say hello in one sentence"}
+    ]
+  }'`}
+            />
+
+            <div className="demo-container">
+              <div className="demo-header">
+                <div className="demo-label">
+                  <Database className="h-4 w-4 text-primary" />
+                  <span className="demo-label-text">Active Model</span>
+                </div>
+                <Badge variant="secondary" className="gap-1">
+                  <Database className="h-3 w-3" />
+                  {modelToUse}
+                </Badge>
+              </div>
+              <div className="demo-content">
+                <p className="text-sm text-muted-foreground">
+                  The curl command above will send a request to your active provider using the <code className="text-xs bg-muted px-1 py-0.5 rounded">{modelToUse}</code> model. Make sure the Provider Router is running on <code className="text-xs bg-muted px-1 py-0.5 rounded">{providerRouterUrl || 'http://localhost:3001'}</code>.
+                </p>
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
       </CardContent>
