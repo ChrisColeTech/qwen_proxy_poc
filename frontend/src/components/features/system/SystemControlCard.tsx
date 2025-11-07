@@ -13,7 +13,7 @@ import { Activity, LogIn, Play, Square, Copy, AlertCircle } from 'lucide-react';
 export function SystemControlCard() {
   const { handleConnect, loading: authLoading } = useCredentialActions();
   const { handleStart, handleStop, loading: proxyLoading } = useProxyControl();
-  const { state: lifecycleState, message: lifecycleMessage, error: lifecycleError } = useProviderRouterLifecycle();
+  const { state: lifecycleState, error: lifecycleError } = useProviderRouterLifecycle();
   const proxyStatus = useProxyStore((state) => state.status);
   const showAlert = useAlertStore((state) => state.showAlert);
 

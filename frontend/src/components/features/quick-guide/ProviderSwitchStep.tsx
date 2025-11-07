@@ -10,12 +10,19 @@ export function ProviderSwitchStep({ providers, activeProvider, loading, onSwitc
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="step-card-title">
-          <div className="step-number-badge">3</div>
-          Switch Between Providers
+        <CardTitle className="flex items-center gap-2 text-base">
+          <Network className="h-4 w-4" />
+          Switch Provider
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        <CodeBlock
+          label="Via API:"
+          code={`curl -X PUT ${apiBaseUrl || 'http://localhost:3002'}/api/settings/active_provider \\
+  -H "Content-Type: application/json" \\
+  -d '{"value": "qwen-proxy-default"}'`}
+        />
+
         <p className="step-description">
           The Provider Router can route to different AI backends. Switch providers dynamically without restarting:
         </p>
@@ -44,7 +51,7 @@ export function ProviderSwitchStep({ providers, activeProvider, loading, onSwitc
               return (
                 <div key={provider.id} className={itemClassName}>
                   <div className="provider-switch-info">
-                    <StatusIndicator status={isActive ? 'active' : provider.enabled ? 'inactive' : 'disabled'} />
+                    <StatusIndicator status={isActive ? 'running' : 'stopped'} />
                     <div className="provider-switch-details">
                       <div className="provider-switch-name">{provider.name}</div>
                       <div className="provider-switch-type">{provider.type}</div>
@@ -81,13 +88,6 @@ export function ProviderSwitchStep({ providers, activeProvider, loading, onSwitc
             </div>
           )}
         </div>
-
-        <CodeBlock
-          label="Via API:"
-          code={`curl -X PUT ${apiBaseUrl || 'http://localhost:3002'}/api/settings/active_provider \\
-  -H "Content-Type: application/json" \\
-  -d '{"value": "qwen-proxy-default"}'`}
-        />
       </CardContent>
     </Card>
   );

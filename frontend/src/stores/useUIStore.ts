@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 import type { UIState } from '@/types';
 
 interface UIStore {
@@ -10,42 +9,117 @@ interface UIStore {
   setSidebarPosition: (position: 'left' | 'right') => void;
   toggleSidebarPosition: () => void;
   setStatusMessage: (message: string) => void;
+  loadSettings: () => Promise<void>;
 }
 
-export const useUIStore = create<UIStore>()(
-  persist(
-    (set) => ({
-      uiState: {
-        theme: 'dark',
-        sidebarPosition: 'left',
-      },
-      statusMessage: 'Ready',
-      setTheme: (theme) =>
-        set((state) => ({
-          uiState: { ...state.uiState, theme },
-        })),
-      toggleTheme: () =>
-        set((state) => ({
-          uiState: {
-            ...state.uiState,
-            theme: state.uiState.theme === 'light' ? 'dark' : 'light',
-          },
-        })),
-      setSidebarPosition: (position) =>
-        set((state) => ({
-          uiState: { ...state.uiState, sidebarPosition: position },
-        })),
-      toggleSidebarPosition: () =>
-        set((state) => ({
-          uiState: {
-            ...state.uiState,
-            sidebarPosition: state.uiState.sidebarPosition === 'left' ? 'right' : 'left',
-          },
-        })),
-      setStatusMessage: (message) => set({ statusMessage: message }),
-    }),
-    {
-      name: 'qwen-proxy-ui-state',
+function isElectron() {
+  return typeof window !== 'undefined' && (window as any).electronAPI;
+}
+
+async function saveUIState(uiState: UIState) {
+  const electron = isElectron();
+  console.log('[UIStore] Saving UI state:', uiState, 'isElectron:', !!electron);
+  if (electron) {
+    await (window as any).electronAPI.settings.set('uiState', uiState);
+    console.log('[UIStore] Saved to electron-store');
+  } else {
+    localStorage.setItem('qwen-proxy-ui-state', JSON.stringify(uiState));
+    console.log('[UIStore] Saved to localStorage');
+  }
+}
+
+async function loadUIState(): Promise<UIState> {
+  const electron = isElectron();
+  console.log('[UIStore] Loading UI state, isElectron:', !!electron);
+  if (electron) {
+    const stored = await (window as any).electronAPI.settings.get('uiState');
+    console.log('[UIStore] Loaded from electron-store:', stored);
+    return stored || { theme: 'dark', sidebarPosition: 'left' };
+  } else {
+    try {
+      const stored = localStorage.getItem('qwen-proxy-ui-state');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        console.log('[UIStore] Loaded from localStorage:', parsed);
+        // Support both new format (direct UIState) and legacy format (nested)
+        const uiState = parsed.state?.uiState || parsed;
+        // Validate the loaded state has required properties
+        if (uiState.theme && uiState.sidebarPosition) {
+          return uiState;
+        }
+      }
+    } catch (e) {
+      console.error('[UIStore] Failed to load UI state from localStorage:', e);
     }
-  )
-);
+    console.log('[UIStore] No stored state, using defaults');
+    return { theme: 'dark', sidebarPosition: 'left' };
+  }
+}
+
+export const useUIStore = create<UIStore>((set, get) => ({
+  uiState: {
+    theme: 'dark',
+    sidebarPosition: 'left',
+  },
+  statusMessage: 'Ready',
+  setTheme: async (theme) => {
+    const currentState = get().uiState;
+    const newState: UIState = { ...currentState, theme };
+    set({ uiState: newState });
+    try {
+      await saveUIState(newState);
+    } catch (error) {
+      console.error('[UIStore] Failed to save theme:', error);
+      // Rollback on error
+      set({ uiState: currentState });
+    }
+  },
+  toggleTheme: async () => {
+    const currentState = get().uiState;
+    const newTheme: 'light' | 'dark' = currentState.theme === 'light' ? 'dark' : 'light';
+    const newState: UIState = { ...currentState, theme: newTheme };
+    set({ uiState: newState });
+    try {
+      await saveUIState(newState);
+    } catch (error) {
+      console.error('[UIStore] Failed to save theme toggle:', error);
+      // Rollback on error
+      set({ uiState: currentState });
+    }
+  },
+  setSidebarPosition: async (position) => {
+    const currentState = get().uiState;
+    const newState: UIState = { ...currentState, sidebarPosition: position };
+    set({ uiState: newState });
+    try {
+      await saveUIState(newState);
+    } catch (error) {
+      console.error('[UIStore] Failed to save sidebar position:', error);
+      // Rollback on error
+      set({ uiState: currentState });
+    }
+  },
+  toggleSidebarPosition: async () => {
+    const currentState = get().uiState;
+    const newPosition: 'left' | 'right' = currentState.sidebarPosition === 'left' ? 'right' : 'left';
+    const newState: UIState = { ...currentState, sidebarPosition: newPosition };
+    set({ uiState: newState });
+    try {
+      await saveUIState(newState);
+    } catch (error) {
+      console.error('[UIStore] Failed to save sidebar position toggle:', error);
+      // Rollback on error
+      set({ uiState: currentState });
+    }
+  },
+  setStatusMessage: (message) => set({ statusMessage: message }),
+  loadSettings: async () => {
+    try {
+      const uiState = await loadUIState();
+      console.log('[UIStore] Settings loaded successfully:', uiState);
+      set({ uiState });
+    } catch (error) {
+      console.error('[UIStore] Failed to load settings:', error);
+    }
+  },
+}));

@@ -320,6 +320,82 @@
   @apply absolute top-2 right-2 h-7 w-7;
 }
 
+/* Guide Pages - Benefits Banner */
+.guide-benefits-banner {
+  @apply border-primary/20 bg-primary/5;
+}
+
+.guide-benefits-grid {
+  @apply grid md:grid-cols-3 gap-4 pt-6;
+}
+
+.guide-benefit-item {
+  @apply flex items-start gap-3;
+}
+
+.guide-benefit-icon {
+  @apply h-5 w-5 text-primary mt-0.5;
+}
+
+.guide-benefit-title {
+  @apply text-sm font-medium;
+}
+
+.guide-benefit-description {
+  @apply text-xs text-muted-foreground;
+}
+
+/* Guide Pages - Step Card Elements */
+.guide-step-list {
+  @apply space-y-2;
+}
+
+.guide-step-item {
+  @apply flex items-start gap-3;
+}
+
+.guide-step-icon {
+  @apply h-4 w-4 status-icon-success mt-0.5;
+}
+
+.guide-step-text {
+  @apply text-sm;
+}
+
+/* Guide Pages - Common Issues */
+.guide-issues-list {
+  @apply space-y-3;
+}
+
+/* Guide Pages - Prerequisites */
+.guide-prerequisites-list {
+  @apply space-y-3;
+}
+
+/* Guide Pages - Badge with Icon */
+.guide-badge-with-icon {
+  @apply flex items-center gap-1;
+}
+
+/* Guide Pages - Title Icon */
+.guide-title-icon {
+  @apply h-4 w-4;
+}
+
+/* Guide Pages - Alert Icon */
+.guide-alert-icon {
+  @apply h-4 w-4;
+}
+
+.guide-alert-icon-header {
+  @apply h-5 w-5;
+}
+
+/* Guide Pages - Button Actions Row */
+.guide-button-actions {
+  @apply flex gap-2 mt-4;
+}
+
 /* Next Steps Card */
 .next-steps-card {
   @apply border-primary/20 bg-primary/5;
@@ -377,4 +453,80 @@
 
 .status-icon-inline {
   @apply inline h-3 w-3 mx-1;
+}
+
+/* ============================================================================
+   STRICT NO-INLINE-TAILWIND CLASSES
+   All layout and utility classes extracted from components
+   ============================================================================ */
+
+/* Page Layout */
+.page-container {
+  @apply container max-w-7xl mx-auto p-6 space-y-6;
+}
+
+/* Icon Sizes */
+.icon-sm {
+  @apply h-4 w-4;
+}
+
+.icon-md {
+  @apply h-5 w-5;
+}
+
+.icon-lg {
+  @apply h-8 w-8;
+}
+
+.icon-sm-muted {
+  @apply h-4 w-4 text-muted-foreground;
+}
+
+/* Card Title with Icon */
+.card-title-with-icon {
+  @apply flex items-center gap-2 text-base;
+}
+
+/* Spacing Utilities */
+.vspace-tight {
+  @apply space-y-0.5;
+}
+
+.vspace-sm {
+  @apply space-y-2;
+}
+
+.vspace-md {
+  @apply space-y-4;
+}
+
+.vspace-lg {
+  @apply space-y-6;
+}
+
+/* Flex Layouts */
+.flex-row {
+  @apply flex items-center gap-2;
+}
+
+.flex-row-between {
+  @apply flex items-center justify-between;
+}
+
+.flex-row-gap-sm {
+  @apply gap-2;
+}
+
+/* Typography */
+.text-setting-label {
+  @apply text-sm font-medium;
+}
+
+.text-setting-description {
+  @apply text-xs text-muted-foreground;
+}
+
+/* Dividers */
+.divider-horizontal {
+  @apply h-px bg-border;
 }

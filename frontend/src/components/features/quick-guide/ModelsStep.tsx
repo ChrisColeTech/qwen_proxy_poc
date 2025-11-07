@@ -9,24 +9,18 @@ export function ModelsStep({ models, loading, onRefresh, providerRouterUrl }: Mo
   return (
     <Card>
       <CardHeader>
-        <div className="step-card-header-row">
-          <CardTitle className="step-card-title">
-            <div className="step-number-badge">1</div>
-            Get Available Models
-          </CardTitle>
-          <Button
-            onClick={onRefresh}
-            disabled={loading}
-            size="icon"
-            variant="outline"
-            title="Refresh models"
-            className="h-8 w-8"
-          >
-            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-          </Button>
-        </div>
+        <CardTitle className="flex items-center gap-2 text-base">
+          <Database className="h-4 w-4" />
+          Available Models
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        <CodeBlock
+          label="Try it yourself:"
+          code={`curl ${providerRouterUrl || 'http://localhost:3001'}/v1/models \\
+  -H "Authorization: Bearer any-key"`}
+        />
+
         <p className="step-description">
           The Provider Router exposes an OpenAI-compatible endpoint at{' '}
           <code className="step-inline-code">http://localhost:3001/v1</code>.
@@ -39,18 +33,30 @@ export function ModelsStep({ models, loading, onRefresh, providerRouterUrl }: Mo
               <Database className="h-4 w-4 text-primary" />
               <span className="demo-label-text">Available Models</span>
             </div>
-            {loading && (
-              <Badge variant="secondary" className="gap-1">
-                <RefreshCw className="h-3 w-3 animate-spin" />
-                Loading...
-              </Badge>
-            )}
-            {!loading && models.length > 0 && (
-              <Badge variant="secondary" className="gap-1">
-                <CheckCircle2 className="h-3 w-3 status-icon-success" />
-                {models.length} models
-              </Badge>
-            )}
+            <div className="flex items-center gap-2">
+              {loading && (
+                <Badge variant="secondary" className="gap-1">
+                  <RefreshCw className="h-3 w-3 animate-spin" />
+                  Loading...
+                </Badge>
+              )}
+              {!loading && models.length > 0 && (
+                <Badge variant="secondary" className="gap-1">
+                  <CheckCircle2 className="h-3 w-3 status-icon-success" />
+                  {models.length} models
+                </Badge>
+              )}
+              <Button
+                onClick={onRefresh}
+                disabled={loading}
+                size="icon"
+                variant="outline"
+                title="Refresh models"
+                className="h-7 w-7"
+              >
+                <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
+              </Button>
+            </div>
           </div>
           {models.length > 0 && (
             <div className="model-list-container">
@@ -69,12 +75,6 @@ export function ModelsStep({ models, loading, onRefresh, providerRouterUrl }: Mo
             </div>
           )}
         </div>
-
-        <CodeBlock
-          label="Try it yourself:"
-          code={`curl ${providerRouterUrl || 'http://localhost:3001'}/v1/models \\
-  -H "Authorization: Bearer any-key"`}
-        />
       </CardContent>
     </Card>
   );

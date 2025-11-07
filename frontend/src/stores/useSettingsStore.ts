@@ -45,6 +45,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
       set((state) => ({
         settings: { ...state.settings, [key]: value }
       }));
+      // Refetch settings to ensure everything is in sync
+      get().fetchSettings();
     } catch (error) {
       console.error('Failed to update setting:', error);
       throw error;

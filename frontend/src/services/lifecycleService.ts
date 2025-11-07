@@ -5,8 +5,8 @@ import { proxyService } from '@/services/proxyService';
 const LIFECYCLE_POLL_INTERVAL = 1000; // 1 second
 const LIFECYCLE_TIMEOUT = 30000; // 30 seconds
 
-let pollInterval: NodeJS.Timeout | null = null;
-let timeoutHandle: NodeJS.Timeout | null = null;
+let pollInterval: number | null = null;
+let timeoutHandle: number | null = null;
 
 function cleanup() {
   if (pollInterval) {

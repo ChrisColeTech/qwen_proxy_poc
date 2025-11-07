@@ -1,4 +1,5 @@
 import { app, BrowserWindow, ipcMain, session, clipboard, Tray, Menu, nativeImage } from 'electron';
+import Store from 'electron-store';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 
@@ -6,6 +7,15 @@ let mainWindow: BrowserWindow | null = null;
 let qwenLoginWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
 let isQuitting = false;
+
+const store = new Store({
+  defaults: {
+    uiState: {
+      theme: 'dark',
+      sidebarPosition: 'left',
+    }
+  }
+});
 
 /**
  * Create main application window
@@ -311,6 +321,31 @@ ipcMain.handle('clipboard:write', (_, text: string) => {
 ipcMain.on('app:quit', () => {
   console.log('[App Controls] Quit requested');
   app.quit();
+});
+
+/**
+ * IPC Handler: Settings Management
+ */
+ipcMain.handle('settings:get', (_, key: any) => {
+  const value = store.get(key);
+  console.log('[Settings] Get:', key, '=', value);
+  return value;
+});
+
+ipcMain.handle('settings:set', (_, key: any, value: any) => {
+  console.log('[Settings] Set:', key, '=', value);
+  store.set(key, value);
+  console.log('[Settings] Stored successfully');
+});
+
+ipcMain.handle('settings:delete', (_, key: any) => {
+  console.log('[Settings] Delete:', key);
+  store.delete(key);
+});
+
+ipcMain.handle('settings:clear', () => {
+  console.log('[Settings] Clear all');
+  store.clear();
 });
 
 /**

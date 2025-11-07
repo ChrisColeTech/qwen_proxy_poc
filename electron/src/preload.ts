@@ -124,6 +124,44 @@ contextBridge.exposeInMainWorld('electronAPI', {
       return await ipcRenderer.invoke('history:clear');
     },
   },
+
+  settings: {
+    /**
+     * Get a setting value
+     * @param {string} key - Setting key
+     * @returns {Promise<any>}
+     */
+    get: async (key: string): Promise<any> => {
+      return await ipcRenderer.invoke('settings:get', key);
+    },
+
+    /**
+     * Set a setting value
+     * @param {string} key - Setting key
+     * @param {any} value - Setting value
+     * @returns {Promise<void>}
+     */
+    set: async (key: string, value: any): Promise<void> => {
+      return await ipcRenderer.invoke('settings:set', key, value);
+    },
+
+    /**
+     * Delete a setting
+     * @param {string} key - Setting key
+     * @returns {Promise<void>}
+     */
+    delete: async (key: string): Promise<void> => {
+      return await ipcRenderer.invoke('settings:delete', key);
+    },
+
+    /**
+     * Clear all settings
+     * @returns {Promise<void>}
+     */
+    clear: async (): Promise<void> => {
+      return await ipcRenderer.invoke('settings:clear');
+    },
+  },
 });
 
 console.log('[Preload] Electron API exposed to renderer');
