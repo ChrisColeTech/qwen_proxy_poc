@@ -20,6 +20,7 @@ export function StatusBar() {
 
   const isProxyRunning = proxyStatus?.providerRouter?.running || false;
   const activeProvider = settings.active_provider as string || '';
+  const activeModel = settings.active_model as string || '';
 
   const displayMessage = lifecycleError || lifecycleMessage;
   const isError = !!lifecycleError;
@@ -37,6 +38,14 @@ export function StatusBar() {
             <div className="statusbar-separator" />
             <Badge variant="secondary" className="h-4 text-xs px-1.5">
               {activeProvider}
+            </Badge>
+          </>
+        )}
+        {activeModel && (
+          <>
+            <div className="statusbar-separator" />
+            <Badge variant="secondary" className="h-4 text-xs px-1.5">
+              {activeModel}
             </Badge>
           </>
         )}
