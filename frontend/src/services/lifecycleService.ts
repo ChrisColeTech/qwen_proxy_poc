@@ -1,5 +1,6 @@
 import { useLifecycleStore } from '@/stores/useLifecycleStore';
 import { useProxyStore } from '@/stores/useProxyStore';
+import { useAlertStore } from '@/stores/useAlertStore';
 import { proxyService } from '@/services/proxyService';
 
 const LIFECYCLE_POLL_INTERVAL = 1000; // 1 second
@@ -30,9 +31,11 @@ export function startLifecycleMonitoring(targetState: 'running' | 'stopped') {
   if (targetState === 'running') {
     console.log('[LifecycleService] Setting state to starting');
     setState('starting', 'Starting Provider Router...');
+    useAlertStore.showAlert('Starting proxy server...', 'success');
   } else {
     console.log('[LifecycleService] Setting state to stopping');
     setState('stopping', 'Stopping Provider Router...');
+    useAlertStore.showAlert('Stopping proxy server...', 'success');
   }
 
   // Poll for status updates
@@ -45,21 +48,28 @@ export function startLifecycleMonitoring(targetState: 'running' | 'stopped') {
       const isRunning = status.providerRouter?.running;
       if (targetState === 'running' && isRunning) {
         const port = status.providerRouter?.port;
-        setState('running', port ? `Provider Router running on port ${port}` : 'Provider Router running');
+        const message = port ? `Provider Router running on port ${port}` : 'Provider Router running';
+        setState('running', message);
+        useAlertStore.showAlert('Proxy server started successfully', 'success');
         cleanup();
       } else if (targetState === 'stopped' && !isRunning) {
         setState('stopped', 'Provider Router stopped');
+        useAlertStore.showAlert('Proxy server stopped successfully', 'success');
         cleanup();
       }
     } catch (error) {
-      setError(`Failed to fetch status: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      const errorMessage = `Failed to fetch status: ${error instanceof Error ? error.message : 'Unknown error'}`;
+      setError(errorMessage);
+      useAlertStore.showAlert(errorMessage, 'error');
       cleanup();
     }
   }, LIFECYCLE_POLL_INTERVAL);
 
   // Timeout protection
   timeoutHandle = setTimeout(() => {
-    setError(`Provider Router ${targetState === 'running' ? 'start' : 'stop'} operation timed out after 30 seconds`);
+    const errorMessage = `Provider Router ${targetState === 'running' ? 'start' : 'stop'} operation timed out after 30 seconds`;
+    setError(errorMessage);
+    useAlertStore.showAlert(errorMessage, 'error');
     cleanup();
   }, LIFECYCLE_TIMEOUT);
 }

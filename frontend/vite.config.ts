@@ -10,6 +10,7 @@ export default defineConfig({
     },
   },
   server: {
+    host: true, // Expose to network for Electron
     port: 5173,
     watch: {
       usePolling: true, // Enable polling for WSL/Windows file systems

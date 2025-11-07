@@ -5,7 +5,7 @@ import { startLifecycleMonitoring } from '@/services/lifecycleService';
 
 export function useProxyControl() {
   const [loading, setLoading] = useState(false);
-  const showAlert = useAlertStore((state) => state.showAlert);
+  const { showAlert } = useAlertStore;
 
   const handleStart = async () => {
     setLoading(true);
@@ -14,8 +14,8 @@ export function useProxyControl() {
     startLifecycleMonitoring('running');
 
     try {
-      const response = await proxyService.startProxy();
-      showAlert(response.message, 'success');
+      await proxyService.startProxy();
+      // Toast will be shown by lifecycle service when state reaches 'running'
     } catch (error) {
       console.error('Error starting proxy:', error);
       showAlert('Failed to start proxy server', 'error');
@@ -31,8 +31,8 @@ export function useProxyControl() {
     startLifecycleMonitoring('stopped');
 
     try {
-      const response = await proxyService.stopProxy();
-      showAlert(response.message, 'success');
+      await proxyService.stopProxy();
+      // Toast will be shown by lifecycle service when state reaches 'stopped'
     } catch (error) {
       console.error('Error stopping proxy:', error);
       showAlert('Failed to stop proxy server', 'error');

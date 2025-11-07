@@ -8,7 +8,7 @@ import { CREDENTIAL_POLL_INTERVAL } from '@/lib/constants';
 
 export function useCredentialActions() {
   const [loading, setLoading] = useState(false);
-  const showAlert = useAlertStore((state) => state.showAlert);
+  const { showAlert } = useAlertStore;
   const setStatusMessage = useUIStore((state) => state.setStatusMessage);
   const refreshStatus = useProxyStore((state) => state.refreshStatus);
   const credentials = useProxyStore((state) => state.status?.credentials);

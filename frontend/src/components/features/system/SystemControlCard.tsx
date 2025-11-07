@@ -15,7 +15,7 @@ export function SystemControlCard() {
   const { handleStart, handleStop, loading: proxyLoading } = useProxyControl();
   const { state: lifecycleState, error: lifecycleError } = useProviderRouterLifecycle();
   const proxyStatus = useProxyStore((state) => state.status);
-  const showAlert = useAlertStore((state) => state.showAlert);
+  const { showAlert } = useAlertStore;
 
   const credentials = proxyStatus?.credentials;
   const credentialStatus = credentials?.valid
@@ -41,48 +41,10 @@ export function SystemControlCard() {
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Activity className="h-4 w-4" />
-            System Control
-          </CardTitle>
-          <div className="flex items-center gap-1">
-            <Button
-              onClick={handleConnect}
-              disabled={authLoading}
-              size="icon"
-              variant={credentials ? 'outline' : 'default'}
-              title={credentials ? 'Re-authenticate' : 'Connect to Qwen'}
-              className="h-8 w-8"
-            >
-              <LogIn className="h-4 w-4" />
-            </Button>
-
-            {!isProxyRunning ? (
-              <Button
-                onClick={handleStart}
-                disabled={proxyLoading}
-                size="icon"
-                variant="default"
-                title="Start proxy server"
-                className="h-8 w-8"
-              >
-                <Play className="h-4 w-4" />
-              </Button>
-            ) : (
-              <Button
-                onClick={handleStop}
-                disabled={proxyLoading}
-                size="icon"
-                variant="destructive"
-                title="Stop proxy server"
-                className="h-8 w-8"
-              >
-                <Square className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
-        </div>
+        <CardTitle className="flex items-center gap-2 text-base">
+          <Activity className="h-4 w-4" />
+          System Control
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
@@ -93,11 +55,23 @@ export function SystemControlCard() {
               {credentialStatus.charAt(0).toUpperCase() + credentialStatus.slice(1)}
             </span>
           </div>
-          {credentials?.valid && credentials.expiresAt && (
-            <span className="text-sm text-muted-foreground">
-              Expires {formatDate(credentials.expiresAt)}
-            </span>
-          )}
+          <div className="flex items-center gap-2">
+            {credentials?.valid && credentials.expiresAt && (
+              <span className="text-sm text-muted-foreground">
+                Expires {formatDate(credentials.expiresAt)}
+              </span>
+            )}
+            <Button
+              onClick={handleConnect}
+              disabled={authLoading}
+              size="icon"
+              variant={credentials ? 'outline' : 'default'}
+              title={credentials ? 'Re-authenticate' : 'Connect to Qwen'}
+              className="h-8 w-8"
+            >
+              <LogIn className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
 
 
@@ -123,11 +97,36 @@ export function SystemControlCard() {
                 </>
               )}
             </div>
-            {isProxyRunning && uptime !== undefined && lifecycleState === 'running' && (
-              <span className="text-sm text-muted-foreground">
-                Uptime {formatUptime(uptime)}
-              </span>
-            )}
+            <div className="flex items-center gap-2">
+              {isProxyRunning && uptime !== undefined && lifecycleState === 'running' && (
+                <span className="text-sm text-muted-foreground">
+                  Uptime {formatUptime(uptime)}
+                </span>
+              )}
+              {!isProxyRunning ? (
+                <Button
+                  onClick={handleStart}
+                  disabled={proxyLoading}
+                  size="icon"
+                  variant="default"
+                  title="Start proxy server"
+                  className="h-8 w-8"
+                >
+                  <Play className="h-4 w-4" />
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleStop}
+                  disabled={proxyLoading}
+                  size="icon"
+                  variant="destructive"
+                  title="Stop proxy server"
+                  className="h-8 w-8"
+                >
+                  <Square className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
           </div>
 
           {lifecycleError && (

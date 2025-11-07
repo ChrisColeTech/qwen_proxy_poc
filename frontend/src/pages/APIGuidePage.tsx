@@ -3,7 +3,6 @@ import { useProxyStatus } from '@/hooks/useProxyStatus';
 import { useProxyStore } from '@/stores/useProxyStore';
 import { useAlertStore } from '@/stores/useAlertStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Code, Copy, CheckCircle } from 'lucide-react';
@@ -14,10 +13,9 @@ import type { GuidePageProps } from '@/types/quick-guide.types';
 export function APIGuidePage({}: GuidePageProps) {
   useProxyStatus();
   const proxyStatus = useProxyStore((state) => state.status);
-  const showAlert = useAlertStore((state) => state.showAlert);
+  const { showAlert } = useAlertStore;
   const [copiedUrl, setCopiedUrl] = useState(false);
 
-  const isProxyRunning = proxyStatus?.providerRouter?.running || false;
   const port = proxyStatus?.providerRouter?.port || 3001;
   const baseUrl = `http://localhost:${port}`;
 
@@ -33,20 +31,9 @@ export function APIGuidePage({}: GuidePageProps) {
       {/* Code Examples with Base URL */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-base">
             <Code className="h-4 w-4" />
             Quick Start Examples
-            {isProxyRunning ? (
-              <Badge variant="default" className="gap-1">
-                <div className="h-1.5 w-1.5 rounded-full bg-green-400" />
-                Running
-              </Badge>
-            ) : (
-              <Badge variant="destructive" className="gap-1">
-                <div className="h-1.5 w-1.5 rounded-full bg-white" />
-                Stopped
-              </Badge>
-            )}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -99,7 +86,7 @@ export function APIGuidePage({}: GuidePageProps) {
       {/* Supported Endpoints */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-base">
             <CheckCircle className="h-4 w-4" />
             OpenAI-Compatible Endpoints
           </CardTitle>

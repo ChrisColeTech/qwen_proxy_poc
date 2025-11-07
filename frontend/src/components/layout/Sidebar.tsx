@@ -1,4 +1,4 @@
-import { Activity, HelpCircle, Code, Network, Database, MessageSquare, Settings } from 'lucide-react';
+import { Home, HelpCircle, Code, Network, Database, MessageSquare, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUIStore } from '@/stores/useUIStore';
 
@@ -19,7 +19,7 @@ const isElectron = () => {
 };
 
 const mainNavItems: NavItem[] = [
-  { id: 'home', icon: Activity, label: 'Home', route: '/' },
+  { id: 'home', icon: Home, label: 'Home', route: '/' },
   { id: 'guide-api', icon: Code, label: 'API Guide', route: '/guide/api' },
   { id: 'providers', icon: Network, label: 'Providers', route: '/providers' },
   { id: 'models', icon: Database, label: 'Models', route: '/models' },

@@ -1,16 +1,19 @@
-import { create } from 'zustand';
+import { toast } from '@/hooks/use-toast';
 
 interface AlertStore {
-  alert: {
-    message: string;
-    type: 'success' | 'error';
-  } | null;
   showAlert: (message: string, type: 'success' | 'error') => void;
-  hideAlert: () => void;
 }
 
-export const useAlertStore = create<AlertStore>((set) => ({
-  alert: null,
-  showAlert: (message, type) => set({ alert: { message, type } }),
-  hideAlert: () => set({ alert: null }),
-}));
+export const useAlertStore = {
+  showAlert: (message: string, type: 'success' | 'error') => {
+    const { dismiss } = toast({
+      description: message,
+      variant: type === 'error' ? 'destructive' : 'default',
+    });
+
+    // Auto-dismiss after 3 seconds
+    setTimeout(() => {
+      dismiss();
+    }, 3000);
+  },
+} as AlertStore;

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { useUIStore } from '@/stores/useUIStore';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { Toaster } from '@/components/ui/toaster';
 import { HomePage } from '@/pages/HomePage';
 import { BrowserGuidePage } from '@/pages/BrowserGuidePage';
 import { DesktopGuidePage } from '@/pages/DesktopGuidePage';
@@ -44,9 +45,12 @@ function App() {
   };
 
   return (
-    <AppLayout activeRoute={currentRoute} onNavigate={setCurrentRoute}>
-      {renderPage()}
-    </AppLayout>
+    <>
+      <AppLayout activeRoute={currentRoute} onNavigate={setCurrentRoute}>
+        {renderPage()}
+      </AppLayout>
+      <Toaster />
+    </>
   );
 }
 
