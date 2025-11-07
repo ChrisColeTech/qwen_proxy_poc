@@ -6,7 +6,7 @@ import { ModelsStep } from '@/components/features/quick-guide/ModelsStep';
 
 export function ModelsPage() {
   useProxyStatus();
-  const { settings, providerRouterUrl, fetchSettings } = useSettingsStore();
+  const { settings, providerRouterUrl, fetchSettings, setActiveModel } = useSettingsStore();
   const { models, loading, loadModels } = useModels(providerRouterUrl);
 
   useEffect(() => {
@@ -17,6 +17,10 @@ export function ModelsPage() {
     loadModels();
   }, [settings.active_provider]); // Reload when provider changes
 
+  const handleSelectModel = async (modelId: string) => {
+    await setActiveModel(modelId);
+  };
+
   return (
     <div className="page-container">
       <ModelsStep
@@ -24,6 +28,8 @@ export function ModelsPage() {
         loading={loading}
         onRefresh={loadModels}
         providerRouterUrl={providerRouterUrl}
+        activeModel={settings.active_model}
+        onSelectModel={handleSelectModel}
       />
     </div>
   );

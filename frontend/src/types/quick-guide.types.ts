@@ -7,6 +7,8 @@ export interface ModelsStepProps {
   loading: boolean;
   onRefresh: () => void;
   providerRouterUrl: string;
+  activeModel?: string;
+  onSelectModel?: (modelId: string) => void;
 }
 
 export interface ChatCompletionStepProps {
@@ -14,6 +16,7 @@ export interface ChatCompletionStepProps {
   loading: boolean;
   onTest: () => void;
   providerRouterUrl: string;
+  activeModel?: string;
 }
 
 export interface ProviderSwitchStepProps {

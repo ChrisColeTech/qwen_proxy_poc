@@ -6,7 +6,7 @@ import { ChatCompletionStep } from '@/components/features/quick-guide/ChatComple
 
 export function ChatPage() {
   useProxyStatus();
-  const { providerRouterUrl, fetchSettings } = useSettingsStore();
+  const { settings, providerRouterUrl, fetchSettings } = useSettingsStore();
   const { testResponse, loading, testChat } = useChatTest();
 
   useEffect(() => {
@@ -15,7 +15,7 @@ export function ChatPage() {
 
   const handleTest = () => {
     if (providerRouterUrl) {
-      testChat(providerRouterUrl);
+      testChat(providerRouterUrl, settings.active_model);
     }
   };
 
@@ -26,6 +26,7 @@ export function ChatPage() {
         loading={loading}
         onTest={handleTest}
         providerRouterUrl={providerRouterUrl}
+        activeModel={settings.active_model}
       />
     </div>
   );

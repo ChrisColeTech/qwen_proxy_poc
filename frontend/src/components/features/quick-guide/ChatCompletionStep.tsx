@@ -1,11 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Play, RefreshCw, Zap } from 'lucide-react';
+import { Play, RefreshCw, Zap, Database } from 'lucide-react';
 import type { ChatCompletionStepProps } from '@/types/quick-guide.types';
 import { CodeBlock } from '@/components/features/quick-guide/CodeBlock';
 
-export function ChatCompletionStep({ response, loading, onTest, providerRouterUrl }: ChatCompletionStepProps) {
+export function ChatCompletionStep({ response, loading, onTest, providerRouterUrl, activeModel }: ChatCompletionStepProps) {
+  const modelToUse = activeModel || 'qwen3-max';
   return (
     <Card>
       <CardHeader>
@@ -21,7 +22,7 @@ export function ChatCompletionStep({ response, loading, onTest, providerRouterUr
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer any-key" \\
   -d '{
-    "model": "qwen3-max",
+    "model": "${modelToUse}",
     "messages": [
       {"role": "user", "content": "Say hello in one sentence"}
     ]
@@ -39,6 +40,10 @@ export function ChatCompletionStep({ response, loading, onTest, providerRouterUr
               <span className="demo-label-text">Test Response</span>
             </div>
             <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="gap-1">
+                <Database className="h-3 w-3" />
+                {modelToUse}
+              </Badge>
               {loading && (
                 <Badge variant="secondary" className="gap-1">
                   <RefreshCw className="h-3 w-3 animate-spin" />

@@ -1,5 +1,5 @@
 export const chatService = {
-  testChat: async (providerRouterUrl: string): Promise<string> => {
+  testChat: async (providerRouterUrl: string, model?: string): Promise<string> => {
     try {
       const response = await fetch(`${providerRouterUrl}/v1/chat/completions`, {
         method: 'POST',
@@ -8,7 +8,7 @@ export const chatService = {
           'Authorization': 'Bearer any-key'
         },
         body: JSON.stringify({
-          model: 'qwen3-max',
+          model: model || 'qwen3-max',
           messages: [{ role: 'user', content: 'Say hello in one sentence' }]
         })
       });

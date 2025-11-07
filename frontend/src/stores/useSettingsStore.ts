@@ -5,6 +5,7 @@ interface Settings {
   'server.port'?: string;
   'server.host'?: string;
   active_provider?: string;
+  active_model?: string;
   [key: string]: string | number | boolean | undefined;
 }
 
@@ -14,6 +15,7 @@ interface SettingsStore {
   providerRouterUrl: string;
   fetchSettings: () => Promise<void>;
   updateSetting: (key: string, value: string) => Promise<void>;
+  setActiveModel: (modelId: string) => Promise<void>;
 }
 
 export const useSettingsStore = create<SettingsStore>((set, get) => ({
@@ -51,5 +53,9 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
       console.error('Failed to update setting:', error);
       throw error;
     }
+  },
+
+  setActiveModel: async (modelId: string) => {
+    return get().updateSetting('active_model', modelId);
   }
 }));

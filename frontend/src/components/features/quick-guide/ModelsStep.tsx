@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Database, RefreshCw, CheckCircle2, XCircle } from 'lucide-react';
+import { Database, RefreshCw, CheckCircle2, XCircle, Check } from 'lucide-react';
 import type { ModelsStepProps } from '@/types/quick-guide.types';
 import { CodeBlock } from '@/components/features/quick-guide/CodeBlock';
 import { cn } from '@/lib/utils';
 
-export function ModelsStep({ models, loading, onRefresh, providerRouterUrl }: ModelsStepProps) {
+export function ModelsStep({ models, loading, onRefresh, providerRouterUrl, activeModel, onSelectModel }: ModelsStepProps) {
   return (
     <Card>
       <CardHeader>
@@ -61,12 +61,29 @@ export function ModelsStep({ models, loading, onRefresh, providerRouterUrl }: Mo
           </div>
           {models.length > 0 && (
             <div className="model-list-container">
-              {models.map((model) => (
-                <div key={model.id} className="model-item">
-                  <code className="model-item-code">{model.id}</code>
-                  <Badge variant="outline" className="text-xs">Ready</Badge>
-                </div>
-              ))}
+              {models.map((model) => {
+                const isActive = activeModel === model.id;
+                return (
+                  <button
+                    key={model.id}
+                    onClick={() => onSelectModel?.(model.id)}
+                    disabled={!onSelectModel}
+                    className={cn(
+                      'model-item',
+                      onSelectModel && 'cursor-pointer hover:bg-accent',
+                      isActive && 'bg-accent'
+                    )}
+                  >
+                    <div className="flex items-center gap-2 flex-1">
+                      {isActive && <Check className="h-3.5 w-3.5 status-icon-success" />}
+                      <code className="model-item-code">{model.id}</code>
+                    </div>
+                    <Badge variant={isActive ? 'default' : 'outline'} className="text-xs">
+                      {isActive ? 'Active' : 'Ready'}
+                    </Badge>
+                  </button>
+                );
+              })}
             </div>
           )}
           {!loading && models.length === 0 && (
