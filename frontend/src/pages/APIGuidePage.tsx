@@ -1,119 +1,162 @@
+import { useState } from 'react';
 import { useProxyStatus } from '@/hooks/useProxyStatus';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useProxyStore } from '@/stores/useProxyStore';
+import { useAlertStore } from '@/stores/useAlertStore';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Code, Terminal, CheckCircle, AlertCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Code, Copy, CheckCircle, AlertCircle, Activity } from 'lucide-react';
 import { CodeBlock } from '@/components/features/quick-guide/CodeBlock';
-import { pythonExample, nodeExample, curlExample, healthCheckExample, commonIssues, supportedEndpoints } from '@/lib/api-guide-examples';
+import { pythonExample, nodeExample, curlExample, supportedEndpoints, commonIssues } from '@/lib/api-guide-examples';
 import type { GuidePageProps } from '@/types/quick-guide.types';
 
 export function APIGuidePage({}: GuidePageProps) {
   useProxyStatus();
+  const proxyStatus = useProxyStore((state) => state.status);
+  const showAlert = useAlertStore((state) => state.showAlert);
+  const [copiedUrl, setCopiedUrl] = useState(false);
+
+  const isProxyRunning = proxyStatus?.providerRouter?.running || false;
+  const port = proxyStatus?.providerRouter?.port || 3001;
+  const baseUrl = `http://localhost:${port}`;
+
+  const handleCopyUrl = async () => {
+    await navigator.clipboard.writeText(baseUrl);
+    setCopiedUrl(true);
+    showAlert('Base URL copied to clipboard', 'success');
+    setTimeout(() => setCopiedUrl(false), 2000);
+  };
 
   return (
     <div className="page-container">
+      {/* Header Card */}
       <Card>
         <CardHeader>
           <CardTitle className="card-title-with-icon">
             <Code className="icon-sm" />
-            API Integration - Use with Your Existing Code
+            API Integration Guide
+          </CardTitle>
+          <CardDescription>
+            Use the proxy with any OpenAI-compatible library. No API key validation required.
+          </CardDescription>
+        </CardHeader>
+      </Card>
+
+      {/* Base URL Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <Activity className="h-4 w-4" />
+            Base URL
+            {isProxyRunning ? (
+              <Badge variant="default" className="gap-1">
+                <div className="h-1.5 w-1.5 rounded-full bg-green-400" />
+                Running
+              </Badge>
+            ) : (
+              <Badge variant="destructive" className="gap-1">
+                <div className="h-1.5 w-1.5 rounded-full bg-white" />
+                Stopped
+              </Badge>
+            )}
           </CardTitle>
         </CardHeader>
-        <CardContent className="vspace-md">
-          <div className="quick-reference-grid">
-            <div className="quick-reference-section">
-              <div className="quick-reference-title">Base URL</div>
-              <div className="quick-reference-list">
-                <div className="quick-reference-item">http://localhost:3001/v1</div>
-              </div>
-            </div>
-            <div className="quick-reference-section">
-              <div className="quick-reference-title">API Key</div>
-              <div className="quick-reference-list">
-                <div className="quick-reference-item">Any value (not validated)</div>
-              </div>
-            </div>
+        <CardContent className="space-y-3">
+          <div className="flex items-center gap-2">
+            <code className="flex-1 rounded-lg bg-muted px-4 py-3 text-sm font-mono">
+              {baseUrl}/v1
+            </code>
+            <Button
+              onClick={handleCopyUrl}
+              size="icon"
+              variant="outline"
+              title="Copy base URL"
+              className="h-10 w-10 shrink-0"
+            >
+              {copiedUrl ? (
+                <CheckCircle className="h-4 w-4 text-green-500" />
+              ) : (
+                <Copy className="h-4 w-4" />
+              )}
+            </Button>
           </div>
-
-          <p className="step-description">
-            The proxy provides an OpenAI-compatible API. Authentication happens through stored Qwen credentials,
-            so you can use any string as the API key.
+          <p className="text-xs text-muted-foreground">
+            Authentication happens through stored Qwen credentials, so you can use any string as the API key.
           </p>
+        </CardContent>
+      </Card>
 
-          <div className="demo-container">
-            <div className="demo-header">
-              <div className="demo-label">
-                <Code className="icon-sm-muted" />
-                <span className="demo-label-text">Python (OpenAI SDK)</span>
-              </div>
-              <Badge variant="secondary">Most Popular</Badge>
-            </div>
-            <CodeBlock label="Basic Chat Completion" code={pythonExample} />
-          </div>
+      {/* Code Examples with Tabs */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Quick Start Examples</CardTitle>
+          <CardDescription>
+            Choose your programming language and copy the example code
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="python" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="python">Python</TabsTrigger>
+              <TabsTrigger value="node">Node.js</TabsTrigger>
+              <TabsTrigger value="curl">cURL</TabsTrigger>
+            </TabsList>
+            <TabsContent value="python" className="mt-4">
+              <CodeBlock label="Using OpenAI Python SDK" code={pythonExample} />
+            </TabsContent>
+            <TabsContent value="node" className="mt-4">
+              <CodeBlock label="Using OpenAI Node.js SDK" code={nodeExample} />
+            </TabsContent>
+            <TabsContent value="curl" className="mt-4">
+              <CodeBlock label="Using cURL (Command Line)" code={curlExample} />
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
 
-          <div className="demo-container">
-            <div className="demo-header">
-              <div className="demo-label">
-                <Code className="icon-sm-muted" />
-                <span className="demo-label-text">Node.js (OpenAI SDK)</span>
-              </div>
-            </div>
-            <CodeBlock label="ES Modules" code={nodeExample} />
-          </div>
-
-          <div className="demo-container">
-            <div className="demo-header">
-              <div className="demo-label">
-                <Terminal className="icon-sm-muted" />
-                <span className="demo-label-text">cURL (Direct HTTP)</span>
-              </div>
-            </div>
-            <CodeBlock label="Command Line" code={curlExample} />
-          </div>
-
-          <div className="demo-container">
-            <div className="demo-header">
-              <div className="demo-label">
-                <CheckCircle className="icon-sm-muted" />
-                <span className="demo-label-text">Supported Endpoints</span>
-              </div>
-            </div>
-            <div className="guide-step-list">
-              {supportedEndpoints.map((item, i) => (
-                <div key={i} className="guide-step-item">
-                  <CheckCircle className="guide-step-icon" />
-                  <div className="guide-step-text">
-                    <span className="step-inline-code">{item.endpoint}</span> - {item.description}
-                  </div>
+      {/* Supported Endpoints */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <CheckCircle className="h-4 w-4" />
+            OpenAI-Compatible Endpoints
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            {supportedEndpoints.map((item, i) => (
+              <div key={i} className="flex items-start gap-3 bg-muted/30 rounded-lg p-3">
+                <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                <div className="space-y-1 flex-1">
+                  <code className="text-sm font-mono">{item.endpoint}</code>
+                  <p className="text-xs text-muted-foreground">{item.description}</p>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="demo-container">
-            <div className="demo-header">
-              <div className="demo-label">
-                <AlertCircle className="icon-sm-muted" />
-                <span className="demo-label-text">Common Issues</span>
               </div>
-            </div>
-            <div className="guide-issues-list">
-              {commonIssues.map((issue, i) => (
-                <div key={i} className="demo-error-state">
-                  <AlertCircle className="guide-alert-icon" />
-                  <span>{issue.error} → {issue.solution}</span>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Common Issues */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <AlertCircle className="h-4 w-4" />
+            Troubleshooting
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {commonIssues.map((issue, i) => (
+              <div key={i} className="flex items-start gap-3 bg-muted/30 rounded-lg p-3">
+                <AlertCircle className="h-4 w-4 text-orange-500 mt-0.5 shrink-0" />
+                <div className="space-y-1 flex-1">
+                  <p className="text-sm font-medium">{issue.error}</p>
+                  <p className="text-xs text-muted-foreground">→ {issue.solution}</p>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="demo-container">
-            <div className="demo-header">
-              <div className="demo-label">
-                <Terminal className="icon-sm-muted" />
-                <span className="demo-label-text">Test Your Setup</span>
               </div>
-            </div>
-            <CodeBlock label="Quick Health Check" code={healthCheckExample} />
+            ))}
           </div>
         </CardContent>
       </Card>

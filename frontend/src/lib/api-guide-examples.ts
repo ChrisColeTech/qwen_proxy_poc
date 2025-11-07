@@ -47,7 +47,7 @@ export const commonIssues = [
 ];
 
 export const supportedEndpoints = [
-  { endpoint: 'POST /v1/chat/completions', description: 'Chat (streaming supported)' },
-  { endpoint: 'GET /v1/models', description: 'List available models' },
-  { endpoint: 'GET /health', description: 'Server health check' },
+  { endpoint: 'POST /v1/chat/completions', description: 'Send chat completion requests. Supports streaming with stream: true' },
+  { endpoint: 'GET /v1/models', description: 'List all available models from the active provider' },
+  { endpoint: 'GET /health', description: 'Check proxy server health and provider status' },
 ];
