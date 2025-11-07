@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Code, Copy, CheckCircle, Activity } from 'lucide-react';
+import { Code, Copy, CheckCircle } from 'lucide-react';
 import { CodeBlock } from '@/components/features/quick-guide/CodeBlock';
 import { pythonExample, nodeExample, curlExample, supportedEndpoints } from '@/lib/api-guide-examples';
 import type { GuidePageProps } from '@/types/quick-guide.types';
@@ -30,12 +30,12 @@ export function APIGuidePage({}: GuidePageProps) {
 
   return (
     <div className="page-container">
-      {/* Base URL Card */}
+      {/* Code Examples with Base URL */}
       <Card>
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
-            <Activity className="h-4 w-4" />
-            Base URL
+            <Code className="h-4 w-4" />
+            Quick Start Examples
             {isProxyRunning ? (
               <Badge variant="default" className="gap-1">
                 <div className="h-1.5 w-1.5 rounded-full bg-green-400" />
@@ -49,37 +49,34 @@ export function APIGuidePage({}: GuidePageProps) {
             )}
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="flex items-center gap-2">
-            <code className="flex-1 rounded-lg bg-muted px-4 py-3 text-sm font-mono">
-              {baseUrl}/v1
-            </code>
-            <Button
-              onClick={handleCopyUrl}
-              size="icon"
-              variant="outline"
-              title="Copy base URL"
-              className="h-10 w-10 shrink-0"
-            >
-              {copiedUrl ? (
-                <CheckCircle className="h-4 w-4 text-green-500" />
-              ) : (
-                <Copy className="h-4 w-4" />
-              )}
-            </Button>
+        <CardContent className="space-y-4">
+          {/* Base URL Section */}
+          <div className="space-y-2">
+            <div className="text-sm font-medium">Base URL</div>
+            <div className="flex items-center gap-2">
+              <code className="flex-1 rounded-lg bg-muted px-4 py-3 text-sm font-mono">
+                {baseUrl}/v1
+              </code>
+              <Button
+                onClick={handleCopyUrl}
+                size="icon"
+                variant="outline"
+                title="Copy base URL"
+                className="h-10 w-10 shrink-0"
+              >
+                {copiedUrl ? (
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                ) : (
+                  <Copy className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Authentication happens through stored Qwen credentials, so you can use any string as the API key.
+            </p>
           </div>
-          <p className="text-xs text-muted-foreground">
-            Authentication happens through stored Qwen credentials, so you can use any string as the API key.
-          </p>
-        </CardContent>
-      </Card>
 
-      {/* Code Examples with Tabs */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Quick Start Examples</CardTitle>
-        </CardHeader>
-        <CardContent>
+          {/* Code Examples Tabs */}
           <Tabs defaultValue="python" className="w-full">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="python">Python</TabsTrigger>
