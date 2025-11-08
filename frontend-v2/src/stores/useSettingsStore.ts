@@ -59,9 +59,6 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
           useAlertStore.showAlert(`Switched to model: ${value}`, 'success');
         }
       }
-
-      // Refetch settings to ensure everything is in sync
-      await get().fetchSettings();
     } catch (error) {
       console.error('[SettingsStore] Failed to update setting:', error);
       throw error;
