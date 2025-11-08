@@ -5,7 +5,6 @@ import { Badge } from '@/components/ui/badge';
 import { StatusIndicator } from '@/components/ui/status-indicator';
 import { useHomePage } from '@/hooks/useHomePage';
 import { useExtensionDetection } from '@/hooks/useExtensionDetection';
-import { ConnectionStatusBadge } from '@/components/features/home/ConnectionStatusBadge';
 import { formatUptime, formatExpiryDate } from '@/utils/formatters';
 import { CodeBlock } from '@/components/features/quick-guide/CodeBlock';
 import { useUIStore } from '@/stores/useUIStore';
@@ -106,7 +105,6 @@ export function HomePage() {
                       <Gauge className="icon-primary" />
                       <span className="demo-label-text">System Overview</span>
                     </div>
-                    <ConnectionStatusBadge status={connected ? 'connected' : 'disconnected'} />
                   </div>
 
                   <div className="provider-switch-list">
