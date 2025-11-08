@@ -2,6 +2,7 @@ import { Activity } from 'lucide-react';
 import { TabCard } from '@/components/ui/tab-card';
 import { ActionList } from '@/components/ui/action-list';
 import { useHomePage } from '@/hooks/useHomePage';
+import { useApiGuidePage } from '@/hooks/useApiGuidePage';
 import { useExtensionDetection } from '@/hooks/useExtensionDetection';
 import { useUIStore } from '@/stores/useUIStore';
 import { useLifecycleStore } from '@/stores/useLifecycleStore';
@@ -23,6 +24,7 @@ export function HomePage() {
     handleQwenLogin,
   } = useHomePage();
 
+  const { baseUrl, copiedUrl, handleCopyUrl } = useApiGuidePage();
   const { extensionDetected, needsExtension } = useExtensionDetection();
   const setCurrentRoute = useUIStore((state) => state.setCurrentRoute);
   const lifecycleState = useLifecycleStore((state) => state.state);
@@ -68,7 +70,7 @@ export function HomePage() {
     },
     {
       ...HOME_TABS.STATUS,
-      content: buildStatusTabContent(port),
+      content: buildStatusTabContent(port, baseUrl, copiedUrl, handleCopyUrl),
       hidden: !running
     }
   ];

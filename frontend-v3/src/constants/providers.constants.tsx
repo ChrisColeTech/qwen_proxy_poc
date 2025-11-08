@@ -30,7 +30,7 @@ export const ADD_ICON = Plus;
 
 const createProviderBadge = (variant: 'default' | 'destructive' | 'secondary', text: string) => (
   <>
-    <Badge variant={variant}>{text}</Badge>
+    <Badge variant={variant} className="min-w-[100px] justify-center">{text}</Badge>
     <ChevronRight className="icon-sm" style={{ opacity: 0.5 }} />
   </>
 );

@@ -1,8 +1,10 @@
 import type { ReactNode } from 'react';
-import { ChevronRight, Gauge } from 'lucide-react';
+import { ChevronRight, Gauge, Copy, CheckCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { StatusIndicator } from '@/components/ui/status-indicator';
 import { CodeBlock } from '@/components/features/quick-guide/CodeBlock';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { StatusType } from '@/components/ui/status-indicator';
 import type { LifecycleState } from '@/stores/useLifecycleStore';
 import { formatUptime, formatExpiryDate } from '@/utils/formatters';
@@ -57,7 +59,7 @@ export const getStatusIndicatorState = (lifecycleState: LifecycleState): StatusT
 
 export const createActionBadge = (variant: 'default' | 'destructive' | 'secondary', text: string) => (
   <>
-    <Badge variant={variant}>{text}</Badge>
+    <Badge variant={variant} className="min-w-[100px] justify-center">{text}</Badge>
     <ChevronRight className="icon-sm" style={{ opacity: 0.5 }} />
   </>
 );
@@ -130,25 +132,113 @@ export const buildOverviewActions = (params: {
   ];
 };
 
-export const buildStatusTabContent = (port: number | undefined) => (
-  <div className="vspace-md">
-    <CodeBlock
-      label="Check proxy health:"
-      code={`curl http://localhost:${port || 3001}/health`}
-    />
+const pythonExample = `from openai import OpenAI
 
-    <CodeBlock
-      label="List available models:"
-      code={`curl http://localhost:${port || 3001}/v1/models`}
-    />
+client = OpenAI(
+    base_url="http://localhost:3001/v1",
+    api_key="dummy-key"
+)
 
-    <CodeBlock
-      label="Send chat completion:"
-      code={`curl http://localhost:${port || 3001}/v1/chat/completions \\
+response = client.chat.completions.create(
+    model="qwen3-max",
+    messages=[{"role": "user", "content": "Hello!"}]
+)
+
+print(response.choices[0].message.content)`;
+
+const nodeExample = `import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  baseURL: 'http://localhost:3001/v1',
+  apiKey: 'dummy-key'
+});
+
+const completion = await openai.chat.completions.create({
+  model: 'qwen3-max',
+  messages: [{ role: 'user', content: 'Hello!' }]
+});
+
+console.log(completion.choices[0].message.content);`;
+
+export const buildStatusTabContent = (
+  port: number | undefined,
+  baseUrl: string,
+  copiedUrl: boolean,
+  handleCopyUrl: () => void
+) => (
+  <div className="space-y-8">
+    {/* Base URL Section */}
+    <div className="space-y-3">
+      <div className="flex items-center gap-2">
+        <code className="flex-1 rounded-lg bg-muted px-4 py-3 text-sm font-mono">
+          {baseUrl}/v1
+        </code>
+        <Button
+          onClick={handleCopyUrl}
+          size="icon"
+          variant="outline"
+          title="Copy base URL"
+          className="h-10 w-10 shrink-0"
+        >
+          {copiedUrl ? (
+            <CheckCircle className="h-4 w-4 status-success" />
+          ) : (
+            <Copy className="h-4 w-4" />
+          )}
+        </Button>
+      </div>
+      <p className="text-xs text-muted-foreground">
+        Authentication happens through stored Qwen credentials, so you can use any string as the API key.
+      </p>
+    </div>
+
+    {/* Divider */}
+    <div className="border-t border-border" />
+
+    {/* Quick Tests Section */}
+    <div className="space-y-4">
+      <h3 className="text-sm font-semibold tracking-tight">Quick Tests</h3>
+      <div className="space-y-3">
+        <CodeBlock
+          label="Check proxy health"
+          code={`curl http://localhost:${port || 3001}/health`}
+        />
+        <CodeBlock
+          label="List available models"
+          code={`curl http://localhost:${port || 3001}/v1/models`}
+        />
+      </div>
+    </div>
+
+    {/* Divider */}
+    <div className="border-t border-border" />
+
+    {/* SDK Integration Section */}
+    <div className="space-y-4">
+      <h3 className="text-sm font-semibold tracking-tight">SDK Integration</h3>
+      <Tabs defaultValue="python" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="python">Python</TabsTrigger>
+          <TabsTrigger value="node">Node.js</TabsTrigger>
+          <TabsTrigger value="curl">cURL</TabsTrigger>
+        </TabsList>
+        <TabsContent value="python" className="mt-4">
+          <CodeBlock label="Using OpenAI Python SDK" code={pythonExample} />
+        </TabsContent>
+        <TabsContent value="node" className="mt-4">
+          <CodeBlock label="Using OpenAI Node.js SDK" code={nodeExample} />
+        </TabsContent>
+        <TabsContent value="curl" className="mt-4">
+          <CodeBlock
+            label="Chat completion example"
+            code={`curl http://localhost:${port || 3001}/v1/chat/completions \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer any-key" \\
   -d '{"model": "qwen3-max", "messages": [{"role": "user", "content": "Hello!"}]}'`}
-    />
+          />
+        </TabsContent>
+      </Tabs>
+    </div>
   </div>
 );
 
