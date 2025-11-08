@@ -32,6 +32,14 @@ function getExtensionConnections() {
 }
 
 /**
+ * Check if any extension is currently connected
+ * @returns {boolean} True if at least one extension is connected
+ */
+export function isExtensionConnected() {
+  return extensionConnections.size > 0
+}
+
+/**
  * Set the proxy status getter function
  * This should be called from proxy-control.js to provide access to current status
  */

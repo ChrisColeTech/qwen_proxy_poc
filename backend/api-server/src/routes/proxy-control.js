@@ -11,7 +11,7 @@ import { promisify } from 'util'
 import config from '../config.js'
 import { ProviderService, ModelService, QwenCredentialsService } from '../../../provider-router/src/database/services/index.js'
 import { eventEmitter } from '../services/event-emitter.js'
-import { setProxyStatusGetter } from '../controllers/websocket-controller.js'
+import { setProxyStatusGetter, isExtensionConnected } from '../controllers/websocket-controller.js'
 import { lifecycleController } from '../controllers/lifecycle-controller.js'
 
 const execAsync = promisify(exec)
@@ -91,6 +91,7 @@ function getCurrentProxyStatus() {
       total: models.length
     },
     credentials,
+    extensionConnected: isExtensionConnected(),
     message: allRunning ? 'All proxy servers are running' : (anyRunning ? 'Some proxy servers are running' : 'Proxy servers are not running')
   }
 }
@@ -476,6 +477,7 @@ router.get('/status', (req, res) => {
       total: models.length
     },
     credentials,
+    extensionConnected: isExtensionConnected(),
     message: allRunning ? 'All proxy servers are running' : (anyRunning ? 'Some proxy servers are running' : 'Proxy servers are not running')
   })
 })
