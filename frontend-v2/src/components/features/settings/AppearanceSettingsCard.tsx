@@ -68,7 +68,11 @@ export function AppearanceSettingsCard() {
             type="single"
             value={uiState.showStatusMessages ? 'show' : 'hide'}
             onValueChange={(value) => {
-              if (value) toggleShowStatusMessages();
+              if (!value) return;
+              const shouldShow = value === 'show';
+              if (shouldShow !== uiState.showStatusMessages) {
+                toggleShowStatusMessages();
+              }
             }}
           >
             <ToggleGroupItem value="show">Show</ToggleGroupItem>
