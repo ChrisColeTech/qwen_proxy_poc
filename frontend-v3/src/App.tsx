@@ -7,6 +7,7 @@ import { QuickGuidePage } from '@/pages/QuickGuidePage';
 import { ProvidersPage } from '@/pages/ProvidersPage';
 import { ModelsPage } from '@/pages/ModelsPage';
 import { SettingsPage } from '@/pages/SettingsPage';
+import { ChatPage } from '@/pages/ChatPage';
 import { APIGuidePage } from '@/pages/APIGuidePage';
 import { BrowserGuidePage } from '@/pages/BrowserGuidePage';
 import { DesktopGuidePage } from '@/pages/DesktopGuidePage';
@@ -33,6 +34,8 @@ function App() {
         return <ProvidersPage />;
       case '/models':
         return <ModelsPage />;
+      case '/chat':
+        return <ChatPage />;
       case '/settings':
         return <SettingsPage />;
       case '/api-guide':

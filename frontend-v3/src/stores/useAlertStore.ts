@@ -1,4 +1,4 @@
-import { toast } from '@/hooks/use-toast';
+import { toast } from '@/hooks/useToast';
 
 interface AlertStore {
   showAlert: (message: string, type: 'success' | 'error') => void;

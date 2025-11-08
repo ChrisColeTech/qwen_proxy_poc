@@ -1,7 +1,7 @@
 import type { CredentialStatus } from '@/types/credentials.types';
 import { CheckCircle, AlertCircle, XCircle } from 'lucide-react';
 
-const API_URL = import.meta.env.VITE_API_BASE_URL || '';
+const API_URL = 'http://localhost:3002';
 
 class CredentialsService {
   async getStatus(): Promise<CredentialStatus> {

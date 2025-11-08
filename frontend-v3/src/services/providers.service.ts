@@ -1,7 +1,7 @@
 import type { Provider, ProvidersResponse } from '@/types/providers.types';
 import { apiService } from './api.service';
 
-const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3002';
+const API_URL = 'http://localhost:3002';
 
 class ProvidersService {
   async getProviders(): Promise<Provider[]> {

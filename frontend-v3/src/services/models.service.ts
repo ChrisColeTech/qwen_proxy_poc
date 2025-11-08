@@ -1,6 +1,6 @@
 import type { Model, ParsedModel, Capability } from '@/types/models.types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+const API_BASE_URL = 'http://localhost:3002';
 
 class ModelsService {
   async getModels(): Promise<Model[]> {

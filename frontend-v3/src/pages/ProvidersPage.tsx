@@ -1,25 +1,43 @@
-import { Blocks } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { TabCard } from '@/components/ui/tab-card';
+import { useProvidersPage } from '@/hooks/useProvidersPage';
+import {
+  buildProviderActions,
+  buildAllProvidersContent,
+  buildActiveProvidersContent,
+  buildSettingsContent,
+  PROVIDERS_TABS,
+  PROVIDERS_TITLE,
+  PROVIDERS_ICON
+} from '@/constants/providers.constants';
 
 export function ProvidersPage() {
+  const { handleProviderClick } = useProvidersPage();
+
+  const providerActions = buildProviderActions({ handleProviderClick });
+
+  const tabs = [
+    {
+      ...PROVIDERS_TABS.ALL,
+      content: buildAllProvidersContent(providerActions)
+    },
+    {
+      ...PROVIDERS_TABS.ACTIVE,
+      content: buildActiveProvidersContent()
+    },
+    {
+      ...PROVIDERS_TABS.SETTINGS,
+      content: buildSettingsContent()
+    }
+  ];
+
   return (
-    <div className="container max-w-7xl mx-auto p-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Blocks className="h-5 w-5" />
-            Providers
-          </CardTitle>
-          <CardDescription>
-            Manage your AI providers
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">
-            Providers content coming soon...
-          </p>
-        </CardContent>
-      </Card>
+    <div className="page-container">
+      <TabCard
+        title={PROVIDERS_TITLE}
+        icon={PROVIDERS_ICON}
+        tabs={tabs}
+        defaultTab={PROVIDERS_TABS.ALL.value}
+      />
     </div>
   );
 }

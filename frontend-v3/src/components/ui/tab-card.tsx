@@ -20,11 +20,19 @@ interface TabCardProps {
   icon: LucideIcon;
   tabs: Tab[];
   defaultTab?: string;
-  gridCols?: 'grid-cols-2' | 'grid-cols-3' | 'grid-cols-4';
 }
 
-export function TabCard({ title, icon: Icon, tabs, defaultTab, gridCols = 'grid-cols-3' }: TabCardProps) {
+export function TabCard({ title, icon: Icon, tabs, defaultTab }: TabCardProps) {
   const visibleTabs = tabs.filter(tab => !tab.hidden);
+
+  // Calculate grid columns based on number of visible tabs
+  const getGridCols = () => {
+    const count = visibleTabs.length;
+    if (count === 1) return 'grid-cols-1';
+    if (count === 2) return 'grid-cols-2';
+    if (count === 3) return 'grid-cols-3';
+    return 'grid-cols-4';
+  };
 
   return (
     <Card className="page-card">
@@ -36,7 +44,7 @@ export function TabCard({ title, icon: Icon, tabs, defaultTab, gridCols = 'grid-
       </CardHeader>
       <CardContent className="page-card-content">
         <Tabs defaultValue={defaultTab || visibleTabs[0]?.value} className="tab-container">
-          <TabsList className={`grid w-full ${gridCols}`}>
+          <TabsList className={`grid w-full ${getGridCols()}`}>
             {visibleTabs.map((tab) => (
               <TabsTrigger key={tab.value} value={tab.value}>
                 {tab.label}
