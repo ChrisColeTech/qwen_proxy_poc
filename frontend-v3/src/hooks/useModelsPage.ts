@@ -101,8 +101,25 @@ export function useModelsPage() {
   };
 
   useEffect(() => {
-    fetchAvailableModels();
-    fetchAllModels();
+    const loadModels = async () => {
+      await Promise.all([fetchAvailableModels(), fetchAllModels()]);
+
+      // If no active model is set and we have available models, auto-select the first one
+      if (!activeModel && providerRouterUrl) {
+        try {
+          const models = await modelsService.getAvailableModels(providerRouterUrl);
+          if (models.length > 0) {
+            const firstModel = models[0].id;
+            await useSettingsStore.getState().updateSetting('active_model', firstModel);
+            useAlertStore.showAlert(`Auto-selected default model: ${firstModel}`, 'info');
+          }
+        } catch (error) {
+          console.error('Failed to auto-select default model:', error);
+        }
+      }
+    };
+
+    loadModels();
   }, [providerRouterUrl]);
 
   return {

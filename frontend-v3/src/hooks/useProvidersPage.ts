@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAlertStore } from '@/stores/useAlertStore';
 import { providersService } from '@/services/providers.service';
+import { modelsService } from '@/services/models.service';
 import type { Provider } from '@/types/providers.types';
 import { useSettingsStore } from '@/stores/useSettingsStore';
 
@@ -8,7 +9,9 @@ export function useProvidersPage() {
   const [providers, setProviders] = useState<Provider[]>([]);
   const [loading, setLoading] = useState(false);
   const settings = useSettingsStore((state) => state.settings);
+  const providerRouterUrl = useSettingsStore((state) => state.providerRouterUrl);
   const activeProvider = (settings.active_provider as string) || '';
+  const activeModel = (settings.active_model as string) || '';
 
   const fetchProviders = async () => {
     setLoading(true);
@@ -25,9 +28,30 @@ export function useProvidersPage() {
 
   const handleProviderSwitch = async (providerId: string) => {
     try {
+      // Switch the provider
       await providersService.switchProvider(providerId);
-      // Note: switchProvider already updates the settings store via apiService.setActiveProvider()
-      // No need to fetch settings again - the store will update automatically
+
+      // After switching, check if current active_model is still available
+      if (providerRouterUrl) {
+        try {
+          const availableModels = await modelsService.getAvailableModels(providerRouterUrl);
+          const modelIds = availableModels.map(m => m.id);
+
+          // If current active model is not in the new provider's models, select the first one
+          if (activeModel && !modelIds.includes(activeModel)) {
+            if (availableModels.length > 0) {
+              const firstModel = availableModels[0].id;
+              await useSettingsStore.getState().updateSetting('active_model', firstModel);
+              useAlertStore.showAlert(`Auto-selected model: ${firstModel}`, 'info');
+            } else {
+              useAlertStore.showAlert('No models available from new provider', 'warning');
+            }
+          }
+        } catch (error) {
+          console.error('Failed to check/update model after provider switch:', error);
+          // Don't show error toast - provider switch was successful
+        }
+      }
     } catch (error) {
       console.error('Failed to switch provider:', error);
       useAlertStore.showAlert('Failed to switch provider', 'error');
