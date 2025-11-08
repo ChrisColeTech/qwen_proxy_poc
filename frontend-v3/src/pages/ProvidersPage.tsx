@@ -1,12 +1,13 @@
 import { TabCard } from '@/components/ui/tab-card';
 import { useProvidersPage } from '@/hooks/useProvidersPage';
 import { useUIStore } from '@/stores/useUIStore';
+import { useSettingsStore } from '@/stores/useSettingsStore';
 import {
   buildProviderActions,
   buildProviderSwitchActions,
   buildProviderSwitchContent,
   buildAllProvidersContent,
-  buildSettingsContent,
+  buildTestContent,
   PROVIDERS_TABS,
   PROVIDERS_TITLE,
   PROVIDERS_ICON
@@ -19,6 +20,7 @@ export function ProvidersPage() {
     handleProviderSwitch
   } = useProvidersPage();
   const setCurrentRoute = useUIStore((state) => state.setCurrentRoute);
+  const providerRouterUrl = useSettingsStore((state) => state.providerRouterUrl);
 
   const handleProviderClickNavigate = (providerId: string) => {
     // Navigate to provider details page
@@ -54,8 +56,12 @@ export function ProvidersPage() {
       })
     },
     {
-      ...PROVIDERS_TABS.SETTINGS,
-      content: buildSettingsContent()
+      ...PROVIDERS_TABS.TEST,
+      content: buildTestContent({
+        activeProvider,
+        providers,
+        providerRouterUrl: providerRouterUrl || 'http://localhost:3001'
+      })
     }
   ];
 

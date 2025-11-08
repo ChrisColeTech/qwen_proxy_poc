@@ -1,8 +1,12 @@
-import { Blocks, Settings, Zap, Plus, ChevronRight, Network } from 'lucide-react';
+import { Blocks, Settings, Zap, Plus, ChevronRight, Network, FlaskConical } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipProvider } from '@/components/ui/tooltip';
 import { StatusIndicator } from '@/components/ui/status-indicator';
 import { ActionList } from '@/components/ui/action-list';
+import { CodeBlock } from '@/components/features/quick-guide/CodeBlock';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ProviderTestTab } from '@/components/features/providers/ProviderTestTab';
 import type { ActionItem } from './home.constants';
 import type { Provider } from '@/types/providers.types';
 
@@ -17,10 +21,10 @@ export const PROVIDERS_TABS = {
     label: 'All Providers',
     description: 'View and manage all configured AI providers'
   },
-  SETTINGS: {
-    value: 'settings',
-    label: 'Settings',
-    description: 'Configure provider settings and API keys'
+  TEST: {
+    value: 'test',
+    label: 'Test Provider',
+    description: 'Test your provider configuration with a live request'
   }
 } as const;
 
@@ -118,10 +122,18 @@ export const buildAllProvidersContent = (params: {
 
       {/* Add Provider Button Row */}
       <div className="model-filters-row" style={{ flexShrink: 0, justifyContent: 'flex-end' }}>
-        <Button onClick={onAddProvider} variant="outline" size="sm">
-          <Plus className="icon-sm mr-2" />
-          Add Provider
-        </Button>
+        <TooltipProvider>
+          <Tooltip content="Add new provider">
+            <Button
+              onClick={onAddProvider}
+              variant="outline"
+              size="icon"
+              aria-label="Add new provider"
+            >
+              <Plus className="icon-sm" />
+            </Button>
+          </Tooltip>
+        </TooltipProvider>
       </div>
 
       {/* Providers List */}
@@ -191,26 +203,112 @@ export const buildActiveProvidersContent = () => (
   </div>
 );
 
-export const buildSettingsContent = () => (
-  <div className="vspace-md">
-    <div className="demo-container">
-      <div className="demo-header">
-        <div className="demo-label">
-          <Settings className="icon-primary" />
-          <span className="demo-label-text">Provider Settings</span>
+export const buildTestContent = (params: {
+  activeProvider: string;
+  providers: Provider[];
+  providerRouterUrl: string;
+}) => {
+  const { activeProvider, providers, providerRouterUrl } = params;
+
+  const provider = providers.find(p => p.id === activeProvider);
+  const port = providerRouterUrl ? new URL(providerRouterUrl).port || '3001' : '3001';
+  const defaultModel = 'default'; // Will be determined by provider router
+  const providerName = provider?.name || 'Unknown Provider';
+
+  const pythonExample = `from openai import OpenAI
+
+# Configure client to use Provider Router
+client = OpenAI(
+    base_url="${providerRouterUrl || 'http://localhost:3001'}/v1",
+    api_key="any-key"  # Authentication via Qwen credentials
+)
+
+# Switch to ${providerName}
+# (Provider Router automatically routes to active provider)
+
+# Send test message
+response = client.chat.completions.create(
+    model="${defaultModel}",
+    messages=[{"role": "user", "content": "Say hello in one sentence"}]
+)
+
+print(response.choices[0].message.content)`;
+
+  const nodeExample = `import OpenAI from 'openai';
+
+// Configure client to use Provider Router
+const openai = new OpenAI({
+  baseURL: '${providerRouterUrl || 'http://localhost:3001'}/v1',
+  apiKey: 'any-key'  // Authentication via Qwen credentials
+});
+
+// Switch to ${providerName}
+// (Provider Router automatically routes to active provider)
+
+// Send test message
+const completion = await openai.chat.completions.create({
+  model: '${defaultModel}',
+  messages: [{ role: 'user', content: 'Say hello in one sentence' }]
+});
+
+console.log(completion.choices[0].message.content);`;
+
+  const curlExample = `# First, switch to ${providerName}
+curl ${providerRouterUrl || `http://localhost:${port}`}/v1/provider/switch \\
+  -H "Content-Type: application/json" \\
+  -d '{"provider": "${activeProvider}"}'
+
+# Then send a test chat completion
+curl ${providerRouterUrl || `http://localhost:${port}`}/v1/chat/completions \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer any-key" \\
+  -d '{
+    "model": "${defaultModel}",
+    "messages": [
+      {"role": "user", "content": "Say hello in one sentence"}
+    ]
+  }'`;
+
+  return (
+    <div className="vspace-md space-y-6">
+      {/* Test Request Section */}
+      {provider && (
+        <ProviderTestTab
+          providerId={provider.id}
+          providerName={provider.name}
+          defaultModel={defaultModel}
+        />
+      )}
+
+      {/* Divider */}
+      <div className="border-t border-border" />
+
+      {/* SDK Integration Examples */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <FlaskConical className="icon-primary" />
+          <h3 className="text-sm font-semibold tracking-tight">SDK Integration Examples</h3>
         </div>
-      </div>
-      <div className="provider-switch-list">
-        <div className="flex flex-col items-center justify-center py-12 gap-4">
-          <Settings className="h-12 w-12 text-muted-foreground" />
-          <p className="text-muted-foreground text-center">
-            Configure API keys and settings for your providers.
-          </p>
-          <p className="text-sm text-muted-foreground text-center max-w-md">
-            Click on a provider from the "All Providers" tab to configure its settings.
-          </p>
-        </div>
+        <p className="text-sm text-muted-foreground">
+          Use these code examples to integrate <strong>{providerName}</strong> into your application using the OpenAI-compatible SDK.
+        </p>
+        <Tabs defaultValue="python" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="python">Python</TabsTrigger>
+            <TabsTrigger value="node">Node.js</TabsTrigger>
+            <TabsTrigger value="curl">cURL</TabsTrigger>
+          </TabsList>
+          <TabsContent value="python" className="mt-4">
+            <CodeBlock label="Using OpenAI Python SDK" code={pythonExample} />
+          </TabsContent>
+          <TabsContent value="node" className="mt-4">
+            <CodeBlock label="Using OpenAI Node.js SDK" code={nodeExample} />
+          </TabsContent>
+          <TabsContent value="curl" className="mt-4">
+            <CodeBlock label="Manual API request" code={curlExample} />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
-  </div>
-);
+  );
+};
