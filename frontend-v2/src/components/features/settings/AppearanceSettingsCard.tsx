@@ -4,7 +4,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Palette } from 'lucide-react';
 
 export function AppearanceSettingsCard() {
-  const { uiState, toggleTheme, toggleSidebarPosition } = useUIStore();
+  const { uiState, toggleTheme, toggleSidebarPosition, toggleShowStatusMessages } = useUIStore();
 
   return (
     <Card>
@@ -52,6 +52,27 @@ export function AppearanceSettingsCard() {
           >
             <ToggleGroupItem value="left">Left</ToggleGroupItem>
             <ToggleGroupItem value="right">Right</ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+
+        <div className="divider-horizontal" />
+
+        <div className="flex-row-between">
+          <div className="vspace-tight">
+            <div className="text-setting-label">Status Bar Messages</div>
+            <div className="text-setting-description">
+              Show lifecycle messages in the status bar
+            </div>
+          </div>
+          <ToggleGroup
+            type="single"
+            value={uiState.showStatusMessages ? 'show' : 'hide'}
+            onValueChange={(value) => {
+              if (value) toggleShowStatusMessages();
+            }}
+          >
+            <ToggleGroupItem value="show">Show</ToggleGroupItem>
+            <ToggleGroupItem value="hide">Hide</ToggleGroupItem>
           </ToggleGroup>
         </div>
       </CardContent>

@@ -1,6 +1,7 @@
 import { useProxyStore } from '@/stores/useProxyStore';
 import { useLifecycleStore } from '@/stores/useLifecycleStore';
 import { useSettingsStore } from '@/stores/useSettingsStore';
+import { useUIStore } from '@/stores/useUIStore';
 import { EnvironmentBadge } from '@/components/ui/environment-badge';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +13,7 @@ export function StatusBar() {
   const lifecycleMessage = useLifecycleStore((state) => state.message);
   const lifecycleError = useLifecycleStore((state) => state.error);
   const settings = useSettingsStore((state) => state.settings);
+  const showStatusMessages = useUIStore((state) => state.uiState.showStatusMessages);
 
   const apiServerStatus = connected ? 'running' : 'stopped';
 
@@ -64,7 +66,7 @@ export function StatusBar() {
           </>
         )}
       </div>
-      {displayMessage && (
+      {showStatusMessages && displayMessage && (
         <StatusBadge status={isError ? 'invalid' : isProxyRunning ? 'running' : 'stopped'}>
           {isTransitioning && (
             <svg
