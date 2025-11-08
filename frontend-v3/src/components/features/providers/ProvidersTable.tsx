@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipProvider } from '@/components/ui/tooltip';
 import {
   Table,
   TableBody,
@@ -39,10 +40,18 @@ export function ProvidersTable({
             <span className="demo-label-text">Provider Management</span>
           </div>
           {onCreate && (
-            <Button onClick={onCreate} size="sm" variant="outline">
-              <Plus className="h-4 w-4 mr-2" />
-              New Provider
-            </Button>
+            <TooltipProvider>
+              <Tooltip content="Create new provider">
+                <Button
+                  onClick={onCreate}
+                  size="icon"
+                  variant="outline"
+                  aria-label="Create new provider"
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </Tooltip>
+            </TooltipProvider>
           )}
         </div>
 

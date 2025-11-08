@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { TabCard } from '@/components/ui/tab-card';
+import { Tooltip, TooltipProvider } from '@/components/ui/tooltip';
 import { useAlertStore } from '@/stores/useAlertStore';
 import { useUIStore } from '@/stores/useUIStore';
 import { providersService } from '@/services/providers.service';
@@ -195,9 +196,9 @@ export function ProviderFormPage({ readOnly = false }: ProviderFormPageProps = {
         <div className="flex-row-between">
           <div className="vspace-tight">
             <div className="text-setting-label">
-              Provider ID <span className="text-destructive">*</span>
+              Provider ID <span className="text-destructive" aria-hidden="true">*</span>
             </div>
-            <div className="text-setting-description">
+            <div id="id-description" className="text-setting-description">
               Lowercase letters, numbers, and hyphens only
             </div>
           </div>
@@ -208,6 +209,9 @@ export function ProviderFormPage({ readOnly = false }: ProviderFormPageProps = {
             placeholder="lm-studio-home"
             disabled={isEditMode || readOnly}
             required
+            aria-label="Provider ID"
+            aria-describedby="id-description"
+            aria-required="true"
             className="flex-1 max-w-md"
           />
         </div>
@@ -218,9 +222,9 @@ export function ProviderFormPage({ readOnly = false }: ProviderFormPageProps = {
         <div className="flex-row-between">
           <div className="vspace-tight">
             <div className="text-setting-label">
-              Display Name <span className="text-destructive">*</span>
+              Display Name <span className="text-destructive" aria-hidden="true">*</span>
             </div>
-            <div className="text-setting-description">
+            <div id="name-description" className="text-setting-description">
               Human-readable name for this provider
             </div>
           </div>
@@ -231,6 +235,9 @@ export function ProviderFormPage({ readOnly = false }: ProviderFormPageProps = {
             placeholder="LM Studio Home"
             disabled={readOnly}
             required
+            aria-label="Display Name"
+            aria-describedby="name-description"
+            aria-required="true"
             className="flex-1 max-w-md"
           />
         </div>
@@ -241,9 +248,9 @@ export function ProviderFormPage({ readOnly = false }: ProviderFormPageProps = {
         <div className="flex-row-between">
           <div className="vspace-tight">
             <div className="text-setting-label">
-              Provider Type <span className="text-destructive">*</span>
+              Provider Type <span className="text-destructive" aria-hidden="true">*</span>
             </div>
-            <div className="text-setting-description">
+            <div id="type-description" className="text-setting-description">
               Type identifier (e.g., lm-studio, qwen-proxy, custom-type)
             </div>
           </div>
@@ -254,6 +261,9 @@ export function ProviderFormPage({ readOnly = false }: ProviderFormPageProps = {
             placeholder="lm-studio"
             disabled={isEditMode || readOnly}
             required
+            aria-label="Provider Type"
+            aria-describedby="type-description"
+            aria-required="true"
             className="flex-1 max-w-md"
           />
         </div>
@@ -306,7 +316,7 @@ export function ProviderFormPage({ readOnly = false }: ProviderFormPageProps = {
         <div className="flex-row-between">
           <div className="vspace-tight">
             <div className="text-setting-label">Enabled</div>
-            <div className="text-setting-description">
+            <div id="enabled-description" className="text-setting-description">
               Whether this provider is active
             </div>
           </div>
@@ -315,6 +325,8 @@ export function ProviderFormPage({ readOnly = false }: ProviderFormPageProps = {
             checked={formData.enabled}
             onCheckedChange={(checked) => setFormData({ ...formData, enabled: checked })}
             disabled={readOnly}
+            aria-label="Enable or disable provider"
+            aria-describedby="enabled-description"
           />
         </div>
 
@@ -443,91 +455,109 @@ export function ProviderFormPage({ readOnly = false }: ProviderFormPageProps = {
   );
 
   const actions = readOnly ? (
-    <div className="flex gap-2">
-      <Button
-        type="button"
-        variant="ghost"
-        size="sm"
-        onClick={() => setCurrentRoute('/providers')}
-      >
-        <ArrowLeft className="icon-sm mr-2" />
-        Back
-      </Button>
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        onClick={handleToggleEnabled}
-        disabled={loading}
-      >
-        {formData.enabled ? (
-          <><PowerOff className="icon-sm mr-2" />Disable</>
-        ) : (
-          <><Power className="icon-sm mr-2" />Enable</>
-        )}
-      </Button>
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        onClick={() => setCurrentRoute(`/providers/${id}/edit`)}
-      >
-        <Edit className="icon-sm mr-2" />
-        Edit
-      </Button>
-      <Button
-        type="button"
-        variant="destructive"
-        size="sm"
-        onClick={handleDelete}
-        disabled={loading}
-      >
-        <Trash2 className="icon-sm mr-2" />
-        Delete
-      </Button>
-    </div>
+    <TooltipProvider>
+      <div className="flex gap-2">
+        <Tooltip content="Back to providers list">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={() => setCurrentRoute('/providers')}
+            aria-label="Back to providers list"
+          >
+            <ArrowLeft className="icon-sm" />
+          </Button>
+        </Tooltip>
+        <Tooltip content={formData.enabled ? "Disable provider" : "Enable provider"}>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            onClick={handleToggleEnabled}
+            disabled={loading}
+            aria-label={formData.enabled ? "Disable provider" : "Enable provider"}
+          >
+            {formData.enabled ? <PowerOff className="icon-sm" /> : <Power className="icon-sm" />}
+          </Button>
+        </Tooltip>
+        <Tooltip content="Edit provider">
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            onClick={() => setCurrentRoute(`/providers/${id}/edit`)}
+            aria-label="Edit provider"
+          >
+            <Edit className="icon-sm" />
+          </Button>
+        </Tooltip>
+        <Tooltip content="Delete provider">
+          <Button
+            type="button"
+            variant="destructive"
+            size="icon"
+            onClick={handleDelete}
+            disabled={loading}
+            aria-label="Delete provider"
+          >
+            <Trash2 className="icon-sm" />
+          </Button>
+        </Tooltip>
+      </div>
+    </TooltipProvider>
   ) : (
-    <div className="flex gap-2">
-      <Button
-        type="button"
-        variant="ghost"
-        size="sm"
-        onClick={() => setCurrentRoute('/providers')}
-      >
-        <ArrowLeft className="icon-sm mr-2" />
-        Cancel
-      </Button>
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        onClick={handleReset}
-      >
-        <RotateCcw className="icon-sm mr-2" />
-        Reset
-      </Button>
-      {isEditMode && (
-        <Button
-          type="button"
-          variant="secondary"
-          size="sm"
-          onClick={handleTest}
-          disabled={testing}
-        >
-          <TestTube className="icon-sm mr-2" />
-          {testing ? 'Testing...' : 'Test Connection'}
-        </Button>
-      )}
-      <Button
-        type="submit"
-        size="sm"
-        disabled={loading}
-        onClick={handleSubmit}
-      >
-        <Save className="icon-sm mr-2" />
-        {loading ? 'Saving...' : (isEditMode ? 'Save Changes' : 'Create Provider')}
-      </Button>
-    </div>
+    <TooltipProvider>
+      <div className="flex gap-2">
+        <Tooltip content="Cancel and go back">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={() => setCurrentRoute('/providers')}
+            aria-label="Cancel and go back"
+          >
+            <ArrowLeft className="icon-sm" />
+          </Button>
+        </Tooltip>
+        <Tooltip content="Reset form">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={handleReset}
+            aria-label="Reset form"
+          >
+            <RotateCcw className="icon-sm" />
+          </Button>
+        </Tooltip>
+        {isEditMode && (
+          <Tooltip content={testing ? "Testing connection..." : "Test connection"}>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={handleTest}
+              disabled={testing}
+              aria-label="Test connection"
+            >
+              <TestTube className="icon-sm" />
+            </Button>
+          </Tooltip>
+        )}
+        <Tooltip content={loading ? "Saving..." : (isEditMode ? "Save changes" : "Create provider")}>
+          <Button
+            type="submit"
+            size="icon"
+            variant="outline"
+            disabled={loading}
+            onClick={handleSubmit}
+            aria-label={isEditMode ? "Save changes" : "Create provider"}
+          >
+            <Save className="icon-sm" />
+          </Button>
+        </Tooltip>
+      </div>
+    </TooltipProvider>
   );
 
   const tabs = [

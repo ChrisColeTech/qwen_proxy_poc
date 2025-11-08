@@ -1,20 +1,43 @@
 import * as React from "react"
+import { motion } from "framer-motion"
 
 import { cn } from "@/lib/utils"
 
 const Card = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "rounded-xl border bg-card text-card-foreground shadow",
-      className
-    )}
-    {...props}
-  />
-))
+  React.HTMLAttributes<HTMLDivElement> & { interactive?: boolean }
+>(({ className, interactive = false, ...props }, ref) => {
+  const prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  if (!interactive || prefersReducedMotion) {
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          "rounded-xl border bg-card text-card-foreground shadow-sm transition-shadow duration-200",
+          interactive && "hover:shadow-md",
+          className
+        )}
+        {...props}
+      />
+    )
+  }
+
+  return (
+    <motion.div
+      ref={ref}
+      className={cn(
+        "rounded-xl border bg-card text-card-foreground shadow-sm transition-shadow duration-200 hover:shadow-md",
+        className
+      )}
+      whileHover={{ y: -2 }}
+      transition={{ duration: 0.2 }}
+      {...(props as any)}
+    />
+  )
+})
 Card.displayName = "Card"
 
 const CardHeader = React.forwardRef<
