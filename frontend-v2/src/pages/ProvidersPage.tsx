@@ -17,7 +17,7 @@ export function ProvidersPage() {
     toggleEnabled,
     testConnection,
     deleteProvider,
-    switchProvider,
+    switchProvider: baseSwitchProvider,
   } = useProviders();
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -59,6 +59,12 @@ export function ProvidersPage() {
 
   const handleRowClick = (providerId: string) => {
     setCurrentRoute(`/providers/${providerId}/edit`);
+  };
+
+  const switchProvider = async (providerId: string) => {
+    await baseSwitchProvider(providerId);
+    // Refetch settings to update the activeProvider in UI
+    await fetchSettings();
   };
 
   const activeProvider = settings.active_provider || '';
