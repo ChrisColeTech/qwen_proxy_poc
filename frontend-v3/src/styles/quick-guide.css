@@ -1,0 +1,68 @@
+/* Quick Guide Styles */
+
+/* Code Block */
+.code-block-container { @apply space-y-2; }
+.code-block-label { @apply text-sm font-medium text-foreground; }
+.code-block-wrapper { @apply relative rounded-lg border bg-muted; }
+.code-block-pre { @apply overflow-x-auto p-3; }
+.code-block-code { @apply text-xs font-mono text-foreground; }
+.code-block-copy-button { @apply absolute right-2 top-2 h-7 w-7; }
+
+/* Step Common */
+.step-description { @apply text-sm text-muted-foreground; }
+.step-inline-code { @apply rounded bg-muted px-1.5 py-0.5 text-xs font-mono; }
+
+/* Demo Container */
+.demo-container { @apply rounded-lg border border-border bg-card flex flex-col flex-1 overflow-hidden; }
+.demo-header { @apply flex items-center justify-between border-b border-border px-4 py-3; }
+.demo-label { @apply flex items-center gap-2; }
+.demo-label-text { @apply text-sm font-medium; }
+.demo-error-state { @apply flex-1 flex items-center justify-center gap-2 py-8 text-sm text-muted-foreground; }
+.demo-content { @apply px-4 py-3 text-sm text-foreground whitespace-pre-wrap; }
+.demo-empty-state { @apply flex items-center justify-center gap-2 py-8 text-sm text-muted-foreground; }
+
+/* Models Step */
+.model-list-container { @apply divide-y divide-border flex-1 overflow-y-auto; }
+.model-item { @apply flex items-center justify-between gap-2 px-4 py-2 w-full text-left border-none bg-transparent; }
+.model-item-code { @apply flex-1 truncate rounded bg-muted px-2 py-1 text-xs font-mono; }
+.model-item-left { @apply flex items-center gap-2 flex-1; }
+.model-item-badge { @apply text-xs; }
+.model-check-icon { @apply h-3.5 w-3.5 status-icon-success; }
+.model-header-actions { @apply flex items-center gap-2; }
+.model-loading-badge { @apply gap-1; }
+.model-loading-icon { @apply h-3 w-3 animate-spin; }
+.model-count-badge { @apply gap-1; }
+.model-count-icon { @apply h-3 w-3 status-icon-success; }
+.model-refresh-button { @apply h-7 w-7; }
+.model-refresh-icon { @apply h-3.5 w-3.5; }
+
+/* Provider Switch */
+.provider-switch-list { @apply divide-y divide-border flex-1 overflow-y-auto; }
+.provider-switch-item { @apply flex items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-muted/50; }
+.provider-switch-item-active { @apply bg-muted/30; }
+.provider-switch-info { @apply flex items-center gap-3; }
+.provider-switch-details { @apply flex flex-col gap-0.5; }
+.provider-switch-name { @apply text-sm font-medium text-foreground; }
+.provider-switch-type { @apply text-xs text-muted-foreground; }
+.provider-switch-actions { @apply flex items-center gap-2; }
+.provider-loading-badge { @apply gap-1; }
+.provider-loading-icon { @apply h-3 w-3 animate-spin; }
+.provider-badge-sm { @apply text-xs; }
+.provider-switch-button { @apply h-7 w-7; }
+.provider-switch-icon { @apply h-3.5 w-3.5; }
+
+/* Explore Section */
+.explore-grid { @apply grid gap-4 md:grid-cols-3; }
+.explore-card { @apply p-4 rounded-lg border bg-card hover:bg-muted/50 transition-colors cursor-pointer; }
+.explore-card-content { @apply space-y-3; }
+.explore-card-header { @apply flex items-start justify-between; }
+.explore-card-icon { @apply h-5 w-5; }
+.explore-card-arrow { @apply h-4 w-4 text-muted-foreground transition-colors; }
+.explore-card:hover .explore-card-arrow { @apply text-foreground; }
+.explore-card-title { @apply font-semibold text-sm mb-1; }
+.explore-card-description { @apply text-xs text-muted-foreground leading-relaxed; }
+
+/* Status & Common */
+.status-icon-inline { @apply h-4 w-4 inline-block; }
+.status-icon-success { @apply text-green-600 dark:text-green-500; }
+.card-title-with-icon { @apply flex items-center gap-2 text-base; }

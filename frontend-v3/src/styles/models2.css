@@ -1,0 +1,125 @@
+/* ============================================================================
+   MODELS COMPONENTS STYLES
+   Styles for models-related components (ModelsCard, etc.)
+   ============================================================================ */
+
+/* Models Card */
+.models-card-title {
+  @apply flex items-center gap-2 text-base;
+}
+
+.models-tabs {
+  @apply w-full;
+}
+
+.models-tabs-list {
+  @apply grid w-full grid-cols-2;
+}
+
+/* Browse Models Tab */
+.models-browse-container {
+  @apply mt-4 space-y-4;
+}
+
+.models-browse-description {
+  @apply step-description;
+}
+
+.models-browse-demo {
+  @apply demo-container;
+}
+
+.models-browse-header {
+  @apply demo-header;
+}
+
+.models-browse-label {
+  @apply demo-label;
+}
+
+.models-browse-label-text {
+  @apply demo-label-text;
+}
+
+.models-browse-actions {
+  @apply flex items-center gap-2;
+}
+
+.models-browse-badge {
+  @apply gap-1;
+}
+
+.models-browse-button {
+  @apply h-7 w-7;
+}
+
+/* Model List */
+.model-list-container {
+  @apply divide-y divide-border;
+}
+
+.model-item {
+  @apply flex items-center justify-between gap-2 px-4 py-2 w-full text-left border-none bg-transparent;
+}
+
+.model-item-interactive {
+  @apply cursor-pointer hover:bg-accent;
+}
+
+.model-item-active {
+  @apply bg-accent;
+}
+
+.model-item-content {
+  @apply flex items-center gap-2 flex-1;
+}
+
+.model-item-code {
+  @apply flex-1 truncate rounded bg-muted px-2 py-1 text-xs font-mono;
+}
+
+.model-item-badge {
+  @apply text-xs;
+}
+
+/* Empty State */
+.models-empty-state {
+  @apply demo-error-state;
+}
+
+/* Curl Tab */
+.models-curl-container {
+  @apply mt-4 space-y-4;
+}
+
+.models-curl-description {
+  @apply step-description;
+}
+
+.models-curl-response-container {
+  @apply demo-container;
+}
+
+.models-curl-response-header {
+  @apply demo-header;
+}
+
+.models-curl-response-label {
+  @apply demo-label;
+}
+
+.models-curl-response-label-text {
+  @apply demo-label-text;
+}
+
+.models-curl-response-content {
+  @apply demo-content;
+}
+
+.models-curl-response-description {
+  @apply text-sm text-muted-foreground mb-2;
+}
+
+.models-curl-response-code {
+  @apply text-xs bg-muted p-3 rounded overflow-x-auto;
+}

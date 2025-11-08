@@ -1,0 +1,71 @@
+import { create } from 'zustand';
+import { apiService } from '@/services/api.service';
+import { useAlertStore } from './useAlertStore';
+
+interface Settings {
+  'server.port'?: string;
+  'server.host'?: string;
+  active_provider?: string;
+  active_model?: string;
+  [key: string]: string | number | boolean | undefined;
+}
+
+interface SettingsStore {
+  settings: Settings;
+  loading: boolean;
+  providerRouterUrl: string;
+  fetchSettings: () => Promise<void>;
+  updateSetting: (key: string, value: string) => Promise<void>;
+  setActiveModel: (modelId: string) => Promise<void>;
+}
+
+export const useSettingsStore = create<SettingsStore>((set, get) => ({
+  settings: {},
+  loading: false,
+  providerRouterUrl: '',
+
+  fetchSettings: async () => {
+    set({ loading: true });
+    try {
+      const result = await apiService.getSettings();
+      if (result.success && result.data) {
+        const port = result.data['server.port'] || '3001';
+        const host = result.data['server.host'] || 'localhost';
+        const providerRouterUrl = `http://${host}:${port}`;
+        set({ settings: result.data, providerRouterUrl });
+      }
+    } catch (error) {
+      console.error('Failed to fetch settings:', error);
+      set({ providerRouterUrl: 'http://localhost:3001' });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  updateSetting: async (key: string, value: string) => {
+    const previousValue = get().settings[key];
+
+    try {
+      await apiService.updateSetting(key, value);
+      set((state) => ({
+        settings: { ...state.settings, [key]: value }
+      }));
+
+      // Show toast notifications for provider/model changes
+      if (previousValue !== value) {
+        if (key === 'active_provider') {
+          useAlertStore.showAlert(`Switched to provider: ${value}`, 'success');
+        } else if (key === 'active_model') {
+          useAlertStore.showAlert(`Switched to model: ${value}`, 'success');
+        }
+      }
+    } catch (error) {
+      console.error('[SettingsStore] Failed to update setting:', error);
+      throw error;
+    }
+  },
+
+  setActiveModel: async (modelId: string) => {
+    return get().updateSetting('active_model', modelId);
+  }
+}));

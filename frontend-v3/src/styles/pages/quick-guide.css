@@ -1,0 +1,60 @@
+/* Quick Guide Page */
+.quick-guide-container {
+  @apply container max-w-6xl py-8;
+}
+
+.quick-guide-header {
+  @apply mb-6;
+}
+
+.quick-guide-title-row {
+  @apply flex items-center gap-2 mb-2;
+}
+
+.quick-guide-title {
+  @apply text-2xl font-bold;
+}
+
+.quick-guide-description {
+  @apply text-muted-foreground;
+}
+
+.quick-guide-steps {
+  @apply space-y-6;
+}
+
+.quick-guide-step-header {
+  @apply mb-3;
+}
+
+.quick-guide-step-title {
+  @apply text-lg font-semibold;
+}
+
+.quick-guide-step-description {
+  @apply text-sm text-muted-foreground;
+}
+
+.quick-guide-step-cards {
+  @apply space-y-4;
+}
+
+.quick-guide-success {
+  @apply rounded-lg border border-primary/20 bg-primary/10 p-4;
+}
+
+.quick-guide-success-content {
+  @apply flex items-center gap-2 text-primary;
+}
+
+.quick-guide-success-icon {
+  @apply h-5 w-5;
+}
+
+.quick-guide-success-title {
+  @apply font-semibold;
+}
+
+.quick-guide-success-message {
+  @apply text-sm;
+}
