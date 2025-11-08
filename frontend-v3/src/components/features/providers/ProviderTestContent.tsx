@@ -35,7 +35,16 @@ export function ProviderTestContent({ activeProvider, providerName, providerRout
   }, [activeProvider]);
 
   const port = providerRouterUrl ? new URL(providerRouterUrl).port || '3001' : '3001';
-  const defaultModel = providerDetails?.config?.defaultModel || 'default';
+
+  // Get default model from config, or use the first model marked as default, or first available model
+  let defaultModel = providerDetails?.config?.defaultModel;
+  if (!defaultModel && providerDetails?.models && providerDetails.models.length > 0) {
+    const defaultModelObj = providerDetails.models.find((m: any) => m.is_default);
+    defaultModel = (defaultModelObj as any)?.id || (providerDetails.models[0] as any).id;
+  }
+  if (!defaultModel) {
+    defaultModel = 'any-model'; // Fallback if no model configured
+  }
 
   const pythonExample = `from openai import OpenAI
 
