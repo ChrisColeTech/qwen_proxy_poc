@@ -1,16 +1,36 @@
 import { useState, useEffect } from 'react';
 import { useAlertStore } from '@/stores/useAlertStore';
+import { modelsService } from '@/services/models.service';
+import type { Model } from '@/types/models.types';
+import { useSettingsStore } from '@/stores/useSettingsStore';
 
 export function useModelsPage() {
-  const [selectedFilter, setSelectedFilter] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [models, setModels] = useState<Model[]>([]);
+  const [loading, setLoading] = useState(false);
+  const settings = useSettingsStore((state) => state.settings);
+  const activeModel = (settings.active_model as string) || '';
 
-  const handleFilterChange = (filter: string) => {
-    setSelectedFilter(filter);
+  const fetchModels = async () => {
+    setLoading(true);
+    try {
+      const data = await modelsService.getModels();
+      setModels(data);
+    } catch (error) {
+      console.error('Failed to fetch models:', error);
+      useAlertStore.showAlert('Failed to load models', 'error');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
+  const handleModelSelect = async (modelId: string) => {
+    try {
+      // Use the settings store's updateSetting method which handles both API call and store update
+      await useSettingsStore.getState().updateSetting('active_model', modelId);
+    } catch (error) {
+      console.error('Failed to select model:', error);
+      useAlertStore.showAlert('Failed to select model', 'error');
+    }
   };
 
   const handleModelClick = (modelId: string) => {
@@ -18,16 +38,16 @@ export function useModelsPage() {
     useAlertStore.showAlert(`Selected model: ${modelId}`, 'success');
   };
 
-  // Example: Fetch models data would go here
   useEffect(() => {
-    // TODO: Fetch models from API
+    fetchModels();
   }, []);
 
   return {
-    selectedFilter,
-    searchQuery,
-    handleFilterChange,
-    handleSearch,
+    models,
+    activeModel,
+    loading,
+    handleModelSelect,
     handleModelClick,
+    fetchModels,
   };
 }

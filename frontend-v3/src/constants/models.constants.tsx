@@ -1,10 +1,16 @@
-import { Filter, Database, Star, Clock, ChevronRight } from 'lucide-react';
+import { Filter, Database, Star, Clock, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { StatusIndicator } from '@/components/ui/status-indicator';
 import { ActionList } from '@/components/ui/action-list';
 import type { ActionItem } from './home.constants';
+import type { Model } from '@/types/models.types';
 
 export const MODELS_TABS = {
+  SELECT: {
+    value: 'select',
+    label: 'Select Model',
+    description: 'Select an active model to use with the Provider Router:'
+  },
   ALL: {
     value: 'all',
     label: 'All Models',
@@ -14,11 +20,6 @@ export const MODELS_TABS = {
     value: 'favorites',
     label: 'Favorites',
     description: 'Your favorite models for quick access'
-  },
-  RECENT: {
-    value: 'recent',
-    label: 'Recent',
-    description: 'Recently used models'
   }
 } as const;
 
@@ -32,6 +33,29 @@ const createModelBadge = (variant: 'default' | 'destructive' | 'secondary', text
     <ChevronRight className="icon-sm" style={{ opacity: 0.5 }} />
   </>
 );
+
+export const buildModelSelectActions = (params: {
+  models: Model[];
+  activeModel: string;
+  onSelect: (modelId: string) => void;
+}): ActionItem[] => {
+  const { models, activeModel, onSelect } = params;
+
+  return models.map((model) => {
+    const isActive = model.id === activeModel;
+
+    return {
+      icon: <StatusIndicator status={isActive ? 'running' : 'stopped'} />,
+      title: model.id,
+      description: model.description || model.name,
+      actions: isActive
+        ? createModelBadge('default', 'Active')
+        : createModelBadge('secondary', 'Select'),
+      onClick: isActive ? undefined : () => onSelect(model.id),
+      disabled: isActive
+    };
+  });
+};
 
 export const buildModelActions = (params: {
   handleModelClick: (modelId: string) => void;
@@ -63,6 +87,10 @@ export const buildModelActions = (params: {
     }
   ];
 };
+
+export const buildModelSelectContent = (selectActions: ActionItem[]) => (
+  <ActionList title="Available Models" icon={CheckCircle2} items={selectActions} />
+);
 
 export const buildAllModelsContent = (modelActions: ActionItem[]) => (
   <ActionList title="Available Models" icon={Database} items={modelActions} />

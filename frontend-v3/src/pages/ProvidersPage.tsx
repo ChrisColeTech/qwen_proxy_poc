@@ -2,8 +2,9 @@ import { TabCard } from '@/components/ui/tab-card';
 import { useProvidersPage } from '@/hooks/useProvidersPage';
 import {
   buildProviderActions,
+  buildProviderSwitchActions,
+  buildProviderSwitchContent,
   buildAllProvidersContent,
-  buildActiveProvidersContent,
   buildSettingsContent,
   PROVIDERS_TABS,
   PROVIDERS_TITLE,
@@ -11,18 +12,30 @@ import {
 } from '@/constants/providers.constants';
 
 export function ProvidersPage() {
-  const { handleProviderClick } = useProvidersPage();
+  const {
+    providers,
+    activeProvider,
+    loading,
+    handleProviderSwitch,
+    handleProviderClick
+  } = useProvidersPage();
+
+  const switchActions = buildProviderSwitchActions({
+    providers,
+    activeProvider,
+    onSwitch: handleProviderSwitch
+  });
 
   const providerActions = buildProviderActions({ handleProviderClick });
 
   const tabs = [
     {
-      ...PROVIDERS_TABS.ALL,
-      content: buildAllProvidersContent(providerActions)
+      ...PROVIDERS_TABS.SWITCH,
+      content: buildProviderSwitchContent(switchActions)
     },
     {
-      ...PROVIDERS_TABS.ACTIVE,
-      content: buildActiveProvidersContent()
+      ...PROVIDERS_TABS.ALL,
+      content: buildAllProvidersContent(providerActions)
     },
     {
       ...PROVIDERS_TABS.SETTINGS,
@@ -36,7 +49,7 @@ export function ProvidersPage() {
         title={PROVIDERS_TITLE}
         icon={PROVIDERS_ICON}
         tabs={tabs}
-        defaultTab={PROVIDERS_TABS.ALL.value}
+        defaultTab={PROVIDERS_TABS.SWITCH.value}
       />
     </div>
   );

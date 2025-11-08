@@ -1,5 +1,9 @@
 /* UI Components: Status Indicator & Status Badge */
 
+/* Card */
+.page-card { @apply flex-1 flex flex-col overflow-hidden; }
+.page-card-content { @apply flex-1 flex flex-col overflow-hidden; }
+
 /* Tabs */
 .tab-container { @apply w-full flex flex-col flex-1 overflow-hidden; }
 .tab-list-grid-2 { @apply grid w-full grid-cols-2; }

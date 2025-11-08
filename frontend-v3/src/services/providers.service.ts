@@ -1,5 +1,6 @@
 import type { Provider, ProvidersResponse } from '@/types/providers.types';
 import { apiService } from './api.service';
+import { useSettingsStore } from '@/stores/useSettingsStore';
 
 const API_URL = 'http://localhost:3002';
 
@@ -44,7 +45,8 @@ class ProvidersService {
 
   async switchProvider(providerId: string): Promise<void> {
     try {
-      await apiService.setActiveProvider(providerId);
+      // Use the settings store's updateSetting method which handles both API call and store update
+      await useSettingsStore.getState().updateSetting('active_provider', providerId);
     } catch (error) {
       console.error('Failed to switch provider:', error);
       throw error;

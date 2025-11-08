@@ -1,19 +1,20 @@
-import { Blocks, Settings, Zap, Plus, ChevronRight } from 'lucide-react';
+import { Blocks, Settings, Zap, Plus, ChevronRight, Network } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { StatusIndicator } from '@/components/ui/status-indicator';
 import { ActionList } from '@/components/ui/action-list';
 import type { ActionItem } from './home.constants';
+import type { Provider } from '@/types/providers.types';
 
 export const PROVIDERS_TABS = {
+  SWITCH: {
+    value: 'switch',
+    label: 'Switch Provider',
+    description: 'The Provider Router can route to different AI backends. Switch providers dynamically:'
+  },
   ALL: {
     value: 'all',
     label: 'All Providers',
     description: 'View and manage all configured AI providers'
-  },
-  ACTIVE: {
-    value: 'active',
-    label: 'Active',
-    description: 'Currently enabled providers'
   },
   SETTINGS: {
     value: 'settings',
@@ -34,6 +35,32 @@ const createProviderBadge = (variant: 'default' | 'destructive' | 'secondary', t
     <ChevronRight className="icon-sm" style={{ opacity: 0.5 }} />
   </>
 );
+
+export const buildProviderSwitchActions = (params: {
+  providers: Provider[];
+  activeProvider: string;
+  onSwitch: (providerId: string) => void;
+}): ActionItem[] => {
+  const { providers, activeProvider, onSwitch } = params;
+
+  return providers.map((provider) => {
+    const isActive = provider.id === activeProvider;
+    const canSwitch = !isActive && provider.enabled;
+
+    return {
+      icon: <StatusIndicator status={isActive ? 'running' : 'stopped'} />,
+      title: provider.name,
+      description: provider.type,
+      actions: isActive
+        ? createProviderBadge('default', 'Active')
+        : canSwitch
+        ? createProviderBadge('secondary', 'Switch')
+        : createProviderBadge('outline', 'Disabled'),
+      onClick: canSwitch ? () => onSwitch(provider.id) : undefined,
+      disabled: !canSwitch
+    };
+  });
+};
 
 export const buildProviderActions = (params: {
   handleProviderClick: (providerId: string) => void;
@@ -73,6 +100,10 @@ export const buildProviderActions = (params: {
     }
   ];
 };
+
+export const buildProviderSwitchContent = (switchActions: ActionItem[]) => (
+  <ActionList title="Available Providers" icon={Network} items={switchActions} />
+);
 
 export const buildAllProvidersContent = (providerActions: ActionItem[]) => (
   <ActionList title="Available Providers" icon={Blocks} items={providerActions} />
