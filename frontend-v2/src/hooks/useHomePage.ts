@@ -24,6 +24,8 @@ export function useHomePage() {
 
   const handleStartProxy = async () => {
     setProxyLoading(true);
+    // Optimistically set lifecycle state to 'starting' immediately for instant UI feedback
+    useLifecycleStore.getState().setState('starting', 'Starting...');
     // Show immediate feedback before API call
     useAlertStore.showAlert('Starting proxy server...', 'success');
     try {
@@ -34,13 +36,16 @@ export function useHomePage() {
       console.error('Failed to start proxy:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to start proxy server';
       useAlertStore.showAlert(errorMessage, 'error');
-      // Clear loading on HTTP error (lifecycle events won't fire)
+      // Clear loading and reset lifecycle state on HTTP error (lifecycle events won't fire)
       setProxyLoading(false);
+      useLifecycleStore.getState().setState('stopped', 'Stopped');
     }
   };
 
   const handleStopProxy = async () => {
     setProxyLoading(true);
+    // Optimistically set lifecycle state to 'stopping' immediately for instant UI feedback
+    useLifecycleStore.getState().setState('stopping', 'Stopping...');
     // Show immediate feedback before API call
     useAlertStore.showAlert('Stopping proxy server...', 'success');
     try {
@@ -51,8 +56,9 @@ export function useHomePage() {
       console.error('Failed to stop proxy:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to stop proxy server';
       useAlertStore.showAlert(errorMessage, 'error');
-      // Clear loading on HTTP error (lifecycle events won't fire)
+      // Clear loading and reset lifecycle state on HTTP error (lifecycle events won't fire)
       setProxyLoading(false);
+      useLifecycleStore.getState().setState('running', 'Running');
     }
   };
 
