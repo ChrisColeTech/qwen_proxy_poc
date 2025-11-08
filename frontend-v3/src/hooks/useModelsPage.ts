@@ -1,27 +1,84 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAlertStore } from '@/stores/useAlertStore';
 import { modelsService } from '@/services/models.service';
-import type { Model } from '@/types/models.types';
+import type { Model, CapabilityFilter } from '@/types/models.types';
 import { useSettingsStore } from '@/stores/useSettingsStore';
 
 export function useModelsPage() {
-  const [models, setModels] = useState<Model[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [availableModels, setAvailableModels] = useState<Model[]>([]); // From Provider Router
+  const [allModels, setAllModels] = useState<Model[]>([]); // From API Server
+  const [loadingAvailable, setLoadingAvailable] = useState(false);
+  const [loadingAll, setLoadingAll] = useState(false);
+  const [capabilityFilter, setCapabilityFilter] = useState<CapabilityFilter>('all');
+  const [providerFilter, setProviderFilter] = useState<string>('all');
   const settings = useSettingsStore((state) => state.settings);
+  const providerRouterUrl = useSettingsStore((state) => state.providerRouterUrl);
   const activeModel = (settings.active_model as string) || '';
 
-  const fetchModels = async () => {
-    setLoading(true);
+  // Fetch available models from Provider Router
+  const fetchAvailableModels = async () => {
+    if (!providerRouterUrl) return;
+
+    setLoadingAvailable(true);
     try {
-      const data = await modelsService.getModels();
-      setModels(data);
+      const data = await modelsService.getAvailableModels(providerRouterUrl);
+      setAvailableModels(data);
     } catch (error) {
-      console.error('Failed to fetch models:', error);
-      useAlertStore.showAlert('Failed to load models', 'error');
+      console.error('Failed to fetch available models:', error);
+      useAlertStore.showAlert('Failed to load available models', 'error');
     } finally {
-      setLoading(false);
+      setLoadingAvailable(false);
     }
   };
+
+  // Fetch all models from API Server
+  const fetchAllModels = async () => {
+    setLoadingAll(true);
+    try {
+      const data = await modelsService.getModels();
+      setAllModels(data);
+    } catch (error) {
+      console.error('Failed to fetch all models:', error);
+      useAlertStore.showAlert('Failed to load all models', 'error');
+    } finally {
+      setLoadingAll(false);
+    }
+  };
+
+  // Extract unique providers from all models
+  const providers = useMemo(() => {
+    const providerSet = new Set<string>();
+    allModels.forEach((model) => {
+      const parsed = modelsService.parseModel(model);
+      providerSet.add(parsed.provider);
+    });
+    return Array.from(providerSet).sort();
+  }, [allModels]);
+
+  // Filter all models based on selected filters (for second tab)
+  const filteredAllModels = useMemo(() => {
+    return allModels.filter((model) => {
+      const parsed = modelsService.parseModel(model);
+
+      // Provider filter
+      if (providerFilter !== 'all' && parsed.provider !== providerFilter) {
+        return false;
+      }
+
+      // Capability filter
+      if (capabilityFilter !== 'all') {
+        const hasCapability = parsed.capabilities.some((cap) => {
+          if (capabilityFilter === 'chat') return cap === 'chat' || cap === 'completion';
+          if (capabilityFilter === 'vision') return cap === 'vision' || cap.includes('vl');
+          if (capabilityFilter === 'tool-call') return cap === 'tools' || cap === 'tool-call';
+          return false;
+        });
+        if (!hasCapability) return false;
+      }
+
+      return true;
+    });
+  }, [allModels, capabilityFilter, providerFilter]);
 
   const handleModelSelect = async (modelId: string) => {
     try {
@@ -38,16 +95,32 @@ export function useModelsPage() {
     useAlertStore.showAlert(`Selected model: ${modelId}`, 'success');
   };
 
+  const handleClearFilters = () => {
+    setCapabilityFilter('all');
+    setProviderFilter('all');
+  };
+
   useEffect(() => {
-    fetchModels();
-  }, []);
+    fetchAvailableModels();
+    fetchAllModels();
+  }, [providerRouterUrl]);
 
   return {
-    models,
+    availableModels,
+    allModels,
+    filteredAllModels,
     activeModel,
-    loading,
+    loadingAvailable,
+    loadingAll,
+    providers,
+    capabilityFilter,
+    providerFilter,
     handleModelSelect,
     handleModelClick,
-    fetchModels,
+    handleClearFilters,
+    setCapabilityFilter,
+    setProviderFilter,
+    fetchAvailableModels,
+    fetchAllModels,
   };
 }

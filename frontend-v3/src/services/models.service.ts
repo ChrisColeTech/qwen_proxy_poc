@@ -2,7 +2,15 @@ import type { Model, ParsedModel, Capability } from '@/types/models.types';
 
 const API_BASE_URL = 'http://localhost:3002';
 
+interface OpenAIModel {
+  id: string;
+  object: string;
+  created: number;
+  owned_by: string;
+}
+
 class ModelsService {
+  // Get all models from API server database
   async getModels(): Promise<Model[]> {
     const response = await fetch(`${API_BASE_URL}/api/models`);
 
@@ -12,6 +20,29 @@ class ModelsService {
 
     const data = await response.json();
     return data.models || [];
+  }
+
+  // Get available models from Provider Router (OpenAI-compatible endpoint)
+  async getAvailableModels(providerRouterUrl: string): Promise<Model[]> {
+    const response = await fetch(`${providerRouterUrl}/v1/models`);
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch available models: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    const openaiModels: OpenAIModel[] = data.data || [];
+
+    // Convert OpenAI format to our Model format
+    return openaiModels.map((model) => ({
+      id: model.id,
+      name: model.id,
+      description: `Available via Provider Router`,
+      capabilities: '[]',
+      status: 'active',
+      created_at: model.created,
+      updated_at: model.created
+    }));
   }
 
   parseModel(model: Model): ParsedModel {

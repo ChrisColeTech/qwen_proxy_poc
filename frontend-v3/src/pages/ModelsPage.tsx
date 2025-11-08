@@ -13,20 +13,32 @@ import {
 
 export function ModelsPage() {
   const {
-    models,
+    availableModels,
+    filteredAllModels,
     activeModel,
-    loading,
+    loadingAvailable,
+    loadingAll,
+    providers,
+    capabilityFilter,
+    providerFilter,
     handleModelSelect,
-    handleModelClick
+    handleModelClick,
+    setCapabilityFilter,
+    setProviderFilter
   } = useModelsPage();
 
+  // First tab: Available models from Provider Router
   const selectActions = buildModelSelectActions({
-    models,
+    models: availableModels,
     activeModel,
     onSelect: handleModelSelect
   });
 
-  const modelActions = buildModelActions({ handleModelClick });
+  // Second tab: All models from API Server (filtered)
+  const modelActions = buildModelActions({
+    models: filteredAllModels,
+    handleModelClick
+  });
 
   const tabs = [
     {
@@ -35,7 +47,14 @@ export function ModelsPage() {
     },
     {
       ...MODELS_TABS.ALL,
-      content: buildAllModelsContent(modelActions)
+      content: buildAllModelsContent({
+        modelActions,
+        capabilityFilter,
+        providerFilter,
+        providers,
+        onCapabilityChange: setCapabilityFilter,
+        onProviderChange: setProviderFilter
+      })
     },
     {
       ...MODELS_TABS.FAVORITES,
