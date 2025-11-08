@@ -5,6 +5,7 @@
 
 import { logger } from '../utils/logger.js'
 import { ProviderService, ModelService, QwenCredentialsService } from '../../../provider-router/src/database/services/index.js'
+import { eventEmitter } from '../services/event-emitter.js'
 
 /**
  * Track proxy process state (shared with proxy-control.js)
@@ -22,6 +23,13 @@ const extensionConnections = new Set()
  * Socket.io server instance (for broadcasting)
  */
 let ioInstance = null
+
+/**
+ * Get extension connections (used by event emitter)
+ */
+function getExtensionConnections() {
+  return extensionConnections
+}
 
 /**
  * Set the proxy status getter function
@@ -142,6 +150,9 @@ function getFullStatus() {
 export function initializeWebSocket(io) {
   // Store io instance for broadcasting
   ioInstance = io
+
+  // Register extension connections getter with event emitter
+  eventEmitter.setExtensionConnectionsGetter(getExtensionConnections)
 
   io.on('connection', (socket) => {
     logger.info(`[WebSocket] Client connected: ${socket.id}`)

@@ -1,15 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useProxyStore } from '@/stores/useProxyStore';
 import { proxyService } from '@/services/proxy.service';
 import { useAlertStore } from '@/stores/useAlertStore';
 import { isElectron } from '@/utils/platform';
 import { credentialsService } from '@/services/credentials.service';
 import { useUIStore } from '@/stores/useUIStore';
+import { useLifecycleStore } from '@/stores/useLifecycleStore';
 
 export function useHomePage() {
   const { wsProxyStatus, connected } = useProxyStore();
   const setCurrentRoute = useUIStore((state) => state.setCurrentRoute);
+  const lifecycleState = useLifecycleStore((state) => state.state);
   const [proxyLoading, setProxyLoading] = useState(false);
+
+  // Keep proxyLoading true while lifecycle is in transitional states
+  useEffect(() => {
+    if (lifecycleState === 'starting' || lifecycleState === 'stopping') {
+      setProxyLoading(true);
+    } else {
+      setProxyLoading(false);
+    }
+  }, [lifecycleState]);
 
   const handleStartProxy = async () => {
     setProxyLoading(true);
@@ -18,11 +29,12 @@ export function useHomePage() {
     try {
       await proxyService.start();
       // Success/error toasts handled via WebSocket lifecycle events
+      // proxyLoading will be cleared by useEffect watching lifecycle state
     } catch (error) {
       console.error('Failed to start proxy:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to start proxy server';
       useAlertStore.showAlert(errorMessage, 'error');
-    } finally {
+      // Clear loading on HTTP error (lifecycle events won't fire)
       setProxyLoading(false);
     }
   };
@@ -34,11 +46,12 @@ export function useHomePage() {
     try {
       await proxyService.stop();
       // Success/error toasts handled via WebSocket lifecycle events
+      // proxyLoading will be cleared by useEffect watching lifecycle state
     } catch (error) {
       console.error('Failed to stop proxy:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to stop proxy server';
       useAlertStore.showAlert(errorMessage, 'error');
-    } finally {
+      // Clear loading on HTTP error (lifecycle events won't fire)
       setProxyLoading(false);
     }
   };

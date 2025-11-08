@@ -9,6 +9,7 @@ class EventEmitterService extends EventEmitter {
   constructor() {
     super()
     this.socketIO = null
+    this.extensionConnectionsGetter = null
   }
 
   /**
@@ -21,11 +22,20 @@ class EventEmitterService extends EventEmitter {
   }
 
   /**
-   * Emit an event to all connected WebSocket clients
+   * Set the getter function for extension connections
+   * @param {Function} getter - Function that returns Set of extension socket IDs
+   */
+  setExtensionConnectionsGetter(getter) {
+    this.extensionConnectionsGetter = getter
+  }
+
+  /**
+   * Emit an event to all connected WebSocket clients (excluding extensions)
    * @param {string} eventName - Name of the event
    * @param {object} data - Event data
+   * @param {boolean} includeExtensions - Whether to include extension clients (default: false)
    */
-  emitToClients(eventName, data) {
+  emitToClients(eventName, data, includeExtensions = false) {
     if (!this.socketIO) {
       console.warn('[Event Emitter] Socket.io not initialized, event not emitted:', eventName)
       return
@@ -37,7 +47,21 @@ class EventEmitterService extends EventEmitter {
     }
 
     console.log(`[Event Emitter] Broadcasting event: ${eventName}`)
-    this.socketIO.emit(eventName, eventData)
+
+    // Get extension connections if available
+    const extensionConnections = this.extensionConnectionsGetter ? this.extensionConnectionsGetter() : new Set()
+
+    // Emit to all clients, optionally excluding extensions
+    if (includeExtensions || extensionConnections.size === 0) {
+      this.socketIO.emit(eventName, eventData)
+    } else {
+      // Emit only to non-extension clients
+      this.socketIO.sockets.sockets.forEach((socket) => {
+        if (!extensionConnections.has(socket.id)) {
+          socket.emit(eventName, eventData)
+        }
+      })
+    }
   }
 
   /**
