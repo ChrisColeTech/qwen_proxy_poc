@@ -8,7 +8,7 @@ import { DeleteProviderDialog } from '@/components/features/providers/DeleteProv
 import type { Provider } from '@/types/providers.types';
 
 export function ProvidersPage() {
-  const { fetchSettings, settings } = useSettingsStore();
+  const { fetchSettings, settings, updateSetting } = useSettingsStore();
   const setCurrentRoute = useUIStore((state) => state.setCurrentRoute);
   const {
     providers,
@@ -17,7 +17,6 @@ export function ProvidersPage() {
     toggleEnabled,
     testConnection,
     deleteProvider,
-    switchProvider: baseSwitchProvider,
   } = useProviders();
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -62,9 +61,8 @@ export function ProvidersPage() {
   };
 
   const switchProvider = async (providerId: string) => {
-    await baseSwitchProvider(providerId);
-    // Refetch settings to update the activeProvider in UI
-    await fetchSettings();
+    // Use updateSetting which makes 1 API call and shows toast
+    await updateSetting('active_provider', providerId);
   };
 
   const activeProvider = settings.active_provider || '';
