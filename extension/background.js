@@ -1,6 +1,70 @@
 // Background service worker for Qwen Credential Extractor
 console.log('[Qwen Extension] Background service worker loaded');
 
+// Import Socket.io client library
+importScripts('socket.io.min.js');
+
+/**
+ * WebSocket connection to backend for extension detection
+ */
+let socket = null;
+const BACKEND_URL = 'http://localhost:3002';
+
+/**
+ * Connect to backend Socket.io server
+ */
+function connectToBackend() {
+  try {
+    console.log('[Background] Connecting to backend:', BACKEND_URL);
+
+    socket = io(BACKEND_URL, {
+      transports: ['websocket', 'polling'], // Try WebSocket first, fallback to polling
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      reconnectionAttempts: Infinity,
+    });
+
+    socket.on('connect', () => {
+      console.log('[Background] Connected to backend:', socket.id);
+
+      // Identify as extension client
+      socket.emit('extension:connect');
+      console.log('[Background] Sent extension:connect event');
+    });
+
+    socket.on('disconnect', (reason) => {
+      console.log('[Background] Disconnected from backend:', reason);
+    });
+
+    socket.on('connect_error', (error) => {
+      console.error('[Background] Connection error:', error.message);
+    });
+
+    socket.on('reconnect', (attemptNumber) => {
+      console.log('[Background] Reconnected after', attemptNumber, 'attempts');
+    });
+
+    socket.on('reconnect_attempt', (attemptNumber) => {
+      console.log('[Background] Reconnection attempt:', attemptNumber);
+    });
+
+    socket.on('reconnect_error', (error) => {
+      console.error('[Background] Reconnection error:', error.message);
+    });
+
+    socket.on('reconnect_failed', () => {
+      console.error('[Background] Reconnection failed');
+    });
+
+  } catch (error) {
+    console.error('[Background] Error connecting to backend:', error);
+  }
+}
+
+// Connect to backend when extension loads
+connectToBackend();
+
 /**
  * Decode JWT token to extract expiration
  */
@@ -157,6 +221,20 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     })();
 
     // Return true to indicate we'll respond asynchronously
+    return true;
+  }
+});
+
+/**
+ * Handle messages from external websites (via externally_connectable)
+ * This allows the dashboard webpage to detect if the extension is installed
+ */
+chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
+  console.log('[Background] Received external message:', message.type, 'from:', sender.url);
+
+  if (message.type === 'PING') {
+    // Respond to ping from dashboard to confirm extension is installed
+    sendResponse({ type: 'PONG', installed: true });
     return true;
   }
 });

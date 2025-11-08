@@ -1,6 +1,7 @@
 import type { Provider, ProvidersResponse } from '@/types/providers.types';
+import { apiService } from './api.service';
 
-const API_URL = import.meta.env.VITE_API_BASE_URL || '';
+const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3002';
 
 class ProvidersService {
   async getProviders(): Promise<Provider[]> {
@@ -39,6 +40,47 @@ class ProvidersService {
     if (!response.ok) {
       throw new Error('Failed to delete provider');
     }
+  }
+
+  async switchProvider(providerId: string): Promise<void> {
+    try {
+      await apiService.setActiveProvider(providerId);
+    } catch (error) {
+      console.error('Failed to switch provider:', error);
+      throw error;
+    }
+  }
+
+  async createProvider(data: {
+    id: string;
+    name: string;
+    type: string;
+    enabled?: boolean;
+    priority?: number;
+    description?: string;
+    config?: Record<string, unknown>;
+  }): Promise<Provider> {
+    const response = await fetch(`${API_URL}/api/providers`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || 'Failed to create provider');
+    }
+    return await response.json();
+  }
+
+  async getProviderTypes(): Promise<Array<{ value: string; label: string; description: string; requiredConfig: string[]; configSchema: Record<string, any> }>> {
+    const response = await fetch(`${API_URL}/api/providers/types`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch provider types');
+    }
+    const data = await response.json();
+    return data.types;
   }
 }
 

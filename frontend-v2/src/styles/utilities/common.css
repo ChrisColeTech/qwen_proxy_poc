@@ -1,0 +1,117 @@
+@layer utilities {
+  .status-success {
+    color: hsl(var(--status-success));
+  }
+  .status-success-dot {
+    background-color: hsl(var(--status-success));
+  }
+  .status-info {
+    color: hsl(var(--status-info));
+  }
+  .status-info-dot {
+    background-color: hsl(var(--status-info));
+  }
+  .status-warning {
+    color: hsl(var(--status-warning));
+  }
+  .status-warning-dot {
+    background-color: hsl(var(--status-warning));
+  }
+  .status-error {
+    color: hsl(var(--status-error));
+  }
+  .status-error-dot {
+    background-color: hsl(var(--status-error));
+  }
+  .status-neutral {
+    color: hsl(var(--status-neutral));
+  }
+  .status-neutral-dot {
+    background-color: hsl(var(--status-neutral));
+  }
+  .status-purple {
+    color: hsl(var(--status-purple));
+  }
+  .status-purple-dot {
+    background-color: hsl(var(--status-purple));
+  }
+}
+
+/* Page Layout */
+.page-container {
+  @apply container max-w-7xl mx-auto p-6 space-y-6;
+}
+
+/* Icon Sizes */
+.icon-sm {
+  @apply h-4 w-4;
+}
+
+.icon-md {
+  @apply h-5 w-5;
+}
+
+.icon-lg {
+  @apply h-8 w-8;
+}
+
+.icon-sm-muted {
+  @apply h-4 w-4 text-muted-foreground;
+}
+
+/* Card Title with Icon */
+.card-title-with-icon {
+  @apply flex items-center gap-2 text-base;
+}
+
+.card-title-with-icon-sm {
+  @apply flex items-center gap-2 text-base;
+}
+
+.icon-primary {
+  @apply h-4 w-4 text-primary;
+}
+
+/* Spacing Utilities */
+.vspace-tight {
+  @apply space-y-0.5;
+}
+
+.vspace-sm {
+  @apply space-y-2;
+}
+
+.vspace-md {
+  @apply space-y-4;
+}
+
+.vspace-lg {
+  @apply space-y-6;
+}
+
+/* Flex Layouts */
+.flex-row {
+  @apply flex items-center gap-2;
+}
+
+.flex-row-between {
+  @apply flex items-center justify-between;
+}
+
+.flex-row-gap-sm {
+  @apply gap-2;
+}
+
+/* Typography */
+.text-setting-label {
+  @apply text-sm font-medium;
+}
+
+.text-setting-description {
+  @apply text-xs text-muted-foreground;
+}
+
+/* Dividers */
+.divider-horizontal {
+  @apply h-px bg-border;
+}

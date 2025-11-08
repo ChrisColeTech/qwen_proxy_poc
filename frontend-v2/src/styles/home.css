@@ -1,5 +1,57 @@
 /* HomePage styles */
 
+.home-page-container {
+  @apply container max-w-7xl py-8 space-y-6;
+}
+
+.home-header-card {
+  @apply flex items-center justify-between;
+}
+
+.home-header-title {
+  @apply flex items-center gap-2;
+}
+
+.home-header-description {
+  @apply text-sm text-muted-foreground;
+}
+
+.home-services-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-6;
+}
+
+.home-service-card {
+  @apply flex flex-col;
+}
+
+.home-service-header {
+  @apply flex items-center justify-between;
+}
+
+.home-service-title {
+  @apply flex items-center gap-2 text-base;
+}
+
+.home-service-content {
+  @apply space-y-3 flex-1;
+}
+
+.home-service-row {
+  @apply flex items-center justify-between;
+}
+
+.home-service-label {
+  @apply text-sm text-muted-foreground;
+}
+
+.home-service-value {
+  @apply text-sm font-mono;
+}
+
+.home-service-footer {
+  @apply w-full;
+}
+
 .home-container {
   @apply container max-w-6xl py-8 space-y-6;
 }
@@ -117,4 +169,17 @@
 
 .home-stats-label {
   @apply text-sm text-muted-foreground;
+}
+
+/* Connection Status Badge */
+.connection-status-connected {
+  @apply bg-primary hover:bg-primary/90;
+}
+
+.connection-status-reconnecting {
+  @apply bg-secondary hover:bg-secondary/90;
+}
+
+.connection-status-icon {
+  @apply h-3 w-3 mr-1;
 }

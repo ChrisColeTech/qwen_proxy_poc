@@ -12,6 +12,7 @@ import config from '../config.js'
 import { ProviderService, ModelService, QwenCredentialsService } from '../../../provider-router/src/database/services/index.js'
 import { eventEmitter } from '../services/event-emitter.js'
 import { setProxyStatusGetter } from '../controllers/websocket-controller.js'
+import { lifecycleController } from '../controllers/lifecycle-controller.js'
 
 const execAsync = promisify(exec)
 
@@ -176,7 +177,26 @@ router.post('/start', async (req, res) => {
 
     proxyStartTime = Date.now()
 
-    // Log stdout from proxy
+    // Start lifecycle monitoring for provider router
+    lifecycleController.monitorStartup(
+      'providerRouter',
+      proxyProcess,
+      config.proxy.providerRouterPort,
+      () => {
+        // Confirmed ready - emit full status update
+        console.log('[Proxy Control] Provider Router confirmed ready')
+        const fullStatus = getCurrentProxyStatus()
+        eventEmitter.emitProxyStatus(fullStatus)
+      },
+      (error) => {
+        // Startup failed
+        console.error('[Proxy Control] Provider Router startup failed:', error)
+        proxyProcess = null
+        proxyStartTime = null
+      }
+    )
+
+    // Log stdout from proxy (in addition to lifecycle controller monitoring)
     if (proxyProcess.stdout) {
       proxyProcess.stdout.on('data', (data) => {
         console.log('[Proxy]', data.toString().trim())
@@ -297,19 +317,22 @@ router.post('/stop', (req, res) => {
     // Stop qwen-proxy first
     stopQwenProxy()
 
+    // Monitor provider router shutdown with lifecycle controller
+    lifecycleController.monitorShutdown(
+      'providerRouter',
+      proxyProcess,
+      () => {
+        // Confirmed stopped
+        console.log('[Proxy Control] Provider Router confirmed stopped')
+        const fullStatus = getCurrentProxyStatus()
+        eventEmitter.emitProxyStatus(fullStatus)
+      }
+    )
+
     // Kill the proxy process
     const killed = proxyProcess.kill('SIGTERM')
 
     if (killed) {
-      // Give it a moment for graceful shutdown
-      setTimeout(() => {
-        // Force kill if still running
-        if (proxyProcess && isProcessRunning(proxyProcess.pid)) {
-          console.log('[Proxy Control] Force killing proxy process')
-          proxyProcess.kill('SIGKILL')
-        }
-      }, 2000)
-
       proxyProcess = null
       proxyStartTime = null
 
@@ -529,7 +552,26 @@ async function startQwenProxy() {
 
     qwenProxyStartTime = Date.now()
 
-    // Log stdout from qwen-proxy
+    // Start lifecycle monitoring for qwen proxy
+    lifecycleController.monitorStartup(
+      'qwenProxy',
+      qwenProxyProcess,
+      config.proxy.qwenProxyPort,
+      () => {
+        // Confirmed ready
+        console.log('[Qwen Proxy] Confirmed ready')
+        const fullStatus = getCurrentProxyStatus()
+        eventEmitter.emitProxyStatus(fullStatus)
+      },
+      (error) => {
+        // Startup failed
+        console.error('[Qwen Proxy] Startup failed:', error)
+        qwenProxyProcess = null
+        qwenProxyStartTime = null
+      }
+    )
+
+    // Log stdout from qwen-proxy (in addition to lifecycle controller monitoring)
     if (qwenProxyProcess.stdout) {
       qwenProxyProcess.stdout.on('data', (data) => {
         console.log('[Qwen Proxy]', data.toString().trim())
@@ -577,16 +619,20 @@ function stopQwenProxy() {
   try {
     console.log('[Qwen Proxy] Stopping...')
 
+    // Monitor qwen proxy shutdown with lifecycle controller
+    lifecycleController.monitorShutdown(
+      'qwenProxy',
+      qwenProxyProcess,
+      () => {
+        // Confirmed stopped
+        console.log('[Qwen Proxy] Confirmed stopped')
+        const fullStatus = getCurrentProxyStatus()
+        eventEmitter.emitProxyStatus(fullStatus)
+      }
+    )
+
     // Kill the process
     qwenProxyProcess.kill('SIGTERM')
-
-    // Give it a moment for graceful shutdown, then force kill if needed
-    setTimeout(() => {
-      if (qwenProxyProcess && isProcessRunning(qwenProxyProcess.pid)) {
-        console.log('[Qwen Proxy] Force killing process')
-        qwenProxyProcess.kill('SIGKILL')
-      }
-    }, 2000)
 
     qwenProxyProcess = null
     qwenProxyStartTime = null

@@ -3,6 +3,7 @@
   "name": "Qwen Credential Extractor",
   "version": "1.0.0",
   "description": "Automatically extracts Qwen authentication credentials and sends them to the local API server",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA02HJryrRQfgyJkira+H4Kwppb62twc2ya0iMm+FdfVA+Lv4qn+b7MtVH6MiAlVgW26ZwctJKyrxAfXEH0OLB2KtKAWi/JtGGN1iYH+z/xWmXMWAu/IjhAq5IlqOPyGZtJqLOiE1tdlujs6cyHhW4Qh/CaO8ht/Za/Zdlrm5ysGls9hMgpAshOSOhxY+JFQva5ewifIZ0glmCB8gximk/vYuDRjnBnENmJ9vWGpLvAZnCCpOgZQSUFuh13A756ZvnF63QpzoA37Na8YkNZzUfql+Fw6hcTHdrw9QvEwEsntTEddUjGXF8INVBH0YgeVEqGqf69us1IaESaxCIRl873QIDAQAB",
 
   "permissions": [
     "cookies"
@@ -12,6 +13,13 @@
     "*://*.qwen.ai/*",
     "http://localhost:3002/*"
   ],
+
+  "externally_connectable": {
+    "matches": [
+      "http://localhost:*/*",
+      "http://127.0.0.1:*/*"
+    ]
+  },
 
   "background": {
     "service_worker": "background.js"

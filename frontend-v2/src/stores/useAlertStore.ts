@@ -1,14 +1,19 @@
-import { create } from 'zustand';
-import type { AlertState, AlertType } from '@/types';
+import { toast } from '@/hooks/use-toast';
 
-interface AlertStore extends Partial<AlertState> {
-  showAlert: (message: string, type: AlertType) => void;
-  hideAlert: () => void;
+interface AlertStore {
+  showAlert: (message: string, type: 'success' | 'error') => void;
 }
 
-export const useAlertStore = create<AlertStore>((set) => ({
-  message: undefined,
-  type: undefined,
-  showAlert: (message, type) => set({ message, type }),
-  hideAlert: () => set({ message: undefined, type: undefined }),
-}));
+export const useAlertStore = {
+  showAlert: (message: string, type: 'success' | 'error') => {
+    const { dismiss } = toast({
+      description: message,
+      variant: type === 'error' ? 'destructive' : 'default',
+    });
+
+    // Auto-dismiss after 3 seconds
+    setTimeout(() => {
+      dismiss();
+    }, 3000);
+  },
+} as AlertStore;

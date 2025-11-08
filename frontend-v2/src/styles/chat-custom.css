@@ -1,0 +1,37 @@
+/* ============================================================================
+   CHAT CUSTOM TAB STYLES
+   Styles for the custom chat input component
+   ============================================================================ */
+
+/* Custom Chat Tab */
+.chat-custom-container {
+  @apply mt-4 space-y-4;
+}
+
+.chat-custom-description {
+  @apply step-description;
+}
+
+.chat-custom-form {
+  @apply space-y-2;
+}
+
+.chat-custom-label {
+  @apply text-sm font-medium;
+}
+
+.chat-custom-textarea {
+  @apply min-h-[100px] resize-none;
+}
+
+.chat-custom-actions {
+  @apply flex justify-end;
+}
+
+.chat-custom-send-button {
+  @apply gap-2;
+}
+
+.chat-custom-response-container {
+  @apply space-y-3;
+}

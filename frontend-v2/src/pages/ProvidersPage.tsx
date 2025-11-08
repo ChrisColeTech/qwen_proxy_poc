@@ -1,28 +1,31 @@
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Blocks, RefreshCw, AlertCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useSettingsStore } from '@/stores/useSettingsStore';
 import { useProviders } from '@/hooks/useProviders';
-import { ProvidersSummary } from '@/components/features/providers/ProvidersSummary';
-import { ProvidersTable } from '@/components/features/providers/ProvidersTable';
+import { useUIStore } from '@/stores/useUIStore';
+import { API_BASE_URL } from '@/lib/constants';
+import { ProviderSwitchStep } from '@/components/features/quick-guide/ProviderSwitchStep';
 import { DeleteProviderDialog } from '@/components/features/providers/DeleteProviderDialog';
 import type { Provider } from '@/types/providers.types';
 
 export function ProvidersPage() {
+  const { fetchSettings, settings } = useSettingsStore();
+  const setCurrentRoute = useUIStore((state) => state.setCurrentRoute);
   const {
     providers,
     loading,
-    error,
     actionLoading,
     toggleEnabled,
     testConnection,
     deleteProvider,
-    refresh,
+    switchProvider,
   } = useProviders();
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [providerToDelete, setProviderToDelete] = useState<Provider | null>(null);
+
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
 
   const handleDeleteClick = (provider: Provider) => {
     setProviderToDelete(provider);
@@ -36,60 +39,45 @@ export function ProvidersPage() {
     setProviderToDelete(null);
   };
 
-  if (loading && providers.length === 0) {
-    return (
-      <div className="providers-container">
-        <Card>
-          <CardContent className="providers-loading">
-            <RefreshCw className="icon-sm providers-loading-spinner" />
-            <span>Loading providers...</span>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  const handleToggleEnabled = (id: string) => {
+    const provider = providers.find(p => p.id === id);
+    if (provider) {
+      toggleEnabled(provider);
+    }
+  };
+
+  const handleTestConnection = (id: string) => {
+    const provider = providers.find(p => p.id === id);
+    if (provider) {
+      testConnection(provider);
+    }
+  };
+
+  const handleCreateClick = () => {
+    setCurrentRoute('/providers/new');
+  };
+
+  const handleRowClick = (providerId: string) => {
+    setCurrentRoute(`/providers/${providerId}/edit`);
+  };
+
+  const activeProvider = settings.active_provider || '';
 
   return (
-    <div className="providers-container">
-      {error && (
-        <Alert variant="destructive">
-          <AlertCircle className="icon-sm" />
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
-      <div className="providers-header">
-        <div>
-          <h1 className="providers-title">
-            <Blocks className="icon-lg" />
-            Providers
-          </h1>
-          <p className="providers-description">Manage API providers and their status</p>
-        </div>
-        <Button variant="outline" size="sm" onClick={refresh} disabled={loading}>
-          <RefreshCw
-            className={`icon-sm providers-refresh-icon ${loading ? 'providers-refresh-spin' : ''}`}
-          />
-          Refresh
-        </Button>
-      </div>
-
-      <ProvidersSummary providers={providers} />
-
-      <Card>
-        <CardHeader>
-          <CardTitle>All Providers</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ProvidersTable
-            providers={providers}
-            actionLoading={actionLoading}
-            onToggleEnabled={toggleEnabled}
-            onTest={testConnection}
-            onDelete={handleDeleteClick}
-          />
-        </CardContent>
-      </Card>
+    <div className="page-container">
+      <ProviderSwitchStep
+        providers={providers}
+        activeProvider={activeProvider}
+        loading={loading}
+        onSwitch={switchProvider}
+        apiBaseUrl={API_BASE_URL}
+        actionLoading={actionLoading}
+        onToggleEnabled={handleToggleEnabled}
+        onTest={handleTestConnection}
+        onDelete={handleDeleteClick}
+        onCreate={handleCreateClick}
+        onRowClick={handleRowClick}
+      />
 
       <DeleteProviderDialog
         open={deleteDialogOpen}

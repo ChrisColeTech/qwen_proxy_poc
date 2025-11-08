@@ -10,6 +10,33 @@ import {
 } from '../database/services/index.js'
 import { logger } from '../utils/logger.js'
 import { getAllProviders, hasProvider as registryHasProvider } from '../providers/index.js'
+import { PROVIDER_TYPE_METADATA, PROVIDER_TYPES } from '../providers/provider-types.js'
+
+/**
+ * GET /v1/providers/types
+ * Get provider type metadata
+ */
+export async function getProviderTypes(req, res, next) {
+  try {
+    // Transform metadata into array format for frontend
+    const types = Object.entries(PROVIDER_TYPE_METADATA).map(([type, metadata]) => ({
+      value: type,
+      label: metadata.name,
+      description: metadata.description,
+      requiredConfig: metadata.requiredConfig,
+      optionalConfig: metadata.optionalConfig,
+      configSchema: metadata.configSchema,
+      capabilities: metadata.capabilities
+    }))
+
+    res.json({
+      types,
+      total: types.length
+    })
+  } catch (error) {
+    next(error)
+  }
+}
 
 /**
  * GET /v1/providers
@@ -372,6 +399,7 @@ export async function reloadProvider(req, res, next) {
 }
 
 export default {
+  getProviderTypes,
   listProviders,
   getProvider,
   createProvider,

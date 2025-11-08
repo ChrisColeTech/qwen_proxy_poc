@@ -1,62 +1,88 @@
 import { Moon, Sun, PanelLeft, PanelRight } from 'lucide-react';
 import { VscChromeMinimize, VscChromeMaximize, VscChromeClose } from 'react-icons/vsc';
-import { Button } from '@/components/ui/button';
 import { useUIStore } from '@/stores/useUIStore';
 
 export function TitleBar() {
-  const theme = useUIStore((state) => state.theme);
+  const theme = useUIStore((state) => state.uiState.theme);
+  const sidebarPosition = useUIStore((state) => state.uiState.sidebarPosition);
   const toggleTheme = useUIStore((state) => state.toggleTheme);
-  const sidebarPosition = useUIStore((state) => state.sidebarPosition);
   const toggleSidebarPosition = useUIStore((state) => state.toggleSidebarPosition);
 
   const handleMinimize = () => {
-    window.electronAPI?.window.minimize();
+    if (window.electronAPI) {
+      window.electronAPI.window.minimize();
+    }
   };
 
   const handleMaximize = () => {
-    window.electronAPI?.window.maximize();
+    if (window.electronAPI) {
+      window.electronAPI.window.maximize();
+    }
   };
 
   const handleClose = () => {
-    window.electronAPI?.window.close();
+    if (window.electronAPI) {
+      window.electronAPI.window.close();
+    }
   };
 
   return (
     <div
-      className="h-12 bg-background border-b border-border flex items-center justify-between px-4"
+      className="titlebar"
       style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
     >
-      <div className="flex items-center gap-2">
-        <h1 className="text-sm font-semibold">Qwen Proxy</h1>
+      <div className="titlebar-left">
+        <span className="titlebar-title">Qwen Proxy</span>
       </div>
 
-      <div className="flex items-center gap-1" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
-        <Button
-          variant="ghost"
-          size="icon"
+      <div className="titlebar-right" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+        <button
+          className="titlebar-button"
           onClick={toggleSidebarPosition}
-          title={`Move sidebar to ${sidebarPosition === 'left' ? 'right' : 'left'}`}
+          title={sidebarPosition === 'left' ? 'Move sidebar to right' : 'Move sidebar to left'}
         >
-          {sidebarPosition === 'left' ? <PanelLeft className="h-4 w-4" /> : <PanelRight className="h-4 w-4" />}
-        </Button>
+          {sidebarPosition === 'left' ? (
+            <PanelRight className="titlebar-button-icon" />
+          ) : (
+            <PanelLeft className="titlebar-button-icon" />
+          )}
+        </button>
 
-        <Button variant="ghost" size="icon" onClick={toggleTheme} title="Toggle theme">
-          {theme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-        </Button>
+        <button
+          className="titlebar-button"
+          onClick={toggleTheme}
+          title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+        >
+          {theme === 'light' ? (
+            <Moon className="titlebar-button-icon" />
+          ) : (
+            <Sun className="titlebar-button-icon" />
+          )}
+        </button>
 
-        <div className="h-4 w-px bg-border mx-1" />
+        <button
+          className="titlebar-button"
+          onClick={handleMinimize}
+          title="Minimize window"
+        >
+          <VscChromeMinimize className="titlebar-button-icon" />
+        </button>
 
-        <Button variant="ghost" size="icon" onClick={handleMinimize} title="Minimize">
-          <VscChromeMinimize className="h-4 w-4" />
-        </Button>
+        <button
+          className="titlebar-button"
+          onClick={handleMaximize}
+          title="Maximize window"
+        >
+          <VscChromeMaximize className="titlebar-button-icon" />
+        </button>
 
-        <Button variant="ghost" size="icon" onClick={handleMaximize} title="Maximize">
-          <VscChromeMaximize className="h-4 w-4" />
-        </Button>
-
-        <Button variant="ghost" size="icon" onClick={handleClose} className="hover:bg-destructive" title="Close">
-          <VscChromeClose className="h-4 w-4" />
-        </Button>
+        <button
+          className="titlebar-button-close"
+          onClick={handleClose}
+          title="Close window"
+        >
+          <VscChromeClose className="titlebar-button-icon" />
+        </button>
       </div>
     </div>
   );

@@ -22,6 +22,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
     updateFromCredentials,
     updateFromProviders,
     updateFromModels,
+    updateFromLifecycle,
   } = useProxyStore();
 
   useEffect(() => {
@@ -40,6 +41,9 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
       },
       onModelsUpdated: (event) => {
         updateFromModels(event);
+      },
+      onLifecycleUpdate: (event) => {
+        updateFromLifecycle(event);
       },
       onStatusChange: (status) => {
         setConnectionStatus(status);
@@ -61,6 +65,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
     updateFromCredentials,
     updateFromProviders,
     updateFromModels,
+    updateFromLifecycle,
   ]);
 
   return {

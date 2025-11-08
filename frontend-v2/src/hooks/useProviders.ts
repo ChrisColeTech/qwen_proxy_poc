@@ -77,6 +77,37 @@ export function useProviders() {
     }
   };
 
+  const switchProvider = async (providerId: string) => {
+    try {
+      await providersService.switchProvider(providerId);
+      await fetchProviders();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to switch provider');
+      throw err;
+    }
+  };
+
+  const createProvider = async (data: {
+    id: string;
+    name: string;
+    type: string;
+    description?: string;
+    config?: Record<string, unknown>;
+  }) => {
+    setActionLoading(`create-${data.id}`);
+    setError(null);
+
+    try {
+      await providersService.createProvider(data);
+      await fetchProviders();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create provider');
+      throw err;
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   const refresh = () => {
     setLoading(true);
     fetchProviders();
@@ -90,6 +121,8 @@ export function useProviders() {
     toggleEnabled,
     testConnection,
     deleteProvider,
+    switchProvider,
+    createProvider,
     refresh,
   };
 }

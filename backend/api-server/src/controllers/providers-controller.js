@@ -12,7 +12,8 @@ import {
   enableProvider as _enableProvider,
   disableProvider as _disableProvider,
   testProvider as _testProvider,
-  reloadProvider as _reloadProvider
+  reloadProvider as _reloadProvider,
+  getProviderTypes as _getProviderTypes
 } from '../../../provider-router/src/controllers/providers-controller.js'
 import { eventEmitter } from '../services/event-emitter.js'
 import { ProviderService } from '../../../provider-router/src/database/services/index.js'
@@ -46,6 +47,10 @@ export async function getProvider(req, res, next) {
 
 export async function testProvider(req, res, next) {
   return _testProvider(req, res, next)
+}
+
+export async function getProviderTypes(req, res, next) {
+  return _getProviderTypes(req, res, next)
 }
 
 // Write operations (with event emission)

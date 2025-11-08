@@ -74,10 +74,6 @@
   @apply text-right;
 }
 
-.providers-table-actions-buttons {
-  @apply flex items-center justify-end gap-2;
-}
-
 .providers-table-spinner {
   @apply animate-spin;
 }
@@ -89,4 +85,16 @@
 /* Dialog */
 .providers-dialog-spinner {
   @apply mr-2 animate-spin;
+}
+
+.providers-dialog-form {
+  @apply grid gap-4 py-4;
+}
+
+.providers-dialog-field {
+  @apply grid gap-2;
+}
+
+.providers-dialog-error {
+  @apply text-sm text-destructive;
 }

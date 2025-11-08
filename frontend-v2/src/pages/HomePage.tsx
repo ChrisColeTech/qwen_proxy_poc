@@ -1,323 +1,231 @@
-import { useEffect, useState } from 'react';
-import { Activity, Clock, Server, Database, Key, Blocks, CheckCircle, XCircle, AlertCircle, Play, Square, LogIn } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Activity, Server, Key, Play, Square, LogIn, Gauge } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { useWebSocket } from '@/hooks/useWebSocket';
-import { useProxyStore } from '@/stores/useProxyStore';
-import { proxyService } from '@/services/proxy.service';
-import type { WebSocketEvent } from '@/types';
-
-function formatUptime(seconds: number): string {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${hours}h ${minutes}m ${secs}s`;
-}
-
-function formatTimestamp(timestamp: string | number): string {
-  const date = new Date(timestamp);
-  return date.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-}
-
-function formatExpiryDate(expiresAt: number | null): string {
-  if (!expiresAt) return 'N/A';
-  const date = new Date(expiresAt);
-  return date.toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false
-  });
-}
-
-function ConnectionStatusBadge({ status }: { status: string }) {
-  const variants = {
-    connected: { variant: 'default' as const, icon: CheckCircle, text: 'Connected', className: 'bg-green-500 hover:bg-green-600' },
-    disconnected: { variant: 'destructive' as const, icon: XCircle, text: 'Disconnected', className: '' },
-    reconnecting: { variant: 'secondary' as const, icon: AlertCircle, text: 'Reconnecting...', className: 'bg-yellow-500 hover:bg-yellow-600 text-white' },
-  };
-
-  const config = variants[status as keyof typeof variants] || variants.disconnected;
-  const Icon = config.icon;
-
-  return (
-    <Badge variant={config.variant} className={config.className}>
-      <Icon className="h-3 w-3 mr-1" />
-      {config.text}
-    </Badge>
-  );
-}
+import { StatusIndicator } from '@/components/ui/status-indicator';
+import { useHomePage } from '@/hooks/useHomePage';
+import { useExtensionDetection } from '@/hooks/useExtensionDetection';
+import { ConnectionStatusBadge } from '@/components/features/home/ConnectionStatusBadge';
+import { formatUptime, formatExpiryDate } from '@/utils/formatters';
+import { CodeBlock } from '@/components/features/quick-guide/CodeBlock';
 
 export function HomePage() {
-  const { connectionStatus, isConnected, reconnectAttempts } = useWebSocket();
-  const { wsProxyStatus, lastUpdate } = useProxyStore();
-  const [eventLog, setEventLog] = useState<WebSocketEvent[]>([]);
-  const [proxyLoading, setProxyLoading] = useState(false);
+  const {
+    wsProxyStatus,
+    connected,
+    proxyLoading,
+    handleStartProxy,
+    handleStopProxy,
+    handleQwenLogin,
+  } = useHomePage();
 
-  const isRunning = wsProxyStatus?.providerRouter?.running || wsProxyStatus?.qwenProxy?.running || false;
+  const { extensionDetected, needsExtension } = useExtensionDetection();
 
-  // Listen to store changes to log events
-  useEffect(() => {
-    if (!wsProxyStatus) return;
-
-    const newEvent: WebSocketEvent = {
-      type: 'proxy:status',
-      data: { status: wsProxyStatus, timestamp: new Date().toISOString() },
-      timestamp: new Date().toISOString(),
-    };
-
-    setEventLog((prev) => [newEvent, ...prev].slice(0, 20));
-  }, [lastUpdate, wsProxyStatus]);
-
-  const handleStartProxy = async () => {
-    setProxyLoading(true);
-    try {
-      await proxyService.start();
-    } catch (error) {
-      console.error('Failed to start proxy:', error);
-    } finally {
-      setProxyLoading(false);
-    }
-  };
-
-  const handleStopProxy = async () => {
-    setProxyLoading(true);
-    try {
-      await proxyService.stop();
-    } catch (error) {
-      console.error('Failed to stop proxy:', error);
-    } finally {
-      setProxyLoading(false);
-    }
-  };
-
-  const handleQwenLogin = () => {
-    window.open('https://chat.qwen.ai', '_blank');
-  };
+  const running = wsProxyStatus?.providerRouter?.running || false;
+  const port = wsProxyStatus?.providerRouter?.port;
+  const uptime = wsProxyStatus?.providerRouter?.uptime;
+  const credentialsValid = wsProxyStatus?.credentials?.valid || false;
+  const expiresAt = wsProxyStatus?.credentials?.expiresAt;
 
   return (
-    <div className="container max-w-7xl py-8 space-y-6">
-      {/* Header */}
+    <div className="page-container">
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="h-5 w-5" />
-                WebSocket Demo
-              </CardTitle>
-              <CardDescription>Real-time WebSocket connection monitoring</CardDescription>
-            </div>
-            <ConnectionStatusBadge status={connectionStatus} />
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-3 gap-4 text-sm">
-            <div>
-              <span className="text-muted-foreground">Server:</span>
-              <span className="ml-2 font-mono">localhost:3002</span>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Transport:</span>
-              <span className="ml-2">WebSocket</span>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Reconnect Attempts:</span>
-              <span className="ml-2">{reconnectAttempts}</span>
-            </div>
-          </div>
-
-          {/* Control Buttons */}
-          <div className="flex gap-2 pt-2 border-t border-border">
-            {!isRunning ? (
-              <Button onClick={handleStartProxy} disabled={proxyLoading} size="sm">
-                <Play className="h-4 w-4 mr-2" />
-                Start Proxy
-              </Button>
-            ) : (
-              <Button onClick={handleStopProxy} disabled={proxyLoading} size="sm" variant="destructive">
-                <Square className="h-4 w-4 mr-2" />
-                Stop Proxy
-              </Button>
-            )}
-            <Button onClick={handleQwenLogin} size="sm" variant="outline">
-              <LogIn className="h-4 w-4 mr-2" />
-              Qwen Login
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Proxy Services Status */}
-      {wsProxyStatus && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Provider Router */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Server className="h-4 w-4" />
-                Provider Router
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Status</span>
-                <Badge variant={wsProxyStatus.providerRouter?.running ? 'default' : 'destructive'}>
-                  {wsProxyStatus.providerRouter?.running ? 'Running' : 'Stopped'}
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Port</span>
-                <span className="text-sm font-mono">{wsProxyStatus.providerRouter?.port ?? 'N/A'}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Uptime</span>
-                <span className="text-sm font-mono">
-                  {wsProxyStatus.providerRouter?.uptime !== undefined ? formatUptime(wsProxyStatus.providerRouter.uptime) : 'N/A'}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Qwen Proxy */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Database className="h-4 w-4" />
-                Qwen Proxy
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Status</span>
-                <Badge variant={wsProxyStatus.qwenProxy?.running ? 'default' : 'destructive'}>
-                  {wsProxyStatus.qwenProxy?.running ? 'Running' : 'Stopped'}
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Port</span>
-                <span className="text-sm font-mono">{wsProxyStatus.qwenProxy?.port ?? 'N/A'}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Uptime</span>
-                <span className="text-sm font-mono">
-                  {wsProxyStatus.qwenProxy?.uptime !== undefined ? formatUptime(wsProxyStatus.qwenProxy.uptime) : 'N/A'}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Credentials */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Key className="h-4 w-4" />
-                Credentials
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Status</span>
-                <Badge variant={wsProxyStatus.credentials?.valid ? 'default' : 'destructive'}>
-                  {wsProxyStatus.credentials?.valid ? 'Valid' : 'Invalid'}
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Expires At</span>
-                <span className="text-sm">
-                  {formatExpiryDate(wsProxyStatus.credentials?.expiresAt ?? null)}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Providers & Models */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Blocks className="h-4 w-4" />
-                Resources
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Total Providers</span>
-                <Badge variant="secondary">{wsProxyStatus.providers?.total ?? 0}</Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Enabled Providers</span>
-                <Badge variant="default">{wsProxyStatus.providers?.enabled ?? 0}</Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Total Models</span>
-                <Badge variant="secondary">{wsProxyStatus.models?.total ?? 0}</Badge>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* No Data Message */}
-      {!wsProxyStatus && isConnected && (
-        <Card>
-          <CardContent className="py-8 text-center text-muted-foreground">
-            <Activity className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>Connected to WebSocket. Waiting for data...</p>
-          </CardContent>
-        </Card>
-      )}
-
-      {!isConnected && (
-        <Card>
-          <CardContent className="py-8 text-center text-muted-foreground">
-            <XCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>Not connected to WebSocket server</p>
-            <p className="text-sm mt-2">Make sure the backend server is running on localhost:3002</p>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Event Log */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Clock className="h-4 w-4" />
-            Event Log
-            <Badge variant="secondary" className="ml-2">
-              Last 20 events
-            </Badge>
+          <CardTitle className="card-title-with-icon-sm">
+            <Activity className="icon-sm" />
+            Proxy Dashboard
           </CardTitle>
-          <CardDescription>Real-time WebSocket events</CardDescription>
         </CardHeader>
         <CardContent>
-          {eventLog.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <p>No events received yet</p>
-            </div>
-          ) : (
-            <div className="space-y-2 max-h-96 overflow-y-auto">
-              {eventLog.map((event, index) => (
-                <div
-                  key={index}
-                  className="p-3 rounded-lg bg-muted/50 border border-border font-mono text-xs"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <Badge variant="outline" className="font-mono">
-                      {event.type}
-                    </Badge>
-                    <span className="text-muted-foreground">
-                      {formatTimestamp(event.timestamp)}
-                    </span>
+          <Tabs defaultValue="overview" className="tab-container">
+            <TabsList className={`grid w-full ${running ? 'grid-cols-3' : 'grid-cols-2'}`}>
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="control">Control Panel</TabsTrigger>
+              {running && <TabsTrigger value="status">System Status</TabsTrigger>}
+            </TabsList>
+
+            <TabsContent value="overview" className="tab-content">
+              <div className="vspace-md">
+                <p className="step-description">
+                  Real-time monitoring and quick actions for your proxy server and Qwen credentials:
+                </p>
+
+                <div className="demo-container">
+                  <div className="demo-header">
+                    <div className="demo-label">
+                      <Gauge className="icon-primary" />
+                      <span className="demo-label-text">System Overview</span>
+                    </div>
+                    <ConnectionStatusBadge status={connected ? 'connected' : 'disconnected'} />
                   </div>
-                  <pre className="text-xs overflow-x-auto whitespace-pre-wrap break-words">
-                    {JSON.stringify(event.data, null, 2)}
-                  </pre>
+
+                  <div className="provider-switch-list">
+                    {/* Provider Router Status */}
+                    <div className="provider-switch-item">
+                      <div className="provider-switch-info">
+                        <StatusIndicator status={running ? 'running' : 'stopped'} />
+                        <div className="provider-switch-details">
+                          <div className="provider-switch-name">Provider Router</div>
+                          <div className="provider-switch-type">
+                            {running ? `Port ${port} • Uptime ${uptime !== undefined ? formatUptime(uptime) : 'N/A'}` : 'Not running'}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="provider-switch-actions">
+                        <Badge variant={running ? 'default' : 'destructive'}>
+                          {running ? 'Running' : 'Stopped'}
+                        </Badge>
+                      </div>
+                    </div>
+
+                    {/* Extension Status (Browser only) */}
+                    {needsExtension && (
+                      <div className="provider-switch-item">
+                        <div className="provider-switch-info">
+                          <StatusIndicator status={extensionDetected ? 'running' : 'stopped'} />
+                          <div className="provider-switch-details">
+                            <div className="provider-switch-name">Chrome Extension</div>
+                            <div className="provider-switch-type">
+                              {extensionDetected ? 'Ready for authentication' : 'Required for browser mode'}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="provider-switch-actions">
+                          <Badge variant={extensionDetected ? 'default' : 'destructive'}>
+                            {extensionDetected ? 'Detected' : 'Not Detected'}
+                          </Badge>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Credentials Status */}
+                    <div className="provider-switch-item">
+                      <div className="provider-switch-info">
+                        <StatusIndicator status={credentialsValid ? 'running' : 'stopped'} />
+                        <div className="provider-switch-details">
+                          <div className="provider-switch-name">Qwen Credentials</div>
+                          <div className="provider-switch-type">
+                            {credentialsValid ? `Expires ${formatExpiryDate(expiresAt ?? null)}` : 'No valid credentials'}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="provider-switch-actions">
+                        <Badge variant={credentialsValid ? 'default' : 'destructive'}>
+                          {credentialsValid ? 'Valid' : 'Invalid'}
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              ))}
-            </div>
-          )}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="control" className="tab-content">
+              <div className="vspace-md">
+                <p className="step-description">
+                  Start and stop the Provider Router proxy server, and manage your Qwen authentication:
+                </p>
+
+                {/* Provider Router Controls */}
+                <div className="demo-container">
+                  <div className="demo-header">
+                    <div className="demo-label">
+                      <Server className="icon-primary" />
+                      <span className="demo-label-text">Provider Router</span>
+                    </div>
+                    <Badge variant={running ? 'default' : 'destructive'}>
+                      {running ? 'Running' : 'Stopped'}
+                    </Badge>
+                  </div>
+
+                  <div className="home-service-content">
+                    <div className="home-service-row">
+                      <span className="home-service-label">Port</span>
+                      <span className="home-service-value">{port ?? 'N/A'}</span>
+                    </div>
+                    <div className="home-service-row">
+                      <span className="home-service-label">Uptime</span>
+                      <span className="home-service-value">
+                        {uptime !== undefined ? formatUptime(uptime) : 'N/A'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="px-4 pb-4">
+                    {!running ? (
+                      <Button onClick={handleStartProxy} disabled={proxyLoading} size="sm" variant="outline">
+                        <Play className="icon-sm" />
+                        Start Proxy
+                      </Button>
+                    ) : (
+                      <Button onClick={handleStopProxy} disabled={proxyLoading} size="sm" variant="outline">
+                        <Square className="icon-sm" />
+                        Stop Proxy
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Qwen Credentials Controls */}
+                <div className="demo-container">
+                  <div className="demo-header">
+                    <div className="demo-label">
+                      <Key className="icon-primary" />
+                      <span className="demo-label-text">Qwen Credentials</span>
+                    </div>
+                    <Badge variant={credentialsValid ? 'default' : 'destructive'}>
+                      {credentialsValid ? 'Valid' : 'Invalid'}
+                    </Badge>
+                  </div>
+
+                  <div className="home-service-content">
+                    <div className="home-service-row">
+                      <span className="home-service-label">Expires At</span>
+                      <span className="home-service-value">
+                        {formatExpiryDate(expiresAt ?? null)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="px-4 pb-4">
+                    <Button onClick={handleQwenLogin} size="sm" variant="outline">
+                      <LogIn className="icon-sm" />
+                      {expiresAt ? 'Re-login to Qwen' : 'Login to Qwen'}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            {running && (
+              <TabsContent value="status" className="tab-content">
+                <div className="vspace-md">
+                  <p className="step-description">
+                    Test the OpenAI-compatible endpoints exposed by the Provider Router:
+                  </p>
+
+                  <CodeBlock
+                    label="Check proxy health:"
+                    code={`curl http://localhost:${port || 3001}/health`}
+                  />
+
+                  <CodeBlock
+                    label="List available models:"
+                    code={`curl http://localhost:${port || 3001}/v1/models`}
+                  />
+
+                  <CodeBlock
+                    label="Send chat completion:"
+                    code={`curl http://localhost:${port || 3001}/v1/chat/completions \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer any-key" \\
+  -d '{"model": "qwen3-max", "messages": [{"role": "user", "content": "Hello!"}]}'`}
+                  />
+                </div>
+              </TabsContent>
+            )}
+          </Tabs>
         </CardContent>
       </Card>
     </div>

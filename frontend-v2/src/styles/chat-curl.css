@@ -1,0 +1,41 @@
+/* ============================================================================
+   CHAT CURL TAB STYLES
+   Styles for the curl command demonstration tab
+   ============================================================================ */
+
+/* Curl Tab */
+.chat-curl-container {
+  @apply mt-4 space-y-4;
+}
+
+.chat-curl-description {
+  @apply step-description;
+}
+
+.chat-curl-response-container {
+  @apply demo-container;
+}
+
+.chat-curl-response-header {
+  @apply demo-header;
+}
+
+.chat-curl-response-label {
+  @apply demo-label;
+}
+
+.chat-curl-response-label-text {
+  @apply demo-label-text;
+}
+
+.chat-curl-response-content {
+  @apply demo-content;
+}
+
+.chat-curl-response-description {
+  @apply text-sm text-muted-foreground mb-2;
+}
+
+.chat-curl-response-code {
+  @apply text-xs bg-muted p-3 rounded overflow-x-auto;
+}

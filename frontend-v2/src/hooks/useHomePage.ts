@@ -1,0 +1,94 @@
+import { useState } from 'react';
+import { useProxyStore } from '@/stores/useProxyStore';
+import { proxyService } from '@/services/proxy.service';
+import { useAlertStore } from '@/stores/useAlertStore';
+import { isElectron } from '@/utils/platform';
+import { credentialsService } from '@/services/credentials.service';
+import { useUIStore } from '@/stores/useUIStore';
+
+export function useHomePage() {
+  const { wsProxyStatus, connected } = useProxyStore();
+  const setCurrentRoute = useUIStore((state) => state.setCurrentRoute);
+  const [proxyLoading, setProxyLoading] = useState(false);
+
+  const handleStartProxy = async () => {
+    setProxyLoading(true);
+    // Show immediate feedback before API call
+    useAlertStore.showAlert('Starting proxy server...', 'success');
+    try {
+      await proxyService.start();
+      // Success/error toasts handled via WebSocket lifecycle events
+    } catch (error) {
+      console.error('Failed to start proxy:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to start proxy server';
+      useAlertStore.showAlert(errorMessage, 'error');
+    } finally {
+      setProxyLoading(false);
+    }
+  };
+
+  const handleStopProxy = async () => {
+    setProxyLoading(true);
+    // Show immediate feedback before API call
+    useAlertStore.showAlert('Stopping proxy server...', 'success');
+    try {
+      await proxyService.stop();
+      // Success/error toasts handled via WebSocket lifecycle events
+    } catch (error) {
+      console.error('Failed to stop proxy:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to stop proxy server';
+      useAlertStore.showAlert(errorMessage, 'error');
+    } finally {
+      setProxyLoading(false);
+    }
+  };
+
+  const handleQwenLogin = async () => {
+    try {
+      // Step 1: Delete old credentials first if they exist (for re-login)
+      const hasCredentials = wsProxyStatus?.credentials?.expiresAt;
+      if (hasCredentials) {
+        useAlertStore.showAlert('Clearing old credentials...', 'success');
+        await credentialsService.deleteCredentials();
+      }
+
+      // Step 2: Platform-specific login flow
+      if (isElectron()) {
+        // In Electron, directly open the login window (no extension needed)
+        window.open('https://chat.qwen.ai', '_blank');
+        return;
+      }
+
+      // Step 3: In browser, check if extension is connected via WebSocket
+      const extensionConnected = wsProxyStatus?.extensionConnected ?? false;
+
+      if (!extensionConnected) {
+        // Navigate to browser guide page for install instructions
+        setCurrentRoute('/browser-guide');
+        return;
+      }
+
+      // Step 4: Extension is installed, open login window
+      window.open('https://chat.qwen.ai', '_blank');
+      useAlertStore.showAlert(
+        'Please log in to chat.qwen.ai. The extension will automatically extract your credentials.',
+        'success'
+      );
+    } catch (error) {
+      console.error('Failed to handle Qwen login:', error);
+      useAlertStore.showAlert(
+        'Failed to prepare login. Please try again.',
+        'error'
+      );
+    }
+  };
+
+  return {
+    wsProxyStatus,
+    connected,
+    proxyLoading,
+    handleStartProxy,
+    handleStopProxy,
+    handleQwenLogin,
+  };
+}

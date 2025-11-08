@@ -20,10 +20,14 @@ interface ElectronAPI {
     onMaximize: (callback: () => void) => void;
     onUnmaximize: (callback: () => void) => void;
   };
+  settings: {
+    get: (key: string) => Promise<unknown>;
+    set: (key: string, value: unknown) => Promise<void>;
+  };
   history: {
-    read: () => Promise<any>;
-    add: (entry: any) => Promise<any>;
-    clear: () => Promise<any>;
+    read: () => Promise<unknown>;
+    add: (entry: unknown) => Promise<unknown>;
+    clear: () => Promise<unknown>;
   };
 }
 

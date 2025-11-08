@@ -2,23 +2,24 @@ import { TitleBar } from '@/components/layout/TitleBar';
 import { StatusBar } from '@/components/layout/StatusBar';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { useUIStore } from '@/stores/useUIStore';
+import type { ReactNode } from 'react';
 
 interface AppLayoutProps {
-  children: React.ReactNode;
-  activeRoute: string;
-  onNavigate: (route: string) => void;
+  children: ReactNode;
 }
 
-export function AppLayout({ children, activeRoute, onNavigate }: AppLayoutProps) {
-  const sidebarPosition = useUIStore((state) => state.sidebarPosition);
+export function AppLayout({ children }: AppLayoutProps) {
+  const sidebarPosition = useUIStore((state) => state.uiState.sidebarPosition);
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
+    <div className="app-layout-root">
       <TitleBar />
-      <div className="flex-1 flex overflow-hidden">
-        {sidebarPosition === 'left' && <Sidebar activeRoute={activeRoute} onNavigate={onNavigate} />}
-        <main className="flex-1 overflow-auto">{children}</main>
-        {sidebarPosition === 'right' && <Sidebar activeRoute={activeRoute} onNavigate={onNavigate} />}
+      <div className="app-layout-body">
+        {sidebarPosition === 'left' && <Sidebar />}
+        <main className="app-layout-main">
+          {children}
+        </main>
+        {sidebarPosition === 'right' && <Sidebar />}
       </div>
       <StatusBar />
     </div>

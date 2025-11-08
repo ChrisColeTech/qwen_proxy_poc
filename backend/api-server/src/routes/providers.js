@@ -5,6 +5,7 @@
 
 import express from 'express'
 import {
+  getProviderTypes,
   listProviders,
   getProvider,
   createProvider,
@@ -22,6 +23,12 @@ import {
 } from '../middleware/validation.js'
 
 const router = express.Router()
+
+/**
+ * GET /api/providers/types
+ * Get provider type metadata
+ */
+router.get('/types', getProviderTypes)
 
 /**
  * GET /api/providers

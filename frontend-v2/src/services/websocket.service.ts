@@ -4,6 +4,7 @@ import type {
   CredentialsUpdatedEvent,
   ProvidersUpdatedEvent,
   ModelsUpdatedEvent,
+  LifecycleUpdateEvent,
   WebSocketConnectionStatus,
 } from '@/types';
 
@@ -14,6 +15,7 @@ interface WebSocketCallbacks {
   onCredentialsUpdated?: EventCallback<CredentialsUpdatedEvent>;
   onProvidersUpdated?: EventCallback<ProvidersUpdatedEvent>;
   onModelsUpdated?: EventCallback<ModelsUpdatedEvent>;
+  onLifecycleUpdate?: EventCallback<LifecycleUpdateEvent>;
   onStatusChange?: (status: WebSocketConnectionStatus) => void;
 }
 
@@ -104,6 +106,11 @@ class WebSocketService {
     this.socket.on('models:updated', (data: ModelsUpdatedEvent) => {
       console.log('[WebSocket] models:updated', data);
       this.callbacks.onModelsUpdated?.(data);
+    });
+
+    this.socket.on('lifecycle:update', (data: LifecycleUpdateEvent) => {
+      console.log('[WebSocket] lifecycle:update', data);
+      this.callbacks.onLifecycleUpdate?.(data);
     });
   }
 

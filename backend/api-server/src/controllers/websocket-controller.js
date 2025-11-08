@@ -13,11 +13,47 @@ import { ProviderService, ModelService, QwenCredentialsService } from '../../../
 let proxyStatusGetter = null
 
 /**
+ * Track extension connections
+ * Set of socket IDs that belong to Chrome extension clients
+ */
+const extensionConnections = new Set()
+
+/**
+ * Socket.io server instance (for broadcasting)
+ */
+let ioInstance = null
+
+/**
  * Set the proxy status getter function
  * This should be called from proxy-control.js to provide access to current status
  */
 export function setProxyStatusGetter(getter) {
   proxyStatusGetter = getter
+}
+
+/**
+ * Broadcast status update to all frontend clients (not extension)
+ */
+function broadcastStatus() {
+  if (!ioInstance) return
+
+  try {
+    const fullStatus = getFullStatus()
+
+    // Emit to all connected clients except extension clients
+    ioInstance.sockets.sockets.forEach((socket) => {
+      if (!extensionConnections.has(socket.id)) {
+        socket.emit('proxy:status', {
+          status: fullStatus,
+          timestamp: new Date().toISOString()
+        })
+      }
+    })
+
+    logger.info('[WebSocket] Broadcasted status update to all clients')
+  } catch (error) {
+    logger.error('[WebSocket] Error broadcasting status:', error)
+  }
 }
 
 /**
@@ -94,6 +130,7 @@ function getFullStatus() {
       total: models.length
     },
     credentials,
+    extensionConnected: extensionConnections.size > 0,
     timestamp: new Date().toISOString()
   }
 }
@@ -103,6 +140,9 @@ function getFullStatus() {
  * @param {object} io - Socket.io server instance
  */
 export function initializeWebSocket(io) {
+  // Store io instance for broadcasting
+  ioInstance = io
+
   io.on('connection', (socket) => {
     logger.info(`[WebSocket] Client connected: ${socket.id}`)
 
@@ -119,9 +159,27 @@ export function initializeWebSocket(io) {
       logger.error('[WebSocket] Error sending initial status:', error)
     }
 
+    // Handle extension identification
+    socket.on('extension:connect', () => {
+      logger.info(`[WebSocket] Extension identified: ${socket.id}`)
+      extensionConnections.add(socket.id)
+
+      // Broadcast updated status to all frontend clients
+      broadcastStatus()
+    })
+
     // Handle disconnection
     socket.on('disconnect', (reason) => {
       logger.info(`[WebSocket] Client disconnected: ${socket.id}, reason: ${reason}`)
+
+      // Check if this was an extension connection
+      if (extensionConnections.has(socket.id)) {
+        extensionConnections.delete(socket.id)
+        logger.info(`[WebSocket] Extension disconnected: ${socket.id}`)
+
+        // Broadcast updated status to all frontend clients
+        broadcastStatus()
+      }
     })
 
     // Handle errors
