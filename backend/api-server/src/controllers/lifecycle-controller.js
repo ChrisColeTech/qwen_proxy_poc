@@ -6,7 +6,6 @@
 import { eventEmitter } from '../services/event-emitter.js'
 import { logger } from '../utils/logger.js'
 
-const LIFECYCLE_TIMEOUT = 30000 // 30 seconds
 const SHUTDOWN_FORCE_TIMEOUT = 10000 // 10 seconds
 
 class LifecycleController {
@@ -38,7 +37,6 @@ class LifecycleController {
     const monitor = {
       process,
       port,
-      timeoutHandle: null,
       ready: false,
     }
 
@@ -94,17 +92,6 @@ class LifecycleController {
         if (onError) onError(new Error(error))
       }
     })
-
-    // Set timeout
-    monitor.timeoutHandle = setTimeout(() => {
-      if (!monitor.ready) {
-        const error = 'Startup timeout (30s)'
-        logger.error(`[Lifecycle] ${processName} ${error}`)
-        this.emitLifecycleEvent(processName, 'error', port, error)
-        this.cleanup(processName)
-        if (onError) onError(new Error(error))
-      }
-    }, LIFECYCLE_TIMEOUT)
 
     // Store monitor
     if (processName === 'providerRouter') {
@@ -176,15 +163,6 @@ class LifecycleController {
    * Cleanup monitor resources
    */
   cleanup(processName) {
-    const monitor = processName === 'providerRouter'
-      ? this.providerRouterMonitor
-      : this.qwenProxyMonitor
-
-    if (monitor && monitor.timeoutHandle) {
-      clearTimeout(monitor.timeoutHandle)
-      monitor.timeoutHandle = null
-    }
-
     if (processName === 'providerRouter') {
       this.providerRouterMonitor = null
     } else {
