@@ -27,7 +27,17 @@ export const useProxyStore = create<ProxyStore>((set) => ({
   wsProxyStatus: null,
   setStatus: (status) => set({ status }),
   setLoading: (loading) => set({ loading }),
-  setConnected: (connected) => set({ connected }),
+  setConnected: (connected) => set((state) => {
+    // Show toast notification when connection status changes (but not on initial connection)
+    if (state.connected !== connected && state.lastUpdate > 0) {
+      if (connected) {
+        useAlertStore.showAlert('API Server connected', 'success');
+      } else {
+        useAlertStore.showAlert('API Server disconnected', 'error');
+      }
+    }
+    return { connected };
+  }),
   updateFromProxyStatus: (event) => set((state) => {
     // Preserve existing credentials if not included in the update
     const credentials = event.status.credentials ? {
@@ -58,6 +68,19 @@ export const useProxyStore = create<ProxyStore>((set) => ({
   }),
   updateFromCredentials: (event) => set((state) => {
     if (!state.wsProxyStatus) return state;
+
+    const previousValid = state.wsProxyStatus.credentials?.valid;
+    const newValid = event.credentials.valid;
+
+    // Show toast notification when credentials status changes (but not on initial load)
+    if (state.lastUpdate > 0 && previousValid !== newValid) {
+      if (newValid) {
+        useAlertStore.showAlert('Credentials updated successfully', 'success');
+      } else {
+        useAlertStore.showAlert('Credentials expired or invalid', 'error');
+      }
+    }
+
     const updatedStatus = {
       ...state.wsProxyStatus,
       credentials: {

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { apiService } from '@/services/api.service';
+import { useAlertStore } from './useAlertStore';
 
 interface Settings {
   'server.port'?: string;
@@ -42,11 +43,23 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
   },
 
   updateSetting: async (key: string, value: string) => {
+    const previousValue = get().settings[key];
+
     try {
       await apiService.updateSetting(key, value);
       set((state) => ({
         settings: { ...state.settings, [key]: value }
       }));
+
+      // Show toast notifications for provider/model changes
+      if (previousValue !== value) {
+        if (key === 'active_provider') {
+          useAlertStore.showAlert(`Switched to provider: ${value}`, 'success');
+        } else if (key === 'active_model') {
+          useAlertStore.showAlert(`Switched to model: ${value}`, 'success');
+        }
+      }
+
       // Refetch settings to ensure everything is in sync
       await get().fetchSettings();
     } catch (error) {
