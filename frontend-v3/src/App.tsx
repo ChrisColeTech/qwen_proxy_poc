@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { Toaster } from '@/components/ui/toaster';
 import { HomePage } from '@/pages/HomePage';
 import { ProvidersPage } from '@/pages/ProvidersPage';
 import { ModelsPage } from '@/pages/ModelsPage';
@@ -10,17 +11,20 @@ import { ChatPage } from '@/pages/ChatPage';
 import { BrowserGuidePage } from '@/pages/BrowserGuidePage';
 import { DesktopGuidePage } from '@/pages/DesktopGuidePage';
 import { useUIStore } from '@/stores/useUIStore';
+import { useSettingsStore } from '@/stores/useSettingsStore';
 
 function App() {
   useDarkMode();
   useWebSocket(); // Initialize WebSocket connection at app level
   const currentRoute = useUIStore((state) => state.currentRoute);
   const loadSettings = useUIStore((state) => state.loadSettings);
+  const fetchSettings = useSettingsStore((state) => state.fetchSettings);
 
-  // Load persisted UI state on mount
+  // Load persisted UI state and settings on mount
   useEffect(() => {
     loadSettings();
-  }, [loadSettings]);
+    fetchSettings();
+  }, [loadSettings, fetchSettings]);
 
   const renderPage = () => {
     switch (currentRoute) {
@@ -44,9 +48,12 @@ function App() {
   };
 
   return (
-    <AppLayout>
-      {renderPage()}
-    </AppLayout>
+    <>
+      <AppLayout>
+        {renderPage()}
+      </AppLayout>
+      <Toaster />
+    </>
   );
 }
 

@@ -26,7 +26,10 @@ export function ProvidersPage() {
     onSwitch: handleProviderSwitch
   });
 
-  const providerActions = buildProviderActions({ handleProviderClick });
+  const providerActions = buildProviderActions({
+    providers,
+    handleProviderClick
+  });
 
   const tabs = [
     {

@@ -2,8 +2,9 @@ import { Filter, Database, Star, Clock, ChevronRight, CheckCircle2 } from 'lucid
 import { Badge } from '@/components/ui/badge';
 import { StatusIndicator } from '@/components/ui/status-indicator';
 import { ActionList } from '@/components/ui/action-list';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { ActionItem } from './home.constants';
-import type { Model } from '@/types/models.types';
+import type { Model, CapabilityFilter } from '@/types/models.types';
 
 export const MODELS_TABS = {
   SELECT: {
@@ -58,43 +59,105 @@ export const buildModelSelectActions = (params: {
 };
 
 export const buildModelActions = (params: {
+  models: Model[];
   handleModelClick: (modelId: string) => void;
 }): ActionItem[] => {
-  const { handleModelClick } = params;
+  const { models, handleModelClick } = params;
 
-  return [
-    {
-      icon: <StatusIndicator status="running" />,
-      title: 'GPT-4 Turbo',
-      description: 'Most capable model, best for complex tasks',
-      actions: createModelBadge('default', 'Available'),
-      onClick: () => handleModelClick('gpt-4-turbo')
-    },
-    {
-      icon: <StatusIndicator status="running" />,
-      title: 'GPT-3.5 Turbo',
-      description: 'Fast and efficient for most tasks',
-      actions: createModelBadge('default', 'Available'),
-      onClick: () => handleModelClick('gpt-3.5-turbo')
-    },
-    {
-      icon: <StatusIndicator status="stopped" />,
-      title: 'Claude 3 Opus',
-      description: 'Advanced reasoning and analysis',
-      actions: createModelBadge('secondary', 'Unavailable'),
-      onClick: () => handleModelClick('claude-3-opus'),
-      disabled: true
-    }
-  ];
+  return models.map((model) => ({
+    icon: <StatusIndicator status="running" />,
+    title: model.id,
+    description: model.description || model.name,
+    actions: createModelBadge('default', 'Available'),
+    onClick: () => handleModelClick(model.id)
+  }));
 };
 
 export const buildModelSelectContent = (selectActions: ActionItem[]) => (
   <ActionList title="Available Models" icon={CheckCircle2} items={selectActions} />
 );
 
-export const buildAllModelsContent = (modelActions: ActionItem[]) => (
-  <ActionList title="Available Models" icon={Database} items={modelActions} />
-);
+export const buildAllModelsContent = (params: {
+  modelActions: ActionItem[];
+  capabilityFilter: CapabilityFilter;
+  providerFilter: string;
+  providers: string[];
+  onCapabilityChange: (value: CapabilityFilter) => void;
+  onProviderChange: (value: string) => void;
+}) => {
+  const { modelActions, capabilityFilter, providerFilter, providers, onCapabilityChange, onProviderChange } = params;
+
+  return (
+    <div className="demo-container" style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
+      <div className="demo-header" style={{ flexShrink: 0 }}>
+        <div className="demo-label">
+          <Database className="icon-primary" />
+          <span className="demo-label-text">Browse Models</span>
+        </div>
+      </div>
+
+      {/* Filters Row */}
+      <div className="model-filters-row" style={{ flexShrink: 0 }}>
+        <div className="model-filter-group">
+          <span className="model-filter-label">Capability:</span>
+          <Select value={capabilityFilter} onValueChange={onCapabilityChange}>
+            <SelectTrigger className="models-filter-select">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Capabilities</SelectItem>
+              <SelectItem value="chat">Chat</SelectItem>
+              <SelectItem value="vision">Vision</SelectItem>
+              <SelectItem value="tool-call">Tool Calling</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="model-filter-group">
+          <span className="model-filter-label">Provider:</span>
+          <Select value={providerFilter} onValueChange={onProviderChange}>
+            <SelectTrigger className="models-filter-select">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Providers</SelectItem>
+              {providers.map((provider) => (
+                <SelectItem key={provider} value={provider}>
+                  {provider}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Models List */}
+      <div className="provider-switch-list" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+        {modelActions.map((item, index) => (
+          <div
+            key={index}
+            className="provider-switch-item"
+            onClick={item.disabled ? undefined : item.onClick}
+            style={{ cursor: item.disabled ? 'not-allowed' : item.onClick ? 'pointer' : 'default' }}
+          >
+            <div className="provider-switch-info">
+              {item.icon}
+              <div className="provider-switch-details">
+                <div className="provider-switch-name">{item.title}</div>
+                <div className="provider-switch-type">{item.description}</div>
+              </div>
+            </div>
+            {item.actions && (
+              <div className="provider-switch-actions">
+                {item.actions}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export const buildFavoritesContent = () => (
   <div className="vspace-md">

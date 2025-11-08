@@ -55,6 +55,20 @@
 
 ---
 
+## Code Documentation Reference
+
+Complete source code for all phases is available in separate documentation files:
+
+- **Phases 1-3** (Init, Types, Utils): [`04_FRONTEND_CODE_PHASES_1-3.md`](./04_FRONTEND_CODE_PHASES_1-3.md)
+- **Phases 4-5** (Constants, Services): [`05_FRONTEND_CODE_PHASES_4-5.md`](./05_FRONTEND_CODE_PHASES_4-5.md)
+- **Phases 6-7** (Stores, Hooks): [`06_FRONTEND_CODE_PHASES_6-7.md`](./06_FRONTEND_CODE_PHASES_6-7.md)
+- **Phases 8-10** (UI Components, Features, Layout): [`07_FRONTEND_CODE_PHASES_8-10.md`](./07_FRONTEND_CODE_PHASES_8-10.md)
+- **Phases 11-13** (Pages, App Entry, Styling): [`08_FRONTEND_CODE_PHASES_11-13.md`](./08_FRONTEND_CODE_PHASES_11-13.md)
+
+This document focuses on **planning, architecture, and implementation steps**. Refer to the code documentation files above for complete source code.
+
+---
+
 ## Overview
 
 This implementation plan outlines the complete rewrite of the frontend application from scratch in the `frontend` folder, following the proven patterns from `frontend-v3` while implementing strict adherence to SRP, DRY, and Domain-Driven Design principles.
@@ -484,149 +498,14 @@ frontend/
 
 **Files to Create**:
 
-1. **frontend/src/types/common.types.ts** - Shared utility types
-```typescript
-export type Route = '/' | '/providers' | '/models' | '/chat' | '/settings' | '/browser-guide' | '/desktop-guide';
+1. **frontend/src/types/common.types.ts** - Shared utility types (Route, APIResponse, Platform, Theme, SidebarPosition)
+2. **frontend/src/types/providers.types.ts** - Provider domain types (Provider, ProviderConfig)
+3. **frontend/src/types/models.types.ts** - Model domain types (Model, ParsedModel, Capability, CapabilityFilter)
+4. **frontend/src/types/credentials.types.ts** - Credentials domain types (QwenCredentials, CredentialsStatus)
+5. **frontend/src/types/proxy.types.ts** - Proxy server types (ProxyStatus, ProxyStatusResponse, WsProxyStatus)
+6. **frontend/src/types/chat.types.ts** - Chat functionality types (ChatMessage, ChatRequest, ChatResponse, ChatStreamChunk, ParsedChatResponse)
 
-export interface APIResponse<T = any> {
-  success: boolean;
-  data?: T;
-  error?: string;
-}
-
-export type Platform = 'electron' | 'browser' | 'extension';
-export type Theme = 'light' | 'dark';
-export type SidebarPosition = 'left' | 'right';
-```
-
-2. **frontend/src/types/providers.types.ts** - Provider domain types
-```typescript
-export interface Provider {
-  id: string;
-  name: string;
-  type: string;
-  enabled: boolean;
-  config?: Record<string, any>;
-  created_at: number;
-  updated_at: number;
-}
-
-export interface ProviderConfig {
-  base_url?: string;
-  api_key?: string;
-  [key: string]: any;
-}
-```
-
-3. **frontend/src/types/models.types.ts** - Model domain types
-```typescript
-export interface Model {
-  id: string;
-  name: string;
-  description: string;
-  capabilities: string; // JSON string array
-  status: string;
-  created_at: number;
-  updated_at: number;
-}
-
-export interface ParsedModel {
-  id: string;
-  name: string;
-  description: string;
-  capabilities: Capability[];
-  provider: string;
-}
-
-export type Capability = 'chat' | 'vision' | 'tool-call' | 'completion' | 'code' | 'tools';
-export type CapabilityFilter = 'all' | 'vision' | 'tool-call' | 'chat';
-```
-
-4. **frontend/src/types/credentials.types.ts** - Credentials domain types
-```typescript
-export interface QwenCredentials {
-  token: string;
-  cookies: string;
-  expiresAt: number;
-  status: 'active' | 'inactive' | 'expired';
-}
-
-export interface CredentialsStatus {
-  hasCredentials: boolean;
-  isExpired: boolean;
-  expiresIn?: number;
-  status: 'active' | 'inactive' | 'expired';
-}
-```
-
-5. **frontend/src/types/proxy.types.ts** - Proxy server types
-```typescript
-export interface ProxyStatus {
-  running: boolean;
-  port?: number;
-  pid?: number;
-  uptime?: number;
-}
-
-export interface ProxyStatusResponse {
-  providerRouter: ProxyStatus;
-  apiServer: ProxyStatus;
-}
-
-export interface WsProxyStatus {
-  providerRouter?: ProxyStatus;
-  apiServer?: ProxyStatus;
-}
-```
-
-6. **frontend/src/types/chat.types.ts** - Chat functionality types
-```typescript
-export interface ChatMessage {
-  role: 'user' | 'assistant' | 'system';
-  content: string;
-}
-
-export interface ChatRequest {
-  model: string;
-  messages: ChatMessage[];
-  stream?: boolean;
-  temperature?: number;
-  max_tokens?: number;
-}
-
-export interface ChatResponse {
-  id: string;
-  object: string;
-  created: number;
-  model: string;
-  choices: Array<{
-    index: number;
-    message: ChatMessage;
-    finish_reason: string;
-  }>;
-}
-
-export interface ChatStreamChunk {
-  id: string;
-  object: string;
-  created: number;
-  model: string;
-  choices: Array<{
-    index: number;
-    delta: {
-      role?: string;
-      content?: string;
-    };
-    finish_reason: string | null;
-  }>;
-}
-
-export interface ParsedChatResponse {
-  thinking: string;
-  response: string;
-  raw: string;
-}
-```
+**Reference**: See complete source code in [`04_FRONTEND_CODE_PHASES_1-3.md`](./04_FRONTEND_CODE_PHASES_1-3.md) - Phase 2.1
 
 **Validation**:
 - [ ] All types properly exported
@@ -643,110 +522,12 @@ export interface ParsedChatResponse {
 
 **Files to Create**:
 
-1. **frontend/src/types/components.types.ts** - UI component prop types
-```typescript
-import type { LucideIcon } from 'lucide-react';
-
-export interface ActionItem {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  actions?: React.ReactNode;
-  onClick?: () => void;
-  disabled?: boolean;
-  hidden?: boolean;
-}
-
-export interface TabDefinition {
-  value: string;
-  label: string;
-  description?: string;
-  content: React.ReactNode;
-  hidden?: boolean;
-}
-
-export interface StatusIndicatorProps {
-  status: 'running' | 'stopped' | 'active' | 'inactive' | 'error' | 'warning';
-  pulse?: boolean;
-  size?: 'sm' | 'md' | 'lg';
-}
-
-export interface StatusBadgeProps {
-  status: 'active' | 'inactive' | 'expired' | 'running' | 'stopped';
-  children?: React.ReactNode;
-}
-```
-
-2. **frontend/src/types/home.types.ts** - Home page specific types
-```typescript
-export interface SystemFeature {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  status?: 'active' | 'inactive' | 'pending';
-}
-
-export interface ProxyStatusDisplay {
-  providerRouter: {
-    running: boolean;
-    port?: number;
-    label: string;
-  };
-  apiServer: {
-    running: boolean;
-    port?: number;
-    label: string;
-  };
-}
-```
-
-3. **frontend/src/types/quick-guide.types.ts** - Quick guide component types
-```typescript
-import type { Model, ParsedModel, CapabilityFilter } from './models.types';
-import type { Provider } from './providers.types';
-
-export interface ModelsStepProps {
-  models: ParsedModel[];
-  loading: boolean;
-  onRefresh: () => void;
-  providerRouterUrl: string;
-  activeModel?: string;
-  onSelectModel?: (modelId: string) => void;
-  capabilityFilter?: CapabilityFilter;
-  providerFilter?: string;
-  providers?: string[];
-  setCapabilityFilter?: (filter: CapabilityFilter) => void;
-  setProviderFilter?: (filter: string) => void;
-  clearFilters?: () => void;
-  error?: string | null;
-}
-
-export interface ProviderSwitchStepProps {
-  providers: Provider[];
-  loading: boolean;
-  onRefresh: () => void;
-  activeProvider?: string;
-  onSwitchProvider?: (providerId: string) => void;
-}
-```
-
+1. **frontend/src/types/components.types.ts** - UI component prop types (ActionItem, TabDefinition, StatusIndicatorProps, StatusBadgeProps)
+2. **frontend/src/types/home.types.ts** - Home page specific types (SystemFeature, ProxyStatusDisplay)
+3. **frontend/src/types/quick-guide.types.ts** - Quick guide component types (ModelsStepProps, ProviderSwitchStepProps)
 4. **frontend/src/types/index.ts** - Central type barrel export
-```typescript
-// Common types
-export type * from './common.types';
 
-// Domain types
-export type * from './providers.types';
-export type * from './models.types';
-export type * from './credentials.types';
-export type * from './proxy.types';
-export type * from './chat.types';
-
-// Component types
-export type * from './components.types';
-export type * from './home.types';
-export type * from './quick-guide.types';
-```
+**Reference**: See complete source code in [`04_FRONTEND_CODE_PHASES_1-3.md`](./04_FRONTEND_CODE_PHASES_1-3.md) - Phase 2.2
 
 **Validation**:
 - [ ] All types exported from index.ts
@@ -795,77 +576,11 @@ frontend/src/
 
 **Files to Create**:
 
-1. **frontend/src/utils/platform.ts** - Platform detection utilities
-```typescript
-export function isElectron(): boolean {
-  return typeof window !== 'undefined' && window.electronAPI !== undefined;
-}
+1. **frontend/src/utils/platform.ts** - Platform detection utilities (isElectron, isBrowser, getPlatform)
+2. **frontend/src/utils/formatters.ts** - Data formatting functions (formatUptime, formatTimestamp, formatTimeRemaining)
+3. **frontend/src/utils/validators.ts** - Input validation utilities (isValidUrl, isValidPort, isValidModelId)
 
-export function isBrowser(): boolean {
-  return !isElectron();
-}
-
-export function getPlatform(): 'electron' | 'browser' {
-  return isElectron() ? 'electron' : 'browser';
-}
-```
-
-2. **frontend/src/utils/formatters.ts** - Data formatting functions
-```typescript
-export function formatUptime(seconds: number): string {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const secs = Math.floor(seconds % 60);
-
-  if (hours > 0) {
-    return `${hours}h ${minutes}m ${secs}s`;
-  } else if (minutes > 0) {
-    return `${minutes}m ${secs}s`;
-  } else {
-    return `${secs}s`;
-  }
-}
-
-export function formatTimestamp(timestamp: number): string {
-  return new Date(timestamp).toLocaleString();
-}
-
-export function formatTimeRemaining(expiresAt: number): string {
-  const now = Date.now();
-  const remaining = expiresAt - now;
-
-  if (remaining <= 0) return 'Expired';
-
-  const hours = Math.floor(remaining / (1000 * 60 * 60));
-  const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-
-  if (hours > 0) {
-    return `${hours}h ${minutes}m remaining`;
-  } else {
-    return `${minutes}m remaining`;
-  }
-}
-```
-
-3. **frontend/src/utils/validators.ts** - Input validation utilities
-```typescript
-export function isValidUrl(url: string): boolean {
-  try {
-    new URL(url);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-export function isValidPort(port: number): boolean {
-  return port >= 1 && port <= 65535;
-}
-
-export function isValidModelId(modelId: string): boolean {
-  return typeof modelId === 'string' && modelId.trim().length > 0;
-}
-```
+**Reference**: See complete source code in [`04_FRONTEND_CODE_PHASES_1-3.md`](./04_FRONTEND_CODE_PHASES_1-3.md) - Phase 3.1
 
 **Validation**:
 - [ ] All functions are pure (no side effects)
@@ -884,53 +599,11 @@ export function isValidModelId(modelId: string): boolean {
 **Files to Create**:
 
 1. **frontend/src/lib/utils.ts** - Tailwind cn() utility
-```typescript
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
-```
-
-2. **frontend/src/lib/constants.ts** - Application-wide constants
-```typescript
-export const APP_NAME = 'Qwen Proxy';
-export const APP_VERSION = '1.0.0';
-export const TITLEBAR_HEIGHT = 40;
-export const STATUSBAR_HEIGHT = 24;
-export const API_BASE_URL = 'http://localhost:3002';
-export const CREDENTIAL_POLL_INTERVAL = 5000; // 5 seconds
-export const STATUS_POLL_INTERVAL = 10000; // 10 seconds
-```
-
+2. **frontend/src/lib/constants.ts** - Application-wide constants (APP_NAME, API_BASE_URL, poll intervals, heights)
 3. **frontend/src/lib/router.ts** - Simple routing utilities for param extraction
-```typescript
-export interface RouteMatch {
-  params: Record<string, string>;
-  matched: boolean;
-}
+4. **frontend/src/lib/api-guide-examples.ts** - Code examples for API guide (Python, Node.js, cURL examples)
 
-export function matchRoute(pattern: string, path: string): RouteMatch {
-  // Pattern matching implementation for dynamic routes like /providers/:id
-}
-
-export function buildPath(pattern: string, params: Record<string, string>): string {
-  // Build paths from patterns and params
-}
-```
-
-4. **frontend/src/lib/api-guide-examples.ts** - Code examples for API guide
-```typescript
-export const pythonExample = `...`;
-export const nodeExample = `...`;
-export const curlExample = `...`;
-export const healthCheckExample = `...`;
-export const commonIssues = [...];
-export const supportedEndpoints = [...];
-```
-
-**Reference**: Copy from `frontend-v3/src/lib/` with same structure
+**Reference**: See complete source code in [`04_FRONTEND_CODE_PHASES_1-3.md`](./04_FRONTEND_CODE_PHASES_1-3.md) - Phase 3.2
 
 **Validation**:
 - [ ] cn() utility works with Tailwind classes
@@ -970,13 +643,13 @@ frontend/src/
 
 **Files to Create**:
 
-1. **frontend/src/constants/home.constants.tsx** - Home page constants
+1. **frontend/src/constants/home.constants.tsx** - Home page constants (tabs, icons, titles)
 2. **frontend/src/constants/providers.constants.tsx** - Providers page constants
 3. **frontend/src/constants/models.constants.tsx** - Models page constants
 4. **frontend/src/constants/settings.constants.tsx** - Settings page constants
 5. **frontend/src/constants/chat.constants.tsx** - Chat page constants
 
-**Reference**: Copy from `frontend-v3/src/constants/` with same structure
+**Reference**: See complete source code in [`05_FRONTEND_CODE_PHASES_4-5.md`](./05_FRONTEND_CODE_PHASES_4-5.md) - Phase 4.1
 
 **Validation**:
 - [ ] All constants properly typed
@@ -993,7 +666,7 @@ frontend/src/
 2. **frontend/src/constants/browserGuide.constants.tsx** - Browser guide constants
 3. **frontend/src/constants/desktopGuide.constants.tsx** - Desktop guide constants
 
-**Reference**: Copy from `frontend-v3/src/constants/` with same structure
+**Reference**: See complete source code in [`05_FRONTEND_CODE_PHASES_4-5.md`](./05_FRONTEND_CODE_PHASES_4-5.md) - Phase 4.2
 
 **Validation**:
 - [ ] Guide content properly structured
@@ -1006,16 +679,8 @@ frontend/src/
 **Files to Create**:
 
 1. **frontend/src/constants/index.ts** - Constants barrel export
-```typescript
-export * from './home.constants';
-export * from './providers.constants';
-export * from './models.constants';
-export * from './settings.constants';
-export * from './chat.constants';
-export * from './apiGuide.constants';
-export * from './browserGuide.constants';
-export * from './desktopGuide.constants';
-```
+
+**Reference**: See complete source code in [`05_FRONTEND_CODE_PHASES_4-5.md`](./05_FRONTEND_CODE_PHASES_4-5.md) - Phase 4.3
 
 **Validation**:
 - [ ] All constants accessible via single import
@@ -1048,43 +713,9 @@ frontend/src/
 
 **Files to Create**:
 
-1. **frontend/src/services/api.service.ts** - Core API service
-```typescript
-const API_BASE_URL = 'http://localhost:3002';
+1. **frontend/src/services/api.service.ts** - Core API service (get, post, put, delete, getSettings, updateSetting)
 
-class ApiService {
-  // GET request
-  async get<T = any>(endpoint: string): Promise<APIResponse<T>> {
-    // Implementation
-  }
-
-  // POST request
-  async post<T = any>(endpoint: string, data?: any): Promise<APIResponse<T>> {
-    // Implementation
-  }
-
-  // PUT request
-  async put<T = any>(endpoint: string, data?: any): Promise<APIResponse<T>> {
-    // Implementation
-  }
-
-  // DELETE request
-  async delete<T = any>(endpoint: string): Promise<APIResponse<T>> {
-    // Implementation
-  }
-
-  // Settings endpoints
-  async getSettings(): Promise<APIResponse<Record<string, any>>> {
-    // Implementation
-  }
-
-  async updateSetting(key: string, value: any): Promise<APIResponse<void>> {
-    // Implementation
-  }
-}
-
-export const apiService = new ApiService();
-```
+**Reference**: See complete source code in [`05_FRONTEND_CODE_PHASES_4-5.md`](./05_FRONTEND_CODE_PHASES_4-5.md) - Phase 5.1
 
 **Validation**:
 - [ ] Error handling for all requests
@@ -1101,42 +732,9 @@ export const apiService = new ApiService();
 
 **Files to Create**:
 
-1. **frontend/src/services/websocket.service.ts** - WebSocket service
-```typescript
-import { io, Socket } from 'socket.io-client';
+1. **frontend/src/services/websocket.service.ts** - WebSocket service (connect, disconnect, on, off, emit, isConnected)
 
-class WebSocketService {
-  private socket: Socket | null = null;
-  private reconnectAttempts = 0;
-  private maxReconnectAttempts = 5;
-
-  connect(): void {
-    // Implementation
-  }
-
-  disconnect(): void {
-    // Implementation
-  }
-
-  on(event: string, callback: (...args: any[]) => void): void {
-    // Implementation
-  }
-
-  off(event: string, callback?: (...args: any[]) => void): void {
-    // Implementation
-  }
-
-  emit(event: string, data?: any): void {
-    // Implementation
-  }
-
-  isConnected(): boolean {
-    // Implementation
-  }
-}
-
-export const websocketService = new WebSocketService();
-```
+**Reference**: See complete source code in [`05_FRONTEND_CODE_PHASES_4-5.md`](./05_FRONTEND_CODE_PHASES_4-5.md) - Phase 5.2
 
 **Validation**:
 - [ ] Automatic reconnection
@@ -1153,15 +751,15 @@ export const websocketService = new WebSocketService();
 
 **Files to Create**:
 
-1. **frontend/src/services/providers.service.ts** - Provider domain logic
-2. **frontend/src/services/models.service.ts** - Models domain logic
+1. **frontend/src/services/providers.service.ts** - Provider domain logic (getProviders, switchProvider, etc.)
+2. **frontend/src/services/models.service.ts** - Models domain logic (getModels, getAvailableModels, etc.)
 3. **frontend/src/services/credentials.service.ts** - Credentials domain logic
-4. **frontend/src/services/chat.service.ts** - Chat domain logic
+4. **frontend/src/services/chat.service.ts** - Chat domain logic (sendMessage, streamChat, etc.)
 5. **frontend/src/services/chatService.ts** - Alternative chat service
 6. **frontend/src/services/credentialsService.ts** - Alternative credentials service
-7. **frontend/src/services/proxy.service.ts** - Proxy server management
+7. **frontend/src/services/proxy.service.ts** - Proxy server management (getStatus, start, stop, etc.)
 
-**Reference**: Copy from `frontend-v3/src/services/` with same structure
+**Reference**: See complete source code in [`05_FRONTEND_CODE_PHASES_4-5.md`](./05_FRONTEND_CODE_PHASES_4-5.md) - Phase 5.3
 
 **Validation**:
 - [ ] Clear separation of concerns
@@ -1200,65 +798,10 @@ frontend/src/
 
 **Files to Create**:
 
-1. **frontend/src/stores/useUIStore.ts** - UI state (theme, sidebar, routing)
-```typescript
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+1. **frontend/src/stores/useUIStore.ts** - UI state (theme, sidebar, routing with persistence middleware)
+2. **frontend/src/stores/useSettingsStore.ts** - Application settings (server config, active provider/model)
 
-interface UIState {
-  theme: Theme;
-  sidebarPosition: SidebarPosition;
-  currentRoute: Route;
-  uiState: {
-    theme: Theme;
-    sidebarPosition: SidebarPosition;
-  };
-}
-
-interface UIStore extends UIState {
-  setTheme: (theme: Theme) => void;
-  toggleTheme: () => void;
-  setSidebarPosition: (position: SidebarPosition) => void;
-  toggleSidebarPosition: () => void;
-  setCurrentRoute: (route: Route) => void;
-  loadSettings: () => void;
-}
-
-export const useUIStore = create<UIStore>()(
-  persist(
-    (set) => ({
-      // Implementation
-    }),
-    {
-      name: 'qwen-proxy-ui-state',
-    }
-  )
-);
-```
-
-2. **frontend/src/stores/useSettingsStore.ts** - Application settings
-```typescript
-interface Settings {
-  'server.port'?: string;
-  'server.host'?: string;
-  active_provider?: string;
-  active_model?: string;
-  [key: string]: string | number | boolean | undefined;
-}
-
-interface SettingsStore {
-  settings: Settings;
-  loading: boolean;
-  providerRouterUrl: string;
-  fetchSettings: () => Promise<void>;
-  updateSetting: (key: string, value: string) => Promise<void>;
-  setActiveModel: (modelId: string) => Promise<void>;
-}
-
-export const useSettingsStore = create<SettingsStore>((set, get) => ({
-  // Implementation
-}));
-```
+**Reference**: See complete source code in [`06_FRONTEND_CODE_PHASES_6-7.md`](./06_FRONTEND_CODE_PHASES_6-7.md) - Phase 6.1
 
 **Validation**:
 - [ ] UI state persists across sessions
@@ -1276,12 +819,12 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
 
 **Files to Create**:
 
-1. **frontend/src/stores/useCredentialsStore.ts** - Credentials state
-2. **frontend/src/stores/useProxyStore.ts** - Proxy server state
-3. **frontend/src/stores/useLifecycleStore.ts** - Application lifecycle
-4. **frontend/src/stores/useAlertStore.ts** - Toast notifications
+1. **frontend/src/stores/useCredentialsStore.ts** - Credentials state with WebSocket sync
+2. **frontend/src/stores/useProxyStore.ts** - Proxy server state with WebSocket sync
+3. **frontend/src/stores/useLifecycleStore.ts** - Application lifecycle state
+4. **frontend/src/stores/useAlertStore.ts** - Toast notifications with auto-dismiss
 
-**Reference**: Copy from `frontend-v3/src/stores/` with same structure
+**Reference**: See complete source code in [`06_FRONTEND_CODE_PHASES_6-7.md`](./06_FRONTEND_CODE_PHASES_6-7.md) - Phase 6.2
 
 **Validation**:
 - [ ] Proper state segregation by domain
@@ -1317,14 +860,14 @@ frontend/src/
 
 **Files to Create**:
 
-1. **frontend/src/hooks/useDarkMode.ts** - Theme management
-2. **frontend/src/hooks/useWebSocket.ts** - WebSocket connection
-3. **frontend/src/hooks/useToast.ts** - Toast notifications
+1. **frontend/src/hooks/useDarkMode.ts** - Theme management (dark/light mode sync with DOM)
+2. **frontend/src/hooks/useWebSocket.ts** - WebSocket connection management
+3. **frontend/src/hooks/useToast.ts** - Toast notifications interface
 4. **frontend/src/hooks/useExtensionDetection.ts** - Browser extension detection
 5. **frontend/src/hooks/useChatTest.ts** - Chat testing functionality
 6. **frontend/src/hooks/useQuickChatTest.ts** - Quick chat testing
 
-**Reference**: Copy from `frontend-v3/src/hooks/` with same structure
+**Reference**: See complete source code in [`06_FRONTEND_CODE_PHASES_6-7.md`](./06_FRONTEND_CODE_PHASES_6-7.md) - Phase 7.1
 
 **Validation**:
 - [ ] Hooks properly encapsulate logic
@@ -1342,11 +885,11 @@ frontend/src/
 
 **Files to Create**:
 
-1. **frontend/src/hooks/useProviders.ts** - Provider management
-2. **frontend/src/hooks/useModels.ts** - Model management
-3. **frontend/src/hooks/useCredentials.ts** - Credentials management
+1. **frontend/src/hooks/useProviders.ts** - Provider management (fetch, switch, refresh)
+2. **frontend/src/hooks/useModels.ts** - Model management (fetch, filter by capabilities)
+3. **frontend/src/hooks/useCredentials.ts** - Credentials management (status, polling, logout)
 
-**Reference**: Copy from `frontend-v3/src/hooks/` with same structure
+**Reference**: See complete source code in [`06_FRONTEND_CODE_PHASES_6-7.md`](./06_FRONTEND_CODE_PHASES_6-7.md) - Phase 7.2
 
 **Validation**:
 - [ ] Clear separation of concerns
@@ -1364,17 +907,17 @@ frontend/src/
 
 **Files to Create**:
 
-1. **frontend/src/hooks/useHomePage.ts** - Home page logic
-2. **frontend/src/hooks/useProvidersPage.ts** - Providers page logic
-3. **frontend/src/hooks/useModelsPage.ts** - Models page logic
-4. **frontend/src/hooks/useSettingsPage.ts** - Settings page logic
-5. **frontend/src/hooks/useChatPage.ts** - Chat page logic
+1. **frontend/src/hooks/useHomePage.ts** - Home page logic (credentials, proxy status)
+2. **frontend/src/hooks/useProvidersPage.ts** - Providers page logic (list, switch with auto-model-selection)
+3. **frontend/src/hooks/useModelsPage.ts** - Models page logic (available vs all models, filtering)
+4. **frontend/src/hooks/useSettingsPage.ts** - Settings page logic (fetch, update)
+5. **frontend/src/hooks/useChatPage.ts** - Chat page logic (test, stream responses)
 6. **frontend/src/hooks/useApiGuidePage.ts** - API guide logic
 7. **frontend/src/hooks/useBrowserGuidePage.ts** - Browser guide logic
 8. **frontend/src/hooks/useDesktopGuidePage.ts** - Desktop guide logic
 9. **frontend/src/hooks/useCustomChat.ts** - Custom chat interface
 
-**Reference**: Copy from `frontend-v3/src/hooks/` with same structure
+**Reference**: See complete source code in [`06_FRONTEND_CODE_PHASES_6-7.md`](./06_FRONTEND_CODE_PHASES_6-7.md) - Phase 7.3
 
 **Validation**:
 - [ ] Single responsibility per hook
@@ -1473,15 +1016,15 @@ cd ..
 
 **Files to Create**:
 
-1. **frontend/src/components/ui/toaster.tsx** - Toast container
-2. **frontend/src/components/ui/status-indicator.tsx** - Status dot with pulse
+1. **frontend/src/components/ui/toaster.tsx** - Toast container with sidebar position awareness
+2. **frontend/src/components/ui/status-indicator.tsx** - Status dot with pulse animation
 3. **frontend/src/components/ui/status-badge.tsx** - Status badge component
-4. **frontend/src/components/ui/environment-badge.tsx** - Environment detection badge
-5. **frontend/src/components/ui/action-list.tsx** - Reusable action list
+4. **frontend/src/components/ui/environment-badge.tsx** - Environment detection badge (Desktop/Browser)
+5. **frontend/src/components/ui/action-list.tsx** - Reusable action list for cards
 6. **frontend/src/components/ui/content-card.tsx** - Content card wrapper
-7. **frontend/src/components/ui/tab-card.tsx** - Tab card component
+7. **frontend/src/components/ui/tab-card.tsx** - Tab card component with title and icon
 
-**Reference**: Copy from `frontend-v3/src/components/ui/` with same structure
+**Reference**: See complete source code in [`07_FRONTEND_CODE_PHASES_8-10.md`](./07_FRONTEND_CODE_PHASES_8-10.md) - Phase 8.2
 
 **Validation**:
 - [ ] Custom components match design system
@@ -1533,45 +1076,45 @@ frontend/src/
 ### Phase 9.1: Home Feature Components (Priority: P1)
 
 **Files to Create**:
-- `frontend/src/components/features/home/CredentialsSection.tsx`
-- `frontend/src/components/features/home/ProxyStatusSection.tsx`
+- `frontend/src/components/features/home/CredentialsSection.tsx` - Qwen credentials display
+- `frontend/src/components/features/home/ProxyStatusSection.tsx` - Provider Router and API Server status
 
 ### Phase 9.2: Chat Feature Components (Priority: P1)
 
 **Files to Create**:
-- `frontend/src/components/features/chat/ChatTestCard.tsx`
-- `frontend/src/components/features/chat/CurlTab.tsx`
-- `frontend/src/components/features/chat/CustomChatTab.tsx`
-- `frontend/src/components/features/chat/QuickTestTab.tsx`
-- `frontend/src/components/features/chat/ResponseSection.tsx`
-- `frontend/src/components/features/chat/ThinkingSection.tsx`
+- `frontend/src/components/features/chat/ChatTestCard.tsx` - Chat test container
+- `frontend/src/components/features/chat/CurlTab.tsx` - cURL examples tab
+- `frontend/src/components/features/chat/CustomChatTab.tsx` - Custom chat interface tab
+- `frontend/src/components/features/chat/QuickTestTab.tsx` - Quick chat test tab
+- `frontend/src/components/features/chat/ResponseSection.tsx` - Chat response display
+- `frontend/src/components/features/chat/ThinkingSection.tsx` - Thinking process display
 
 ### Phase 9.3: Providers & Models Components (Priority: P1)
 
 **Files to Create**:
-- `frontend/src/components/features/providers/ProvidersTable.tsx`
-- `frontend/src/components/features/models/ModelCard.tsx`
-- `frontend/src/components/features/models/ModelDetailsDialog.tsx`
+- `frontend/src/components/features/providers/ProvidersTable.tsx` - Providers list table
+- `frontend/src/components/features/models/ModelCard.tsx` - Individual model card
+- `frontend/src/components/features/models/ModelDetailsDialog.tsx` - Model details dialog
 
 ### Phase 9.4: Credentials Components (Priority: P1)
 
 **Files to Create**:
-- `frontend/src/components/features/credentials/CredentialsStatusCard.tsx`
-- `frontend/src/components/features/credentials/LoginInstructionsCard.tsx`
-- `frontend/src/components/features/credentials/LogoutDialog.tsx`
+- `frontend/src/components/features/credentials/CredentialsStatusCard.tsx` - Credentials status display
+- `frontend/src/components/features/credentials/LoginInstructionsCard.tsx` - Login instructions
+- `frontend/src/components/features/credentials/LogoutDialog.tsx` - Logout confirmation dialog
 
 ### Phase 9.5: Quick Guide Components (Priority: P1)
 
 **Files to Create**:
-- `frontend/src/components/features/quick-guide/ChatCompletionStep.tsx`
-- `frontend/src/components/features/quick-guide/CodeBlock.tsx`
-- `frontend/src/components/features/quick-guide/ModelsBrowseTab.tsx`
-- `frontend/src/components/features/quick-guide/ModelsSelectTab.tsx`
-- `frontend/src/components/features/quick-guide/ModelsStep.tsx`
-- `frontend/src/components/features/quick-guide/ProviderSwitchStep.tsx`
-- `frontend/src/components/features/quick-guide/ProviderSwitchTab.tsx`
+- `frontend/src/components/features/quick-guide/ChatCompletionStep.tsx` - Chat completion guide step
+- `frontend/src/components/features/quick-guide/CodeBlock.tsx` - Syntax highlighted code block
+- `frontend/src/components/features/quick-guide/ModelsBrowseTab.tsx` - Browse models tab
+- `frontend/src/components/features/quick-guide/ModelsSelectTab.tsx` - Select model tab
+- `frontend/src/components/features/quick-guide/ModelsStep.tsx` - Models guide step
+- `frontend/src/components/features/quick-guide/ProviderSwitchStep.tsx` - Provider switch guide step
+- `frontend/src/components/features/quick-guide/ProviderSwitchTab.tsx` - Provider switch tab
 
-**Reference**: Copy from `frontend-v3/src/components/features/` with same structure
+**Reference**: See complete source code in [`07_FRONTEND_CODE_PHASES_8-10.md`](./07_FRONTEND_CODE_PHASES_8-10.md) - Phase 9
 
 **Validation**:
 - [ ] Components encapsulate specific features
@@ -1624,12 +1167,12 @@ frontend/src/
 
 **Files to Create**:
 
-1. **frontend/src/components/layout/AppLayout.tsx** - Main layout container
-2. **frontend/src/components/layout/Sidebar.tsx** - Navigation sidebar
-3. **frontend/src/components/layout/TitleBar.tsx** - Title bar with controls
-4. **frontend/src/components/layout/StatusBar.tsx** - Status bar
+1. **frontend/src/components/layout/AppLayout.tsx** - Main layout container with sidebar positioning
+2. **frontend/src/components/layout/Sidebar.tsx** - Navigation sidebar with route management
+3. **frontend/src/components/layout/TitleBar.tsx** - Title bar with window controls (Electron) and theme toggle
+4. **frontend/src/components/layout/StatusBar.tsx** - Status bar with environment badge and lifecycle status
 
-**Reference**: Copy from `frontend-v3/src/components/layout/` with same structure
+**Reference**: See complete source code in [`07_FRONTEND_CODE_PHASES_8-10.md`](./07_FRONTEND_CODE_PHASES_8-10.md) - Phase 10
 
 **Validation**:
 - [ ] Responsive layout behavior
@@ -1659,13 +1202,13 @@ frontend/src/
 
 **Files to Create**:
 
-1. **frontend/src/pages/HomePage.tsx** - Dashboard/home page
-2. **frontend/src/pages/ProvidersPage.tsx** - Providers management
-3. **frontend/src/pages/ModelsPage.tsx** - Models browsing
-4. **frontend/src/pages/SettingsPage.tsx** - Application settings
-5. **frontend/src/pages/ChatPage.tsx** - Chat interface
+1. **frontend/src/pages/HomePage.tsx** - Dashboard/home page (credentials, proxy status, quick guide)
+2. **frontend/src/pages/ProvidersPage.tsx** - Providers management (list, switch)
+3. **frontend/src/pages/ModelsPage.tsx** - Models browsing (available models vs all models tabs)
+4. **frontend/src/pages/SettingsPage.tsx** - Application settings (server config, active provider/model)
+5. **frontend/src/pages/ChatPage.tsx** - Chat interface (quick test, custom chat, cURL examples)
 
-**Reference**: Copy from `frontend-v3/src/pages/` with same structure
+**Reference**: See complete source code in [`08_FRONTEND_CODE_PHASES_11-13.md`](./08_FRONTEND_CODE_PHASES_11-13.md) - Phase 11.1
 
 **Validation**:
 - [ ] Pages use appropriate hooks
@@ -1683,10 +1226,10 @@ frontend/src/
 
 **Files to Create**:
 
-1. **frontend/src/pages/BrowserGuidePage.tsx** - Browser extension guide
-2. **frontend/src/pages/DesktopGuidePage.tsx** - Desktop app guide
+1. **frontend/src/pages/BrowserGuidePage.tsx** - Browser extension installation guide (single tab)
+2. **frontend/src/pages/DesktopGuidePage.tsx** - Desktop app installation guide (single tab)
 
-**Reference**: Copy from `frontend-v3/src/pages/` with same structure
+**Reference**: See complete source code in [`08_FRONTEND_CODE_PHASES_11-13.md`](./08_FRONTEND_CODE_PHASES_11-13.md) - Phase 11.2
 
 **Validation**:
 - [ ] Clear and helpful content
@@ -1717,84 +1260,17 @@ frontend/src/
 
 **Files to Create/Modify**:
 
-1. **frontend/src/App.tsx** - Main application component
-```typescript
-import { useEffect } from 'react';
-import { useDarkMode } from '@/hooks/useDarkMode';
-import { useWebSocket } from '@/hooks/useWebSocket';
-import { AppLayout } from '@/components/layout/AppLayout';
-import { Toaster } from '@/components/ui/toaster';
-import { HomePage } from '@/pages/HomePage';
-import { ProvidersPage } from '@/pages/ProvidersPage';
-import { ModelsPage } from '@/pages/ModelsPage';
-import { SettingsPage } from '@/pages/SettingsPage';
-import { ChatPage } from '@/pages/ChatPage';
-import { BrowserGuidePage } from '@/pages/BrowserGuidePage';
-import { DesktopGuidePage } from '@/pages/DesktopGuidePage';
-import { useUIStore } from '@/stores/useUIStore';
-import { useSettingsStore } from '@/stores/useSettingsStore';
-
-function App() {
-  useDarkMode();
-  useWebSocket();
-  const currentRoute = useUIStore((state) => state.currentRoute);
-  const loadSettings = useUIStore((state) => state.loadSettings);
-  const fetchSettings = useSettingsStore((state) => state.fetchSettings);
-
-  useEffect(() => {
-    loadSettings();
-    fetchSettings();
-  }, [loadSettings, fetchSettings]);
-
-  const renderPage = () => {
-    switch (currentRoute) {
-      case '/':
-        return <HomePage />;
-      case '/providers':
-        return <ProvidersPage />;
-      case '/models':
-        return <ModelsPage />;
-      case '/chat':
-        return <ChatPage />;
-      case '/settings':
-        return <SettingsPage />;
-      case '/browser-guide':
-        return <BrowserGuidePage />;
-      case '/desktop-guide':
-        return <DesktopGuidePage />;
-      default:
-        return <HomePage />;
-    }
-  };
-
-  return (
-    <>
-      <AppLayout>
-        {renderPage()}
-      </AppLayout>
-      <Toaster />
-    </>
-  );
-}
-
-export default App;
-```
-
-2. **frontend/src/main.tsx** - Entry point
-```typescript
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
-
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
-```
-
+1. **frontend/src/App.tsx** - Main application component (initializes dark mode, WebSocket, routing)
+2. **frontend/src/main.tsx** - Entry point (React 18 createRoot with StrictMode)
 3. **frontend/src/vite-env.d.ts** - Ensure Electron API types are defined (already done in Phase 1.3)
+
+**Reference**: See complete source code in [`08_FRONTEND_CODE_PHASES_11-13.md`](./08_FRONTEND_CODE_PHASES_11-13.md) - Phase 12
+
+**Key Implementation Details**:
+- App.tsx uses `useDarkMode()` and `useWebSocket()` hooks for initialization
+- Client-side routing via switch statement based on `useUIStore.currentRoute`
+- Settings loaded on mount via `useEffect` calling `loadSettings()` and `fetchSettings()`
+- Toaster component rendered globally for toast notifications
 
 **Validation**:
 - [ ] App initializes correctly
@@ -1817,40 +1293,25 @@ createRoot(document.getElementById('root')!).render(
 ### Phase 13.1: Base Styles (Priority: P1)
 
 **Files to Create**:
-- `frontend/src/styles/base/theme.css` - Theme CSS variables (duplicate of index.css)
+- `frontend/src/styles/base/theme.css` - Theme CSS variables
 - `frontend/src/styles/index.css` - Main styles entry point
 
 ### Phase 13.2: Layout & Page Styles (Priority: P1)
 
 **Files to Create**:
-- `frontend/src/styles/layout.css` - Layout structure styles
+- `frontend/src/styles/layout.css` - Layout structure styles (sidebar, main content)
 - `frontend/src/styles/pages.css` - Page-specific styles
 - `frontend/src/styles/utilities/common.css` - Utility classes
 
 ### Phase 13.3: Component Styles (Priority: P1)
 
-**Files to Create**:
-- `frontend/src/styles/components/guide.css`
-- `frontend/src/styles/components/steps.css`
-- `frontend/src/styles/pages/providers.css`
-- `frontend/src/styles/pages/quick-guide.css`
-- `frontend/src/styles/home.css`
-- `frontend/src/styles/models.css`
-- `frontend/src/styles/models2.css`
-- `frontend/src/styles/providers.css`
-- `frontend/src/styles/quick-guide.css`
-- `frontend/src/styles/icons.css`
-- `frontend/src/styles/ui-components.css`
-- `frontend/src/styles/system-features.css`
-- `frontend/src/styles/credentials.css`
-- `frontend/src/styles/api-guide.css`
-- `frontend/src/styles/chat-curl.css`
-- `frontend/src/styles/chat-custom.css`
-- `frontend/src/styles/chat-quick-test.css`
-- `frontend/src/styles/chat-response.css`
-- `frontend/src/styles/chat-tabs.css`
+**Files to Create** (19 CSS files):
+- Component-specific: `guide.css`, `steps.css`, `icons.css`, `ui-components.css`, `system-features.css`
+- Page-specific: `home.css`, `models.css`, `models2.css`, `providers.css` (2 files), `quick-guide.css` (2 files)
+- Feature-specific: `credentials.css`, `api-guide.css`
+- Chat-specific: `chat-curl.css`, `chat-custom.css`, `chat-quick-test.css`, `chat-response.css`, `chat-tabs.css`
 
-**Reference**: Copy from `frontend-v3/src/styles/` with same structure
+**Reference**: See complete source code in [`08_FRONTEND_CODE_PHASES_11-13.md`](./08_FRONTEND_CODE_PHASES_11-13.md) - Phase 13
 
 **Validation**:
 - [ ] All styles compile correctly

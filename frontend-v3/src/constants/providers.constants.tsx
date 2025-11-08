@@ -63,42 +63,21 @@ export const buildProviderSwitchActions = (params: {
 };
 
 export const buildProviderActions = (params: {
+  providers: Provider[];
   handleProviderClick: (providerId: string) => void;
 }): ActionItem[] => {
-  const { handleProviderClick } = params;
+  const { providers, handleProviderClick } = params;
 
-  return [
-    {
-      icon: <StatusIndicator status="running" />,
-      title: 'OpenAI',
-      description: 'GPT-4, GPT-3.5 Turbo, and DALL-E models',
-      actions: createProviderBadge('default', 'Connected'),
-      onClick: () => handleProviderClick('openai')
-    },
-    {
-      icon: <StatusIndicator status="running" />,
-      title: 'Anthropic',
-      description: 'Claude 3 Opus, Sonnet, and Haiku models',
-      actions: createProviderBadge('default', 'Connected'),
-      onClick: () => handleProviderClick('anthropic')
-    },
-    {
-      icon: <StatusIndicator status="stopped" />,
-      title: 'Google AI',
-      description: 'Gemini Pro and other Google models',
-      actions: createProviderBadge('secondary', 'Not Configured'),
-      onClick: () => handleProviderClick('google'),
-      disabled: true
-    },
-    {
-      icon: <StatusIndicator status="stopped" />,
-      title: 'Qwen',
-      description: 'Alibaba Qwen models via proxy',
-      actions: createProviderBadge('secondary', 'Not Configured'),
-      onClick: () => handleProviderClick('qwen'),
-      disabled: true
-    }
-  ];
+  return providers.map((provider) => ({
+    icon: <StatusIndicator status={provider.enabled ? 'running' : 'stopped'} />,
+    title: provider.name,
+    description: provider.type,
+    actions: createProviderBadge(
+      provider.enabled ? 'default' : 'secondary',
+      provider.enabled ? 'Enabled' : 'Disabled'
+    ),
+    onClick: () => handleProviderClick(provider.id)
+  }));
 };
 
 export const buildProviderSwitchContent = (switchActions: ActionItem[]) => (
