@@ -7,6 +7,7 @@ import { HomePage } from '@/pages/HomePage';
 import { ProvidersPage } from '@/pages/ProvidersPage';
 import { ProviderFormPage } from '@/pages/ProviderFormPage';
 import { ModelsPage } from '@/pages/ModelsPage';
+import { ModelFormPage } from '@/pages/ModelFormPage';
 import { SettingsPage } from '@/pages/SettingsPage';
 import { ChatPage } from '@/pages/ChatPage';
 import { BrowserGuidePage } from '@/pages/BrowserGuidePage';
@@ -38,6 +39,11 @@ function App() {
       } else {
         return <ProviderFormPage readOnly={true} />;
       }
+    }
+
+    // Handle model routes with IDs
+    if (currentRoute.startsWith('/models/')) {
+      return <ModelFormPage />;
     }
 
     switch (currentRoute) {

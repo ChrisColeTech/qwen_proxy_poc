@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useAlertStore } from '@/stores/useAlertStore';
 import { modelsService } from '@/services/models.service';
 import { providersService } from '@/services/providers.service';
-import type { Model, CapabilityFilter, ModelDetails } from '@/types/models.types';
+import type { Model, CapabilityFilter } from '@/types/models.types';
 import type { Provider } from '@/types/providers.types';
 import { useSettingsStore } from '@/stores/useSettingsStore';
 
@@ -14,8 +14,6 @@ export function useModelsPage() {
   const [loadingAll, setLoadingAll] = useState(false);
   const [capabilityFilter, setCapabilityFilter] = useState<CapabilityFilter>('all');
   const [providerFilter, setProviderFilter] = useState<string>('all');
-  const [selectedModelDetails, setSelectedModelDetails] = useState<ModelDetails | null>(null);
-  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
   const settings = useSettingsStore((state) => state.settings);
   const providerRouterUrl = useSettingsStore((state) => state.providerRouterUrl);
   const activeModel = (settings.active_model as string) || '';
@@ -96,22 +94,6 @@ export function useModelsPage() {
       console.error('Failed to select model:', error);
       useAlertStore.showAlert('Failed to select model', 'error');
     }
-  };
-
-  const handleModelClick = async (modelId: string) => {
-    try {
-      const details = await modelsService.getModelDetails(modelId);
-      setSelectedModelDetails(details);
-      setIsDetailsDialogOpen(true);
-    } catch (error) {
-      console.error('Failed to fetch model details:', error);
-      useAlertStore.showAlert('Failed to load model details', 'error');
-    }
-  };
-
-  const handleCloseDetailsDialog = () => {
-    setIsDetailsDialogOpen(false);
-    setSelectedModelDetails(null);
   };
 
   const handleClearFilters = () => {
@@ -198,13 +180,9 @@ export function useModelsPage() {
     providers,
     capabilityFilter,
     providerFilter,
-    selectedModelDetails,
-    isDetailsDialogOpen,
     handleModelSelect,
-    handleModelClick,
     handleProviderSwitch,
     handleClearFilters,
-    handleCloseDetailsDialog,
     setCapabilityFilter,
     setProviderFilter,
     fetchAvailableModels,

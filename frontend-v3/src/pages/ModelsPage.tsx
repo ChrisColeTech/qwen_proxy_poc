@@ -1,6 +1,6 @@
 import { TabCard } from '@/components/ui/tab-card';
 import { useModelsPage } from '@/hooks/useModelsPage';
-import { ModelDetailsDialog } from '@/components/dialogs/ModelDetailsDialog';
+import { useUIStore } from '@/stores/useUIStore';
 import {
   buildModelActions,
   buildModelSelectActions,
@@ -22,15 +22,17 @@ export function ModelsPage() {
     providers,
     capabilityFilter,
     providerFilter,
-    selectedModelDetails,
-    isDetailsDialogOpen,
     handleModelSelect,
-    handleModelClick,
     handleProviderSwitch,
-    handleCloseDetailsDialog,
     setCapabilityFilter,
     setProviderFilter
   } = useModelsPage();
+  const setCurrentRoute = useUIStore((state) => state.setCurrentRoute);
+
+  const handleModelClickNavigate = (modelId: string) => {
+    // Navigate to model details page
+    setCurrentRoute(`/models/${encodeURIComponent(modelId)}`);
+  };
 
   // First tab: Available models from Provider Router
   const selectActions = buildModelSelectActions({
@@ -42,7 +44,7 @@ export function ModelsPage() {
   // Second tab: All models from API Server (filtered)
   const modelActions = buildModelActions({
     models: filteredAllModels,
-    handleModelClick
+    handleModelClick: handleModelClickNavigate
   });
 
   const tabs = [
@@ -79,12 +81,7 @@ export function ModelsPage() {
         icon={MODELS_ICON}
         tabs={tabs}
         defaultTab={MODELS_TABS.SELECT.value}
-      />
-
-      <ModelDetailsDialog
-        model={selectedModelDetails}
-        open={isDetailsDialogOpen}
-        onClose={handleCloseDetailsDialog}
+        pageKey="/models"
       />
     </div>
   );
