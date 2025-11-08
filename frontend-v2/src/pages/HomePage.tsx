@@ -110,30 +110,7 @@ export function HomePage() {
                   </div>
 
                   <div className="provider-switch-list">
-                    {/* Step 1: Provider Router Status */}
-                    <div
-                      className="provider-switch-item"
-                      onClick={handleProxyClick}
-                      style={{ cursor: proxyLoading ? 'not-allowed' : 'pointer' }}
-                    >
-                      <div className="provider-switch-info">
-                        <StatusIndicator status={getStatusIndicatorState()} />
-                        <div className="provider-switch-details">
-                          <div className="provider-switch-name">1. Provider Router</div>
-                          <div className="provider-switch-type">
-                            {running ? `Port ${port} • Uptime ${uptime !== undefined ? formatUptime(uptime) : 'N/A'}` : 'Click to start the proxy server'}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="provider-switch-actions">
-                        <Badge variant={proxyBadge.variant}>
-                          {proxyBadge.text}
-                        </Badge>
-                        <ChevronRight className="icon-sm" style={{ opacity: 0.5 }} />
-                      </div>
-                    </div>
-
-                    {/* Step 2: Extension Status (Browser only) */}
+                    {/* Step 1: Extension Status (Browser only) */}
                     {needsExtension && (
                       <div
                         className="provider-switch-item"
@@ -143,7 +120,7 @@ export function HomePage() {
                         <div className="provider-switch-info">
                           <StatusIndicator status={extensionDetected ? 'running' : 'stopped'} />
                           <div className="provider-switch-details">
-                            <div className="provider-switch-name">2. Chrome Extension</div>
+                            <div className="provider-switch-name">1. Chrome Extension</div>
                             <div className="provider-switch-type">
                               {extensionDetected ? 'Ready for authentication' : 'Click to install extension'}
                             </div>
@@ -158,7 +135,7 @@ export function HomePage() {
                       </div>
                     )}
 
-                    {/* Step 3: Credentials Status */}
+                    {/* Step 2: Qwen Credentials */}
                     <div
                       className="provider-switch-item"
                       onClick={handleQwenLogin}
@@ -167,7 +144,7 @@ export function HomePage() {
                       <div className="provider-switch-info">
                         <StatusIndicator status={credentialsValid ? 'running' : 'stopped'} />
                         <div className="provider-switch-details">
-                          <div className="provider-switch-name">{needsExtension ? '3' : '2'}. Qwen Credentials</div>
+                          <div className="provider-switch-name">{needsExtension ? '2' : '1'}. Qwen Credentials</div>
                           <div className="provider-switch-type">
                             {credentialsValid ? `Expires ${formatExpiryDate(expiresAt ?? null)}` : 'Click to login to Qwen'}
                           </div>
@@ -176,6 +153,29 @@ export function HomePage() {
                       <div className="provider-switch-actions">
                         <Badge variant={credentialsValid ? 'default' : 'destructive'}>
                           {credentialsValid ? 'Valid' : 'Invalid'}
+                        </Badge>
+                        <ChevronRight className="icon-sm" style={{ opacity: 0.5 }} />
+                      </div>
+                    </div>
+
+                    {/* Step 3: Provider Router Status */}
+                    <div
+                      className="provider-switch-item"
+                      onClick={handleProxyClick}
+                      style={{ cursor: proxyLoading ? 'not-allowed' : 'pointer' }}
+                    >
+                      <div className="provider-switch-info">
+                        <StatusIndicator status={getStatusIndicatorState()} />
+                        <div className="provider-switch-details">
+                          <div className="provider-switch-name">{needsExtension ? '3' : '2'}. Provider Router</div>
+                          <div className="provider-switch-type">
+                            {running ? `Port ${port} • Uptime ${uptime !== undefined ? formatUptime(uptime) : 'N/A'}` : 'Click to start the proxy server'}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="provider-switch-actions">
+                        <Badge variant={proxyBadge.variant}>
+                          {proxyBadge.text}
                         </Badge>
                         <ChevronRight className="icon-sm" style={{ opacity: 0.5 }} />
                       </div>
