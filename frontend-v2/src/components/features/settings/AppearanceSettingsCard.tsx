@@ -61,7 +61,7 @@ export function AppearanceSettingsCard() {
           <div className="vspace-tight">
             <div className="text-setting-label">Status Bar Messages</div>
             <div className="text-setting-description">
-              Show lifecycle messages in the status bar
+              Show all status information in the status bar
             </div>
           </div>
           <ToggleGroup

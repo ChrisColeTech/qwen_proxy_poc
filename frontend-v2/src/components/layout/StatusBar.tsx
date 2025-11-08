@@ -34,35 +34,39 @@ export function StatusBar() {
   return (
     <div className="statusbar">
       <div className="statusbar-left">
-        <EnvironmentBadge />
-        <div className="statusbar-separator" />
-        <StatusBadge status={apiServerStatus}>API Server</StatusBadge>
-        <div className="statusbar-separator" />
-        <StatusBadge status={credentialStatus} />
-        {activeProvider && (
+        {showStatusMessages && (
           <>
+            <EnvironmentBadge />
             <div className="statusbar-separator" />
-            <Badge variant="secondary" className="flex-shrink-0 min-w-0" style={{
-              height: 'clamp(0.875rem, 2vw, 1rem)',
-              paddingLeft: 'clamp(0.25rem, 0.5vw, 0.375rem)',
-              paddingRight: 'clamp(0.25rem, 0.5vw, 0.375rem)',
-              fontSize: 'inherit'
-            }}>
-              <span className="whitespace-nowrap">{activeProvider}</span>
-            </Badge>
-          </>
-        )}
-        {activeModel && (
-          <>
+            <StatusBadge status={apiServerStatus}>API Server</StatusBadge>
             <div className="statusbar-separator" />
-            <Badge variant="secondary" className="flex-shrink-0 min-w-0" style={{
-              height: 'clamp(0.875rem, 2vw, 1rem)',
-              paddingLeft: 'clamp(0.25rem, 0.5vw, 0.375rem)',
-              paddingRight: 'clamp(0.25rem, 0.5vw, 0.375rem)',
-              fontSize: 'inherit'
-            }}>
-              <span className="whitespace-nowrap">{activeModel}</span>
-            </Badge>
+            <StatusBadge status={credentialStatus} />
+            {activeProvider && (
+              <>
+                <div className="statusbar-separator" />
+                <Badge variant="secondary" className="flex-shrink-0 min-w-0" style={{
+                  height: 'clamp(0.875rem, 2vw, 1rem)',
+                  paddingLeft: 'clamp(0.25rem, 0.5vw, 0.375rem)',
+                  paddingRight: 'clamp(0.25rem, 0.5vw, 0.375rem)',
+                  fontSize: 'inherit'
+                }}>
+                  <span className="whitespace-nowrap">{activeProvider}</span>
+                </Badge>
+              </>
+            )}
+            {activeModel && (
+              <>
+                <div className="statusbar-separator" />
+                <Badge variant="secondary" className="flex-shrink-0 min-w-0" style={{
+                  height: 'clamp(0.875rem, 2vw, 1rem)',
+                  paddingLeft: 'clamp(0.25rem, 0.5vw, 0.375rem)',
+                  paddingRight: 'clamp(0.25rem, 0.5vw, 0.375rem)',
+                  fontSize: 'inherit'
+                }}>
+                  <span className="whitespace-nowrap">{activeModel}</span>
+                </Badge>
+              </>
+            )}
           </>
         )}
       </div>
