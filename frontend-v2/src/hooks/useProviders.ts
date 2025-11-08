@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { providersService } from '@/services/providers.service';
 import { websocketService } from '@/services/websocket.service';
 import type { Provider } from '@/types/providers.types';
@@ -22,12 +22,18 @@ export function useProviders() {
     }
   };
 
+  const handleProvidersUpdate = useCallback(() => {
+    fetchProviders();
+  }, []);
+
   useEffect(() => {
     fetchProviders();
+
+    // Listen for provider updates via WebSocket
     websocketService.connect('http://localhost:3002', {
-      onProvidersUpdated: () => fetchProviders(),
+      onProvidersUpdated: handleProvidersUpdate,
     });
-  }, []);
+  }, [handleProvidersUpdate]);
 
   const toggleEnabled = async (provider: Provider) => {
     const action = provider.enabled ? 'disable' : 'enable';

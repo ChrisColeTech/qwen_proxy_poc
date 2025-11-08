@@ -24,7 +24,8 @@ export function ProvidersPage() {
 
   useEffect(() => {
     fetchSettings();
-  }, [fetchSettings]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleDeleteClick = (provider: Provider) => {
     setProviderToDelete(provider);
