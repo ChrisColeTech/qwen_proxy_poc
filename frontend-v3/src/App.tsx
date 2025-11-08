@@ -3,12 +3,10 @@ import { useDarkMode } from '@/hooks/useDarkMode';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { HomePage } from '@/pages/HomePage';
-import { QuickGuidePage } from '@/pages/QuickGuidePage';
 import { ProvidersPage } from '@/pages/ProvidersPage';
 import { ModelsPage } from '@/pages/ModelsPage';
 import { SettingsPage } from '@/pages/SettingsPage';
 import { ChatPage } from '@/pages/ChatPage';
-import { APIGuidePage } from '@/pages/APIGuidePage';
 import { BrowserGuidePage } from '@/pages/BrowserGuidePage';
 import { DesktopGuidePage } from '@/pages/DesktopGuidePage';
 import { useUIStore } from '@/stores/useUIStore';
@@ -28,8 +26,6 @@ function App() {
     switch (currentRoute) {
       case '/':
         return <HomePage />;
-      case '/guide':
-        return <QuickGuidePage />;
       case '/providers':
         return <ProvidersPage />;
       case '/models':
@@ -38,8 +34,6 @@ function App() {
         return <ChatPage />;
       case '/settings':
         return <SettingsPage />;
-      case '/api-guide':
-        return <APIGuidePage />;
       case '/browser-guide':
         return <BrowserGuidePage />;
       case '/desktop-guide':

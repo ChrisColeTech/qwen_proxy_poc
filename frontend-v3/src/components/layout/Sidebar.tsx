@@ -1,4 +1,4 @@
-import { Home, HelpCircle, Code, Network, Database, MessageSquare, Settings } from 'lucide-react';
+import { Home, HelpCircle, Network, Database, MessageSquare, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUIStore } from '@/stores/useUIStore';
 import { useProxyStore } from '@/stores/useProxyStore';
@@ -14,7 +14,6 @@ interface NavItem {
 
 const mainNavItems: NavItem[] = [
   { id: 'home', icon: Home, label: 'Home', route: '/', requiresServer: true },
-  { id: 'guide-api', icon: Code, label: 'API Guide', route: '/api-guide', requiresServer: true },
   { id: 'providers', icon: Network, label: 'Providers', route: '/providers', requiresServer: true },
   { id: 'models', icon: Database, label: 'Models', route: '/models', requiresServer: true },
   { id: 'chat', icon: MessageSquare, label: 'Chat', route: '/chat', requiresServer: true },

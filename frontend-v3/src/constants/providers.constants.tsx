@@ -24,7 +24,7 @@ export const PROVIDERS_TABS = {
 
 export const PROVIDERS_TITLE = 'Providers';
 export const PROVIDERS_ICON = Blocks;
-export const SETTINGS_ICON = Settings;
+export const PROVIDER_SETTINGS_ICON = Settings;
 export const ACTIVE_ICON = Zap;
 export const ADD_ICON = Plus;
 
