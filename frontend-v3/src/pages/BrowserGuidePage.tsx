@@ -1,6 +1,7 @@
 import { TabCard } from '@/components/ui/tab-card';
 import { useBrowserGuidePage } from '@/hooks/useBrowserGuidePage';
 import { useApiGuidePage } from '@/hooks/useApiGuidePage';
+import { useProxyStore } from '@/stores/useProxyStore';
 import {
   buildBrowserGuideContent,
   BROWSER_GUIDE_TABS,
@@ -15,6 +16,9 @@ import { buildApiGuideContent } from '@/constants/apiGuide.constants';
 export function BrowserGuidePage() {
   useBrowserGuidePage();
   const { baseUrl, copiedUrl, handleCopyUrl } = useApiGuidePage();
+  const wsProxyStatus = useProxyStore((state) => state.wsProxyStatus);
+
+  const proxyRunning = wsProxyStatus?.providerRouter?.running || false;
 
   const tabs = [
     {
@@ -23,7 +27,8 @@ export function BrowserGuidePage() {
     },
     {
       ...BROWSER_GUIDE_TABS.API_EXAMPLES,
-      content: buildApiGuideContent({ baseUrl, copiedUrl, handleCopyUrl })
+      content: buildApiGuideContent({ baseUrl, copiedUrl, handleCopyUrl }),
+      hidden: !proxyRunning
     }
   ];
 

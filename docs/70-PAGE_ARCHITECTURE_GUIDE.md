@@ -33,9 +33,11 @@ src/
 ```tsx
 import { TabCard } from '@/components/ui/tab-card';
 import { useModelsPage } from '@/hooks/useModelsPage';
+import { useProxyStore } from '@/stores/useProxyStore';
 import {
   buildModelActions,
   buildAllModelsContent,
+  buildAdvancedContent,
   MODELS_TABS,
   MODELS_TITLE,
   MODELS_ICON
@@ -43,13 +45,20 @@ import {
 
 export function ModelsPage() {
   const { handleModelClick } = useModelsPage();
+  const wsProxyStatus = useProxyStore((state) => state.wsProxyStatus);
 
+  const proxyRunning = wsProxyStatus?.providerRouter?.running || false;
   const modelActions = buildModelActions({ handleModelClick });
 
   const tabs = [
     {
       ...MODELS_TABS.ALL,
       content: buildAllModelsContent(modelActions)
+    },
+    {
+      ...MODELS_TABS.ADVANCED,
+      content: buildAdvancedContent(),
+      hidden: !proxyRunning  // Hide tab when proxy is not running
     }
   ];
 
@@ -204,6 +213,73 @@ Displays a list of clickable action items with icons, badges, and descriptions.
 }
 ```
 
+## Conditional Visibility
+
+### Hiding Tabs Based on State
+
+Use the `hidden` property to conditionally show/hide tabs based on application state.
+
+**Example: Hide API Examples tab when proxy is not running**
+```tsx
+import { useProxyStore } from '@/stores/useProxyStore';
+
+export function BrowserGuidePage() {
+  const wsProxyStatus = useProxyStore((state) => state.wsProxyStatus);
+  const { baseUrl, copiedUrl, handleCopyUrl } = useApiGuidePage();
+
+  const proxyRunning = wsProxyStatus?.providerRouter?.running || false;
+
+  const tabs = [
+    {
+      ...BROWSER_GUIDE_TABS.GUIDE,
+      content: buildBrowserGuideContent()
+    },
+    {
+      ...BROWSER_GUIDE_TABS.API_EXAMPLES,
+      content: buildApiGuideContent({ baseUrl, copiedUrl, handleCopyUrl }),
+      hidden: !proxyRunning  // Only show when proxy is running
+    }
+  ];
+
+  return <TabCard title={BROWSER_GUIDE_TITLE} icon={BROWSER_GUIDE_ICON} tabs={tabs} />;
+}
+```
+
+**Understanding Connection vs. Running States:**
+- **`connected`** - API server is reachable (WebSocket connected)
+  - Available at: `useProxyStore((state) => state.connected)`
+  - Use when: You need to know if the backend API is available
+- **`proxyRunning`** - Proxy server is actively running
+  - Derived from: `wsProxyStatus?.providerRouter?.running || false`
+  - Use when: You need to know if the proxy can handle requests
+
+**Common Use Cases:**
+- `hidden: !connected` - Show only when API server is connected
+- `hidden: !proxyRunning` - Show only when proxy is running (most common for API-related tabs)
+- `hidden: !credentialsValid` - Show only when credentials are available
+- `hidden: !isElectron()` - Show only in desktop app
+- `hidden: isElectron()` - Show only in browser
+
+### Hiding Action Items
+
+Similarly, use the `hidden` property on ActionItem objects:
+
+```tsx
+export const buildProviderActions = (params: {
+  connected: boolean;
+  handleProviderClick: (providerId: string) => void;
+}): ActionItem[] => {
+  return [
+    {
+      title: 'Add Provider',
+      description: 'Configure a new AI provider',
+      onClick: () => params.handleProviderClick('new'),
+      hidden: !params.connected  // Only show when connected
+    }
+  ];
+};
+```
+
 ## Best Practices
 
 ### DO:
@@ -215,15 +291,18 @@ Displays a list of clickable action items with icons, badges, and descriptions.
 ✅ Use the spread operator with tab constants
 ✅ Use ActionList for clickable lists
 ✅ Use TabCard for all tabbed pages
+✅ Use `hidden` property for conditional visibility
+✅ Read state from stores in page components for conditional rendering
 
 ### DON'T:
 ❌ Write inline JSX arrays in page components
 ❌ Write business logic in page components
 ❌ Hardcode strings in page components
 ❌ Define event handlers inline
-❌ Import stores directly in page components (use hooks)
+❌ Import stores directly in page components for business logic (use hooks)
 ❌ Use old Card component (use TabCard instead)
 ❌ Create custom tab layouts (use TabCard)
+❌ Use conditional array spreading (`...(condition ? [tab] : [])`) - use `hidden` instead
 
 ## Migration Checklist
 
