@@ -1,11 +1,11 @@
 import { toast } from '@/hooks/useToast';
 
 interface AlertStore {
-  showAlert: (message: string, type: 'success' | 'error') => void;
+  showAlert: (message: string, type: 'success' | 'error' | 'info' | 'warning') => void;
 }
 
 export const useAlertStore = {
-  showAlert: (message: string, type: 'success' | 'error') => {
+  showAlert: (message: string, type: 'success' | 'error' | 'info' | 'warning') => {
     const { dismiss } = toast({
       description: message,
       variant: type === 'error' ? 'destructive' : 'default',

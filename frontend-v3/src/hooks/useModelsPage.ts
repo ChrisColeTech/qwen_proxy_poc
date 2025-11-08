@@ -1,12 +1,15 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useAlertStore } from '@/stores/useAlertStore';
 import { modelsService } from '@/services/models.service';
+import { providersService } from '@/services/providers.service';
 import type { Model, CapabilityFilter } from '@/types/models.types';
+import type { Provider } from '@/types/providers.types';
 import { useSettingsStore } from '@/stores/useSettingsStore';
 
 export function useModelsPage() {
   const [availableModels, setAvailableModels] = useState<Model[]>([]); // From Provider Router
   const [allModels, setAllModels] = useState<Model[]>([]); // From API Server
+  const [providersData, setProvidersData] = useState<Provider[]>([]); // Provider list
   const [loadingAvailable, setLoadingAvailable] = useState(false);
   const [loadingAll, setLoadingAll] = useState(false);
   const [capabilityFilter, setCapabilityFilter] = useState<CapabilityFilter>('all');
@@ -14,6 +17,7 @@ export function useModelsPage() {
   const settings = useSettingsStore((state) => state.settings);
   const providerRouterUrl = useSettingsStore((state) => state.providerRouterUrl);
   const activeModel = (settings.active_model as string) || '';
+  const activeProvider = (settings.active_provider as string) || '';
 
   // Fetch available models from Provider Router
   const fetchAvailableModels = async () => {
@@ -100,9 +104,54 @@ export function useModelsPage() {
     setProviderFilter('all');
   };
 
+  const handleProviderSwitch = async (providerId: string) => {
+    try {
+      // Settings store will show success toast
+      await useSettingsStore.getState().updateSetting('active_provider', providerId);
+      // Clear old models before fetching new ones
+      setAvailableModels([]);
+      // Reload available models for the new provider
+      await fetchAvailableModels();
+
+      // After switching provider, check if we need to auto-select a model
+      if (providerRouterUrl) {
+        try {
+          const models = await modelsService.getAvailableModels(providerRouterUrl);
+          const modelIds = models.map(m => m.id);
+
+          // If current active model is not in the new provider's models, select the first one
+          if (!activeModel || !modelIds.includes(activeModel)) {
+            if (models.length > 0) {
+              const firstModel = models[0].id;
+              await useSettingsStore.getState().updateSetting('active_model', firstModel);
+              useAlertStore.showAlert(`Auto-selected model: ${firstModel}`, 'info');
+            }
+          }
+        } catch (error) {
+          console.error('Failed to auto-select model after provider switch:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to switch provider:', error);
+      // Keep models cleared on error
+      setAvailableModels([]);
+      useAlertStore.showAlert('Failed to switch provider', 'error');
+    }
+  };
+
+  // Fetch providers list
+  const fetchProviders = async () => {
+    try {
+      const data = await providersService.getProviders();
+      setProvidersData(data);
+    } catch (error) {
+      console.error('Failed to fetch providers:', error);
+    }
+  };
+
   useEffect(() => {
     const loadModels = async () => {
-      await Promise.all([fetchAvailableModels(), fetchAllModels()]);
+      await Promise.all([fetchAvailableModels(), fetchAllModels(), fetchProviders()]);
 
       // If no active model is set and we have available models, auto-select the first one
       if (!activeModel && providerRouterUrl) {
@@ -127,6 +176,8 @@ export function useModelsPage() {
     allModels,
     filteredAllModels,
     activeModel,
+    activeProvider,
+    providersData,
     loadingAvailable,
     loadingAll,
     providers,
@@ -134,6 +185,7 @@ export function useModelsPage() {
     providerFilter,
     handleModelSelect,
     handleModelClick,
+    handleProviderSwitch,
     handleClearFilters,
     setCapabilityFilter,
     setProviderFilter,

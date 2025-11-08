@@ -28,7 +28,7 @@ export function useProvidersPage() {
 
   const handleProviderSwitch = async (providerId: string) => {
     try {
-      // Switch the provider
+      // Switch the provider (settings store will show success toast)
       await providersService.switchProvider(providerId);
 
       // After switching, check if current active_model is still available
@@ -41,19 +41,21 @@ export function useProvidersPage() {
           if (activeModel && !modelIds.includes(activeModel)) {
             if (availableModels.length > 0) {
               const firstModel = availableModels[0].id;
+              // Settings store will show the "Switched to model" toast
               await useSettingsStore.getState().updateSetting('active_model', firstModel);
-              useAlertStore.showAlert(`Auto-selected model: ${firstModel}`, 'info');
             } else {
               useAlertStore.showAlert('No models available from new provider', 'warning');
             }
           }
         } catch (error) {
           console.error('Failed to check/update model after provider switch:', error);
-          // Don't show error toast - provider switch was successful
+          // Provider switch was successful, but couldn't fetch models from new provider
+          useAlertStore.showAlert('Provider switched, but failed to fetch available models', 'warning');
         }
       }
     } catch (error) {
       console.error('Failed to switch provider:', error);
+      // Settings store already handles error display, don't show duplicate toast
       useAlertStore.showAlert('Failed to switch provider', 'error');
     }
   };

@@ -16,6 +16,8 @@ export function ModelsPage() {
     availableModels,
     filteredAllModels,
     activeModel,
+    activeProvider,
+    providersData,
     loadingAvailable,
     loadingAll,
     providers,
@@ -23,6 +25,7 @@ export function ModelsPage() {
     providerFilter,
     handleModelSelect,
     handleModelClick,
+    handleProviderSwitch,
     setCapabilityFilter,
     setProviderFilter
   } = useModelsPage();
@@ -43,7 +46,12 @@ export function ModelsPage() {
   const tabs = [
     {
       ...MODELS_TABS.SELECT,
-      content: buildModelSelectContent(selectActions)
+      content: buildModelSelectContent({
+        selectActions,
+        activeProvider,
+        providers: providersData,
+        onProviderChange: handleProviderSwitch
+      })
     },
     {
       ...MODELS_TABS.ALL,
