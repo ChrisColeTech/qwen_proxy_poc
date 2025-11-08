@@ -65,16 +65,36 @@ export const buildProviderActions = (params: {
 }): ActionItem[] => {
   const { providers, handleProviderClick } = params;
 
-  return providers.map((provider) => ({
-    icon: <StatusIndicator status={provider.enabled ? 'running' : 'stopped'} />,
-    title: provider.name,
-    description: provider.type,
-    actions: createProviderBadge(
-      provider.enabled ? 'default' : 'secondary',
-      provider.enabled ? 'Enabled' : 'Disabled'
-    ),
-    onClick: () => handleProviderClick(provider.id)
-  }));
+  return providers.map((provider) => {
+    // Determine status based on runtime_status if available, otherwise fall back to enabled state
+    let status: 'running' | 'stopped' | 'warning' | 'inactive' = 'stopped';
+    let badgeText = 'Disabled';
+    let badgeVariant: 'default' | 'destructive' | 'secondary' = 'secondary';
+
+    if (provider.enabled) {
+      if (provider.runtime_status === 'loaded') {
+        status = 'running';
+        badgeText = 'Running';
+        badgeVariant = 'default';
+      } else if (provider.runtime_status === 'error') {
+        status = 'warning';
+        badgeText = 'Error';
+        badgeVariant = 'destructive';
+      } else {
+        status = 'inactive';
+        badgeText = 'Enabled';
+        badgeVariant = 'default';
+      }
+    }
+
+    return {
+      icon: <StatusIndicator status={status} />,
+      title: provider.name,
+      description: provider.type,
+      actions: createProviderBadge(badgeVariant, badgeText),
+      onClick: () => handleProviderClick(provider.id)
+    };
+  });
 };
 
 export const buildProviderSwitchContent = (switchActions: ActionItem[]) => (

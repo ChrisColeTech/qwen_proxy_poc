@@ -5,6 +5,7 @@ interface UIStore {
   uiState: UIState;
   statusMessage: string;
   currentRoute: string;
+  activeTab: Record<string, string>; // page route -> active tab
   setTheme: (theme: 'light' | 'dark') => void;
   toggleTheme: () => void;
   setSidebarPosition: (position: 'left' | 'right') => void;
@@ -13,6 +14,7 @@ interface UIStore {
   toggleShowStatusMessages: () => void;
   setStatusMessage: (message: string) => void;
   setCurrentRoute: (route: string) => void;
+  setActiveTab: (page: string, tab: string) => void;
   loadSettings: () => Promise<void>;
 }
 
@@ -41,6 +43,15 @@ async function saveCurrentRoute(route: string) {
   }
 }
 
+async function saveActiveTab(activeTab: Record<string, string>) {
+  const electron = isElectron();
+  if (electron && window.electronAPI) {
+    await window.electronAPI.settings.set('activeTab', activeTab);
+  } else {
+    localStorage.setItem('qwen-proxy-active-tab', JSON.stringify(activeTab));
+  }
+}
+
 async function loadCurrentRoute(): Promise<string> {
   const electron = isElectron();
   if (electron && window.electronAPI) {
@@ -48,6 +59,21 @@ async function loadCurrentRoute(): Promise<string> {
     return route || '/';
   } else {
     return localStorage.getItem('qwen-proxy-current-route') || '/';
+  }
+}
+
+async function loadActiveTab(): Promise<Record<string, string>> {
+  const electron = isElectron();
+  if (electron && window.electronAPI) {
+    const tabs = await window.electronAPI.settings.get('activeTab') as Record<string, string> | null;
+    return tabs || {};
+  } else {
+    try {
+      const stored = localStorage.getItem('qwen-proxy-active-tab');
+      return stored ? JSON.parse(stored) : {};
+    } catch (e) {
+      return {};
+    }
   }
 }
 
@@ -89,6 +115,7 @@ export const useUIStore = create<UIStore>((set, get) => ({
   },
   statusMessage: 'Ready',
   currentRoute: '/',
+  activeTab: {},
   setTheme: async (theme) => {
     const currentState = get().uiState;
     const newState: UIState = { ...currentState, theme };
@@ -173,12 +200,23 @@ export const useUIStore = create<UIStore>((set, get) => ({
       console.error('[UIStore] Failed to save current route:', error);
     }
   },
+  setActiveTab: async (page, tab) => {
+    const currentActiveTab = get().activeTab;
+    const newActiveTab = { ...currentActiveTab, [page]: tab };
+    set({ activeTab: newActiveTab });
+    try {
+      await saveActiveTab(newActiveTab);
+    } catch (error) {
+      console.error('[UIStore] Failed to save active tab:', error);
+    }
+  },
   loadSettings: async () => {
     try {
       const uiState = await loadUIState();
       const currentRoute = await loadCurrentRoute();
-      console.log('[UIStore] Settings loaded successfully:', uiState, 'route:', currentRoute);
-      set({ uiState, currentRoute });
+      const activeTab = await loadActiveTab();
+      console.log('[UIStore] Settings loaded successfully:', uiState, 'route:', currentRoute, 'tabs:', activeTab);
+      set({ uiState, currentRoute, activeTab });
     } catch (error) {
       console.error('[UIStore] Failed to load settings:', error);
     }

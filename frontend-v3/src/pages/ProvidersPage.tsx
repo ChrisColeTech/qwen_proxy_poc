@@ -1,5 +1,6 @@
 import { TabCard } from '@/components/ui/tab-card';
 import { useProvidersPage } from '@/hooks/useProvidersPage';
+import { useUIStore } from '@/stores/useUIStore';
 import {
   buildProviderActions,
   buildProviderSwitchActions,
@@ -15,14 +16,18 @@ export function ProvidersPage() {
   const {
     providers,
     activeProvider,
-    loading,
-    handleProviderSwitch,
-    handleProviderClick
+    handleProviderSwitch
   } = useProvidersPage();
+  const setCurrentRoute = useUIStore((state) => state.setCurrentRoute);
+
+  const handleProviderClickNavigate = (providerId: string) => {
+    // Navigate to provider details page
+    setCurrentRoute(`/providers/${providerId}`);
+  };
 
   const handleAddProvider = () => {
-    console.log('Add provider clicked');
-    // TODO: Open add provider dialog
+    // Navigate to create provider page
+    setCurrentRoute('/providers/new');
   };
 
   const switchActions = buildProviderSwitchActions({
@@ -33,7 +38,7 @@ export function ProvidersPage() {
 
   const providerActions = buildProviderActions({
     providers,
-    handleProviderClick
+    handleProviderClick: handleProviderClickNavigate
   });
 
   const tabs = [
@@ -61,6 +66,7 @@ export function ProvidersPage() {
         icon={PROVIDERS_ICON}
         tabs={tabs}
         defaultTab={PROVIDERS_TABS.SWITCH.value}
+        pageKey="/providers"
       />
     </div>
   );

@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ContentCard } from '@/components/ui/content-card';
+import { useUIStore } from '@/stores/useUIStore';
 import type { LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
@@ -20,10 +21,18 @@ interface TabCardProps {
   icon: LucideIcon;
   tabs: Tab[];
   defaultTab?: string;
+  pageKey?: string; // Key to identify this page for tab persistence
 }
 
-export function TabCard({ title, icon: Icon, tabs, defaultTab }: TabCardProps) {
+export function TabCard({ title, icon: Icon, tabs, defaultTab, pageKey }: TabCardProps) {
   const visibleTabs = tabs.filter(tab => !tab.hidden);
+  const activeTab = useUIStore((state) => state.activeTab);
+  const setActiveTab = useUIStore((state) => state.setActiveTab);
+  const currentRoute = useUIStore((state) => state.currentRoute);
+
+  // Use stored tab if available, otherwise use defaultTab or first visible tab
+  const key = pageKey || currentRoute;
+  const initialTab = activeTab[key] || defaultTab || visibleTabs[0]?.value;
 
   // Calculate grid columns based on number of visible tabs
   const getGridCols = () => {
@@ -32,6 +41,10 @@ export function TabCard({ title, icon: Icon, tabs, defaultTab }: TabCardProps) {
     if (count === 2) return 'grid-cols-2';
     if (count === 3) return 'grid-cols-3';
     return 'grid-cols-4';
+  };
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(key, value);
   };
 
   return (
@@ -43,7 +56,7 @@ export function TabCard({ title, icon: Icon, tabs, defaultTab }: TabCardProps) {
         </CardTitle>
       </CardHeader>
       <CardContent className="page-card-content">
-        <Tabs defaultValue={defaultTab || visibleTabs[0]?.value} className="tab-container">
+        <Tabs value={initialTab} onValueChange={handleTabChange} className="tab-container">
           <TabsList className={`grid w-full ${getGridCols()}`}>
             {visibleTabs.map((tab) => (
               <TabsTrigger key={tab.value} value={tab.value}>

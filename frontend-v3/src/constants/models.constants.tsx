@@ -1,7 +1,6 @@
 import { Filter, Database, Star, Clock, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { StatusIndicator } from '@/components/ui/status-indicator';
-import { ActionList } from '@/components/ui/action-list';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { ActionItem } from './home.constants';
 import type { Model, ParsedModel, CapabilityFilter } from '@/types/models.types';

@@ -96,7 +96,7 @@ export function useProviders() {
   const createProvider = async (data: {
     id: string;
     name: string;
-    type: string;
+    type: 'lm-studio' | 'qwen-proxy' | 'qwen-direct';
     description?: string;
     config?: Record<string, unknown>;
   }) => {

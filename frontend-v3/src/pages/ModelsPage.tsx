@@ -19,8 +19,6 @@ export function ModelsPage() {
     activeModel,
     activeProvider,
     providersData,
-    loadingAvailable,
-    loadingAll,
     providers,
     capabilityFilter,
     providerFilter,

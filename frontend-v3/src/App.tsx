@@ -5,6 +5,7 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { Toaster } from '@/components/ui/toaster';
 import { HomePage } from '@/pages/HomePage';
 import { ProvidersPage } from '@/pages/ProvidersPage';
+import { ProviderFormPage } from '@/pages/ProviderFormPage';
 import { ModelsPage } from '@/pages/ModelsPage';
 import { SettingsPage } from '@/pages/SettingsPage';
 import { ChatPage } from '@/pages/ChatPage';
@@ -27,6 +28,18 @@ function App() {
   }, [loadSettings, fetchSettings]);
 
   const renderPage = () => {
+    // Handle provider routes with IDs
+    if (currentRoute.startsWith('/providers/')) {
+      const path = currentRoute.substring('/providers/'.length);
+      if (path === 'new') {
+        return <ProviderFormPage />;
+      } else if (path.endsWith('/edit')) {
+        return <ProviderFormPage />;
+      } else {
+        return <ProviderFormPage readOnly={true} />;
+      }
+    }
+
     switch (currentRoute) {
       case '/':
         return <HomePage />;
