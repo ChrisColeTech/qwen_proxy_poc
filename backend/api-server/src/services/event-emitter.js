@@ -46,21 +46,15 @@ class EventEmitterService extends EventEmitter {
       timestamp: new Date().toISOString()
     }
 
-    console.log(`[Event Emitter] Broadcasting event: ${eventName}`)
+    console.log(`[Event Emitter] Broadcasting event: ${eventName} (includeExtensions: ${includeExtensions})`)
 
-    // Get extension connections if available
-    const extensionConnections = this.extensionConnectionsGetter ? this.extensionConnectionsGetter() : new Set()
-
-    // Emit to all clients, optionally excluding extensions
-    if (includeExtensions || extensionConnections.size === 0) {
+    // Use Socket.io rooms to exclude extensions - much cleaner and race-condition free
+    if (includeExtensions) {
+      // Emit to all clients including extensions
       this.socketIO.emit(eventName, eventData)
     } else {
-      // Emit only to non-extension clients
-      this.socketIO.sockets.sockets.forEach((socket) => {
-        if (!extensionConnections.has(socket.id)) {
-          socket.emit(eventName, eventData)
-        }
-      })
+      // Emit to all clients EXCEPT those in the 'extensions' room
+      this.socketIO.except('extensions').emit(eventName, eventData)
     }
   }
 

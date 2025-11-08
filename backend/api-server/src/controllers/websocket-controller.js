@@ -175,6 +175,10 @@ export function initializeWebSocket(io) {
       logger.info(`[WebSocket] Extension identified: ${socket.id}`)
       extensionConnections.add(socket.id)
 
+      // Join the extension room for isolation
+      socket.join('extensions')
+      logger.info(`[WebSocket] Extension ${socket.id} joined 'extensions' room`)
+
       // Broadcast updated status to all frontend clients
       broadcastStatus()
     })

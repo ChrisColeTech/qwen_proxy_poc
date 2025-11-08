@@ -13,6 +13,15 @@ class LifecycleController {
   constructor() {
     this.providerRouterMonitor = null
     this.qwenProxyMonitor = null
+    this.statusBroadcaster = null
+  }
+
+  /**
+   * Set callback to broadcast full proxy status
+   * @param {Function} broadcaster - Function that broadcasts complete proxy status
+   */
+  setStatusBroadcaster(broadcaster) {
+    this.statusBroadcaster = broadcaster
   }
 
   /**
@@ -154,7 +163,13 @@ class LifecycleController {
     }
 
     logger.info(`[Lifecycle] Emitting ${processName}:${state}`)
-    eventEmitter.emitToClients('lifecycle:update', statusData)
+    eventEmitter.emitToClients('lifecycle:update', statusData, false) // Explicitly exclude extensions
+
+    // Also broadcast full proxy status so frontend gets complete state update
+    if (this.statusBroadcaster) {
+      logger.info(`[Lifecycle] Broadcasting full proxy status after ${processName}:${state}`)
+      this.statusBroadcaster()
+    }
   }
 
   /**

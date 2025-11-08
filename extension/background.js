@@ -1,5 +1,5 @@
 // Background service worker for Qwen Credential Extractor
-console.log('[Qwen Extension] Background service worker loaded');
+console.log('[Qwen Extension] Background service worker loaded at', new Date().toISOString());
 
 // Import Socket.io client library
 importScripts('socket.io.min.js');
@@ -11,10 +11,25 @@ let socket = null;
 const BACKEND_URL = 'http://localhost:3002';
 
 /**
+ * Disconnect and cleanup existing socket
+ */
+function disconnectSocket() {
+  if (socket) {
+    console.log('[Background] Cleaning up existing socket connection');
+    socket.removeAllListeners(); // Remove all event listeners
+    socket.disconnect(); // Disconnect
+    socket = null;
+  }
+}
+
+/**
  * Connect to backend Socket.io server
  */
 function connectToBackend() {
   try {
+    // Clean up any existing connection first (important for service worker restarts)
+    disconnectSocket();
+
     console.log('[Background] Connecting to backend:', BACKEND_URL);
 
     socket = io(BACKEND_URL, {
@@ -23,18 +38,25 @@ function connectToBackend() {
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
       reconnectionAttempts: Infinity,
+      timeout: 10000, // Connection timeout
     });
 
     socket.on('connect', () => {
       console.log('[Background] Connected to backend:', socket.id);
 
-      // Identify as extension client
+      // Always identify as extension client on every connection (initial + reconnections)
       socket.emit('extension:connect');
       console.log('[Background] Sent extension:connect event');
     });
 
     socket.on('disconnect', (reason) => {
       console.log('[Background] Disconnected from backend:', reason);
+
+      // If disconnected by server, reconnect
+      if (reason === 'io server disconnect') {
+        console.log('[Background] Server disconnected us, reconnecting...');
+        socket.connect();
+      }
     });
 
     socket.on('connect_error', (error) => {
@@ -43,6 +65,8 @@ function connectToBackend() {
 
     socket.on('reconnect', (attemptNumber) => {
       console.log('[Background] Reconnected after', attemptNumber, 'attempts');
+      // Re-identify on reconnection (in case server restarted and lost state)
+      socket.emit('extension:connect');
     });
 
     socket.on('reconnect_attempt', (attemptNumber) => {
@@ -54,7 +78,7 @@ function connectToBackend() {
     });
 
     socket.on('reconnect_failed', () => {
-      console.error('[Background] Reconnection failed');
+      console.error('[Background] Reconnection failed - all attempts exhausted');
     });
 
   } catch (error) {
@@ -64,6 +88,17 @@ function connectToBackend() {
 
 // Connect to backend when extension loads
 connectToBackend();
+
+// Handle service worker lifecycle
+// When service worker wakes up from suspension, ensure connection
+self.addEventListener('activate', (event) => {
+  console.log('[Background] Service worker activated');
+  // Ensure we have an active connection
+  if (!socket || !socket.connected) {
+    console.log('[Background] No active connection on activate, reconnecting...');
+    connectToBackend();
+  }
+});
 
 /**
  * Decode JWT token to extract expiration

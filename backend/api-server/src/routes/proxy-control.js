@@ -98,6 +98,13 @@ function getCurrentProxyStatus() {
 // Register the status getter with WebSocket controller
 setProxyStatusGetter(getCurrentProxyStatus)
 
+// Register status broadcaster with lifecycle controller
+// This ensures proxy:status is emitted after every lifecycle state change
+lifecycleController.setStatusBroadcaster(() => {
+  const fullStatus = getCurrentProxyStatus()
+  eventEmitter.emitProxyStatus(fullStatus)
+})
+
 /**
  * POST /api/proxy/start
  * Start the provider-router proxy server
