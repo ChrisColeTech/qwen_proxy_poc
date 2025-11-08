@@ -561,26 +561,7 @@ async function startQwenProxy() {
 
     qwenProxyStartTime = Date.now()
 
-    // Start lifecycle monitoring for qwen proxy
-    lifecycleController.monitorStartup(
-      'qwenProxy',
-      qwenProxyProcess,
-      config.proxy.qwenProxyPort,
-      () => {
-        // Confirmed ready
-        console.log('[Qwen Proxy] Confirmed ready')
-        const fullStatus = getCurrentProxyStatus()
-        eventEmitter.emitProxyStatus(fullStatus)
-      },
-      (error) => {
-        // Startup failed
-        console.error('[Qwen Proxy] Startup failed:', error)
-        qwenProxyProcess = null
-        qwenProxyStartTime = null
-      }
-    )
-
-    // Log stdout from qwen-proxy (in addition to lifecycle controller monitoring)
+    // Log stdout from qwen-proxy
     if (qwenProxyProcess.stdout) {
       qwenProxyProcess.stdout.on('data', (data) => {
         console.log('[Qwen Proxy]', data.toString().trim())
