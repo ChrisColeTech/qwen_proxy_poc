@@ -28,8 +28,8 @@ export function EventLogPage() {
   }, [lastUpdate, wsProxyStatus]);
 
   return (
-    <div className="container max-w-7xl py-8 space-y-6">
-      <Card>
+    <div className="page-container">
+      <Card className="page-card">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Clock className="h-5 w-5" />
@@ -40,7 +40,7 @@ export function EventLogPage() {
           </CardTitle>
           <CardDescription>Real-time WebSocket events and system updates</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="page-card-content">
           {eventLog.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <Activity className="h-12 w-12 mx-auto mb-4 opacity-50" />

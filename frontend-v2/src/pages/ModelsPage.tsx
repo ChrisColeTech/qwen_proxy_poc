@@ -1,49 +1,35 @@
-import { useEffect } from 'react';
-import { useSettingsStore } from '@/stores/useSettingsStore';
-import { useModels } from '@/hooks/useModels';
-import { ModelsStep } from '@/components/features/quick-guide/ModelsStep';
-import { API_BASE_URL } from '@/lib/constants';
+import { TabCard } from '@/components/ui/tab-card';
+import { Database } from 'lucide-react';
 
 export function ModelsPage() {
-  const { fetchSettings, settings, setActiveModel } = useSettingsStore();
-  const {
-    models,
-    loading,
-    error,
-    capabilityFilter,
-    providerFilter,
-    providers,
-    setCapabilityFilter,
-    setProviderFilter,
-    clearFilters,
-    refresh,
-  } = useModels();
-
-  useEffect(() => {
-    fetchSettings();
-  }, [fetchSettings]);
-
-  const handleSelectModel = async (modelId: string) => {
-    await setActiveModel(modelId);
-  };
+  const tabs = [
+    {
+      value: 'select',
+      label: 'Select Model',
+      description: 'The Provider Router exposes an OpenAI-compatible endpoint at http://localhost:3001/v1. Select an active model to use:',
+      contentCardTitle: 'Available Models',
+      contentCardIcon: Database,
+      content: <div className="p-4">Model list content</div>,
+    },
+    {
+      value: 'browse',
+      label: 'Browse Models',
+      description: 'Browse and filter available models:',
+      contentCardTitle: 'Browse Models',
+      contentCardIcon: Database,
+      content: <div className="p-4">Browse models content</div>,
+    },
+    {
+      value: 'curl',
+      label: 'Try It Yourself',
+      description: 'Check which models are available via the API:',
+      content: <div>Curl examples</div>,
+    },
+  ];
 
   return (
     <div className="page-container">
-      <ModelsStep
-        models={models}
-        loading={loading}
-        onRefresh={refresh}
-        providerRouterUrl={API_BASE_URL}
-        activeModel={settings.active_model}
-        onSelectModel={handleSelectModel}
-        capabilityFilter={capabilityFilter}
-        providerFilter={providerFilter}
-        providers={providers}
-        setCapabilityFilter={setCapabilityFilter}
-        setProviderFilter={setProviderFilter}
-        clearFilters={clearFilters}
-        error={error}
-      />
+      <TabCard title="Models" icon={Database} tabs={tabs} defaultTab="select" />
     </div>
   );
 }

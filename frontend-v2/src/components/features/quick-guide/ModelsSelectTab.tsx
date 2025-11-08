@@ -20,14 +20,14 @@ export function ModelsSelectTab({
   onSelectModel
 }: ModelsSelectTabProps) {
   return (
-    <div className="vspace-md">
+    <div className="flex-1 flex flex-col gap-4">
       <p className="step-description">
         The Provider Router exposes an OpenAI-compatible endpoint at{' '}
         <code className="step-inline-code">http://localhost:3001/v1</code>.
         Select an active model to use:
       </p>
 
-      <div className="demo-container">
+      <div className="demo-container flex-1">
         <div className="demo-header">
           <div className="demo-label">
             <Database className="icon-sm-muted" />
@@ -89,6 +89,11 @@ export function ModelsSelectTab({
           <div className="demo-error-state">
             <XCircle className="icon-sm" />
             <span>No models available. Make sure the Provider Router is running.</span>
+          </div>
+        )}
+        {loading && (
+          <div className="models-loading-state">
+            <RefreshCw className="icon-lg models-loading-spinner" />
           </div>
         )}
       </div>

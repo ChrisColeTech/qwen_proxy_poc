@@ -118,38 +118,18 @@ export function ProviderDetailPage({ providerId }: ProviderDetailPageProps) {
 
   return (
     <div className="page-container">
-      <div className="flex items-center justify-between mb-6">
-        <Button onClick={handleBack} variant="ghost" size="sm">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Providers
-        </Button>
-        <div className="flex gap-2">
-          <Button onClick={handleTest} variant="outline" size="sm" disabled={actionLoading === 'test'}>
-            <TestTube2 className="h-4 w-4 mr-2" />
-            {actionLoading === 'test' ? 'Testing...' : 'Test Connection'}
-          </Button>
-          <Button onClick={handleEdit} variant="outline" size="sm">
-            <Edit className="h-4 w-4 mr-2" />
-            Edit
-          </Button>
-          <Button onClick={handleDelete} variant="destructive" size="sm" disabled={actionLoading === 'delete'}>
-            <Trash2 className="h-4 w-4 mr-2" />
-            {actionLoading === 'delete' ? 'Deleting...' : 'Delete'}
-          </Button>
-        </div>
-      </div>
-
-      <div className="vspace-md">
-        {/* Basic Info Card */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="card-title-with-icon">
-              <Settings className="icon-sm" />
-              Provider Information
-            </CardTitle>
-            <CardDescription>Basic details about this provider</CardDescription>
-          </CardHeader>
-          <CardContent className="vspace-md">
+      <Card className="page-card">
+        <CardHeader>
+          <CardTitle className="card-title-with-icon">
+            <Settings className="icon-sm" />
+            Provider Details
+          </CardTitle>
+          <CardDescription>View provider information and configuration</CardDescription>
+        </CardHeader>
+        <CardContent className="page-card-content vspace-md">
+          {/* Basic Info Section */}
+          <div>
+            <h3 className="text-sm font-medium mb-3">Provider Information</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <div className="text-sm font-medium text-muted-foreground">Name</div>
@@ -196,19 +176,13 @@ export function ProviderDetailPage({ providerId }: ProviderDetailPageProps) {
                 <div className="text-base mt-1">{new Date(provider.updated_at).toLocaleString()}</div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* Configuration Card */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="card-title-with-icon">
-              <Settings className="icon-sm" />
-              Configuration
-            </CardTitle>
-            <CardDescription>Provider configuration settings</CardDescription>
-          </CardHeader>
-          <CardContent>
+          <div className="divider-horizontal my-6" />
+
+          {/* Configuration Section */}
+          <div>
+            <h3 className="text-sm font-medium mb-3">Configuration</h3>
             {config && Object.keys(config).length > 0 ? (
               <div className="space-y-3">
                 {Object.entries(config).map(([key, value]) => (
@@ -227,9 +201,30 @@ export function ProviderDetailPage({ providerId }: ProviderDetailPageProps) {
             ) : (
               <p className="text-sm text-muted-foreground">No configuration settings</p>
             )}
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+
+          <div className="flex items-center justify-between pt-6 border-t mt-6">
+            <Button onClick={handleBack} variant="ghost" size="sm">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Providers
+            </Button>
+            <div className="flex gap-2">
+              <Button onClick={handleTest} variant="outline" size="sm" disabled={actionLoading === 'test'}>
+                <TestTube2 className="h-4 w-4 mr-2" />
+                {actionLoading === 'test' ? 'Testing...' : 'Test Connection'}
+              </Button>
+              <Button onClick={handleEdit} variant="outline" size="sm">
+                <Edit className="h-4 w-4 mr-2" />
+                Edit
+              </Button>
+              <Button onClick={handleDelete} variant="destructive" size="sm" disabled={actionLoading === 'delete'}>
+                <Trash2 className="h-4 w-4 mr-2" />
+                {actionLoading === 'delete' ? 'Deleting...' : 'Delete'}
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

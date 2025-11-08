@@ -29,16 +29,25 @@
   @apply flex flex-col sm:flex-row gap-3 flex-1;
 }
 
-.models-filter-group {
+/* Two-row header filters */
+.model-filters-row {
+  @apply flex flex-col sm:flex-row gap-3 px-4 py-3 border-b;
+}
+
+.model-filter-group {
   @apply flex items-center gap-2;
 }
 
-.models-filter-label {
+.model-filter-label {
   @apply text-sm text-muted-foreground whitespace-nowrap;
 }
 
 .models-filter-select {
   @apply w-[180px];
+}
+
+.models-filter-select-inline {
+  @apply w-[160px];
 }
 
 .models-count {
@@ -55,7 +64,7 @@
 }
 
 .models-loading-state {
-  @apply flex items-center justify-center py-12;
+  @apply flex-1 flex items-center justify-center py-12;
 }
 
 .models-loading-spinner {
@@ -134,4 +143,29 @@
 
 .models-card-provider-text {
   @apply text-xs text-muted-foreground;
+}
+
+/* Model Details Dialog */
+.model-details-dialog {
+  @apply max-w-2xl;
+}
+
+.model-details-content {
+  @apply space-y-4 py-4;
+}
+
+.model-details-section {
+  @apply space-y-2;
+}
+
+.model-details-label {
+  @apply text-sm font-medium text-foreground;
+}
+
+.model-details-text {
+  @apply text-sm text-muted-foreground;
+}
+
+.model-details-capabilities {
+  @apply flex flex-wrap gap-2;
 }

@@ -3,9 +3,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Database } from 'lucide-react';
 import type { ModelsStepProps } from '@/types/quick-guide.types';
 import { CodeBlock } from '@/components/features/quick-guide/CodeBlock';
-import { ModelsFilters } from '@/components/features/models/ModelsFilters';
-import { ModelsGrid } from '@/components/features/models/ModelsGrid';
 import { ModelsSelectTab } from './ModelsSelectTab';
+import { ModelsBrowseTab } from './ModelsBrowseTab';
 
 export function ModelsStep({
   models,
@@ -23,14 +22,14 @@ export function ModelsStep({
   error
 }: ModelsStepProps) {
   return (
-    <Card>
+    <Card className="page-card">
       <CardHeader>
         <CardTitle className="card-title-with-icon">
           <Database className="icon-sm" />
           Models
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="page-card-content">
         <Tabs defaultValue="select" className="tab-container">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="select">Select Model</TabsTrigger>
@@ -50,23 +49,18 @@ export function ModelsStep({
 
           <TabsContent value="browse" className="tab-content">
             {setCapabilityFilter && setProviderFilter && clearFilters && (
-              <div className="vspace-md">
-                <ModelsFilters
-                  capabilityFilter={capabilityFilter || 'all'}
-                  providerFilter={providerFilter || 'all'}
-                  providers={providers || []}
-                  modelCount={models.length}
-                  onCapabilityChange={setCapabilityFilter}
-                  onProviderChange={setProviderFilter}
-                />
-
-                <ModelsGrid
-                  models={models}
-                  loading={loading}
-                  error={error || null}
-                  onClearFilters={clearFilters}
-                />
-              </div>
+              <ModelsBrowseTab
+                models={models}
+                loading={loading}
+                onRefresh={onRefresh}
+                capabilityFilter={capabilityFilter || 'all'}
+                providerFilter={providerFilter || 'all'}
+                providers={providers || []}
+                onCapabilityChange={setCapabilityFilter}
+                onProviderChange={setProviderFilter}
+                onClearFilters={clearFilters}
+                error={error || null}
+              />
             )}
           </TabsContent>
 

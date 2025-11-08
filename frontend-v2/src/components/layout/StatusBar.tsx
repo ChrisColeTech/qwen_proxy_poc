@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 
 export function StatusBar() {
   const proxyStatus = useProxyStore((state) => state.status);
+  const wsProxyStatus = useProxyStore((state) => state.wsProxyStatus);
   const connected = useProxyStore((state) => state.connected);
   const lifecycleState = useLifecycleStore((state) => state.state);
   const lifecycleMessage = useLifecycleStore((state) => state.message);
@@ -22,6 +23,8 @@ export function StatusBar() {
     : proxyStatus?.credentials
     ? 'invalid'
     : 'none';
+
+  const extensionStatus = wsProxyStatus?.extensionConnected ? 'running' : 'stopped';
 
   const isProxyRunning = proxyStatus?.providerRouter?.running || false;
   const activeProvider = settings.active_provider as string || '';
@@ -39,6 +42,8 @@ export function StatusBar() {
             <EnvironmentBadge />
             <div className="statusbar-separator" />
             <StatusBadge status={apiServerStatus}>API Server</StatusBadge>
+            <div className="statusbar-separator" />
+            <StatusBadge status={extensionStatus}>Extension</StatusBadge>
             <div className="statusbar-separator" />
             <StatusBadge status={credentialStatus} />
             {activeProvider && (

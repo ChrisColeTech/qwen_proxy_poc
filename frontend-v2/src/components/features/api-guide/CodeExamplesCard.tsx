@@ -11,14 +11,14 @@ interface CodeExamplesCardProps {
 
 export function CodeExamplesCard({ baseUrl }: CodeExamplesCardProps) {
   return (
-    <Card>
+    <Card className="page-card">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Code className="h-4 w-4" />
           Quick Start Examples
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="page-card-content space-y-4">
         <BaseUrlSection baseUrl={baseUrl} />
 
         <Tabs defaultValue="python" className="w-full">

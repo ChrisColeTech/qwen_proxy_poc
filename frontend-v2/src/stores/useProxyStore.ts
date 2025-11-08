@@ -50,6 +50,18 @@ export const useProxyStore = create<ProxyStore>((set) => ({
       credentials,
     };
 
+    // Check for extension status change and show toast
+    const previousExtensionConnected = state.wsProxyStatus?.extensionConnected;
+    const newExtensionConnected = event.status.extensionConnected;
+
+    if (state.lastUpdate > 0 && previousExtensionConnected !== newExtensionConnected) {
+      if (newExtensionConnected) {
+        useAlertStore.showAlert('Chrome Extension connected', 'success');
+      } else {
+        useAlertStore.showAlert('Chrome Extension disconnected', 'error');
+      }
+    }
+
     // Initialize lifecycle store on first load if it's empty and proxy is running
     const lifecycleStore = useLifecycleStore.getState();
     if (!lifecycleStore.message && event.status.providerRouter?.running) {

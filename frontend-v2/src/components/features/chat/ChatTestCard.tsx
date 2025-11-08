@@ -10,14 +10,14 @@ export function ChatTestCard({ providerRouterUrl, activeModel }: ChatTestCardPro
   const modelToUse = activeModel || 'qwen3-max';
 
   return (
-    <Card>
+    <Card className="page-card">
       <CardHeader>
         <CardTitle className="chat-test-card-title">
           <MessageSquare className="h-4 w-4" />
           Chat Completions
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="page-card-content">
         <Tabs defaultValue="quick" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="quick">Quick Test</TabsTrigger>

@@ -4,14 +4,14 @@ import { Globe, Chrome, CheckCircle, ArrowRight } from 'lucide-react';
 
 export function BrowserGuideStep() {
   return (
-    <Card>
+    <Card className="page-card">
       <CardHeader>
         <CardTitle className="card-title-with-icon">
           <Globe className="icon-sm" />
           Browser Quick Start - Get Running in 60 Seconds
         </CardTitle>
       </CardHeader>
-      <CardContent className="vspace-md">
+      <CardContent className="page-card-content vspace-md">
         <p className="step-description">
           Use the Chrome extension to extract Qwen credentials and proxy requests to Qwen's API.
           The extension handles authentication automatically after you log in.

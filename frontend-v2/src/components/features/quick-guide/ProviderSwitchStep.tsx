@@ -34,14 +34,14 @@ export function ProviderSwitchStep({
   };
 
   return (
-    <Card>
+    <Card className="page-card">
       <CardHeader>
         <CardTitle className="card-title-with-icon-sm">
           <Network className="icon-sm" />
           Providers
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="page-card-content">
         <Tabs defaultValue="switch" className="tab-container">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="switch">Switch Provider</TabsTrigger>

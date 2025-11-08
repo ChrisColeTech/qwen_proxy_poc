@@ -78,14 +78,14 @@ export function HomePage() {
 
   return (
     <div className="page-container">
-      <Card>
+      <Card className="page-card">
         <CardHeader>
           <CardTitle className="card-title-with-icon-sm">
             <Activity className="icon-sm" />
             Proxy Dashboard
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="page-card-content">
           <Tabs defaultValue="overview" className="tab-container">
             <TabsList className={`grid w-full ${running ? 'grid-cols-2' : 'grid-cols-1'}`}>
               <TabsTrigger value="overview">Overview</TabsTrigger>

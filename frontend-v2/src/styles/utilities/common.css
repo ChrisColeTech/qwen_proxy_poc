@@ -39,7 +39,16 @@
 
 /* Page Layout */
 .page-container {
-  @apply container max-w-7xl mx-auto p-6 space-y-6;
+  @apply container max-w-7xl mx-auto p-6 h-full flex flex-col;
+}
+
+/* Full-height Card */
+.page-card {
+  @apply flex flex-col h-full;
+}
+
+.page-card-content {
+  @apply flex-1 overflow-hidden;
 }
 
 /* Icon Sizes */

@@ -32,6 +32,25 @@ async function saveUIState(uiState: UIState) {
   }
 }
 
+async function saveCurrentRoute(route: string) {
+  const electron = isElectron();
+  if (electron && window.electronAPI) {
+    await window.electronAPI.settings.set('currentRoute', route);
+  } else {
+    localStorage.setItem('qwen-proxy-current-route', route);
+  }
+}
+
+async function loadCurrentRoute(): Promise<string> {
+  const electron = isElectron();
+  if (electron && window.electronAPI) {
+    const route = await window.electronAPI.settings.get('currentRoute') as string | null;
+    return route || '/';
+  } else {
+    return localStorage.getItem('qwen-proxy-current-route') || '/';
+  }
+}
+
 async function loadUIState(): Promise<UIState> {
   const electron = isElectron();
   const defaults: UIState = { theme: 'dark', sidebarPosition: 'left', showStatusMessages: true };
@@ -146,12 +165,20 @@ export const useUIStore = create<UIStore>((set, get) => ({
     }
   },
   setStatusMessage: (message) => set({ statusMessage: message }),
-  setCurrentRoute: (route) => set({ currentRoute: route }),
+  setCurrentRoute: async (route) => {
+    set({ currentRoute: route });
+    try {
+      await saveCurrentRoute(route);
+    } catch (error) {
+      console.error('[UIStore] Failed to save current route:', error);
+    }
+  },
   loadSettings: async () => {
     try {
       const uiState = await loadUIState();
-      console.log('[UIStore] Settings loaded successfully:', uiState);
-      set({ uiState });
+      const currentRoute = await loadCurrentRoute();
+      console.log('[UIStore] Settings loaded successfully:', uiState, 'route:', currentRoute);
+      set({ uiState, currentRoute });
     } catch (error) {
       console.error('[UIStore] Failed to load settings:', error);
     }

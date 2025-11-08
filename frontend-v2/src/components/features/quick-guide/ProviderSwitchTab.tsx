@@ -18,12 +18,12 @@ export function ProviderSwitchTab({
   onSwitch
 }: ProviderSwitchTabProps) {
   return (
-    <div className="vspace-md">
+    <div className="flex-1 flex flex-col gap-4">
       <p className="step-description">
         The Provider Router can route to different AI backends. Switch providers dynamically without restarting:
       </p>
 
-      <div className="demo-container">
+      <div className="demo-container flex-1">
         <div className="demo-header">
           <div className="demo-label">
             <Network className="icon-primary" />

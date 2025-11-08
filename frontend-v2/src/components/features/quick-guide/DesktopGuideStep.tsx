@@ -4,14 +4,14 @@ import { Monitor, Zap, Shield, Clock, CheckCircle } from 'lucide-react';
 
 export function DesktopGuideStep() {
   return (
-    <Card>
+    <Card className="page-card">
       <CardHeader>
         <CardTitle className="card-title-with-icon">
           <Monitor className="icon-sm" />
           Desktop Quick Start - Faster Native Authentication
         </CardTitle>
       </CardHeader>
-      <CardContent className="vspace-md">
+      <CardContent className="page-card-content vspace-md">
         <p className="step-description">
           The desktop app uses native Electron integration for instant credential extraction.
           No Chrome extension required - authentication happens directly in a secure browser window.

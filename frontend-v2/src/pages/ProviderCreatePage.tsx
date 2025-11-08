@@ -91,23 +91,12 @@ export function ProviderCreatePage() {
 
   return (
     <div className="page-container">
-      <div className="flex items-center justify-between mb-6">
-        <Button onClick={handleCancel} variant="ghost" size="sm">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Cancel
-        </Button>
-        <Button onClick={handleCreate} size="sm" disabled={creating}>
-          <Plus className="h-4 w-4 mr-2" />
-          {creating ? 'Creating...' : 'Create Provider'}
-        </Button>
-      </div>
-
-      <Card>
+      <Card className="page-card">
         <CardHeader>
           <CardTitle>Create New Provider</CardTitle>
           <CardDescription>Enter provider details. You can configure additional settings after creation.</CardDescription>
         </CardHeader>
-        <CardContent className="vspace-md">
+        <CardContent className="page-card-content vspace-md">
           <div className="providers-dialog-field">
             <Label htmlFor="provider-id">
               Provider ID <span className="text-destructive">*</span>
@@ -177,6 +166,17 @@ export function ProviderCreatePage() {
             <p className="text-xs text-muted-foreground mt-1">
               Optional base URL - you can add more configuration after creation
             </p>
+          </div>
+
+          <div className="flex items-center justify-between pt-6 border-t">
+            <Button onClick={handleCancel} variant="ghost" size="sm">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Cancel
+            </Button>
+            <Button onClick={handleCreate} size="sm" disabled={creating}>
+              <Plus className="h-4 w-4 mr-2" />
+              {creating ? 'Creating...' : 'Create Provider'}
+            </Button>
           </div>
         </CardContent>
       </Card>

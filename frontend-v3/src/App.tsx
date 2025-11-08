@@ -1,14 +1,27 @@
+import { useEffect } from 'react';
 import { useDarkMode } from '@/hooks/useDarkMode';
+import { useWebSocket } from '@/hooks/useWebSocket';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { HomePage } from '@/pages/HomePage';
 import { QuickGuidePage } from '@/pages/QuickGuidePage';
 import { ProvidersPage } from '@/pages/ProvidersPage';
 import { ModelsPage } from '@/pages/ModelsPage';
+import { SettingsPage } from '@/pages/SettingsPage';
+import { APIGuidePage } from '@/pages/APIGuidePage';
+import { BrowserGuidePage } from '@/pages/BrowserGuidePage';
+import { DesktopGuidePage } from '@/pages/DesktopGuidePage';
 import { useUIStore } from '@/stores/useUIStore';
 
 function App() {
   useDarkMode();
+  useWebSocket(); // Initialize WebSocket connection at app level
   const currentRoute = useUIStore((state) => state.currentRoute);
+  const loadSettings = useUIStore((state) => state.loadSettings);
+
+  // Load persisted UI state on mount
+  useEffect(() => {
+    loadSettings();
+  }, [loadSettings]);
 
   const renderPage = () => {
     switch (currentRoute) {
@@ -20,6 +33,14 @@ function App() {
         return <ProvidersPage />;
       case '/models':
         return <ModelsPage />;
+      case '/settings':
+        return <SettingsPage />;
+      case '/api-guide':
+        return <APIGuidePage />;
+      case '/browser-guide':
+        return <BrowserGuidePage />;
+      case '/desktop-guide':
+        return <DesktopGuidePage />;
       default:
         return <HomePage />;
     }

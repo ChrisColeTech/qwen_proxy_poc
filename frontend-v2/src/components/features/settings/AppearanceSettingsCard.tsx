@@ -7,14 +7,14 @@ export function AppearanceSettingsCard() {
   const { uiState, toggleTheme, toggleSidebarPosition, toggleShowStatusMessages } = useUIStore();
 
   return (
-    <Card>
+    <Card className="page-card">
       <CardHeader>
         <CardTitle className="card-title-with-icon">
           <Palette className="icon-sm" />
           Appearance
         </CardTitle>
       </CardHeader>
-      <CardContent className="vspace-md">
+      <CardContent className="page-card-content vspace-md">
         <div className="flex-row-between">
           <div className="vspace-tight">
             <div className="text-setting-label">Theme</div>

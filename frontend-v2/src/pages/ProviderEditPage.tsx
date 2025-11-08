@@ -122,25 +122,15 @@ export function ProviderEditPage({ providerId }: ProviderEditPageProps) {
 
   return (
     <div className="page-container">
-      <div className="flex items-center justify-between mb-6">
-        <Button onClick={handleCancel} variant="ghost" size="sm">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Cancel
-        </Button>
-        <Button onClick={handleSave} size="sm" disabled={saving}>
-          <Save className="h-4 w-4 mr-2" />
-          {saving ? 'Saving...' : 'Save Changes'}
-        </Button>
-      </div>
-
-      <div className="vspace-md">
-        {/* Basic Info Form */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Basic Information</CardTitle>
-            <CardDescription>Update provider name and description</CardDescription>
-          </CardHeader>
-          <CardContent className="vspace-md">
+      <Card className="page-card">
+        <CardHeader>
+          <CardTitle>Edit Provider</CardTitle>
+          <CardDescription>Update provider information and configuration</CardDescription>
+        </CardHeader>
+        <CardContent className="page-card-content vspace-md">
+          {/* Basic Info Section */}
+          <div>
+            <h3 className="text-sm font-medium mb-3">Basic Information</h3>
             <div className="providers-dialog-field">
               <Label htmlFor="provider-id">Provider ID</Label>
               <Input
@@ -185,16 +175,13 @@ export function ProviderEditPage({ providerId }: ProviderEditPageProps) {
               />
               <p className="text-xs text-muted-foreground mt-1">Provider type cannot be changed</p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* Configuration Form */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Configuration</CardTitle>
-            <CardDescription>Update provider configuration settings</CardDescription>
-          </CardHeader>
-          <CardContent className="vspace-md">
+          <div className="divider-horizontal my-6" />
+
+          {/* Configuration Section */}
+          <div>
+            <h3 className="text-sm font-medium mb-3">Configuration</h3>
             {Object.keys(configData).length > 0 ? (
               Object.entries(configData).map(([key, value]) => (
                 <div key={key} className="providers-dialog-field">
@@ -213,9 +200,20 @@ export function ProviderEditPage({ providerId }: ProviderEditPageProps) {
             ) : (
               <p className="text-sm text-muted-foreground">No configuration settings</p>
             )}
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+
+          <div className="flex items-center justify-between pt-6 border-t mt-6">
+            <Button onClick={handleCancel} variant="ghost" size="sm">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Cancel
+            </Button>
+            <Button onClick={handleSave} size="sm" disabled={saving}>
+              <Save className="h-4 w-4 mr-2" />
+              {saving ? 'Saving...' : 'Save Changes'}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
