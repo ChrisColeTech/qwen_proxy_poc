@@ -108,13 +108,19 @@ export const useProxyStore = create<ProxyStore>((set) => ({
   }),
   updateFromProviders: (event) => set((state) => {
     if (!state.wsProxyStatus) return state;
+
+    // Handle both formats: {providers: [...]} and {items: [...], total: N, enabled: N}
+    const providers = event.providers || (event as any).items || [];
+    const total = (event as any).total ?? providers.length;
+    const enabled = (event as any).enabled ?? providers.filter((p: any) => p.enabled).length;
+
     return {
       wsProxyStatus: {
         ...state.wsProxyStatus,
         providers: {
-          items: event.providers,
-          total: event.providers.length,
-          enabled: event.providers.filter((p: any) => p.enabled).length,
+          items: providers,
+          total,
+          enabled,
         },
       },
       lastUpdate: Date.now(),
@@ -122,12 +128,17 @@ export const useProxyStore = create<ProxyStore>((set) => ({
   }),
   updateFromModels: (event) => set((state) => {
     if (!state.wsProxyStatus) return state;
+
+    // Handle both formats: {models: [...]} and {items: [...], total: N}
+    const models = event.models || (event as any).items || [];
+    const total = (event as any).total ?? models.length;
+
     return {
       wsProxyStatus: {
         ...state.wsProxyStatus,
         models: {
-          items: event.models,
-          total: event.models.length,
+          items: models,
+          total,
         },
       },
       lastUpdate: Date.now(),
