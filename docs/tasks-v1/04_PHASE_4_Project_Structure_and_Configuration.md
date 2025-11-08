@@ -26,17 +26,25 @@ All complete file contents are in `docs/v1/03_CODE_EXAMPLES.md`. Update these fi
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-popover": "^1.1.15",
+    "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-switch": "^1.2.6",
+    "@radix-ui/react-tabs": "^1.1.13",
+    "@radix-ui/react-toast": "^1.2.15",
+    "@radix-ui/react-toggle": "^1.1.10",
+    "@radix-ui/react-toggle-group": "^1.1.11",
     "cmdk": "^1.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "socket.io-client": "^4.8.1",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
-    "@types/node": "^24.6.0",
+    "@types/node": "^24.10.0",
     "@types/react": "^18.3.26",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^5.0.4",
@@ -47,7 +55,8 @@ All complete file contents are in `docs/v1/03_CODE_EXAMPLES.md`. Update these fi
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.22",
     "globals": "^16.4.0",
-    "lucide-react": "^0.552.0",
+    "kill-port": "^2.0.1",
+    "lucide-react": "^0.553.0",
     "postcss": "^8.5.6",
     "react-icons": "^5.5.0",
     "tailwind-merge": "^2.6.0",
@@ -323,6 +332,10 @@ interface ElectronAPI {
     read: () => Promise<any>;
     add: (entry: any) => Promise<any>;
     clear: () => Promise<any>;
+  };
+  settings: {
+    get: (key: string) => Promise<any>;
+    set: (key: string, value: any) => Promise<void>;
   };
 }
 

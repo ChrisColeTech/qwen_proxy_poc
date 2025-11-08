@@ -1,6 +1,26 @@
 # Code Examples
 
-This document contains code snippets and implementation examples referenced in the Implementation Plan.
+**REFERENCE IMPLEMENTATION**: This document uses `frontend-v3` and `backend-v3` as the source of truth for all correct implementations.
+
+**IMPORTANT**: All file paths in examples use generic naming:
+- Use `frontend/src/...` instead of `frontend-v3/src/...`
+- Use `backend/src/...` instead of `backend-v3/src/...`
+
+The actual reference implementations are located at:
+- Frontend: `/Users/chris/Projects/qwen_proxy_poc/frontend-v3/`
+- Backend: `/Users/chris/Projects/qwen_proxy_poc/backend-v3/`
+
+## Quick Navigation
+
+- **Page Architecture**: TabCard, ActionList, Page Hooks, Constants
+- **WebSocket Service**: Real-time event handling, connection management
+- **Lifecycle Management**: State transitions and UI feedback
+- **Extension Detection**: WebSocket-based detection (no polling)
+- **HomePage Components**: Complete page implementation with all hooks
+- **Component Examples**: TitleBar, StatusBar, EnvironmentBadge
+- **Backend Code**: See 05_CODE_EXAMPLES_ELECTRON.md
+- **Electron Code**: See 05_CODE_EXAMPLES_ELECTRON.md
+- **Services & Hooks**: See 04_CODE_EXAMPLES_SERVICES_HOOKS.md
 
 ---
 
@@ -313,7 +333,6 @@ interface Window {
     "electron-store": "^8.2.0"
   }
 }
-
 ```
 
 ### electron/tsconfig.json
@@ -393,7 +412,7 @@ ipcMain.handle('clipboard:write', (_, text: string) => clipboard.writeText(text)
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "npx kill-port 3001 && ts-node-dev src/index.ts",
+    "dev": "npx kill-port 3002 && ts-node-dev src/index.ts",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -405,7 +424,8 @@ ipcMain.handle('clipboard:write', (_, text: string) => clipboard.writeText(text)
     "axios": "^1.13.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "socket.io": "^4.7.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
@@ -415,8 +435,11 @@ ipcMain.handle('clipboard:write', (_, text: string) => clipboard.writeText(text)
     "typescript": "^5.9.3"
   }
 }
-
 ```
+
+**Key Dependencies:**
+- `socket.io`: WebSocket server for real-time events
+- Backend runs on port 3002 (not 3001)
 
 ## Phase 2: Type Definitions Foundation
 
@@ -825,9 +848,792 @@ export function StatusIndicator({
 
 ---
 
-## Phase 7 (Updated): Enhanced Layout Components
+## FRONTEND-V3 COMPONENTS
 
-### frontend/src/components/layout/AppLayout.tsx
+Frontend-v3 contains the current, production-ready React components. Examples below are from the actual codebase.
+
+---
+
+## Complete Page Implementation
+
+### frontend/src/pages/HomePage.tsx
+
+**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend-v3/src/pages/HomePage.tsx`
+
+```typescript
+import { Activity } from 'lucide-react';
+import { TabCard } from '@/components/ui/tab-card';
+import { ActionList } from '@/components/ui/action-list';
+import { useHomePage } from '@/hooks/useHomePage';
+import { useApiGuidePage } from '@/hooks/useApiGuidePage';
+import { useExtensionDetection } from '@/hooks/useExtensionDetection';
+import { useUIStore } from '@/stores/useUIStore';
+import { useLifecycleStore } from '@/stores/useLifecycleStore';
+import {
+  buildOverviewActions,
+  buildStatusTabContent,
+  HOME_TABS,
+  HOME_TITLE,
+  SYSTEM_OVERVIEW_TITLE,
+  SYSTEM_OVERVIEW_ICON
+} from '@/constants/home.constants';
+
+export function HomePage() {
+  const {
+    wsProxyStatus,
+    proxyLoading,
+    handleStartProxy,
+    handleStopProxy,
+    handleQwenLogin,
+  } = useHomePage();
+
+  const { baseUrl, copiedUrl, handleCopyUrl } = useApiGuidePage();
+  const { extensionDetected, needsExtension } = useExtensionDetection();
+  const setCurrentRoute = useUIStore((state) => state.setCurrentRoute);
+  const lifecycleState = useLifecycleStore((state) => state.state);
+
+  const running = wsProxyStatus?.providerRouter?.running || false;
+  const port = wsProxyStatus?.providerRouter?.port;
+  const uptime = wsProxyStatus?.providerRouter?.uptime;
+  const credentialsValid = wsProxyStatus?.credentials?.valid || false;
+  const expiresAt = wsProxyStatus?.credentials?.expiresAt;
+
+  const handleProxyClick = () => {
+    if (proxyLoading) return;
+    if (running) {
+      handleStopProxy();
+    } else {
+      handleStartProxy();
+    }
+  };
+
+  const handleExtensionClick = () => {
+    setCurrentRoute('/browser-guide');
+  };
+
+  const overviewActions = buildOverviewActions({
+    extensionDetected,
+    needsExtension,
+    credentialsValid,
+    expiresAt,
+    running,
+    port,
+    uptime,
+    lifecycleState,
+    proxyLoading,
+    handleExtensionClick,
+    handleQwenLogin,
+    handleProxyClick
+  });
+
+  const tabs = [
+    {
+      ...HOME_TABS.OVERVIEW,
+      content: <ActionList title={SYSTEM_OVERVIEW_TITLE} icon={SYSTEM_OVERVIEW_ICON} items={overviewActions} />
+    },
+    {
+      ...HOME_TABS.STATUS,
+      content: buildStatusTabContent(port, baseUrl, copiedUrl, handleCopyUrl),
+      hidden: !running
+    }
+  ];
+
+  return (
+    <div className="page-container">
+      <TabCard
+        title={HOME_TITLE}
+        icon={Activity}
+        tabs={tabs}
+        defaultTab={HOME_TABS.OVERVIEW.value}
+      />
+    </div>
+  );
+}
+```
+
+**Architecture Highlights:**
+- Uses multiple custom hooks for separation of concerns
+- Data flows from WebSocket store (wsProxyStatus)
+- Constants file defines all UI text and tab configurations
+- Helper functions build tab content dynamically
+- Lifecycle state controls loading indicators
+- Platform-aware (detects if extension is needed)
+
+---
+
+### frontend/src/hooks/useHomePage.ts
+
+**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend-v3/src/hooks/useHomePage.ts`
+
+```typescript
+import { useState, useEffect } from 'react';
+import { useProxyStore } from '@/stores/useProxyStore';
+import { proxyService } from '@/services/proxy.service';
+import { useAlertStore } from '@/stores/useAlertStore';
+import { isElectron } from '@/utils/platform';
+import { credentialsService } from '@/services/credentials.service';
+import { useUIStore } from '@/stores/useUIStore';
+import { useLifecycleStore } from '@/stores/useLifecycleStore';
+
+export function useHomePage() {
+  const { wsProxyStatus, connected } = useProxyStore();
+  const setCurrentRoute = useUIStore((state) => state.setCurrentRoute);
+  const lifecycleState = useLifecycleStore((state) => state.state);
+  const [proxyLoading, setProxyLoading] = useState(false);
+
+  // Keep proxyLoading true while lifecycle is in transitional states
+  useEffect(() => {
+    if (lifecycleState === 'starting' || lifecycleState === 'stopping') {
+      setProxyLoading(true);
+    } else {
+      setProxyLoading(false);
+    }
+  }, [lifecycleState]);
+
+  const handleStartProxy = async () => {
+    setProxyLoading(true);
+    // Optimistically set lifecycle state to 'starting' immediately for instant UI feedback
+    useLifecycleStore.getState().setState('starting', 'Starting...');
+    // Show immediate feedback before API call
+    useAlertStore.showAlert('Starting proxy server...', 'success');
+    try {
+      await proxyService.start();
+      // Success/error toasts handled via WebSocket lifecycle events
+      // proxyLoading will be cleared by useEffect watching lifecycle state
+    } catch (error) {
+      console.error('Failed to start proxy:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to start proxy server';
+      useAlertStore.showAlert(errorMessage, 'error');
+      // Clear loading and reset lifecycle state on HTTP error (lifecycle events won't fire)
+      setProxyLoading(false);
+      useLifecycleStore.getState().setState('stopped', 'Stopped');
+    }
+  };
+
+  const handleStopProxy = async () => {
+    setProxyLoading(true);
+    // Optimistically set lifecycle state to 'stopping' immediately for instant UI feedback
+    useLifecycleStore.getState().setState('stopping', 'Stopping...');
+    // Show immediate feedback before API call
+    useAlertStore.showAlert('Stopping proxy server...', 'success');
+    try {
+      await proxyService.stop();
+      // Success/error toasts handled via WebSocket lifecycle events
+      // proxyLoading will be cleared by useEffect watching lifecycle state
+    } catch (error) {
+      console.error('Failed to stop proxy:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to stop proxy server';
+      useAlertStore.showAlert(errorMessage, 'error');
+      // Clear loading and reset lifecycle state on HTTP error (lifecycle events won't fire)
+      setProxyLoading(false);
+      useLifecycleStore.getState().setState('running', 'Running');
+    }
+  };
+
+  const handleQwenLogin = async () => {
+    try {
+      // Step 1: Delete old credentials first if they exist (for re-login)
+      const hasCredentials = wsProxyStatus?.credentials?.expiresAt;
+      if (hasCredentials) {
+        useAlertStore.showAlert('Clearing old credentials...', 'success');
+        await credentialsService.deleteCredentials();
+      }
+
+      // Step 2: Platform-specific login flow
+      if (isElectron()) {
+        // In Electron, directly open the login window (no extension needed)
+        window.open('https://chat.qwen.ai', '_blank');
+        return;
+      }
+
+      // Step 3: In browser, check if extension is connected via WebSocket
+      const extensionConnected = wsProxyStatus?.extensionConnected ?? false;
+
+      if (!extensionConnected) {
+        // Navigate to browser guide page for install instructions
+        setCurrentRoute('/browser-guide');
+        return;
+      }
+
+      // Step 4: Extension is installed, open login window
+      window.open('https://chat.qwen.ai', '_blank');
+      useAlertStore.showAlert(
+        'Please log in to chat.qwen.ai. The extension will automatically extract your credentials.',
+        'success'
+      );
+    } catch (error) {
+      console.error('Failed to handle Qwen login:', error);
+      useAlertStore.showAlert(
+        'Failed to prepare login. Please try again.',
+        'error'
+      );
+    }
+  };
+
+  return {
+    wsProxyStatus,
+    connected,
+    proxyLoading,
+    handleStartProxy,
+    handleStopProxy,
+    handleQwenLogin,
+  };
+}
+```
+
+**Hook Features:**
+- Optimistic UI updates (instant feedback before API calls)
+- Platform-aware login flow (Electron vs Browser)
+- Lifecycle state synchronization
+- Error handling with user-facing alerts
+- WebSocket data consumption
+
+---
+
+### frontend/src/hooks/useExtensionDetection.ts
+
+**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend-v3/src/hooks/useExtensionDetection.ts`
+
+```typescript
+import { isElectron } from '@/utils/platform';
+import { useProxyStore } from '@/stores/useProxyStore';
+
+/**
+ * Hook to detect Chrome extension installation status
+ *
+ * Now uses WebSocket-based detection instead of polling.
+ * Extension status is received via wsProxyStatus.extensionConnected from the backend.
+ *
+ * The extension establishes a Socket.io connection to the backend when enabled,
+ * and the backend broadcasts the connection status to all frontend clients.
+ */
+export function useExtensionDetection() {
+  const needsExtension = !isElectron();
+  const wsProxyStatus = useProxyStore((state) => state.wsProxyStatus);
+
+  // Get extension status from WebSocket broadcast
+  const extensionDetected = wsProxyStatus?.extensionConnected ?? false;
+
+  return {
+    needsExtension,
+    extensionDetected,
+  };
+}
+```
+
+**Key Points:**
+- No polling - uses WebSocket data only
+- Platform detection determines if extension is needed
+- Simple, single-purpose hook
+- Real-time updates via WebSocket broadcasts
+
+---
+
+### frontend/src/constants/home.constants.tsx
+
+**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend-v3/src/constants/home.constants.tsx`
+
+```typescript
+import type { ReactNode } from 'react';
+import { ChevronRight, Gauge, Copy, CheckCircle } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { StatusIndicator } from '@/components/ui/status-indicator';
+import { CodeBlock } from '@/components/features/quick-guide/CodeBlock';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import type { StatusType } from '@/components/ui/status-indicator';
+import type { LifecycleState } from '@/stores/useLifecycleStore';
+import { formatUptime, formatExpiryDate } from '@/utils/formatters';
+
+export interface ActionItem {
+  icon?: ReactNode;
+  title: string;
+  description: string;
+  actions?: ReactNode;
+  onClick?: () => void;
+  disabled?: boolean;
+  hidden?: boolean;
+}
+
+export interface TabItem {
+  value: string;
+  label: string;
+  content: ReactNode;
+  description?: string;
+  hidden?: boolean;
+}
+
+export const getProxyBadge = (lifecycleState: LifecycleState) => {
+  switch (lifecycleState) {
+    case 'starting':
+      return { text: 'Starting...', variant: 'secondary' as const };
+    case 'stopping':
+      return { text: 'Stopping...', variant: 'secondary' as const };
+    case 'running':
+      return { text: 'Running', variant: 'default' as const };
+    case 'error':
+      return { text: 'Error', variant: 'destructive' as const };
+    default:
+      return { text: 'Stopped', variant: 'destructive' as const };
+  }
+};
+
+export const getStatusIndicatorState = (lifecycleState: LifecycleState): StatusType => {
+  switch (lifecycleState) {
+    case 'starting':
+    case 'running':
+      return 'running';
+    case 'error':
+      return 'invalid';
+    case 'stopping':
+    case 'stopped':
+    case 'idle':
+    default:
+      return 'stopped';
+  }
+};
+
+export const createActionBadge = (variant: 'default' | 'destructive' | 'secondary', text: string) => (
+  <>
+    <Badge variant={variant}>{text}</Badge>
+    <ChevronRight className="icon-sm" style={{ opacity: 0.5 }} />
+  </>
+);
+
+export const createActionIcon = (status: StatusType) => (
+  <StatusIndicator status={status} />
+);
+
+export const buildOverviewActions = (params: {
+  extensionDetected: boolean;
+  needsExtension: boolean;
+  credentialsValid: boolean;
+  expiresAt: number | null | undefined;
+  running: boolean;
+  port: number | undefined;
+  uptime: number | undefined;
+  lifecycleState: LifecycleState;
+  proxyLoading: boolean;
+  handleExtensionClick: () => void;
+  handleQwenLogin: () => void;
+  handleProxyClick: () => void;
+}): ActionItem[] => {
+  const {
+    extensionDetected,
+    needsExtension,
+    credentialsValid,
+    expiresAt,
+    running,
+    port,
+    uptime,
+    lifecycleState,
+    proxyLoading,
+    handleExtensionClick,
+    handleQwenLogin,
+    handleProxyClick
+  } = params;
+
+  const proxyBadge = getProxyBadge(lifecycleState);
+
+  return [
+    {
+      icon: createActionIcon(extensionDetected ? 'running' : 'stopped'),
+      title: '1. Chrome Extension',
+      description: extensionDetected ? 'Ready for authentication' : 'Click to install extension',
+      actions: createActionBadge(
+        extensionDetected ? 'default' : 'destructive',
+        extensionDetected ? 'Detected' : 'Not Detected'
+      ),
+      onClick: handleExtensionClick,
+      hidden: !needsExtension
+    },
+    {
+      icon: createActionIcon(credentialsValid ? 'running' : 'stopped'),
+      title: `${needsExtension ? '2' : '1'}. Qwen Credentials`,
+      description: credentialsValid ? `Expires ${formatExpiryDate(expiresAt ?? null)}` : 'Click to login to Qwen',
+      actions: createActionBadge(
+        credentialsValid ? 'default' : 'destructive',
+        credentialsValid ? 'Valid' : 'Invalid'
+      ),
+      onClick: handleQwenLogin
+    },
+    {
+      icon: createActionIcon(getStatusIndicatorState(lifecycleState)),
+      title: `${needsExtension ? '3' : '2'}. Provider Router`,
+      description: running ? `Port ${port} • Uptime ${uptime !== undefined ? formatUptime(uptime) : 'N/A'}` : 'Click to start the proxy server',
+      actions: createActionBadge(proxyBadge.variant, proxyBadge.text),
+      onClick: handleProxyClick,
+      disabled: proxyLoading
+    }
+  ];
+};
+
+const pythonExample = `from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://localhost:3001/v1",
+    api_key="dummy-key"
+)
+
+response = client.chat.completions.create(
+    model="qwen3-max",
+    messages=[{"role": "user", "content": "Hello!"}]
+)
+
+print(response.choices[0].message.content)`;
+
+const nodeExample = `import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  baseURL: 'http://localhost:3001/v1',
+  apiKey: 'dummy-key'
+});
+
+const completion = await openai.chat.completions.create({
+  model: 'qwen3-max',
+  messages: [{ role: 'user', content: 'Hello!' }]
+});
+
+console.log(completion.choices[0].message.content);`;
+
+export const buildStatusTabContent = (
+  port: number | undefined,
+  baseUrl: string,
+  copiedUrl: boolean,
+  handleCopyUrl: () => void
+) => (
+  <div className="space-y-8">
+    {/* Base URL Section */}
+    <div className="space-y-3">
+      <div className="flex items-center gap-2">
+        <code className="flex-1 rounded-lg bg-muted px-4 py-3 text-sm font-mono">
+          {baseUrl}/v1
+        </code>
+        <Button
+          onClick={handleCopyUrl}
+          size="icon"
+          variant="outline"
+          title="Copy base URL"
+          className="h-10 w-10 shrink-0"
+        >
+          {copiedUrl ? (
+            <CheckCircle className="h-4 w-4 status-success" />
+          ) : (
+            <Copy className="h-4 w-4" />
+          )}
+        </Button>
+      </div>
+      <p className="text-xs text-muted-foreground">
+        Authentication happens through stored Qwen credentials, so you can use any string as the API key.
+      </p>
+    </div>
+
+    {/* Divider */}
+    <div className="border-t border-border" />
+
+    {/* Quick Tests Section */}
+    <div className="space-y-4">
+      <h3 className="text-sm font-semibold tracking-tight">Quick Tests</h3>
+      <div className="space-y-3">
+        <CodeBlock
+          label="Check proxy health"
+          code={`curl http://localhost:${port || 3001}/health`}
+        />
+        <CodeBlock
+          label="List available models"
+          code={`curl http://localhost:${port || 3001}/v1/models`}
+        />
+      </div>
+    </div>
+
+    {/* Divider */}
+    <div className="border-t border-border" />
+
+    {/* SDK Integration Section */}
+    <div className="space-y-4">
+      <h3 className="text-sm font-semibold tracking-tight">SDK Integration</h3>
+      <Tabs defaultValue="python" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="python">Python</TabsTrigger>
+          <TabsTrigger value="node">Node.js</TabsTrigger>
+          <TabsTrigger value="curl">cURL</TabsTrigger>
+        </TabsList>
+        <TabsContent value="python" className="mt-4">
+          <CodeBlock label="Using OpenAI Python SDK" code={pythonExample} />
+        </TabsContent>
+        <TabsContent value="node" className="mt-4">
+          <CodeBlock label="Using OpenAI Node.js SDK" code={nodeExample} />
+        </TabsContent>
+        <TabsContent value="curl" className="mt-4">
+          <CodeBlock
+            label="Chat completion example"
+            code={`curl http://localhost:${port || 3001}/v1/chat/completions \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer any-key" \\
+  -d '{"model": "qwen3-max", "messages": [{"role": "user", "content": "Hello!"}]}'`}
+          />
+        </TabsContent>
+      </Tabs>
+    </div>
+  </div>
+);
+
+export const HOME_TABS = {
+  OVERVIEW: {
+    value: 'overview',
+    label: 'Overview',
+    description: 'Click on any row to perform the action. Follow the steps in order:'
+  },
+  STATUS: {
+    value: 'status',
+    label: 'System Status',
+    description: 'Test the OpenAI-compatible endpoints exposed by the Provider Router:'
+  }
+} as const;
+
+export const HOME_TITLE = 'Proxy Dashboard';
+export const SYSTEM_OVERVIEW_TITLE = 'System Overview';
+export const SYSTEM_OVERVIEW_ICON = Gauge;
+```
+
+**Constants File Purpose:**
+- Centralizes all UI text and configuration
+- Provides helper functions for dynamic UI generation
+- Type-safe action and tab definitions
+- Code examples for API usage
+- Lifecycle state to UI mapping
+
+---
+
+## Layout Components
+
+### frontend/src/components/layout/TitleBar.tsx
+
+```typescript
+import { Moon, Sun, PanelLeft, PanelRight } from 'lucide-react';
+import { VscChromeMinimize, VscChromeMaximize, VscChromeClose } from 'react-icons/vsc';
+import { useUIStore } from '@/stores/useUIStore';
+
+export function TitleBar() {
+  const theme = useUIStore((state) => state.uiState.theme);
+  const sidebarPosition = useUIStore((state) => state.uiState.sidebarPosition);
+  const toggleTheme = useUIStore((state) => state.toggleTheme);
+  const toggleSidebarPosition = useUIStore((state) => state.toggleSidebarPosition);
+
+  const handleMinimize = () => {
+    if (window.electronAPI) {
+      window.electronAPI.window.minimize();
+    }
+  };
+
+  const handleMaximize = () => {
+    if (window.electronAPI) {
+      window.electronAPI.window.maximize();
+    }
+  };
+
+  const handleClose = () => {
+    if (window.electronAPI) {
+      window.electronAPI.window.close();
+    }
+  };
+
+  return (
+    <div
+      className="titlebar"
+      style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
+    >
+      <div className="titlebar-left">
+        <span className="titlebar-title">Qwen Proxy</span>
+      </div>
+
+      <div className="titlebar-right" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+        <button
+          className="titlebar-button"
+          onClick={toggleSidebarPosition}
+          title={sidebarPosition === 'left' ? 'Move sidebar to right' : 'Move sidebar to left'}
+        >
+          {sidebarPosition === 'left' ? (
+            <PanelRight className="titlebar-button-icon" />
+          ) : (
+            <PanelLeft className="titlebar-button-icon" />
+          )}
+        </button>
+
+        <button
+          className="titlebar-button"
+          onClick={toggleTheme}
+          title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+        >
+          {theme === 'light' ? (
+            <Moon className="titlebar-button-icon" />
+          ) : (
+            <Sun className="titlebar-button-icon" />
+          )}
+        </button>
+
+        <button
+          className="titlebar-button"
+          onClick={handleMinimize}
+          title="Minimize window"
+        >
+          <VscChromeMinimize className="titlebar-button-icon" />
+        </button>
+
+        <button
+          className="titlebar-button"
+          onClick={handleMaximize}
+          title="Maximize window"
+        >
+          <VscChromeMaximize className="titlebar-button-icon" />
+        </button>
+
+        <button
+          className="titlebar-button-close"
+          onClick={handleClose}
+          title="Close window"
+        >
+          <VscChromeClose className="titlebar-button-icon" />
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+**Key Features:**
+- Custom titlebar for frameless window (Electron)
+- Integrates theme toggle and sidebar position controls
+- Uses Electron IPC for window controls (minimize, maximize, close)
+- Drag region enabled for window movement
+- CSS classes for styling (defined in index.css)
+
+---
+
+### frontend-v3/src/components/layout/StatusBar.tsx
+
+```typescript
+import { useProxyStore } from '@/stores/useProxyStore';
+import { useLifecycleStore } from '@/stores/useLifecycleStore';
+import { useSettingsStore } from '@/stores/useSettingsStore';
+import { useUIStore } from '@/stores/useUIStore';
+import { EnvironmentBadge } from '@/components/ui/environment-badge';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Badge } from '@/components/ui/badge';
+
+export function StatusBar() {
+  const proxyStatus = useProxyStore((state) => state.status);
+  const wsProxyStatus = useProxyStore((state) => state.wsProxyStatus);
+  const connected = useProxyStore((state) => state.connected);
+  const lifecycleState = useLifecycleStore((state) => state.state);
+  const lifecycleMessage = useLifecycleStore((state) => state.message);
+  const lifecycleError = useLifecycleStore((state) => state.error);
+  const settings = useSettingsStore((state) => state.settings);
+  const showStatusMessages = useUIStore((state) => state.uiState.showStatusMessages);
+
+  const apiServerStatus = connected ? 'running' : 'stopped';
+
+  const credentialStatus = proxyStatus?.credentials?.valid
+    ? 'authenticated'
+    : proxyStatus?.credentials
+    ? 'invalid'
+    : 'none';
+
+  const extensionStatus = wsProxyStatus?.extensionConnected ? 'running' : 'stopped';
+
+  const isProxyRunning = proxyStatus?.providerRouter?.running || false;
+  const activeProvider = settings.active_provider as string || '';
+  const activeModel = settings.active_model as string || '';
+
+  const displayMessage = lifecycleError || lifecycleMessage;
+  const isError = !!lifecycleError;
+  const isTransitioning = lifecycleState === 'starting' || lifecycleState === 'stopping';
+
+  return (
+    <div className="statusbar">
+      <div className="statusbar-left">
+        {showStatusMessages && (
+          <>
+            <EnvironmentBadge />
+            <div className="statusbar-separator" />
+            <StatusBadge status={apiServerStatus}>API Server</StatusBadge>
+            <div className="statusbar-separator" />
+            <StatusBadge status={extensionStatus}>Extension</StatusBadge>
+            <div className="statusbar-separator" />
+            <StatusBadge status={credentialStatus} />
+            {activeProvider && (
+              <>
+                <div className="statusbar-separator" />
+                <Badge variant="secondary">{activeProvider}</Badge>
+              </>
+            )}
+            {activeModel && (
+              <>
+                <div className="statusbar-separator" />
+                <Badge variant="secondary">{activeModel}</Badge>
+              </>
+            )}
+          </>
+        )}
+      </div>
+      {showStatusMessages && displayMessage && (
+        <StatusBadge status={isError ? 'invalid' : isProxyRunning ? 'running' : 'stopped'}>
+          {isTransitioning && (
+            <svg className="animate-spin -ml-1 mr-2 h-3 w-3 inline-block" /* spinner SVG */>
+              {/* ... */}
+            </svg>
+          )}
+          {displayMessage}
+        </StatusBadge>
+      )}
+    </div>
+  );
+}
+```
+
+**Key Features:**
+- Real-time status display from multiple stores
+- Shows API server, extension, and credential status
+- Displays active provider and model
+- Lifecycle state indicator with spinner during transitions
+- Toggleable via settings (showStatusMessages)
+
+---
+
+## UI Components
+
+### frontend-v3/src/components/ui/environment-badge.tsx
+
+```typescript
+import { Badge } from './badge';
+
+export function EnvironmentBadge() {
+  const isElectron = typeof window !== 'undefined' && window.electronAPI !== undefined;
+
+  return (
+    <Badge variant={isElectron ? 'default' : 'secondary'} className="gap-1">
+      <span className="relative flex h-2 w-2">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-current opacity-75"></span>
+        <span className="relative inline-flex rounded-full h-2 w-2 bg-current"></span>
+      </span>
+      {isElectron ? 'Desktop' : 'Browser'}
+    </Badge>
+  );
+}
+```
+
+**Key Features:**
+- Detects runtime environment (Electron vs Browser)
+- Animated ping indicator
+- Used in StatusBar to show current platform
+
+---
+
+## Phase 7 (LEGACY): Enhanced Layout Components
+
+**NOTE**: The examples below are from older documentation. See frontend-v3 examples above for current implementations.
+
+### LEGACY: frontend/src/components/layout/AppLayout.tsx
 ```typescript
 import { TitleBar } from './TitleBar';
 import { StatusBar } from './StatusBar';

@@ -23,8 +23,8 @@ Vite defaults to React 19, but we need React 18 for compatibility:
 
 ```bash
 # Install React 18 (Vite defaults to React 19)
-npm install "react@^18.2.0" "react-dom@^18.2.0"
-npm install -D "@types/react@^18.2.0" "@types/react-dom@^18.2.0"
+npm install "react@^18.3.1" "react-dom@^18.3.1"
+npm install -D "@types/react@^18.3.26" "@types/react-dom@^18.3.7"
 ```
 
 ## Step 4: Update frontend/tsconfig.json
@@ -53,7 +53,7 @@ Update `frontend/tsconfig.json` to add path aliases:
 # Still in frontend directory
 
 # Install Tailwind CSS and dependencies
-npm install -D "tailwindcss@^3.4.0" "postcss@^8.4.0" "autoprefixer@^10.4.0" "tailwindcss-animate@^1.0.7"  "class-variance-authority@^0.7.0" "clsx@^2.0.0" "tailwind-merge@^2.0.0" lucide-react react-icons
+npm install -D "tailwindcss@^3.4.18" "postcss@^8.5.6" "autoprefixer@^10.4.21" "tailwindcss-animate@^1.0.7"  "class-variance-authority@^0.7.1" "clsx@^2.1.1" "tailwind-merge@^2.6.0" "lucide-react@^0.553.0" "react-icons@^5.5.0"
 
 # Initialize Tailwind CSS
 npx tailwindcss init -p

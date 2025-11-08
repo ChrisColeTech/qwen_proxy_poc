@@ -1,6 +1,18 @@
 # Code Examples - Electron
 
+**REFERENCE IMPLEMENTATION**: This document uses `electron` directory as the source of truth for Electron code.
+
+**IMPORTANT**: All file paths in examples use generic naming:
+- Use `electron/src/...` for all Electron examples
+- Use `frontend/src/...` instead of `frontend-v3/src/...`
+- Use `backend/src/...` instead of `backend-v3/src/...`
+
+The actual reference implementation is located at:
+- Electron: `/Users/chris/Projects/qwen_proxy_poc/electron/`
+
 This document contains complete code examples for the Electron main process, preload script, and build configuration.
+
+**Status**: These examples serve as reference implementation patterns for Electron desktop application integration.
 
 ---
 
