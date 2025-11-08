@@ -13,6 +13,7 @@ import { useLifecycleStore } from '@/stores/useLifecycleStore';
 export function HomePage() {
   const {
     wsProxyStatus,
+    connected,
     proxyLoading,
     handleStartProxy,
     handleStopProxy,
