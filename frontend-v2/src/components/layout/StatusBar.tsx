@@ -7,10 +7,13 @@ import { Badge } from '@/components/ui/badge';
 
 export function StatusBar() {
   const proxyStatus = useProxyStore((state) => state.status);
+  const connected = useProxyStore((state) => state.connected);
   const lifecycleState = useLifecycleStore((state) => state.state);
   const lifecycleMessage = useLifecycleStore((state) => state.message);
   const lifecycleError = useLifecycleStore((state) => state.error);
   const settings = useSettingsStore((state) => state.settings);
+
+  const apiServerStatus = connected ? 'running' : 'stopped';
 
   const credentialStatus = proxyStatus?.credentials?.valid
     ? 'authenticated'
@@ -30,6 +33,8 @@ export function StatusBar() {
     <div className="statusbar">
       <div className="statusbar-left">
         <EnvironmentBadge />
+        <div className="statusbar-separator" />
+        <StatusBadge status={apiServerStatus}>API Server</StatusBadge>
         <div className="statusbar-separator" />
         <StatusBadge status={credentialStatus} />
         {activeProvider && (
