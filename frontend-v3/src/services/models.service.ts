@@ -1,4 +1,4 @@
-import type { Model, ParsedModel, Capability } from '@/types/models.types';
+import type { Model, ParsedModel, Capability, ModelDetails } from '@/types/models.types';
 
 const API_BASE_URL = 'http://localhost:3002';
 
@@ -22,6 +22,18 @@ class ModelsService {
     return data.models || [];
   }
 
+  // Get detailed information for a specific model
+  async getModelDetails(modelId: string): Promise<ModelDetails> {
+    const response = await fetch(`${API_BASE_URL}/api/models/${encodeURIComponent(modelId)}`);
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch model details: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.model;
+  }
+
   // Get available models from Provider Router (OpenAI-compatible endpoint)
   async getAvailableModels(providerRouterUrl: string): Promise<Model[]> {
     const response = await fetch(`${providerRouterUrl}/v1/models`);
@@ -37,7 +49,7 @@ class ModelsService {
     return openaiModels.map((model) => ({
       id: model.id,
       name: model.id,
-      description: `Available via Provider Router`,
+      description: '',
       capabilities: '[]',
       status: 'active',
       created_at: model.created,
@@ -59,7 +71,7 @@ class ModelsService {
     return {
       id: model.id,
       name: model.name,
-      description: model.description.split(' - Discovered from')[0].trim(),
+      description: '',
       capabilities,
       provider,
     };

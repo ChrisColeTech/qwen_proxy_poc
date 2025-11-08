@@ -20,6 +20,11 @@ export function ProvidersPage() {
     handleProviderClick
   } = useProvidersPage();
 
+  const handleAddProvider = () => {
+    console.log('Add provider clicked');
+    // TODO: Open add provider dialog
+  };
+
   const switchActions = buildProviderSwitchActions({
     providers,
     activeProvider,
@@ -38,7 +43,10 @@ export function ProvidersPage() {
     },
     {
       ...PROVIDERS_TABS.ALL,
-      content: buildAllProvidersContent(providerActions)
+      content: buildAllProvidersContent({
+        providerActions,
+        onAddProvider: handleAddProvider
+      })
     },
     {
       ...PROVIDERS_TABS.SETTINGS,

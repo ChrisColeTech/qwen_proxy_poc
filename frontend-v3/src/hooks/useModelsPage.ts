@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useAlertStore } from '@/stores/useAlertStore';
 import { modelsService } from '@/services/models.service';
 import { providersService } from '@/services/providers.service';
-import type { Model, CapabilityFilter } from '@/types/models.types';
+import type { Model, CapabilityFilter, ModelDetails } from '@/types/models.types';
 import type { Provider } from '@/types/providers.types';
 import { useSettingsStore } from '@/stores/useSettingsStore';
 
@@ -14,6 +14,8 @@ export function useModelsPage() {
   const [loadingAll, setLoadingAll] = useState(false);
   const [capabilityFilter, setCapabilityFilter] = useState<CapabilityFilter>('all');
   const [providerFilter, setProviderFilter] = useState<string>('all');
+  const [selectedModelDetails, setSelectedModelDetails] = useState<ModelDetails | null>(null);
+  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
   const settings = useSettingsStore((state) => state.settings);
   const providerRouterUrl = useSettingsStore((state) => state.providerRouterUrl);
   const activeModel = (settings.active_model as string) || '';
@@ -26,7 +28,8 @@ export function useModelsPage() {
     setLoadingAvailable(true);
     try {
       const data = await modelsService.getAvailableModels(providerRouterUrl);
-      setAvailableModels(data);
+      const sorted = data.sort((a, b) => a.id.localeCompare(b.id));
+      setAvailableModels(sorted);
     } catch (error) {
       console.error('Failed to fetch available models:', error);
       useAlertStore.showAlert('Failed to load available models', 'error');
@@ -40,7 +43,8 @@ export function useModelsPage() {
     setLoadingAll(true);
     try {
       const data = await modelsService.getModels();
-      setAllModels(data);
+      const sorted = data.sort((a, b) => a.id.localeCompare(b.id));
+      setAllModels(sorted);
     } catch (error) {
       console.error('Failed to fetch all models:', error);
       useAlertStore.showAlert('Failed to load all models', 'error');
@@ -61,27 +65,27 @@ export function useModelsPage() {
 
   // Filter all models based on selected filters (for second tab)
   const filteredAllModels = useMemo(() => {
-    return allModels.filter((model) => {
-      const parsed = modelsService.parseModel(model);
-
-      // Provider filter
-      if (providerFilter !== 'all' && parsed.provider !== providerFilter) {
-        return false;
-      }
-
-      // Capability filter
-      if (capabilityFilter !== 'all') {
-        const hasCapability = parsed.capabilities.some((cap) => {
-          if (capabilityFilter === 'chat') return cap === 'chat' || cap === 'completion';
-          if (capabilityFilter === 'vision') return cap === 'vision' || cap.includes('vl');
-          if (capabilityFilter === 'tool-call') return cap === 'tools' || cap === 'tool-call';
+    return allModels
+      .map((model) => modelsService.parseModel(model))
+      .filter((parsed) => {
+        // Provider filter
+        if (providerFilter !== 'all' && parsed.provider !== providerFilter) {
           return false;
-        });
-        if (!hasCapability) return false;
-      }
+        }
 
-      return true;
-    });
+        // Capability filter
+        if (capabilityFilter !== 'all') {
+          const hasCapability = parsed.capabilities.some((cap) => {
+            if (capabilityFilter === 'chat') return cap === 'chat' || cap === 'completion';
+            if (capabilityFilter === 'vision') return cap === 'vision' || cap.includes('vl');
+            if (capabilityFilter === 'tool-call') return cap === 'tools' || cap === 'tool-call';
+            return false;
+          });
+          if (!hasCapability) return false;
+        }
+
+        return true;
+      });
   }, [allModels, capabilityFilter, providerFilter]);
 
   const handleModelSelect = async (modelId: string) => {
@@ -94,9 +98,20 @@ export function useModelsPage() {
     }
   };
 
-  const handleModelClick = (modelId: string) => {
-    console.log('Model clicked:', modelId);
-    useAlertStore.showAlert(`Selected model: ${modelId}`, 'success');
+  const handleModelClick = async (modelId: string) => {
+    try {
+      const details = await modelsService.getModelDetails(modelId);
+      setSelectedModelDetails(details);
+      setIsDetailsDialogOpen(true);
+    } catch (error) {
+      console.error('Failed to fetch model details:', error);
+      useAlertStore.showAlert('Failed to load model details', 'error');
+    }
+  };
+
+  const handleCloseDetailsDialog = () => {
+    setIsDetailsDialogOpen(false);
+    setSelectedModelDetails(null);
   };
 
   const handleClearFilters = () => {
@@ -183,10 +198,13 @@ export function useModelsPage() {
     providers,
     capabilityFilter,
     providerFilter,
+    selectedModelDetails,
+    isDetailsDialogOpen,
     handleModelSelect,
     handleModelClick,
     handleProviderSwitch,
     handleClearFilters,
+    handleCloseDetailsDialog,
     setCapabilityFilter,
     setProviderFilter,
     fetchAvailableModels,

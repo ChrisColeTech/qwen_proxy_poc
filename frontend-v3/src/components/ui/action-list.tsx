@@ -43,7 +43,9 @@ export function ActionList({ title, icon: Icon, items }: ActionListProps) {
               {item.icon}
               <div className="provider-switch-details">
                 <div className="provider-switch-name">{item.title}</div>
-                <div className="provider-switch-type">{item.description}</div>
+                {item.description && (
+                  <div className="provider-switch-type">{item.description}</div>
+                )}
               </div>
             </div>
             {item.actions && (

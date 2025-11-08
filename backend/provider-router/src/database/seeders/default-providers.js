@@ -10,57 +10,6 @@ import { ModelService } from '../services/model-service.js'
 import { ProviderModelService } from '../services/provider-model-service.js'
 import { logger } from '../../utils/logger.js'
 
-/**
- * Default models to seed
- */
-const DEFAULT_MODELS = [
-  {
-    id: 'qwen3-max',
-    name: 'Qwen3 Max',
-    description: 'Qwen3 Max - High performance model',
-    capabilities: JSON.stringify(['chat', 'completion', 'tools'])
-  },
-  {
-    id: 'qwen3-coder',
-    name: 'Qwen3 Coder',
-    description: 'Qwen3 Coder - Specialized for coding tasks',
-    capabilities: JSON.stringify(['chat', 'completion', 'code'])
-  },
-  {
-    id: 'qwen3-coder-flash',
-    name: 'Qwen3 Coder Flash',
-    description: 'Qwen3 Coder Flash - Fast coding model',
-    capabilities: JSON.stringify(['chat', 'completion', 'code'])
-  }
-]
-
-/**
- * Seed default models into the database
- * @returns {Promise<void>}
- */
-export async function seedDefaultModels() {
-  logger.info('Seeding default models...')
-
-  try {
-    for (const model of DEFAULT_MODELS) {
-      // Check if model already exists
-      if (!ModelService.exists(model.id)) {
-        ModelService.create(model.id, model.name, {
-          description: model.description,
-          capabilities: model.capabilities
-        })
-        logger.info(`Created model: ${model.id}`)
-      } else {
-        logger.debug(`Model already exists: ${model.id}`)
-      }
-    }
-
-    logger.info('Default models seeded successfully')
-  } catch (error) {
-    logger.error('Failed to seed default models', { error: error.message })
-    throw error
-  }
-}
 
 /**
  * Seed a default LM Studio provider
@@ -98,16 +47,8 @@ export async function seedLMStudioProvider(config = {}) {
 
     logger.info(`LM Studio provider configs set: baseURL=${baseURL}`)
 
-    // Link models to provider
-    const modelsToLink = ['qwen3-max', 'qwen3-coder', 'qwen3-coder-flash']
-    for (const modelId of modelsToLink) {
-      if (ModelService.exists(modelId)) {
-        ProviderModelService.link(providerId, modelId, {
-          isDefault: modelId === defaultModel
-        })
-        logger.info(`Linked model ${modelId} to ${providerId}`)
-      }
-    }
+    // Note: Models will be discovered via model sync from the provider
+    // No hardcoded model links needed
 
     logger.info(`LM Studio provider seeded successfully: ${providerId}`)
     return provider
@@ -151,16 +92,8 @@ export async function seedQwenProxyProvider(config = {}) {
 
     logger.info(`Qwen Proxy provider configs set: baseURL=${baseURL}`)
 
-    // Link models to provider
-    const modelsToLink = ['qwen3-max', 'qwen3-coder', 'qwen3-coder-flash']
-    for (const modelId of modelsToLink) {
-      if (ModelService.exists(modelId)) {
-        ProviderModelService.link(providerId, modelId, {
-          isDefault: modelId === 'qwen3-max'
-        })
-        logger.info(`Linked model ${modelId} to ${providerId}`)
-      }
-    }
+    // Note: Models will be discovered via model sync from the provider
+    // No hardcoded model links needed
 
     logger.info(`Qwen Proxy provider seeded successfully: ${providerId}`)
     return provider
@@ -211,16 +144,8 @@ export async function seedQwenDirectProvider(config = {}) {
 
     logger.info(`Qwen Direct provider configs set: baseURL=${baseURL}`)
 
-    // Link models to provider
-    const modelsToLink = ['qwen3-max', 'qwen3-coder', 'qwen3-coder-flash']
-    for (const modelId of modelsToLink) {
-      if (ModelService.exists(modelId)) {
-        ProviderModelService.link(providerId, modelId, {
-          isDefault: modelId === 'qwen3-max'
-        })
-        logger.info(`Linked model ${modelId} to ${providerId}`)
-      }
-    }
+    // Note: Models will be discovered via model sync from the provider
+    // No hardcoded model links needed
 
     logger.info(`Qwen Direct provider seeded successfully: ${providerId}`)
     return provider
@@ -239,10 +164,7 @@ export async function seedAllProviders(configs = {}) {
   logger.info('Seeding all default providers...')
 
   try {
-    // First, seed models
-    await seedDefaultModels()
-
-    // Then seed providers
+    // Seed providers (models will be discovered via model sync)
     const lmStudioConfig = configs.lmStudio || {}
     const qwenProxyConfig = configs.qwenProxy || {}
     const qwenDirectConfig = configs.qwenDirect || {}
@@ -252,6 +174,7 @@ export async function seedAllProviders(configs = {}) {
     await seedQwenDirectProvider(qwenDirectConfig)
 
     logger.info('All default providers seeded successfully')
+    logger.info('Note: Models will be discovered when providers are synced')
   } catch (error) {
     logger.error('Failed to seed default providers', { error: error.message })
     throw error
@@ -273,7 +196,6 @@ export function hasProviders() {
 }
 
 export default {
-  seedDefaultModels,
   seedLMStudioProvider,
   seedQwenProxyProvider,
   seedQwenDirectProvider,

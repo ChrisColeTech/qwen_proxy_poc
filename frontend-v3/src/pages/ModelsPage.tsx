@@ -1,5 +1,6 @@
 import { TabCard } from '@/components/ui/tab-card';
 import { useModelsPage } from '@/hooks/useModelsPage';
+import { ModelDetailsDialog } from '@/components/dialogs/ModelDetailsDialog';
 import {
   buildModelActions,
   buildModelSelectActions,
@@ -23,9 +24,12 @@ export function ModelsPage() {
     providers,
     capabilityFilter,
     providerFilter,
+    selectedModelDetails,
+    isDetailsDialogOpen,
     handleModelSelect,
     handleModelClick,
     handleProviderSwitch,
+    handleCloseDetailsDialog,
     setCapabilityFilter,
     setProviderFilter
   } = useModelsPage();
@@ -77,6 +81,12 @@ export function ModelsPage() {
         icon={MODELS_ICON}
         tabs={tabs}
         defaultTab={MODELS_TABS.SELECT.value}
+      />
+
+      <ModelDetailsDialog
+        model={selectedModelDetails}
+        open={isDetailsDialogOpen}
+        onClose={handleCloseDetailsDialog}
       />
     </div>
   );

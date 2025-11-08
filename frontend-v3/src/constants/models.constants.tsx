@@ -4,7 +4,7 @@ import { StatusIndicator } from '@/components/ui/status-indicator';
 import { ActionList } from '@/components/ui/action-list';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { ActionItem } from './home.constants';
-import type { Model, CapabilityFilter } from '@/types/models.types';
+import type { Model, ParsedModel, CapabilityFilter } from '@/types/models.types';
 
 export const MODELS_TABS = {
   SELECT: {
@@ -30,7 +30,7 @@ export const FILTER_ICON = Filter;
 
 const createModelBadge = (variant: 'default' | 'destructive' | 'secondary', text: string) => (
   <>
-    <Badge variant={variant} className="min-w-[100px] justify-center">{text}</Badge>
+    <Badge variant={variant} className="min-w-[180px] justify-center">{text}</Badge>
     <ChevronRight className="icon-sm" style={{ opacity: 0.5 }} />
   </>
 );
@@ -48,10 +48,15 @@ export const buildModelSelectActions = (params: {
     return {
       icon: <StatusIndicator status={isActive ? 'running' : 'stopped'} />,
       title: model.id,
-      description: model.description || model.name,
-      actions: isActive
-        ? createModelBadge('default', 'Active')
-        : createModelBadge('secondary', 'Select'),
+      description: model.description,
+      actions: isActive ? (
+        <>
+          <Badge variant="default" className="min-w-[180px] justify-center">Active</Badge>
+          <ChevronRight className="icon-sm" style={{ opacity: 0.5 }} />
+        </>
+      ) : (
+        <ChevronRight className="icon-sm" style={{ opacity: 0.5 }} />
+      ),
       onClick: isActive ? undefined : () => onSelect(model.id),
       disabled: isActive
     };
@@ -59,7 +64,7 @@ export const buildModelSelectActions = (params: {
 };
 
 export const buildModelActions = (params: {
-  models: Model[];
+  models: ParsedModel[];
   handleModelClick: (modelId: string) => void;
 }): ActionItem[] => {
   const { models, handleModelClick } = params;
@@ -67,8 +72,8 @@ export const buildModelActions = (params: {
   return models.map((model) => ({
     icon: <StatusIndicator status="running" />,
     title: model.id,
-    description: model.description || model.name,
-    actions: createModelBadge('default', 'Available'),
+    description: model.description,
+    actions: createModelBadge('default', model.provider),
     onClick: () => handleModelClick(model.id)
   }));
 };
@@ -122,7 +127,9 @@ export const buildModelSelectContent = (params: {
               {item.icon}
               <div className="provider-switch-details">
                 <div className="provider-switch-name">{item.title}</div>
-                <div className="provider-switch-type">{item.description}</div>
+                {item.description && (
+                  <div className="provider-switch-type">{item.description}</div>
+                )}
               </div>
             </div>
             {item.actions && (
@@ -204,7 +211,9 @@ export const buildAllModelsContent = (params: {
               {item.icon}
               <div className="provider-switch-details">
                 <div className="provider-switch-name">{item.title}</div>
-                <div className="provider-switch-type">{item.description}</div>
+                {item.description && (
+                  <div className="provider-switch-type">{item.description}</div>
+                )}
               </div>
             </div>
             {item.actions && (

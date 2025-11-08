@@ -366,7 +366,7 @@ const migrations = [
   // Migration 4: Data Seeding (Optional - only runs if no providers exist)
   {
     version: 4,
-    description: 'Seed default provider configurations and models if database is empty',
+    description: 'Seed default provider configurations if database is empty (models discovered via sync)',
     up: async () => {
       const db = getDatabase()
 

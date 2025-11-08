@@ -1,5 +1,6 @@
 import { Blocks, Settings, Zap, Plus, ChevronRight, Network } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { StatusIndicator } from '@/components/ui/status-indicator';
 import { ActionList } from '@/components/ui/action-list';
 import type { ActionItem } from './home.constants';
@@ -50,12 +51,8 @@ export const buildProviderSwitchActions = (params: {
     return {
       icon: <StatusIndicator status={isActive ? 'running' : 'stopped'} />,
       title: provider.name,
-      description: provider.type,
-      actions: isActive
-        ? createProviderBadge('default', 'Active')
-        : canSwitch
-        ? createProviderBadge('secondary', 'Switch')
-        : createProviderBadge('outline', 'Disabled'),
+      description: '',
+      actions: createProviderBadge(isActive ? 'default' : 'secondary', provider.type),
       onClick: canSwitch ? () => onSwitch(provider.id) : undefined,
       disabled: !canSwitch
     };
@@ -84,9 +81,58 @@ export const buildProviderSwitchContent = (switchActions: ActionItem[]) => (
   <ActionList title="Available Providers" icon={Network} items={switchActions} />
 );
 
-export const buildAllProvidersContent = (providerActions: ActionItem[]) => (
-  <ActionList title="Available Providers" icon={Blocks} items={providerActions} />
-);
+export const buildAllProvidersContent = (params: {
+  providerActions: ActionItem[];
+  onAddProvider: () => void;
+}) => {
+  const { providerActions, onAddProvider } = params;
+
+  return (
+    <div className="demo-container" style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
+      <div className="demo-header" style={{ flexShrink: 0 }}>
+        <div className="demo-label">
+          <Blocks className="icon-primary" />
+          <span className="demo-label-text">Available Providers</span>
+        </div>
+      </div>
+
+      {/* Add Provider Button Row */}
+      <div className="model-filters-row" style={{ flexShrink: 0, justifyContent: 'flex-end' }}>
+        <Button onClick={onAddProvider} variant="outline" size="sm">
+          <Plus className="icon-sm mr-2" />
+          Add Provider
+        </Button>
+      </div>
+
+      {/* Providers List */}
+      <div className="provider-switch-list" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+        {providerActions.map((item, index) => (
+          <div
+            key={index}
+            className="provider-switch-item"
+            onClick={item.disabled ? undefined : item.onClick}
+            style={{ cursor: item.disabled ? 'not-allowed' : item.onClick ? 'pointer' : 'default' }}
+          >
+            <div className="provider-switch-info">
+              {item.icon}
+              <div className="provider-switch-details">
+                <div className="provider-switch-name">{item.title}</div>
+                {item.description && (
+                  <div className="provider-switch-type">{item.description}</div>
+                )}
+              </div>
+            </div>
+            {item.actions && (
+              <div className="provider-switch-actions">
+                {item.actions}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export const buildActiveProvidersContent = () => (
   <div className="vspace-md">
