@@ -1,0 +1,507 @@
+/* Foundational CSS - Structural and infrastructure styles */
+
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+
+    
+    --status-success: 142 76% 36%;
+    --status-info: 221 83% 53%;
+    --status-warning: 45 93% 47%;
+    --status-error: 0 84% 60%;
+    --status-neutral: 0 0% 45%;
+    --status-purple: 271 81% 56%;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+
+    
+    --status-success: 142 71% 45%;
+    --status-info: 217 91% 60%;
+    --status-warning: 45 93% 58%;
+    --status-error: 0 72% 51%;
+    --status-neutral: 0 0% 63%;
+    --status-purple: 271 91% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: Inter, system-ui, sans-serif;
+  }
+}
+
+@layer utilities {
+  .status-success {
+    color: hsl(var(--status-success));
+  }
+  .status-success-dot {
+    background-color: hsl(var(--status-success));
+  }
+  .status-info {
+    color: hsl(var(--status-info));
+  }
+  .status-info-dot {
+    background-color: hsl(var(--status-info));
+  }
+  .status-warning {
+    color: hsl(var(--status-warning));
+  }
+  .status-warning-dot {
+    background-color: hsl(var(--status-warning));
+  }
+  .status-error {
+    color: hsl(var(--status-error));
+  }
+  .status-error-dot {
+    background-color: hsl(var(--status-error));
+  }
+  .status-neutral {
+    color: hsl(var(--status-neutral));
+  }
+  .status-neutral-dot {
+    background-color: hsl(var(--status-neutral));
+  }
+  .status-purple {
+    color: hsl(var(--status-purple));
+  }
+  .status-purple-dot {
+    background-color: hsl(var(--status-purple));
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Used CSS Classes - Referenced in TSX files */
+
+.dark {
+--background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+
+    
+    --status-success: 142 71% 45%;
+    --status-info: 217 91% 60%;
+    --status-warning: 45 93% 58%;
+    --status-error: 0 72% 51%;
+    --status-neutral: 0 0% 63%;
+    --status-purple: 271 91% 65%;
+}
+
+.status-success {
+color: hsl(var(--status-success));
+}
+
+.icon-sm {
+@apply h-4 w-4;
+}
+
+.model-filters-row {
+@apply flex flex-col sm:flex-row gap-3 px-4 py-3 border-b;
+}
+
+.model-filter-group {
+@apply flex items-center gap-2;
+}
+
+.model-filter-label {
+@apply text-sm text-muted-foreground whitespace-nowrap;
+}
+
+.models-filter-select {
+@apply w-[180px];
+}
+
+.page-container {
+@apply w-full p-6 h-full flex flex-col;
+}
+
+.page-card {
+@apply flex flex-col h-full;
+}
+
+.page-card-content {
+@apply flex-1 overflow-hidden;
+}
+
+.icon-sm {
+@apply h-4 w-4;
+}
+
+.card-title-with-icon {
+@apply flex items-center gap-2 text-base;
+}
+
+.icon-primary {
+@apply h-4 w-4 text-primary;
+}
+
+.vspace-tight {
+@apply space-y-0.5;
+}
+
+.vspace-md {
+@apply space-y-4;
+}
+
+.divider-horizontal {
+@apply h-px bg-border;
+}
+
+.sidebar {
+@apply h-full bg-card border-r border-border flex flex-col transition-all duration-300;
+}
+
+.sidebar-collapsed {
+@apply w-12;
+}
+
+.sidebar-icon {
+@apply flex-shrink-0;
+}
+
+.sidebar-nav-container {
+@apply flex flex-col items-center pt-2 flex-1;
+}
+
+.sidebar-nav-button {
+@apply w-full h-12 flex items-center justify-center transition-colors relative;
+}
+
+.sidebar-nav-button-active {
+@apply text-foreground;
+}
+
+.sidebar-nav-button-inactive {
+@apply text-muted-foreground hover:text-foreground;
+}
+
+.sidebar-guide-button {
+@apply w-full h-12 flex items-center justify-center transition-colors relative mt-auto border-t border-border;
+}
+
+.sidebar-settings-button {
+@apply w-full h-12 flex items-center justify-center transition-colors relative mb-2;
+}
+
+.titlebar {
+@apply h-10 bg-background border-b border-border flex items-center justify-between;
+}
+
+.titlebar-left {
+@apply flex items-center gap-2 px-4;
+}
+
+.titlebar-title {
+@apply text-sm font-semibold text-foreground;
+}
+
+.titlebar-right {
+@apply flex items-center h-full;
+}
+
+.titlebar-button {
+@apply h-full w-12 flex items-center justify-center hover:bg-accent transition-colors;
+}
+
+.titlebar-button-close {
+@apply h-full w-12 flex items-center justify-center hover:bg-destructive hover:text-destructive-foreground transition-colors;
+}
+
+.titlebar-button-icon {
+@apply h-4 w-4;
+}
+
+.statusbar {
+@apply h-6 bg-muted border-t border-border flex items-center justify-between overflow-hidden;
+  
+  padding-left: clamp(0.25rem, 1vw, 1rem);
+  padding-right: clamp(0.25rem, 1vw, 1rem);
+  
+  font-size: clamp(0.5rem, 1.5vw, 0.75rem);
+}
+
+.statusbar-left {
+@apply flex items-center flex-shrink min-w-0;
+  
+  gap: clamp(0.25rem, 1vw, 1rem);
+}
+
+.statusbar-separator {
+@apply bg-border flex-shrink-0;
+  
+  height: clamp(0.5rem, 2vw, 0.75rem);
+  width: 1px;
+}
+
+.page-container {
+@apply w-full p-6 h-full flex flex-col;
+}
+
+.code-block-container {
+@apply space-y-2;
+}
+
+.code-block-label {
+@apply text-sm font-medium text-foreground;
+}
+
+.code-block-wrapper {
+@apply relative rounded-lg border bg-muted;
+}
+
+.code-block-pre {
+@apply overflow-x-auto p-3;
+}
+
+.code-block-code {
+@apply text-xs font-mono text-foreground;
+}
+
+.code-block-copy-button {
+@apply absolute right-2 top-2 h-7 w-7;
+}
+
+.step-description {
+@apply text-sm text-muted-foreground;
+}
+
+.demo-container {
+@apply rounded-lg border border-border bg-card flex flex-col flex-1 overflow-hidden;
+}
+
+.demo-header {
+@apply flex items-center justify-between border-b border-border px-4 py-3;
+}
+
+.demo-label {
+@apply flex items-center gap-2;
+}
+
+.demo-label-text {
+@apply text-sm font-medium;
+}
+
+.provider-switch-list {
+@apply divide-y divide-border flex-1 overflow-y-auto pr-2;
+}
+
+.provider-switch-item {
+@apply flex items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-muted/50;
+}
+
+.provider-switch-info {
+@apply flex items-center gap-3;
+}
+
+.provider-switch-details {
+@apply flex flex-col gap-0.5;
+}
+
+.provider-switch-name {
+@apply text-sm font-medium text-foreground;
+}
+
+.provider-switch-type {
+@apply text-xs text-muted-foreground;
+}
+
+.provider-switch-actions {
+@apply flex items-center gap-2;
+}
+
+.status-icon-success {
+@apply text-green-600 dark:text-green-500;
+}
+
+.card-title-with-icon {
+@apply flex items-center gap-2 text-base;
+}
+
+.status-success {
+color: hsl(var(--status-success));
+}
+
+.page-card {
+@apply flex-1 flex flex-col overflow-hidden;
+}
+
+.page-card-content {
+@apply flex-1 flex flex-col overflow-hidden;
+}
+
+.tab-container {
+@apply w-full flex flex-col flex-1 overflow-hidden;
+}
+
+.tab-content {
+@apply mt-4 flex-1 flex flex-col overflow-auto;
+}
+
+.status-success {
+color: hsl(var(--status-success));
+}
+
+.step-description {
+@apply text-sm text-muted-foreground;
+}
+
+.demo-container {
+@apply rounded-lg border border-border bg-muted/30 p-4 space-y-3;
+}
+
+.demo-header {
+@apply flex items-center justify-between;
+}
+
+.demo-label {
+@apply flex items-center gap-2;
+}
+
+.demo-label-text {
+@apply text-sm font-medium;
+}
+
+.provider-switch-list {
+@apply space-y-2;
+}
+
+.provider-switch-item {
+@apply flex items-center justify-between bg-background rounded px-4 py-3 transition-colors;
+}
+
+.provider-switch-info {
+@apply flex items-center gap-3;
+}
+
+.provider-switch-details {
+@apply space-y-0;
+}
+
+.provider-switch-name {
+@apply text-sm font-medium;
+}
+
+.provider-switch-type {
+@apply text-xs text-muted-foreground;
+}
+
+.provider-switch-actions {
+@apply flex items-center gap-2;
+}
+
+.code-block-container {
+@apply space-y-2;
+}
+
+.code-block-label {
+@apply text-sm font-medium;
+}
+
+.code-block-wrapper {
+@apply relative;
+}
+
+.code-block-pre {
+@apply bg-muted rounded-lg p-4 text-xs font-mono overflow-x-auto;
+}
+
+.code-block-code {
+@apply text-foreground;
+}
+
+.code-block-copy-button {
+@apply absolute top-2 right-2 h-7 w-7;
+}
+
+.status-icon-success {
+@apply text-primary;
+}
+
