@@ -109,6 +109,13 @@ curl ${providerRouterUrl || `http://localhost:${port}`}/v1/chat/completions \\
 
   return (
     <div className="demo-container" style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
+      <div className="demo-header" style={{ flexShrink: 0 }}>
+        <div className="demo-label">
+          <FlaskConical className="icon-primary" />
+          <span className="demo-label-text">Model Test</span>
+        </div>
+      </div>
+
       <div className="provider-switch-list" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
         <div className="vspace-md space-y-6">
           {/* Test Request Section */}
