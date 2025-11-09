@@ -1,8 +1,8 @@
-import { Filter, Database, Star, ChevronRight, CheckCircle2, FlaskConical } from 'lucide-react';
+import { Filter, Database, Star, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { StatusIndicator } from '@/components/ui/status-indicator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ModelTestContent } from '@/components/features/models/ModelTestContent';
+import { ModelTestWrapper } from '@/components/features/models/ModelTestWrapper';
 import type { ActionItem } from './home.constants';
 import type { Model, ParsedModel, CapabilityFilter } from '@/types/models.types';
 import type { Provider } from '@/types/providers.types';
@@ -253,45 +253,12 @@ export const buildModelTestContent = (params: {
   providers: Provider[];
   providerRouterUrl: string;
 }) => {
-  const { activeModel, activeProvider, providers, providerRouterUrl } = params;
-
-  const provider = providers.find(p => p.id === activeProvider);
-  const providerName = provider?.name || 'Unknown Provider';
-
-  if (!activeModel) {
-    return (
-      <div className="vspace-md flex flex-col items-center justify-center py-12 gap-4">
-        <FlaskConical className="h-12 w-12 text-muted-foreground" />
-        <p className="text-muted-foreground text-center">
-          No model selected
-        </p>
-        <p className="text-sm text-muted-foreground text-center max-w-md">
-          Select a model from the "Select Model" tab to test it.
-        </p>
-      </div>
-    );
-  }
-
-  if (!activeProvider) {
-    return (
-      <div className="vspace-md flex flex-col items-center justify-center py-12 gap-4">
-        <FlaskConical className="h-12 w-12 text-muted-foreground" />
-        <p className="text-muted-foreground text-center">
-          No provider selected
-        </p>
-        <p className="text-sm text-muted-foreground text-center max-w-md">
-          Select a provider from the Providers page to test the model.
-        </p>
-      </div>
-    );
-  }
-
   return (
-    <ModelTestContent
-      modelId={activeModel}
-      modelName={activeModel}
-      providerName={providerName}
-      providerRouterUrl={providerRouterUrl}
+    <ModelTestWrapper
+      activeModel={params.activeModel}
+      activeProvider={params.activeProvider}
+      providers={params.providers}
+      providerRouterUrl={params.providerRouterUrl}
     />
   );
 };
