@@ -36,8 +36,33 @@ export function useCredentials() {
     return () => clearInterval(interval);
   }, [wsProxyStatus]);
 
-  const login = () => {
-    window.open('https://chat.qwen.ai', '_blank');
+  const login = async () => {
+    console.log('[useCredentials] ⭐ Login button clicked!');
+    console.log('[useCredentials] window.electronAPI exists?', !!window.electronAPI);
+    console.log('[useCredentials] window.electronAPI:', window.electronAPI);
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Check if running in Electron
+      if (window.electronAPI) {
+        console.log('[useCredentials] Running in Electron - calling electronAPI.qwen.openLogin()');
+        await window.electronAPI.qwen.openLogin();
+        console.log('[useCredentials] Login window closed, refreshing credentials...');
+        // Credentials are already saved by main process, just refresh the UI
+        window.location.reload();
+      } else {
+        // Browser mode - open in new tab (extension will handle it)
+        console.log('[useCredentials] Running in browser - opening Qwen in new tab');
+        window.open('https://chat.qwen.ai', '_blank');
+      }
+    } catch (err) {
+      console.error('[useCredentials] Login failed:', err);
+      setError(err instanceof Error ? err.message : 'Login failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const logout = async () => {

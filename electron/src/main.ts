@@ -139,8 +139,10 @@ function createTray() {
 /**
  * IPC Handler: Open Qwen login window
  * Based on doc 48 - Main Process - Opening Login Window
+ * Uses simple navigation-based detection instead of DOM injection
  */
 ipcMain.handle('qwen:open-login', async () => {
+  console.log('[Qwen Login] ⭐ qwen:open-login IPC handler called!');
   return new Promise<void>((resolve, reject) => {
     console.log('[Qwen Login] Opening login window...');
 
@@ -156,117 +158,24 @@ ipcMain.handle('qwen:open-login', async () => {
 
     qwenLoginWindow.loadURL('https://chat.qwen.ai');
 
-    // Inject monitoring script when page loads
-    qwenLoginWindow.webContents.on('did-finish-load', async () => {
-      if (!qwenLoginWindow) return;
-      console.log('[Qwen Login] Page loaded, injecting monitor script...');
+    console.log('[Qwen Login] Window created, setting up event listeners...');
 
-      // Inject a content script to monitor for login (similar to Chrome extension)
-      await qwenLoginWindow.webContents.executeJavaScript(`
-        (function() {
-          console.log('[Qwen Monitor] Script injected');
+    // Listen for ALL navigation events to debug
+    qwenLoginWindow.webContents.on('did-navigate', async (event, url) => {
+      console.log('[Qwen Login] ========================================');
+      console.log('[Qwen Login] did-navigate event fired!');
+      console.log('[Qwen Login] URL:', url);
+      console.log('[Qwen Login] Includes chat.qwen.ai?', url.includes('chat.qwen.ai'));
+      console.log('[Qwen Login] Includes /login?', url.includes('/login'));
+      console.log('[Qwen Login] Includes /signin?', url.includes('/signin'));
+      console.log('[Qwen Login] ========================================');
 
-          let hasShownNotification = false;
-
-          function showNotification(message, isError = false) {
-            const notification = document.createElement('div');
-            notification.textContent = message;
-            notification.style.cssText = \`
-              position: fixed;
-              top: 20px;
-              right: 20px;
-              padding: 12px 20px;
-              background: \${isError ? '#ef4444' : '#10b981'};
-              color: white;
-              border-radius: 8px;
-              font-family: system-ui, -apple-system, sans-serif;
-              font-size: 14px;
-              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-              z-index: 999999;
-              animation: slideIn 0.3s ease-out;
-            \`;
-
-            const style = document.createElement('style');
-            style.textContent = \`
-              @keyframes slideIn {
-                from { transform: translateX(400px); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-              }
-              @keyframes slideOut {
-                from { transform: translateX(0); opacity: 1; }
-                to { transform: translateX(400px); opacity: 0; }
-              }
-            \`;
-            document.head.appendChild(style);
-            document.body.appendChild(notification);
-
-            setTimeout(() => {
-              notification.style.animation = 'slideOut 0.3s ease-out';
-              setTimeout(() => notification.remove(), 300);
-            }, 3000);
-          }
-
-          function isLoggedIn() {
-            const url = window.location.href;
-            if (url.includes('/login') || url.includes('/signin')) {
-              return false;
-            }
-
-            // Check for user profile elements
-            const hasUserProfile = document.querySelector('[data-user-id]') !== null ||
-                                   document.querySelector('.user-profile') !== null ||
-                                   document.querySelector('[class*="avatar"]') !== null ||
-                                   document.querySelector('[class*="Avatar"]') !== null ||
-                                   document.querySelector('button[class*="user"]') !== null;
-
-            return hasUserProfile;
-          }
-
-          function checkLogin() {
-            if (isLoggedIn() && !hasShownNotification) {
-              console.log('[Qwen Monitor] Login detected! Signaling main process...');
-              hasShownNotification = true;
-              showNotification('Qwen credentials detected! Extracting...');
-              // Signal to main process via title change
-              setTimeout(() => {
-                document.title = 'QWEN_LOGIN_DETECTED';
-              }, 100);
-            }
-          }
-
-          // Check immediately
-          checkLogin();
-
-          // Watch for DOM changes
-          const observer = new MutationObserver(() => {
-            checkLogin();
-          });
-
-          observer.observe(document.body, {
-            childList: true,
-            subtree: true
-          });
-
-          // Poll URL changes
-          let lastUrl = window.location.href;
-          setInterval(() => {
-            if (window.location.href !== lastUrl) {
-              lastUrl = window.location.href;
-              console.log('[Qwen Monitor] URL changed:', lastUrl);
-              checkLogin();
-            }
-          }, 1000);
-        })();
-      `);
-    });
-
-    // Listen for page title changes (our signal from the injected script)
-    qwenLoginWindow.webContents.on('page-title-updated', async (event, title) => {
-      if (title === 'QWEN_LOGIN_DETECTED') {
-        console.log('[Qwen Login] Login detected via monitor script!');
+      // If user navigated to chat page (not login), they're logged in
+      if (url.includes('chat.qwen.ai') && !url.includes('/login') && !url.includes('/signin')) {
+        console.log('[Qwen Login] ✅ LOGIN DETECTED - User appears to be logged in');
         console.log('[Qwen Login] Waiting 2 seconds for cookies to settle...');
 
-        // Wait 2 seconds like the Chrome extension
+        // Wait 2 seconds for cookies to settle
         await new Promise(resolve => setTimeout(resolve, 2000));
 
         console.log('[Qwen Login] Extracting credentials...');
@@ -284,8 +193,7 @@ ipcMain.handle('qwen:open-login', async () => {
             throw new Error('No authentication tokens found');
           }
 
-          // Decode JWT token to get actual token expiration (like Chrome extension does)
-          // Helper function to decode JWT with base64url support
+          // Decode JWT token to get actual token expiration
           const decodeJWT = (token: string) => {
             try {
               const parts = token.split('.');
@@ -319,7 +227,7 @@ ipcMain.handle('qwen:open-login', async () => {
             console.warn('[Qwen Login] No token cookie found for expiration, using default 30 days');
           }
 
-          // Use umidToken if available, otherwise fall back to token (matching Chrome extension logic)
+          // Use umidToken if available, otherwise fall back to token
           const actualToken = umidToken || tokenCookie?.value;
 
           const credentials = {
@@ -330,6 +238,11 @@ ipcMain.handle('qwen:open-login', async () => {
 
           console.log('[Qwen Login] Sending credentials to backend...');
           console.log('[Qwen Login] Expires:', new Date(expiresAt).toISOString());
+          console.log('[Qwen Login] Credentials payload:', JSON.stringify({
+            token: credentials.token?.substring(0, 20) + '...',
+            cookies: credentials.cookies?.substring(0, 50) + '...',
+            expiresAt: credentials.expiresAt
+          }));
 
           // Send credentials to backend
           const response = await fetch('http://localhost:3002/api/qwen/credentials', {
@@ -338,14 +251,17 @@ ipcMain.handle('qwen:open-login', async () => {
             body: JSON.stringify(credentials),
           });
 
+          console.log('[Qwen Login] Response status:', response.status);
+
           if (response.ok) {
             console.log('[Qwen Login] Credentials sent successfully');
+
             // Show success notification in the window
             if (qwenLoginWindow && !qwenLoginWindow.isDestroyed()) {
               await qwenLoginWindow.webContents.executeJavaScript(`
                 (function() {
                   const notification = document.createElement('div');
-                  notification.textContent = 'Qwen credentials saved successfully!';
+                  notification.textContent = 'Credentials saved successfully! You can close this window.';
                   notification.style.cssText = \`
                     position: fixed;
                     top: 20px;
@@ -358,22 +274,52 @@ ipcMain.handle('qwen:open-login', async () => {
                     font-size: 14px;
                     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
                     z-index: 999999;
-                    animation: slideIn 0.3s ease-out;
                   \`;
                   document.body.appendChild(notification);
-                  setTimeout(() => {
-                    notification.style.animation = 'slideOut 0.3s ease-out';
-                    setTimeout(() => notification.remove(), 300);
-                  }, 3000);
                 })();
               `);
             }
+
+            // Don't close window automatically - let user close it
+            console.log('[Qwen Login] Credentials saved successfully. Window left open for user.');
+            resolve();
           } else {
             const errorText = await response.text();
-            console.error('[Qwen Login] Failed to send credentials:', errorText);
+            console.error('[Qwen Login] Failed to send credentials. Status:', response.status);
+            console.error('[Qwen Login] Error response:', errorText);
+
+            // Show error notification in the window
+            if (qwenLoginWindow && !qwenLoginWindow.isDestroyed()) {
+              await qwenLoginWindow.webContents.executeJavaScript(`
+                (function() {
+                  const notification = document.createElement('div');
+                  notification.textContent = 'Failed to save credentials. Check console for details.';
+                  notification.style.cssText = \`
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 12px 20px;
+                    background: #ef4444;
+                    color: white;
+                    border-radius: 8px;
+                    font-family: system-ui, -apple-system, sans-serif;
+                    font-size: 14px;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    z-index: 999999;
+                  \`;
+                  document.body.appendChild(notification);
+                })();
+              `);
+            }
+
+            throw new Error(`Failed to save credentials: ${errorText}`);
           }
         } catch (error) {
-          console.error('[Qwen Login] Failed to extract credentials:', error);
+          console.error('[Qwen Login] Failed to extract/send credentials:', error);
+          console.error('[Qwen Login] Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+
+          // Don't close window on error - let user see what happened and try again
+          reject(error);
         }
       }
     });
@@ -471,7 +417,7 @@ ipcMain.handle('qwen:extract-credentials', async () => {
     const credentials = {
       token: umidToken || tokenCookie?.value,
       cookies: cookieString,
-      expiresAt: expiresAt,
+      expiresAt: Math.floor(expiresAt / 1000), // Convert milliseconds to seconds for backend
     };
 
     console.log('[Qwen Extract] Credentials extracted successfully');

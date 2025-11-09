@@ -63,6 +63,10 @@ export function useHomePage() {
   };
 
   const handleQwenLogin = async () => {
+    console.log('[useHomePage] ⭐ handleQwenLogin called!');
+    console.log('[useHomePage] isElectron():', isElectron());
+    console.log('[useHomePage] window.electronAPI:', window.electronAPI);
+
     try {
       // Step 1: Delete old credentials first if they exist (for re-login)
       const hasCredentials = wsProxyStatus?.credentials?.expiresAt;
@@ -73,8 +77,11 @@ export function useHomePage() {
 
       // Step 2: Platform-specific login flow
       if (isElectron()) {
-        // In Electron, directly open the login window (no extension needed)
-        window.open('https://chat.qwen.ai', '_blank');
+        console.log('[useHomePage] Running in Electron - calling electronAPI.qwen.openLogin()');
+        // In Electron, call the IPC API to open the login window
+        await window.electronAPI.qwen.openLogin();
+        console.log('[useHomePage] Login window closed');
+        useAlertStore.showAlert('Credentials saved successfully!', 'success');
         return;
       }
 
@@ -96,7 +103,7 @@ export function useHomePage() {
     } catch (error) {
       console.error('Failed to handle Qwen login:', error);
       useAlertStore.showAlert(
-        'Failed to prepare login. Please try again.',
+        error instanceof Error ? error.message : 'Failed to prepare login. Please try again.',
         'error'
       );
     }
