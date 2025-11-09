@@ -40,7 +40,8 @@ export function ProvidersPage() {
 
   const providerActions = buildProviderActions({
     providers,
-    handleProviderClick: handleProviderClickNavigate
+    activeProvider,
+    handleProviderClick: handleProviderClickNavigate,
   });
 
   const tabs = [

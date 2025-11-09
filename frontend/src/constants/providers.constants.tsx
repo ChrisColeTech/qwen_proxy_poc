@@ -63,29 +63,32 @@ export const buildProviderSwitchActions = (params: {
 
 export const buildProviderActions = (params: {
   providers: Provider[];
+  activeProvider: string;
   handleProviderClick: (providerId: string) => void;
 }): ActionItem[] => {
-  const { providers, handleProviderClick } = params;
+  const { providers, activeProvider, handleProviderClick } = params;
 
   return providers.map((provider) => {
+    const isActive = provider.id === activeProvider;
+
     // Determine status based on runtime_status if available, otherwise fall back to enabled state
-    let status: 'running' | 'stopped' | 'warning' | 'inactive' = 'stopped';
-    let badgeText = 'Disabled';
-    let badgeVariant: 'default' | 'destructive' | 'secondary' = 'secondary';
+    let status: "running" | "stopped" | "warning" | "inactive" = "stopped";
+    let badgeText = "Disabled";
+    let badgeVariant: "default" | "destructive" | "secondary" = "secondary";
 
     if (provider.enabled) {
-      if (provider.runtime_status === 'loaded') {
-        status = 'running';
-        badgeText = 'Running';
-        badgeVariant = 'default';
-      } else if (provider.runtime_status === 'error') {
-        status = 'warning';
-        badgeText = 'Error';
-        badgeVariant = 'destructive';
+      if (isActive) {
+        status = "running";
+        badgeText = "Running";
+        badgeVariant = "default";
+      } else if (provider.runtime_status === "error") {
+        status = "warning";
+        badgeText = "Error";
+        badgeVariant = "destructive";
       } else {
-        status = 'inactive';
-        badgeText = 'Enabled';
-        badgeVariant = 'default';
+        status = "inactive";
+        badgeText = "Enabled";
+        badgeVariant = "default";
       }
     }
 
@@ -94,7 +97,7 @@ export const buildProviderActions = (params: {
       title: provider.name,
       description: provider.type,
       actions: createProviderBadge(badgeVariant, badgeText),
-      onClick: () => handleProviderClick(provider.id)
+      onClick: () => handleProviderClick(provider.id),
     };
   });
 };
