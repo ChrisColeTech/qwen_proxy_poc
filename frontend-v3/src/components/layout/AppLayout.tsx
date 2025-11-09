@@ -10,6 +10,7 @@ interface AppLayoutProps {
 
 export function AppLayout({ children }: AppLayoutProps) {
   const sidebarPosition = useUIStore((state) => state.uiState.sidebarPosition);
+  const showStatusBar = useUIStore((state) => state.uiState.showStatusBar);
   const isLeft = sidebarPosition === 'left';
 
   return (
@@ -26,7 +27,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         {!isLeft && <Sidebar />}
       </div>
 
-      <StatusBar />
+      {showStatusBar && <StatusBar />}
     </div>
   );
 }

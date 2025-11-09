@@ -12,6 +12,8 @@ interface UIStore {
   toggleSidebarPosition: () => void;
   setShowStatusMessages: (show: boolean) => void;
   toggleShowStatusMessages: () => void;
+  setShowStatusBar: (show: boolean) => void;
+  toggleShowStatusBar: () => void;
   setStatusMessage: (message: string) => void;
   setCurrentRoute: (route: string) => void;
   setActiveTab: (page: string, tab: string) => void;
@@ -79,7 +81,13 @@ async function loadActiveTab(): Promise<Record<string, string>> {
 
 async function loadUIState(): Promise<UIState> {
   const electron = isElectron();
-  const defaults: UIState = { theme: 'dark', sidebarPosition: 'left', showStatusMessages: true };
+  // Default: show status bar in Electron, hide on web
+  const defaults: UIState = {
+    theme: 'dark',
+    sidebarPosition: 'left',
+    showStatusMessages: true,
+    showStatusBar: !!electron
+  };
 
   console.log('[UIStore] Loading UI state, isElectron:', !!electron);
   if (electron && window.electronAPI) {
@@ -112,6 +120,7 @@ export const useUIStore = create<UIStore>((set, get) => ({
     theme: 'dark',
     sidebarPosition: 'left',
     showStatusMessages: true,
+    showStatusBar: isElectron(),
   },
   statusMessage: 'Ready',
   currentRoute: '/',
@@ -187,6 +196,31 @@ export const useUIStore = create<UIStore>((set, get) => ({
       await saveUIState(newState);
     } catch (error) {
       console.error('[UIStore] Failed to save show status messages toggle:', error);
+      // Rollback on error
+      set({ uiState: currentState });
+    }
+  },
+  setShowStatusBar: async (show) => {
+    const currentState = get().uiState;
+    const newState: UIState = { ...currentState, showStatusBar: show };
+    set({ uiState: newState });
+    try {
+      await saveUIState(newState);
+    } catch (error) {
+      console.error('[UIStore] Failed to save show status bar:', error);
+      // Rollback on error
+      set({ uiState: currentState });
+    }
+  },
+  toggleShowStatusBar: async () => {
+    const currentState = get().uiState;
+    const newValue = !currentState.showStatusBar;
+    const newState: UIState = { ...currentState, showStatusBar: newValue };
+    set({ uiState: newState });
+    try {
+      await saveUIState(newState);
+    } catch (error) {
+      console.error('[UIStore] Failed to save show status bar toggle:', error);
       // Rollback on error
       set({ uiState: currentState });
     }

@@ -15,6 +15,7 @@ export function SettingsPage() {
     handleThemeChange,
     handleSidebarPositionChange,
     handleStatusMessagesChange,
+    handleStatusBarChange,
   } = useSettingsPage();
 
   const tabs = [
@@ -24,9 +25,11 @@ export function SettingsPage() {
         theme: uiState.theme,
         sidebarPosition: uiState.sidebarPosition,
         showStatusMessages: uiState.showStatusMessages,
+        showStatusBar: uiState.showStatusBar,
         handleThemeChange,
         handleSidebarPositionChange,
         handleStatusMessagesChange,
+        handleStatusBarChange,
       })
     },
     {

@@ -43,17 +43,21 @@ export const buildAppearanceContent = (params: {
   theme: string;
   sidebarPosition: string;
   showStatusMessages: boolean;
+  showStatusBar: boolean;
   handleThemeChange: (value: string) => void;
   handleSidebarPositionChange: (value: string) => void;
   handleStatusMessagesChange: (value: string) => void;
+  handleStatusBarChange: (value: string) => void;
 }) => {
   const {
     theme,
     sidebarPosition,
     showStatusMessages,
+    showStatusBar,
     handleThemeChange,
     handleSidebarPositionChange,
     handleStatusMessagesChange,
+    handleStatusBarChange,
   } = params;
 
   return (
@@ -84,6 +88,21 @@ export const buildAppearanceContent = (params: {
           >
             <ToggleGroupItem value="left">Left</ToggleGroupItem>
             <ToggleGroupItem value="right">Right</ToggleGroupItem>
+          </ToggleGroup>
+        )}
+
+        <div className="divider-horizontal" />
+
+        {buildSettingRow(
+          'Status Bar',
+          'Show or hide the status bar',
+          <ToggleGroup
+            type="single"
+            value={showStatusBar ? 'show' : 'hide'}
+            onValueChange={handleStatusBarChange}
+          >
+            <ToggleGroupItem value="show">Show</ToggleGroupItem>
+            <ToggleGroupItem value="hide">Hide</ToggleGroupItem>
           </ToggleGroup>
         )}
 
