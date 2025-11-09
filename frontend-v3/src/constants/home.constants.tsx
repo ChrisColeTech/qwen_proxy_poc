@@ -198,11 +198,12 @@ export const buildStatusTabContent = (
     {/* Quick Tests Section */}
     <div className="space-y-4">
       <h3 className="text-sm font-semibold tracking-tight">Quick Tests</h3>
-      <div className="space-y-3">
+      <div className="space-y-4">
         <CodeBlock
           label="Check proxy health"
           code={`curl http://localhost:${port || 3001}/health`}
         />
+        <div className="border-t border-border" />
         <CodeBlock
           label="List available models"
           code={`curl http://localhost:${port || 3001}/v1/models`}
