@@ -146,3 +146,9 @@ export { providerRegistry, ProviderFactory }
 
 // Export provider types
 export { PROVIDER_TYPES } from './provider-types.js'
+
+// Export provider classes for advanced usage
+export { GenericOpenAIProvider } from './generic-openai-provider.js'
+export { LMStudioProvider } from './lm-studio-provider.js'
+export { QwenProxyProvider } from './qwen-proxy-provider.js'
+export { default as QwenDirectProvider } from './qwen-direct-provider.js'

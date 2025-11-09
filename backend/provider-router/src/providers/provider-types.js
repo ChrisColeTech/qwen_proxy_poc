@@ -133,11 +133,9 @@ export function getAllProviderTypes() {
 export function validateProviderConfig(type, config) {
   const metadata = getProviderTypeMetadata(type)
 
+  // If no metadata (unknown type), use generic OpenAI validation
   if (!metadata) {
-    return {
-      valid: false,
-      errors: [`Invalid provider type: ${type}`]
-    }
+    return validateGenericOpenAIConfig(config)
   }
 
   const errors = []
@@ -171,6 +169,43 @@ export function validateProviderConfig(type, config) {
 }
 
 /**
+ * Validate generic OpenAI-compatible provider configuration
+ * @param {Object} config - Configuration object
+ * @returns {Object} Validation result { valid: boolean, errors: Array<string> }
+ */
+function validateGenericOpenAIConfig(config) {
+  const errors = []
+
+  // Generic OpenAI providers only require baseURL
+  if (!config.baseURL) {
+    errors.push('Missing required config field: baseURL')
+  }
+
+  // Validate baseURL is a string
+  if (config.baseURL && typeof config.baseURL !== 'string') {
+    errors.push('Config field \'baseURL\' must be a string')
+  }
+
+  // Validate optional fields
+  if (config.apiKey && typeof config.apiKey !== 'string') {
+    errors.push('Config field \'apiKey\' must be a string')
+  }
+
+  if (config.timeout && typeof config.timeout !== 'number') {
+    errors.push('Config field \'timeout\' must be a number')
+  }
+
+  if (config.headers && typeof config.headers !== 'object') {
+    errors.push('Config field \'headers\' must be an object')
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors
+  }
+}
+
+/**
  * Get default configuration for provider type
  * @param {string} type - Provider type
  * @returns {Object} Default configuration
@@ -179,7 +214,10 @@ export function getDefaultConfig(type) {
   const metadata = getProviderTypeMetadata(type)
 
   if (!metadata) {
-    return {}
+    // Return generic OpenAI defaults for unknown types
+    return {
+      timeout: 120000
+    }
   }
 
   const config = {}

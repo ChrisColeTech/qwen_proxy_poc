@@ -14,6 +14,7 @@ import {
   validateConfigKeyValue
 } from '../middleware/validation.js'
 import { logger } from '../utils/logger.js'
+import { providerRegistry } from '../providers/provider-registry.js'
 
 const router = express.Router()
 
@@ -82,6 +83,17 @@ router.put('/:id/config', validateProviderId, validateProviderConfig, async (req
 
     logger.info(`Provider config updated: ${id}`, { count })
 
+    // Reload provider in registry to pick up config changes
+    const provider = ProviderService.get(id)
+    if (provider && provider.enabled) {
+      try {
+        await providerRegistry.reloadProvider(id)
+        logger.info(`Provider ${id} reloaded in registry after config update`)
+      } catch (error) {
+        logger.warn(`Failed to reload provider ${id} in registry:`, error.message)
+      }
+    }
+
     // Return updated config
     const updatedConfig = ProviderConfigService.getAll(id, true)
 
@@ -133,6 +145,17 @@ router.patch('/:id/config/:key', validateProviderId, validateConfigKeyValue, asy
 
     logger.info(`Provider config key updated: ${id}.${key}`, { isSensitive })
 
+    // Reload provider in registry to pick up config changes
+    const provider = ProviderService.get(id)
+    if (provider && provider.enabled) {
+      try {
+        await providerRegistry.reloadProvider(id)
+        logger.info(`Provider ${id} reloaded in registry after config key update`)
+      } catch (error) {
+        logger.warn(`Failed to reload provider ${id} in registry:`, error.message)
+      }
+    }
+
     res.json({
       provider_id: id,
       key,
@@ -182,6 +205,17 @@ router.delete('/:id/config/:key', validateProviderId, async (req, res, next) => 
     ProviderConfigService.delete(id, key)
 
     logger.info(`Provider config key deleted: ${id}.${key}`)
+
+    // Reload provider in registry to pick up config changes
+    const provider = ProviderService.get(id)
+    if (provider && provider.enabled) {
+      try {
+        await providerRegistry.reloadProvider(id)
+        logger.info(`Provider ${id} reloaded in registry after config key deletion`)
+      } catch (error) {
+        logger.warn(`Failed to reload provider ${id} in registry:`, error.message)
+      }
+    }
 
     res.json({
       success: true,

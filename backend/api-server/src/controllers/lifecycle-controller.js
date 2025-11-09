@@ -12,7 +12,16 @@ class LifecycleController {
   constructor() {
     this.providerRouterMonitor = null
     this.qwenProxyMonitor = null
+    this.statusGetter = null
     this.statusBroadcaster = null
+  }
+
+  /**
+   * Set callback to get full proxy status
+   * @param {Function} statusGetter - Function that returns complete proxy status object
+   */
+  setStatusGetter(statusGetter) {
+    this.statusGetter = statusGetter
   }
 
   /**
@@ -137,10 +146,17 @@ class LifecycleController {
 
   /**
    * Emit a lifecycle event via WebSocket
+   * This includes both lifecycle event data AND full proxy status
    */
   emitLifecycleEvent(processName, state, port, errorMessage = null) {
-    const statusData = {
-      [processName]: {
+    // Get full proxy status (includes extensionConnected, credentials, providers, models, etc.)
+    const fullStatus = this.statusGetter ? this.statusGetter() : {}
+
+    // Merge full proxy status with lifecycle event data
+    const combinedData = {
+      ...fullStatus,
+      lifecycle: {
+        process: processName,
         state,
         port,
         running: state === 'running',
@@ -149,10 +165,10 @@ class LifecycleController {
       timestamp: Date.now(),
     }
 
-    logger.info(`[Lifecycle] Emitting ${processName}:${state}`)
-    eventEmitter.emitToClients('lifecycle:update', statusData, false) // Explicitly exclude extensions
+    logger.info(`[Lifecycle] Emitting ${processName}:${state} with full proxy status`)
+    eventEmitter.emitToClients('lifecycle:update', combinedData, false)
 
-    // Also broadcast full proxy status so frontend gets complete state update
+    // Also broadcast separate proxy:status event for compatibility
     if (this.statusBroadcaster) {
       logger.info(`[Lifecycle] Broadcasting full proxy status after ${processName}:${state}`)
       this.statusBroadcaster()

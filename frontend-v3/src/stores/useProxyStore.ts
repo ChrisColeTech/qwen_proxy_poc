@@ -19,6 +19,10 @@ interface ProxyStore {
   updateFromLifecycle: (event: LifecycleUpdateEvent) => void;
 }
 
+// Track if we're in a server shutdown to suppress cascade toasts
+let isServerShuttingDown = false;
+let shutdownTimeout: ReturnType<typeof setTimeout> | null = null;
+
 export const useProxyStore = create<ProxyStore>((set) => ({
   status: null,
   loading: false,
@@ -32,8 +36,22 @@ export const useProxyStore = create<ProxyStore>((set) => ({
     if (state.connected !== connected && state.lastUpdate > 0) {
       if (connected) {
         useAlertStore.showAlert('API Server connected', 'success');
+        // Clear shutdown flag when reconnecting
+        isServerShuttingDown = false;
+        if (shutdownTimeout) {
+          clearTimeout(shutdownTimeout);
+          shutdownTimeout = null;
+        }
       } else {
+        // API disconnected - this is the root cause, set shutdown flag
+        isServerShuttingDown = true;
         useAlertStore.showAlert('API Server disconnected', 'error');
+
+        // Clear shutdown flag after 2 seconds (allow time for cascade events to be suppressed)
+        if (shutdownTimeout) clearTimeout(shutdownTimeout);
+        shutdownTimeout = setTimeout(() => {
+          isServerShuttingDown = false;
+        }, 2000);
       }
     }
     return { connected };
@@ -58,7 +76,10 @@ export const useProxyStore = create<ProxyStore>((set) => ({
       if (newExtensionConnected) {
         useAlertStore.showAlert('Chrome Extension connected', 'success');
       } else {
-        useAlertStore.showAlert('Chrome Extension disconnected', 'error');
+        // Suppress extension disconnect toast if server is shutting down (cascade failure)
+        if (!isServerShuttingDown) {
+          useAlertStore.showAlert('Chrome Extension disconnected', 'error');
+        }
       }
     }
 
@@ -89,7 +110,10 @@ export const useProxyStore = create<ProxyStore>((set) => ({
       if (newValid) {
         useAlertStore.showAlert('Credentials updated successfully', 'success');
       } else {
-        useAlertStore.showAlert('Credentials expired or invalid', 'error');
+        // Suppress credentials invalid toast if server is shutting down (cascade failure)
+        if (!isServerShuttingDown) {
+          useAlertStore.showAlert('Credentials expired or invalid', 'error');
+        }
       }
     }
 
@@ -145,56 +169,46 @@ export const useProxyStore = create<ProxyStore>((set) => ({
     };
   }),
   updateFromLifecycle: (event) => {
-    // Format lifecycle messages for display (V1 style - concise)
-    const formatMessage = (_processName: string, data: LifecycleUpdateEvent['providerRouter'] | LifecycleUpdateEvent['qwenProxy']) => {
-      if (!data) return '';
+    // Check if event has new lifecycle object format
+    if (!(event as any).lifecycle) {
+      console.warn('[ProxyStore] Lifecycle event missing lifecycle object');
+      return;
+    }
 
-      switch (data.state) {
+    const lifecycle = (event as any).lifecycle;
+
+    // Format lifecycle messages for display (V1 style - concise)
+    const formatMessage = (state: string, port: number | null, error: string | null) => {
+      switch (state) {
         case 'starting':
-          return `Starting :${data.port}`;
+          return `Starting :${port}`;
         case 'running':
-          return `Running :${data.port}`;
+          return `Running :${port}`;
         case 'stopping':
           return 'Stopping';
         case 'stopped':
           return 'Stopped';
         case 'error':
-          return data.error || 'Error';
+          return error || 'Error';
         default:
           return '';
       }
     };
 
-    // Determine which process state to display
-    let lifecycleState: 'idle' | 'starting' | 'running' | 'stopping' | 'stopped' | 'error' = 'idle';
-    let message = '';
+    // Determine lifecycle state
+    const lifecycleState: 'idle' | 'starting' | 'running' | 'stopping' | 'stopped' | 'error' =
+      lifecycle.state === 'starting' ? 'starting' :
+      lifecycle.state === 'running' ? 'running' :
+      lifecycle.state === 'stopping' ? 'stopping' :
+      lifecycle.state === 'stopped' ? 'stopped' :
+      lifecycle.state === 'error' ? 'error' : 'idle';
 
-    // Provider Router takes precedence (main proxy)
-    if (event.providerRouter) {
-      lifecycleState = event.providerRouter.state === 'starting' ? 'starting' :
-                      event.providerRouter.state === 'running' ? 'running' :
-                      event.providerRouter.state === 'stopping' ? 'stopping' :
-                      event.providerRouter.state === 'stopped' ? 'stopped' :
-                      event.providerRouter.state === 'error' ? 'error' : 'idle';
-      message = formatMessage('Provider Router', event.providerRouter);
-    }
-    // Qwen Proxy if no Provider Router update
-    else if (event.qwenProxy) {
-      lifecycleState = event.qwenProxy.state === 'starting' ? 'starting' :
-                      event.qwenProxy.state === 'running' ? 'running' :
-                      event.qwenProxy.state === 'stopping' ? 'stopping' :
-                      event.qwenProxy.state === 'stopped' ? 'stopped' :
-                      event.qwenProxy.state === 'error' ? 'error' : 'idle';
-      message = formatMessage('Qwen Proxy', event.qwenProxy);
-    }
+    const message = formatMessage(lifecycle.state, lifecycle.port, lifecycle.error);
 
     // Update lifecycle store and show toast notifications
-    if (lifecycleState === 'error' && event.providerRouter?.error) {
-      useLifecycleStore.getState().setError(event.providerRouter.error);
-      useAlertStore.showAlert(event.providerRouter.error, 'error');
-    } else if (lifecycleState === 'error' && event.qwenProxy?.error) {
-      useLifecycleStore.getState().setError(event.qwenProxy.error);
-      useAlertStore.showAlert(event.qwenProxy.error, 'error');
+    if (lifecycleState === 'error' && lifecycle.error) {
+      useLifecycleStore.getState().setError(lifecycle.error);
+      useAlertStore.showAlert(lifecycle.error, 'error');
     } else if (message) {
       useLifecycleStore.getState().setState(lifecycleState, message);
 

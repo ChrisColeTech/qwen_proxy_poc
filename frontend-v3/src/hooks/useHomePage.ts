@@ -27,7 +27,7 @@ export function useHomePage() {
     // Optimistically set lifecycle state to 'starting' immediately for instant UI feedback
     useLifecycleStore.getState().setState('starting', 'Starting...');
     // Show immediate feedback before API call
-    useAlertStore.showAlert('Starting proxy server...', 'success');
+    useAlertStore.showAlert('Starting proxy server...', 'info');
     try {
       await proxyService.start();
       // Success/error toasts handled via WebSocket lifecycle events
@@ -47,7 +47,7 @@ export function useHomePage() {
     // Optimistically set lifecycle state to 'stopping' immediately for instant UI feedback
     useLifecycleStore.getState().setState('stopping', 'Stopping...');
     // Show immediate feedback before API call
-    useAlertStore.showAlert('Stopping proxy server...', 'success');
+    useAlertStore.showAlert('Stopping proxy server...', 'info');
     try {
       await proxyService.stop();
       // Success/error toasts handled via WebSocket lifecycle events

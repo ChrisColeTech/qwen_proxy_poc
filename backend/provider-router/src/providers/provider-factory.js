@@ -6,6 +6,7 @@
 import { LMStudioProvider } from './lm-studio-provider.js'
 import { QwenProxyProvider } from './qwen-proxy-provider.js'
 import QwenDirectProvider from './qwen-direct-provider.js'
+import { GenericOpenAIProvider } from './generic-openai-provider.js'
 import { ProviderService } from '../database/services/provider-service.js'
 import { ProviderConfigService } from '../database/services/provider-config-service.js'
 import { ProviderModelService } from '../database/services/provider-model-service.js'
@@ -113,7 +114,7 @@ export class ProviderFactory {
   /**
    * Get provider class by type
    * @param {string} type - Provider type
-   * @returns {Class|null} Provider class or null
+   * @returns {Class} Provider class (returns GenericOpenAIProvider for unknown types)
    */
   static getProviderClass(type) {
     const classMap = {
@@ -122,7 +123,8 @@ export class ProviderFactory {
       [PROVIDER_TYPES.QWEN_DIRECT]: QwenDirectProvider
     }
 
-    return classMap[type] || null
+    // Return specific provider class if known, otherwise use generic OpenAI provider
+    return classMap[type] || GenericOpenAIProvider
   }
 
   /**
@@ -132,15 +134,8 @@ export class ProviderFactory {
    * @returns {Object} Validation result { valid: boolean, errors: Array<string> }
    */
   static validate(type, config) {
-    // Check if provider type is supported
-    if (!this.getProviderClass(type)) {
-      return {
-        valid: false,
-        errors: [`Unsupported provider type: ${type}`]
-      }
-    }
-
-    // Validate configuration
+    // All provider types are supported via GenericOpenAIProvider fallback
+    // Validate configuration (will use generic validation for unknown types)
     return validateProviderConfig(type, config)
   }
 
@@ -155,9 +150,10 @@ export class ProviderFactory {
   /**
    * Check if provider type is supported
    * @param {string} type - Provider type
-   * @returns {boolean} True if supported
+   * @returns {boolean} True if supported (always true with generic fallback)
    */
   static isSupported(type) {
-    return this.getProviderClass(type) !== null
+    // All provider types are supported via GenericOpenAIProvider fallback
+    return true
   }
 }

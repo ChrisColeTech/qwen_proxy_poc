@@ -47,9 +47,8 @@ export function validateProvider(req, res, next) {
   if (req.method === 'POST' || type !== undefined) {
     if (!type || typeof type !== 'string') {
       errors.push('type is required and must be a string')
-    } else if (!VALID_PROVIDER_TYPES.includes(type)) {
-      errors.push(`type must be one of: ${VALID_PROVIDER_TYPES.join(', ')}`)
     }
+    // Allow any provider type - no restriction
   }
 
   // Validate enabled (if provided)

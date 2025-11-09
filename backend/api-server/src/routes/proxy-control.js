@@ -99,8 +99,12 @@ function getCurrentProxyStatus() {
 // Register the status getter with WebSocket controller
 setProxyStatusGetter(getCurrentProxyStatus)
 
+// Register status getter with lifecycle controller
+// This ensures lifecycle:update events include full proxy status
+lifecycleController.setStatusGetter(getCurrentProxyStatus)
+
 // Register status broadcaster with lifecycle controller
-// This ensures proxy:status is emitted after every lifecycle state change
+// This ensures proxy:status is also emitted after every lifecycle state change
 lifecycleController.setStatusBroadcaster(() => {
   const fullStatus = getCurrentProxyStatus()
   eventEmitter.emitProxyStatus(fullStatus)
@@ -113,24 +117,13 @@ lifecycleController.setStatusBroadcaster(() => {
 router.post('/start', async (req, res) => {
   // Check if proxy is already running
   if (proxyProcess) {
-    const providerRouterRunning = isProcessRunning(proxyProcess.pid)
-    const qwenProxyRunning = qwenProxyProcess && isProcessRunning(qwenProxyProcess.pid)
+    // Get full proxy status for emission
+    const fullStatus = getCurrentProxyStatus()
 
+    // Build response data with custom message
     const responseData = {
+      ...fullStatus,
       success: true,
-      status: 'running',
-      providerRouter: {
-        running: providerRouterRunning,
-        port: 3001,
-        uptime: proxyStartTime ? Math.floor((Date.now() - proxyStartTime) / 1000) : 0,
-        pid: providerRouterRunning ? proxyProcess.pid : null
-      },
-      qwenProxy: {
-        running: qwenProxyRunning,
-        port: 3000,
-        uptime: qwenProxyStartTime && qwenProxyRunning ? Math.floor((Date.now() - qwenProxyStartTime) / 1000) : 0,
-        pid: qwenProxyRunning ? qwenProxyProcess.pid : null
-      },
       message: 'Proxy servers are already running'
     }
 
@@ -191,10 +184,8 @@ router.post('/start', async (req, res) => {
       proxyProcess,
       config.proxy.providerRouterPort,
       () => {
-        // Confirmed ready - emit full status update
+        // Confirmed ready - no need to emit status here, lifecycle controller handles it via statusBroadcaster
         console.log('[Proxy Control] Provider Router confirmed ready')
-        const fullStatus = getCurrentProxyStatus()
-        eventEmitter.emitProxyStatus(fullStatus)
       },
       (error) => {
         // Startup failed
@@ -238,25 +229,18 @@ router.post('/start', async (req, res) => {
     const providerRouterRunning = proxyProcess !== null && isProcessRunning(proxyProcess.pid)
     const qwenProxyRunning = qwenProxyProcess !== null && isProcessRunning(qwenProxyProcess.pid)
 
+    // Get full proxy status for emission
+    const fullStatus = getCurrentProxyStatus()
+
+    // Build response data with custom message for starting state
     const responseData = {
+      ...fullStatus,
       success: true,
       status: 'starting',
-      providerRouter: {
-        running: providerRouterRunning,
-        port: 3001,
-        pid: providerRouterRunning ? proxyProcess.pid : null,
-        uptime: 0
-      },
-      qwenProxy: {
-        running: qwenProxyRunning,
-        port: 3000,
-        pid: qwenProxyRunning ? qwenProxyProcess.pid : null,
-        uptime: 0
-      },
       message: 'Proxy servers are starting (qwen-proxy started first, provider-router starting now)'
     }
 
-    // Emit proxy status change event
+    // Emit proxy status change event with full details
     eventEmitter.emitProxyStatus(responseData)
 
     res.json(responseData)
@@ -295,21 +279,14 @@ router.post('/start', async (req, res) => {
 router.post('/stop', (req, res) => {
   // Check if proxy is running
   if (!proxyProcess) {
+    // Get full proxy status for emission
+    const fullStatus = getCurrentProxyStatus()
+
+    // Build response data with custom message
     const responseData = {
+      ...fullStatus,
       success: true,
       status: 'stopped',
-      providerRouter: {
-        running: false,
-        port: 3001,
-        pid: null,
-        uptime: 0
-      },
-      qwenProxy: {
-        running: false,
-        port: 3000,
-        pid: null,
-        uptime: 0
-      },
       message: 'Proxy servers are not running'
     }
 
@@ -330,10 +307,8 @@ router.post('/stop', (req, res) => {
       'providerRouter',
       proxyProcess,
       () => {
-        // Confirmed stopped
+        // Confirmed stopped - no need to emit status here, lifecycle controller handles it via statusBroadcaster
         console.log('[Proxy Control] Provider Router confirmed stopped')
-        const fullStatus = getCurrentProxyStatus()
-        eventEmitter.emitProxyStatus(fullStatus)
       }
     )
 
@@ -344,25 +319,18 @@ router.post('/stop', (req, res) => {
       proxyProcess = null
       proxyStartTime = null
 
+      // Get full proxy status for emission
+      const fullStatus = getCurrentProxyStatus()
+
+      // Build response data with custom message for stopped state
       const responseData = {
+        ...fullStatus,
         success: true,
         status: 'stopped',
-        providerRouter: {
-          running: false,
-          port: 3001,
-          pid: null,
-          uptime: 0
-        },
-        qwenProxy: {
-          running: false,
-          port: 3000,
-          pid: null,
-          uptime: 0
-        },
         message: 'Proxy servers stopped successfully'
       }
 
-      // Emit proxy status change event
+      // Emit proxy status change event with full details
       eventEmitter.emitProxyStatus(responseData)
 
       res.json(responseData)
@@ -378,22 +346,15 @@ router.post('/stop', (req, res) => {
     qwenProxyProcess = null
     qwenProxyStartTime = null
 
+    // Get full proxy status for emission
+    const fullStatus = getCurrentProxyStatus()
+
+    // Build response data with error details
     const responseData = {
+      ...fullStatus,
       success: false,
       status: 'error',
       error: `Failed to stop proxy server: ${error.message}`,
-      providerRouter: {
-        running: false,
-        port: 3001,
-        pid: null,
-        uptime: 0
-      },
-      qwenProxy: {
-        running: false,
-        port: 3000,
-        pid: null,
-        uptime: 0
-      },
       message: `Failed to stop proxy server: ${error.message}`
     }
 
@@ -609,19 +570,9 @@ function stopQwenProxy() {
   try {
     console.log('[Qwen Proxy] Stopping...')
 
-    // Monitor qwen proxy shutdown with lifecycle controller
-    lifecycleController.monitorShutdown(
-      'qwenProxy',
-      qwenProxyProcess,
-      () => {
-        // Confirmed stopped
-        console.log('[Qwen Proxy] Confirmed stopped')
-        const fullStatus = getCurrentProxyStatus()
-        eventEmitter.emitProxyStatus(fullStatus)
-      }
-    )
-
-    // Kill the process
+    // Don't use lifecycle monitoring for qwen-proxy - it's an internal dependency
+    // The frontend only needs to know about provider-router lifecycle
+    // Just kill the process and clean up
     qwenProxyProcess.kill('SIGTERM')
 
     qwenProxyProcess = null

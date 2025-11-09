@@ -394,11 +394,30 @@ export function ProviderFormPage({ readOnly = false }: ProviderFormPageProps = {
 
           <div className="divider-horizontal" />
 
+          {/* apiKey */}
+          <div className="flex-row-between">
+            <div className="vspace-tight">
+              <div className="text-setting-label">apiKey</div>
+              <div className="text-setting-description">API key for authentication (OpenAI-compatible providers)</div>
+            </div>
+            <Input
+              id="config-apiKey"
+              type="password"
+              value={formData.config.apiKey || ''}
+              onChange={(e) => handleConfigChange('apiKey', e.target.value)}
+              placeholder="sk-..."
+              disabled={readOnly}
+              className="flex-1 max-w-md"
+            />
+          </div>
+
+          <div className="divider-horizontal" />
+
           {/* token */}
           <div className="flex-row-between">
             <div className="vspace-tight">
               <div className="text-setting-label">token</div>
-              <div className="text-setting-description">Authentication token for API access</div>
+              <div className="text-setting-description">Authentication token (Qwen providers)</div>
             </div>
             <Input
               id="config-token"

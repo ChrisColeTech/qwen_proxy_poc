@@ -274,6 +274,42 @@ npm test
 - ✅ Tool calling
 - ✅ Model listing
 
+### Generic OpenAI-Compatible Providers
+- ✅ Automatic fallback for unknown provider types
+- ✅ Supports any OpenAI-compatible API (OpenRouter, Together, Groq, etc.)
+- ✅ Chat completions
+- ✅ Streaming
+- ✅ Tool calling
+- ✅ Model listing
+- ✅ Optional API key authentication
+- ✅ Custom headers support
+
+**Examples of supported providers:**
+- OpenRouter (`openrouter.ai`)
+- Together AI (`api.together.xyz`)
+- Groq (`api.groq.com`)
+- Perplexity (`api.perplexity.ai`)
+- Any other OpenAI-compatible API
+
+**Adding a generic provider:**
+```bash
+# Example: Adding OpenRouter
+provider-cli provider add \
+  --id openrouter \
+  --name "OpenRouter" \
+  --type openrouter \
+  --config baseURL=https://openrouter.ai/api/v1 \
+  --config apiKey=your-api-key-here
+
+# Example: Adding Together AI
+provider-cli provider add \
+  --id together \
+  --name "Together AI" \
+  --type together \
+  --config baseURL=https://api.together.xyz/v1 \
+  --config apiKey=your-api-key-here
+```
+
 ## Troubleshooting
 
 **Connection refused to LM Studio:**

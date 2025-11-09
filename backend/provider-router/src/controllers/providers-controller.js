@@ -11,6 +11,7 @@ import {
 import { logger } from '../utils/logger.js'
 import { getAllProviders, hasProvider as registryHasProvider } from '../providers/index.js'
 import { PROVIDER_TYPE_METADATA, PROVIDER_TYPES } from '../providers/provider-types.js'
+import { providerRegistry } from '../providers/provider-registry.js'
 
 /**
  * GET /v1/providers/types
@@ -143,6 +144,16 @@ export async function createProvider(req, res, next) {
 
     logger.info(`Provider created: ${id}`, { name, type })
 
+    // Reload provider in registry if enabled
+    if (provider.enabled) {
+      try {
+        await providerRegistry.reloadProvider(id)
+        logger.info(`Provider ${id} loaded into registry`)
+      } catch (error) {
+        logger.warn(`Failed to load provider ${id} into registry:`, error.message)
+      }
+    }
+
     // Return created provider with config
     const providerConfig = ProviderConfigService.getAll(id, true)
 
@@ -188,6 +199,20 @@ export async function updateProvider(req, res, next) {
 
     logger.info(`Provider updated: ${id}`, { updates })
 
+    // Reload provider in registry to pick up changes
+    if (provider.enabled) {
+      try {
+        await providerRegistry.reloadProvider(id)
+        logger.info(`Provider ${id} reloaded in registry`)
+      } catch (error) {
+        logger.warn(`Failed to reload provider ${id} in registry:`, error.message)
+      }
+    } else {
+      // If provider was disabled, unregister it
+      providerRegistry.unregister(id)
+      logger.info(`Provider ${id} unregistered from registry`)
+    }
+
     res.json(provider)
   } catch (error) {
     next(error)
@@ -217,6 +242,10 @@ export async function deleteProvider(req, res, next) {
     ProviderService.delete(id)
 
     logger.info(`Provider deleted: ${id}`)
+
+    // Unregister from provider registry
+    providerRegistry.unregister(id)
+    logger.info(`Provider ${id} unregistered from registry`)
 
     res.json({
       success: true,
@@ -250,6 +279,14 @@ export async function enableProvider(req, res, next) {
 
     logger.info(`Provider enabled: ${id}`)
 
+    // Reload provider in registry now that it's enabled
+    try {
+      await providerRegistry.reloadProvider(id)
+      logger.info(`Provider ${id} loaded into registry`)
+    } catch (error) {
+      logger.warn(`Failed to load provider ${id} into registry:`, error.message)
+    }
+
     res.json({
       ...provider,
       message: 'Provider enabled'
@@ -281,6 +318,10 @@ export async function disableProvider(req, res, next) {
     const provider = ProviderService.setEnabled(id, false)
 
     logger.info(`Provider disabled: ${id}`)
+
+    // Unregister from provider registry since it's disabled
+    providerRegistry.unregister(id)
+    logger.info(`Provider ${id} unregistered from registry`)
 
     res.json({
       ...provider,
