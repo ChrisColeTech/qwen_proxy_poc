@@ -4,16 +4,89 @@ Master CSS Analysis Tool - Coordinates all analysis tasks
 """
 import os
 import json
+import re
 import click
 from pathlib import Path
 from scan_tsx_classes import extract_classes_from_tsx
 from scan_css_classes import extract_css_classes
 from extract_used_css import (
-    extract_custom_classes_from_tsx, 
-    extract_css_classes_from_css, 
+    extract_custom_classes_from_tsx,
+    extract_css_classes_from_css,
     extract_css_rules_for_classes,
     extract_foundational_css_rules
 )
+
+def resolve_css_imports(css_file, base_dir=None, visited=None):
+    """
+    Recursively resolve @import statements in CSS files and return combined content.
+
+    Args:
+        css_file: Path to the CSS file to process
+        base_dir: Base directory for resolving relative imports
+        visited: Set of already visited files to avoid circular imports
+
+    Returns:
+        Combined CSS content with all imports resolved
+    """
+    if visited is None:
+        visited = set()
+
+    css_file_path = Path(css_file)
+
+    # Normalize path to detect circular imports
+    normalized_path = str(css_file_path.resolve())
+    if normalized_path in visited:
+        return ""
+
+    visited.add(normalized_path)
+
+    # Determine base directory for resolving relative imports
+    if base_dir is None:
+        base_dir = css_file_path.parent
+
+    try:
+        with open(css_file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+    except Exception as e:
+        click.echo(f"Warning: Could not read {css_file_path}: {e}")
+        return ""
+
+    # Find all @import statements
+    import_pattern = r'@import\s+[\'"]([^\'";]+)[\'"];?'
+    imports = re.findall(import_pattern, content)
+
+    combined_content = []
+
+    # Process each import
+    for import_path in imports:
+        # Resolve relative path based on the current file's directory
+        current_file_dir = css_file_path.parent
+        imported_file = current_file_dir / import_path
+
+        if not imported_file.exists():
+            click.echo(f"Warning: Imported file not found: {imported_file}")
+            continue
+
+        # Recursively process the imported file
+        imported_content = resolve_css_imports(imported_file, base_dir, visited)
+        if imported_content:
+            combined_content.append(f"/* Imported from: {import_path} */")
+            combined_content.append(imported_content)
+
+    # Remove @import statements from the original content
+    content_without_imports = re.sub(import_pattern, '', content)
+
+    # Only add the content if it has something besides whitespace and comments
+    stripped_content = re.sub(r'/\*.*?\*/', '', content_without_imports, flags=re.DOTALL).strip()
+    if stripped_content and not stripped_content.startswith('@tailwind'):
+        combined_content.append(f"/* From: {css_file_path.name} */")
+        combined_content.append(content_without_imports)
+    elif '@tailwind' in content_without_imports or '@layer' in content_without_imports:
+        # Keep Tailwind directives and layer definitions
+        combined_content.append(f"/* From: {css_file_path.name} */")
+        combined_content.append(content_without_imports)
+
+    return "\n\n".join(combined_content)
 
 @click.group()
 def cli():
@@ -69,17 +142,19 @@ def analyze(tsx_path, css_file, output_dir, verbose):
             if verbose:
                 click.echo(f"Error reading {tsx_file}: {e}")
     
-    # Step 2: Analyze CSS file
+    # Step 2: Analyze CSS file (resolve all imports)
     if verbose:
-        click.echo("🎨 Analyzing CSS file...")
-    
+        click.echo("🎨 Analyzing CSS file and resolving imports...")
+
     try:
-        with open(css_file, 'r', encoding='utf-8') as f:
-            css_content = f.read()
+        # Resolve all @import statements recursively
+        css_content = resolve_css_imports(css_file)
+        if verbose:
+            click.echo(f"   Resolved CSS imports, total content length: {len(css_content)} characters")
     except Exception as e:
         click.echo(f"Error reading CSS file: {e}")
         return
-    
+
     css_classes = extract_css_classes_from_css(css_content)
     
     # Step 3: Determine usage

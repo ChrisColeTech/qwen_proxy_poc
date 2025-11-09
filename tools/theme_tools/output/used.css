@@ -1,0 +1,304 @@
+/* Used CSS Classes - Referenced in TSX files */
+
+.status-success {
+color: hsl(var(--status-success));
+}
+
+.icon-sm {
+@apply h-4 w-4;
+}
+
+.model-filters-row {
+@apply flex flex-col sm:flex-row gap-3 px-4 py-3 border-b;
+}
+
+.model-filter-group {
+@apply flex items-center gap-2;
+}
+
+.model-filter-label {
+@apply text-sm text-muted-foreground whitespace-nowrap;
+}
+
+.models-filter-select {
+@apply w-[180px];
+}
+
+.page-container {
+@apply w-full p-6 h-full flex flex-col;
+}
+
+.page-card {
+@apply flex flex-col h-full;
+}
+
+.page-card-content {
+@apply flex-1 overflow-hidden;
+}
+
+.icon-sm {
+@apply h-4 w-4;
+}
+
+.card-title-with-icon {
+@apply flex items-center gap-2 text-base;
+}
+
+.icon-primary {
+@apply h-4 w-4 text-primary;
+}
+
+.vspace-tight {
+@apply space-y-0.5;
+}
+
+.vspace-md {
+@apply space-y-4;
+}
+
+.divider-horizontal {
+@apply h-px bg-border;
+}
+
+.sidebar-icon {
+@apply flex-shrink-0;
+}
+
+.sidebar-nav-container {
+@apply flex flex-col items-center pt-2 flex-1;
+}
+
+.titlebar {
+@apply h-10 bg-background border-b border-border flex items-center justify-between;
+}
+
+.titlebar-left {
+@apply flex items-center gap-2 px-4;
+}
+
+.titlebar-title {
+@apply text-sm font-semibold text-foreground;
+}
+
+.titlebar-right {
+@apply flex items-center h-full;
+}
+
+.titlebar-button {
+@apply h-full w-12 flex items-center justify-center hover:bg-accent transition-colors;
+}
+
+.titlebar-button-close {
+@apply h-full w-12 flex items-center justify-center hover:bg-destructive hover:text-destructive-foreground transition-colors;
+}
+
+.titlebar-button-icon {
+@apply h-4 w-4;
+}
+
+.statusbar {
+@apply h-6 bg-muted border-t border-border flex items-center justify-between overflow-hidden;
+  
+  padding-left: clamp(0.25rem, 1vw, 1rem);
+  padding-right: clamp(0.25rem, 1vw, 1rem);
+  
+  font-size: clamp(0.5rem, 1.5vw, 0.75rem);
+}
+
+.statusbar-left {
+@apply flex items-center flex-shrink min-w-0;
+  
+  gap: clamp(0.25rem, 1vw, 1rem);
+}
+
+.statusbar-separator {
+@apply bg-border flex-shrink-0;
+  
+  height: clamp(0.5rem, 2vw, 0.75rem);
+  width: 1px;
+}
+
+.page-container {
+@apply w-full p-6 h-full flex flex-col;
+}
+
+.code-block-container {
+@apply space-y-2;
+}
+
+.code-block-label {
+@apply text-sm font-medium text-foreground;
+}
+
+.code-block-wrapper {
+@apply relative rounded-lg border bg-muted;
+}
+
+.code-block-pre {
+@apply overflow-x-auto p-3;
+}
+
+.code-block-code {
+@apply text-xs font-mono text-foreground;
+}
+
+.code-block-copy-button {
+@apply absolute right-2 top-2 h-7 w-7;
+}
+
+.step-description {
+@apply text-sm text-muted-foreground;
+}
+
+.demo-container {
+@apply rounded-lg border border-border bg-card flex flex-col flex-1 overflow-hidden;
+}
+
+.demo-header {
+@apply flex items-center justify-between border-b border-border px-4 py-3;
+}
+
+.demo-label {
+@apply flex items-center gap-2;
+}
+
+.demo-label-text {
+@apply text-sm font-medium;
+}
+
+.provider-switch-list {
+@apply divide-y divide-border flex-1 overflow-y-auto pr-2;
+}
+
+.provider-switch-item {
+@apply flex items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-muted/50;
+}
+
+.provider-switch-info {
+@apply flex items-center gap-3;
+}
+
+.provider-switch-details {
+@apply flex flex-col gap-0.5;
+}
+
+.provider-switch-name {
+@apply text-sm font-medium text-foreground;
+}
+
+.provider-switch-type {
+@apply text-xs text-muted-foreground;
+}
+
+.provider-switch-actions {
+@apply flex items-center gap-2;
+}
+
+.status-icon-success {
+@apply text-green-600 dark:text-green-500;
+}
+
+.card-title-with-icon {
+@apply flex items-center gap-2 text-base;
+}
+
+.status-success {
+color: hsl(var(--status-success));
+}
+
+.page-card {
+@apply flex-1 flex flex-col overflow-hidden;
+}
+
+.page-card-content {
+@apply flex-1 flex flex-col overflow-hidden;
+}
+
+.tab-container {
+@apply w-full flex flex-col flex-1 overflow-hidden;
+}
+
+.tab-content {
+@apply mt-4 flex-1 flex flex-col overflow-auto;
+}
+
+.status-success {
+color: hsl(var(--status-success));
+}
+
+.step-description {
+@apply text-sm text-muted-foreground;
+}
+
+.demo-container {
+@apply rounded-lg border border-border bg-muted/30 p-4 space-y-3;
+}
+
+.demo-header {
+@apply flex items-center justify-between;
+}
+
+.demo-label {
+@apply flex items-center gap-2;
+}
+
+.demo-label-text {
+@apply text-sm font-medium;
+}
+
+.provider-switch-list {
+@apply space-y-2;
+}
+
+.provider-switch-item {
+@apply flex items-center justify-between bg-background rounded px-4 py-3 transition-colors;
+}
+
+.provider-switch-info {
+@apply flex items-center gap-3;
+}
+
+.provider-switch-details {
+@apply space-y-0;
+}
+
+.provider-switch-name {
+@apply text-sm font-medium;
+}
+
+.provider-switch-type {
+@apply text-xs text-muted-foreground;
+}
+
+.provider-switch-actions {
+@apply flex items-center gap-2;
+}
+
+.code-block-container {
+@apply space-y-2;
+}
+
+.code-block-label {
+@apply text-sm font-medium;
+}
+
+.code-block-wrapper {
+@apply relative;
+}
+
+.code-block-pre {
+@apply bg-muted rounded-lg p-4 text-xs font-mono overflow-x-auto;
+}
+
+.code-block-code {
+@apply text-foreground;
+}
+
+.code-block-copy-button {
+@apply absolute top-2 right-2 h-7 w-7;
+}
+
+.status-icon-success {
+@apply text-primary;
+}
+

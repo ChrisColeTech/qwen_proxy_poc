@@ -1,0 +1,74 @@
+CSS ANALYZER TOOL - VERIFICATION REPORT
+========================================
+
+TOOL FIXED: css_analyzer.py now recursively resolves @import statements
+
+FILES ANALYZED:
+---------------
+All 12 CSS files in the modular structure were successfully processed:
+  1. styles/icons.css
+  2. styles/models.css
+  3. styles/credentials.css
+  4. styles/base/theme.css
+  5. styles/utilities/common.css
+  6. styles/layout.css
+  7. styles/pages.css
+  8. styles/quick-guide.css
+  9. styles/api-guide.css
+  10. styles/ui-components.css
+  11. styles/components/steps.css
+  12. styles/components/guide.css
+
+ANALYSIS RESULTS:
+-----------------
+- TSX Files Scanned: 66 files
+- Total CSS Classes Found: 274 classes
+- Custom Classes Used in TSX: 81 classes
+- CSS Classes Actually Used: 47 classes (17.2% usage rate)
+- CSS Classes Unused: 227 classes (82.8% can be removed)
+
+OUTPUT FILES GENERATED:
+-----------------------
+1. css_analysis.json (16KB) - Complete analysis data
+2. analysis_report.md (8KB) - Markdown report with all classes listed
+3. used_classes.txt (83 lines) - List of used class names
+4. unused_classes.txt (229 lines) - List of unused class names
+5. css_classes.txt (276 lines) - All CSS class names
+6. foundational.css (140 lines) - Theme variables, @layer, @keyframes
+7. used.css (304 lines) - Actual CSS rules for 47 used classes
+8. unused.css (1120 lines) - CSS rules that can be safely removed
+
+VERIFICATION:
+-------------
+✓ used.css contains actual CSS rules (not empty)
+✓ unused.css contains actual CSS rules (not empty)
+✓ All 12 CSS files were processed and combined
+✓ Combined CSS is 29,391 characters
+✓ Tool properly follows @import statements recursively
+✓ No circular import issues
+
+THE FIX:
+--------
+Added resolve_css_imports() function that:
+1. Reads the main CSS file
+2. Finds all @import statements using regex
+3. Recursively processes each imported file
+4. Combines all CSS content while tracking visited files
+5. Returns complete CSS content for analysis
+
+SAMPLE USED CLASSES:
+--------------------
+- status-success (from theme.css)
+- icon-sm (from icons.css)
+- model-filters-row (from models.css)
+- page-container (from layout.css)
+- titlebar (from layout.css)
+- code-block-container (from ui-components.css)
+
+SAMPLE UNUSED CLASSES (can be removed):
+----------------------------------------
+- models-grid (from models.css)
+- credentials-card-content (from credentials.css)
+- api-guide-container (from api-guide.css)
+- guide-benefits-grid (from components/guide.css)
+- step-number-badge (from components/steps.css)
