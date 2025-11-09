@@ -97,7 +97,7 @@ Wait 3-5 seconds for servers to fully initialize.
 Start the provider router directly:
 
 ```bash
-cd /Users/chris/Projects/qwen_proxy_poc/backend/provider-router
+cd backend/provider-router
 npm run dev
 ```
 
@@ -133,7 +133,7 @@ The provider router is the main entry point at **port 3001**. All requests shoul
 ### Check Active Provider
 
 ```bash
-sqlite3 /Users/chris/Projects/qwen_proxy_poc/backend/provider-router/data/provider-router.db \
+sqlite3 backend/provider-router/data/provider-router.db \
   "SELECT value FROM settings WHERE key = 'active_provider';"
 ```
 
@@ -227,15 +227,15 @@ Typical providers:
 
 ```bash
 # Switch to LM Studio
-sqlite3 /Users/chris/Projects/qwen_proxy_poc/backend/provider-router/data/provider-router.db \
+sqlite3 backend/provider-router/data/provider-router.db \
   "UPDATE settings SET value = 'lm-studio-default' WHERE key = 'active_provider';"
 
 # Switch to Qwen Proxy
-sqlite3 /Users/chris/Projects/qwen_proxy_poc/backend/provider-router/data/provider-router.db \
+sqlite3 backend/provider-router/data/provider-router.db \
   "UPDATE settings SET value = 'qwen-proxy-default' WHERE key = 'active_provider';"
 
 # Verify change
-sqlite3 /Users/chris/Projects/qwen_proxy_poc/backend/provider-router/data/provider-router.db \
+sqlite3 backend/provider-router/data/provider-router.db \
   "SELECT value FROM settings WHERE key = 'active_provider';"
 ```
 
@@ -282,7 +282,7 @@ Should return a list of loaded models.
 #### 2. Switch to LM Studio Provider
 
 ```bash
-sqlite3 /Users/chris/Projects/qwen_proxy_poc/backend/provider-router/data/provider-router.db \
+sqlite3 backend/provider-router/data/provider-router.db \
   "UPDATE settings SET value = 'lm-studio-default' WHERE key = 'active_provider';"
 ```
 
@@ -331,7 +331,7 @@ Expected response:
 #### 2. Switch to Qwen Proxy Provider
 
 ```bash
-sqlite3 /Users/chris/Projects/qwen_proxy_poc/backend/provider-router/data/provider-router.db \
+sqlite3 backend/provider-router/data/provider-router.db \
   "UPDATE settings SET value = 'qwen-proxy-default' WHERE key = 'active_provider';"
 ```
 
@@ -383,7 +383,7 @@ echo ""
 
 # 2. Test with current provider
 echo "2. Testing current provider..."
-CURRENT=$(sqlite3 /Users/chris/Projects/qwen_proxy_poc/backend/provider-router/data/provider-router.db "SELECT value FROM settings WHERE key = 'active_provider';")
+CURRENT=$(sqlite3 backend/provider-router/data/provider-router.db "SELECT value FROM settings WHERE key = 'active_provider';")
 echo "Active provider: $CURRENT"
 RESPONSE=$(curl -s http://localhost:3001/v1/chat/completions \
   -H "Content-Type: application/json" \
@@ -395,7 +395,7 @@ echo ""
 
 # 3. Switch to qwen-proxy
 echo "3. Switching to qwen-proxy-default..."
-sqlite3 /Users/chris/Projects/qwen_proxy_poc/backend/provider-router/data/provider-router.db \
+sqlite3 backend/provider-router/data/provider-router.db \
   "UPDATE settings SET value = 'qwen-proxy-default' WHERE key = 'active_provider';"
 sleep 2
 RESPONSE=$(curl -s http://localhost:3001/v1/chat/completions \
@@ -409,7 +409,7 @@ echo ""
 # 4. Switch to LM Studio (if available)
 echo "4. Switching to lm-studio-default..."
 if curl -s http://localhost:1234/v1/models > /dev/null 2>&1; then
-  sqlite3 /Users/chris/Projects/qwen_proxy_poc/backend/provider-router/data/provider-router.db \
+  sqlite3 backend/provider-router/data/provider-router.db \
     "UPDATE settings SET value = 'lm-studio-default' WHERE key = 'active_provider';"
   sleep 2
   RESPONSE=$(curl -s http://localhost:3001/v1/chat/completions \
@@ -493,7 +493,7 @@ curl -s http://localhost:3002/api/qwen/credentials/status | jq .
 
 **Verify the change**:
 ```bash
-sqlite3 /Users/chris/Projects/qwen_proxy_poc/backend/provider-router/data/provider-router.db \
+sqlite3 backend/provider-router/data/provider-router.db \
   "SELECT key, value FROM settings WHERE key = 'active_provider';"
 ```
 

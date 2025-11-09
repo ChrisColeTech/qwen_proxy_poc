@@ -14,11 +14,11 @@ Audited all code examples referenced in the documentation files against the actu
 
 ## Files Audited
 
-1. `/Users/chris/Projects/qwen_proxy_poc/docs/v1/03_CODE_EXAMPLES.md`
-2. `/Users/chris/Projects/qwen_proxy_poc/docs/v1/04_CODE_EXAMPLES_SERVICES_HOOKS.md`
-3. `/Users/chris/Projects/qwen_proxy_poc/docs/v1/05_CODE_EXAMPLES_ELECTRON.md`
-4. `/Users/chris/Projects/qwen_proxy_poc/docs/v1/06_CODE_EXAMPLES_WEBSOCKET_LIFECYCLE.md`
-5. `/Users/chris/Projects/qwen_proxy_poc/docs/v1/07_CODE_EXAMPLES_PAGE_ARCHITECTURE.md`
+1. `docs/v1/03_CODE_EXAMPLES.md`
+2. `docs/v1/04_CODE_EXAMPLES_SERVICES_HOOKS.md`
+3. `docs/v1/05_CODE_EXAMPLES_ELECTRON.md`
+4. `docs/v1/06_CODE_EXAMPLES_WEBSOCKET_LIFECYCLE.md`
+5. `docs/v1/07_CODE_EXAMPLES_PAGE_ARCHITECTURE.md`
 
 ---
 

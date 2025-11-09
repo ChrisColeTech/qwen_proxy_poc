@@ -2,7 +2,7 @@
 ## Comprehensive Analysis Report
 
 **Analysis Date:** November 6, 2025  
-**Codebase:** /Users/chris/Projects/qwen_proxy_poc/frontend  
+**Codebase:** frontend  
 **Severity Overall:** CRITICAL - Full refactor recommended
 
 ---
@@ -29,14 +29,14 @@ All shadcn/ui components are installed but actively bypassed with custom CSS cla
 **Issue:** Using raw HTML `<button>` with custom `.btn-primary`/`.btn-danger` instead of shadcn Button
 
 **Files and Line Numbers:**
-- `/Users/chris/Projects/qwen_proxy_poc/frontend/src/components/features/authentication/AuthButtons.tsx`
+- `frontend/src/components/features/authentication/AuthButtons.tsx`
   - Line 48: `<button ... className="btn-primary">`
   - Line 53: `<button ... className="btn-danger">`
-- `/Users/chris/Projects/qwen_proxy_poc/frontend/src/components/features/proxy/ProxyControlButtons.tsx`
+- `frontend/src/components/features/proxy/ProxyControlButtons.tsx`
   - Line 13: `className="btn-primary"`
   - Line 21: `className="btn-danger"`
 
-**CSS Definition:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/index.css:279-284`
+**CSS Definition:** `frontend/src/index.css:279-284`
 ```css
 .btn-primary {
   @apply px-4 py-2 bg-primary text-primary-foreground rounded-md font-medium hover:opacity-90 transition-opacity disabled:opacity-50;
@@ -92,7 +92,7 @@ import { Button } from '@/components/ui/button'
 5. **CredentialsDetailCard.tsx** (Lines 20-43)
    - Same pattern with additional `credential-detail`, `credential-label`, `credential-value` classes
 
-**CSS Definitions:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/index.css:229-263`
+**CSS Definitions:** `frontend/src/index.css:229-263`
 
 **Replacement Required:**
 ```typescript
@@ -137,7 +137,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
   - Line 12: `<span className="status-badge-active">Running</span>`
   - Line 14: `<span className="status-badge-inactive">Stopped</span>`
 
-**CSS Definitions:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/index.css:266-276`
+**CSS Definitions:** `frontend/src/index.css:266-276`
 
 **Recommendation:** Create a `<StatusBadge>` component with variants
 
@@ -148,7 +148,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 ### 1.4 ALERT/NOTIFICATION VIOLATIONS - 1 component, 7 CSS classes
 **Issue:** StatusAlert uses 7 custom CSS classes for basic alert styling
 
-**File and Line Numbers:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/components/features/alerts/StatusAlert.tsx:12-22`
+**File and Line Numbers:** `frontend/src/components/features/alerts/StatusAlert.tsx:12-22`
 
 **CSS Classes Used:**
 - `status-alert` (line 12)
@@ -159,7 +159,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 - `status-alert-message` (line 17)
 - `status-alert-close` (line 19)
 
-**CSS Definition:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/index.css:196-223`
+**CSS Definition:** `frontend/src/index.css:196-223`
 
 **Recommendation:** Use shadcn/ui Alert component or create reusable Alert wrapper
 
@@ -170,7 +170,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 ### 1.5 ENVIRONMENT BADGE VIOLATIONS - 1 component, 6 CSS classes
 **Issue:** Custom EnvironmentBadge component using CSS classes instead of composing shadcn components
 
-**File and Line Numbers:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/components/ui/EnvironmentBadge.tsx:7-12`
+**File and Line Numbers:** `frontend/src/components/ui/EnvironmentBadge.tsx:7-12`
 
 **CSS Classes Used:**
 - `environment-badge`
@@ -178,7 +178,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 - `environment-badge-dot`
 - `environment-badge-text`
 
-**CSS Definition:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/index.css:168-194`
+**CSS Definition:** `frontend/src/index.css:168-194`
 
 **Count:** 6 custom CSS classes
 
@@ -201,7 +201,7 @@ components/features/proxy/
 
 **Total Lines:** 125 lines split across 4 files
 
-**Usage:** Only imported in `/Users/chris/Projects/qwen_proxy_poc/frontend/src/pages/HomePage.tsx` (1 place)
+**Usage:** Only imported in `frontend/src/pages/HomePage.tsx` (1 place)
 
 **Analysis:**
 - `ProxyInfoGrid`: Small presentation component, 38 lines, tightly coupled
@@ -226,7 +226,7 @@ components/features/authentication/
 
 **Total Lines:** 120 lines split across 3 files
 
-**Usage:** Only imported in `/Users/chris/Projects/qwen_proxy_poc/frontend/src/pages/HomePage.tsx` (1 place)
+**Usage:** Only imported in `frontend/src/pages/HomePage.tsx` (1 place)
 
 **Analysis:**
 - `AuthButtons`: Contains critical authentication logic (handleConnect, handleRevoke), 59 lines, tightly coupled
@@ -271,7 +271,7 @@ These components are only used in one place (`HomePage.tsx`):
 ### Severity: HIGH
 
 ### 3.1 CSS Overview
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/index.css`  
+**File:** `frontend/src/index.css`  
 **Total Lines:** 389 lines  
 **Custom Classes:** 62+
 
@@ -317,41 +317,41 @@ These components are only used in one place (`HomePage.tsx`):
 ### 4.1 Installed Components Barely Used
 
 **Button** - Installed, NOT USED
-- Available in: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/components/ui/button.tsx`
+- Available in: `frontend/src/components/ui/button.tsx`
 - Used in: 0 places
 - Should replace: 4 custom button instances
 
 **Card** - Installed, NOT USED
-- Available in: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/components/ui/card.tsx`
+- Available in: `frontend/src/components/ui/card.tsx`
 - Used in: 0 places (only Dialog uses it internally)
 - Should replace: 29+ instances of `.card-base` structure
 
 **Input** - Installed, NOT USED
-- Available in: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/components/ui/input.tsx`
+- Available in: `frontend/src/components/ui/input.tsx`
 - Used in: 0 places
 - Potential use: Could be used for future form features
 
 **Label** - Installed, NOT USED
-- Available in: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/components/ui/label.tsx`
+- Available in: `frontend/src/components/ui/label.tsx`
 - Used in: 0 places
 - Potential use: Could be used with form inputs
 
 **Popover** - Installed, NOT USED
-- Available in: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/components/ui/popover.tsx`
+- Available in: `frontend/src/components/ui/popover.tsx`
 - Used in: 0 places
 - Potential use: Could be used for help tooltips, context menus
 
 **Textarea** - Installed, NOT USED
-- Available in: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/components/ui/textarea.tsx`
+- Available in: `frontend/src/components/ui/textarea.tsx`
 - Used in: 0 places
 - Potential use: Could be used for message/note inputs
 
 **Command** - Installed and USED (in Dialog only)
-- Available in: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/components/ui/command.tsx`
+- Available in: `frontend/src/components/ui/command.tsx`
 - Used in: Dialog component internal dependency
 
 **Dialog** - Installed, MINIMALLY USED
-- Available in: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/components/ui/dialog.tsx`
+- Available in: `frontend/src/components/ui/dialog.tsx`
 - Used in: Command component only
 
 ---

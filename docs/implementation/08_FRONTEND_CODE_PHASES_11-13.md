@@ -4,740 +4,17 @@ This document contains the complete, verbatim source code for **Phases 11, 12, a
 
 ## Table of Contents
 
-- [Phase 11: State Management (Stores)](#phase-11-state-management-stores)
-- [Phase 12: Pages](#phase-12-pages)
-- [Phase 13: Application Entry & Routing](#phase-13-application-entry--routing)
-- [Phase 14: Styling System](#phase-14-styling-system)
+- [Phase 11: Pages](#phase-11-pages)
+- [Phase 12: Application Entry & Routing](#phase-12-application-entry--routing)
+- [Phase 13: Styling System](#phase-13-styling-system)
 
 ---
 
-## Phase 11: State Management (Stores)
+## Phase 11: Pages
 
-**Priority**: P1 (Can start after Phase 5 complete)
+**Priority**: P1 (Can start after Phases 7, 8, 9, 10 complete)
 
-This phase implements all Zustand stores for global state management with proper typing and persistence.
-
-### src/stores/useUIStore.ts
-
-**File**: `frontend/src/stores/useUIStore.ts` (259 lines)
-
-```typescript
-import { create } from 'zustand';
-import type { UIState } from '@/types';
-
-interface UIStore {
-  uiState: UIState;
-  statusMessage: string;
-  currentRoute: string;
-  activeTab: Record<string, string>; // page route -> active tab
-  setTheme: (theme: 'light' | 'dark') => void;
-  toggleTheme: () => void;
-  setSidebarPosition: (position: 'left' | 'right') => void;
-  toggleSidebarPosition: () => void;
-  setShowStatusMessages: (show: boolean) => void;
-  toggleShowStatusMessages: () => void;
-  setShowStatusBar: (show: boolean) => void;
-  toggleShowStatusBar: () => void;
-  setStatusMessage: (message: string) => void;
-  setCurrentRoute: (route: string) => void;
-  setActiveTab: (page: string, tab: string) => void;
-  loadSettings: () => Promise<void>;
-}
-
-function isElectron() {
-  return typeof window !== 'undefined' && window.electronAPI;
-}
-
-async function saveUIState(uiState: UIState) {
-  const electron = isElectron();
-  console.log('[UIStore] Saving UI state:', uiState, 'isElectron:', !!electron);
-  if (electron && window.electronAPI) {
-    await window.electronAPI.settings.set('uiState', uiState);
-    console.log('[UIStore] Saved to electron-store');
-  } else {
-    localStorage.setItem('qwen-proxy-ui-state', JSON.stringify(uiState));
-    console.log('[UIStore] Saved to localStorage');
-  }
-}
-
-async function saveCurrentRoute(route: string) {
-  const electron = isElectron();
-  if (electron && window.electronAPI) {
-    await window.electronAPI.settings.set('currentRoute', route);
-  } else {
-    localStorage.setItem('qwen-proxy-current-route', route);
-  }
-}
-
-async function saveActiveTab(activeTab: Record<string, string>) {
-  const electron = isElectron();
-  if (electron && window.electronAPI) {
-    await window.electronAPI.settings.set('activeTab', activeTab);
-  } else {
-    localStorage.setItem('qwen-proxy-active-tab', JSON.stringify(activeTab));
-  }
-}
-
-async function loadCurrentRoute(): Promise<string> {
-  const electron = isElectron();
-  if (electron && window.electronAPI) {
-    const route = await window.electronAPI.settings.get('currentRoute') as string | null;
-    return route || '/';
-  } else {
-    return localStorage.getItem('qwen-proxy-current-route') || '/';
-  }
-}
-
-async function loadActiveTab(): Promise<Record<string, string>> {
-  const electron = isElectron();
-  if (electron && window.electronAPI) {
-    const tabs = await window.electronAPI.settings.get('activeTab') as Record<string, string> | null;
-    return tabs || {};
-  } else {
-    try {
-      const stored = localStorage.getItem('qwen-proxy-active-tab');
-      return stored ? JSON.parse(stored) : {};
-    } catch (e) {
-      return {};
-    }
-  }
-}
-
-async function loadUIState(): Promise<UIState> {
-  const electron = isElectron();
-  // Default: show status bar in Electron, hide on web
-  const defaults: UIState = {
-    theme: 'dark',
-    sidebarPosition: 'left',
-    showStatusMessages: true,
-    showStatusBar: !!electron
-  };
-
-  console.log('[UIStore] Loading UI state, isElectron:', !!electron);
-  if (electron && window.electronAPI) {
-    const stored = await window.electronAPI.settings.get('uiState') as UIState | null;
-    console.log('[UIStore] Loaded from electron-store:', stored);
-    return stored ? { ...defaults, ...stored } : defaults;
-  } else {
-    try {
-      const stored = localStorage.getItem('qwen-proxy-ui-state');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        console.log('[UIStore] Loaded from localStorage:', parsed);
-        // Support both new format (direct UIState) and legacy format (nested)
-        const uiState = parsed.state?.uiState || parsed;
-        // Validate the loaded state has required properties
-        if (uiState.theme && uiState.sidebarPosition) {
-          return { ...defaults, ...uiState };
-        }
-      }
-    } catch (e) {
-      console.error('[UIStore] Failed to load UI state from localStorage:', e);
-    }
-    console.log('[UIStore] No stored state, using defaults');
-    return defaults;
-  }
-}
-
-export const useUIStore = create<UIStore>((set, get) => ({
-  uiState: {
-    theme: 'dark',
-    sidebarPosition: 'left',
-    showStatusMessages: true,
-    showStatusBar: !!isElectron(),
-  },
-  statusMessage: 'Ready',
-  currentRoute: '/',
-  activeTab: {},
-  setTheme: async (theme) => {
-    const currentState = get().uiState;
-    const newState: UIState = { ...currentState, theme };
-    set({ uiState: newState });
-    try {
-      await saveUIState(newState);
-    } catch (error) {
-      console.error('[UIStore] Failed to save theme:', error);
-      // Rollback on error
-      set({ uiState: currentState });
-    }
-  },
-  toggleTheme: async () => {
-    const currentState = get().uiState;
-    const newTheme: 'light' | 'dark' = currentState.theme === 'light' ? 'dark' : 'light';
-    const newState: UIState = { ...currentState, theme: newTheme };
-    set({ uiState: newState });
-    try {
-      await saveUIState(newState);
-    } catch (error) {
-      console.error('[UIStore] Failed to save theme toggle:', error);
-      // Rollback on error
-      set({ uiState: currentState });
-    }
-  },
-  setSidebarPosition: async (position) => {
-    const currentState = get().uiState;
-    const newState: UIState = { ...currentState, sidebarPosition: position };
-    set({ uiState: newState });
-    try {
-      await saveUIState(newState);
-    } catch (error) {
-      console.error('[UIStore] Failed to save sidebar position:', error);
-      // Rollback on error
-      set({ uiState: currentState });
-    }
-  },
-  toggleSidebarPosition: async () => {
-    const currentState = get().uiState;
-    const newPosition: 'left' | 'right' = currentState.sidebarPosition === 'left' ? 'right' : 'left';
-    const newState: UIState = { ...currentState, sidebarPosition: newPosition };
-    set({ uiState: newState });
-    try {
-      await saveUIState(newState);
-    } catch (error) {
-      console.error('[UIStore] Failed to save sidebar position toggle:', error);
-      // Rollback on error
-      set({ uiState: currentState });
-    }
-  },
-  setShowStatusMessages: async (show) => {
-    const currentState = get().uiState;
-    const newState: UIState = { ...currentState, showStatusMessages: show };
-    set({ uiState: newState });
-    try {
-      await saveUIState(newState);
-    } catch (error) {
-      console.error('[UIStore] Failed to save show status messages:', error);
-      // Rollback on error
-      set({ uiState: currentState });
-    }
-  },
-  toggleShowStatusMessages: async () => {
-    const currentState = get().uiState;
-    const newValue = !currentState.showStatusMessages;
-    const newState: UIState = { ...currentState, showStatusMessages: newValue };
-    set({ uiState: newState });
-    try {
-      await saveUIState(newState);
-    } catch (error) {
-      console.error('[UIStore] Failed to save show status messages toggle:', error);
-      // Rollback on error
-      set({ uiState: currentState });
-    }
-  },
-  setShowStatusBar: async (show) => {
-    const currentState = get().uiState;
-    const newState: UIState = { ...currentState, showStatusBar: show };
-    set({ uiState: newState });
-    try {
-      await saveUIState(newState);
-    } catch (error) {
-      console.error('[UIStore] Failed to save show status bar:', error);
-      // Rollback on error
-      set({ uiState: currentState });
-    }
-  },
-  toggleShowStatusBar: async () => {
-    const currentState = get().uiState;
-    const newValue = !currentState.showStatusBar;
-    const newState: UIState = { ...currentState, showStatusBar: newValue };
-    set({ uiState: newState });
-    try {
-      await saveUIState(newState);
-    } catch (error) {
-      console.error('[UIStore] Failed to save show status bar toggle:', error);
-      // Rollback on error
-      set({ uiState: currentState });
-    }
-  },
-  setStatusMessage: (message) => set({ statusMessage: message }),
-  setCurrentRoute: async (route) => {
-    set({ currentRoute: route });
-    try {
-      await saveCurrentRoute(route);
-    } catch (error) {
-      console.error('[UIStore] Failed to save current route:', error);
-    }
-  },
-  setActiveTab: async (page, tab) => {
-    const currentActiveTab = get().activeTab;
-    const newActiveTab = { ...currentActiveTab, [page]: tab };
-    set({ activeTab: newActiveTab });
-    try {
-      await saveActiveTab(newActiveTab);
-    } catch (error) {
-      console.error('[UIStore] Failed to save active tab:', error);
-    }
-  },
-  loadSettings: async () => {
-    try {
-      const uiState = await loadUIState();
-      const currentRoute = await loadCurrentRoute();
-      const activeTab = await loadActiveTab();
-      console.log('[UIStore] Settings loaded successfully:', uiState, 'route:', currentRoute, 'tabs:', activeTab);
-      set({ uiState, currentRoute, activeTab });
-    } catch (error) {
-      console.error('[UIStore] Failed to load settings:', error);
-    }
-  },
-}));
-```
-
----
-
-### src/stores/useSettingsStore.ts
-
-**File**: `frontend/src/stores/useSettingsStore.ts` (72 lines)
-
-```typescript
-import { create } from 'zustand';
-import { apiService } from '@/services/api.service';
-import { useAlertStore } from './useAlertStore';
-
-interface Settings {
-  'server.port'?: string;
-  'server.host'?: string;
-  active_provider?: string;
-  active_model?: string;
-  [key: string]: string | number | boolean | undefined;
-}
-
-interface SettingsStore {
-  settings: Settings;
-  loading: boolean;
-  providerRouterUrl: string;
-  fetchSettings: () => Promise<void>;
-  updateSetting: (key: string, value: string) => Promise<void>;
-  setActiveModel: (modelId: string) => Promise<void>;
-}
-
-export const useSettingsStore = create<SettingsStore>((set, get) => ({
-  settings: {},
-  loading: false,
-  providerRouterUrl: '',
-
-  fetchSettings: async () => {
-    set({ loading: true });
-    try {
-      const result = await apiService.getSettings();
-      if (result.success && result.data) {
-        const port = result.data['server.port'] || '3001';
-        const host = result.data['server.host'] || 'localhost';
-        const providerRouterUrl = `http://${host}:${port}`;
-        set({ settings: result.data, providerRouterUrl });
-      }
-    } catch (error) {
-      console.error('Failed to fetch settings:', error);
-      set({ providerRouterUrl: 'http://localhost:3001' });
-    } finally {
-      set({ loading: false });
-    }
-  },
-
-  updateSetting: async (key: string, value: string) => {
-    const previousValue = get().settings[key];
-
-    try {
-      await apiService.updateSetting(key, value);
-      set((state) => ({
-        settings: { ...state.settings, [key]: value }
-      }));
-
-      // Show toast notifications for provider/model changes
-      if (previousValue !== value) {
-        if (key === 'active_provider') {
-          useAlertStore.showAlert(`Switched to provider: ${value}`, 'success');
-        } else if (key === 'active_model') {
-          useAlertStore.showAlert(`Switched to model: ${value}`, 'success');
-        }
-      }
-    } catch (error) {
-      console.error('[SettingsStore] Failed to update setting:', error);
-      throw error;
-    }
-  },
-
-  setActiveModel: async (modelId: string) => {
-    return get().updateSetting('active_model', modelId);
-  }
-}));
-```
-
----
-
-### src/stores/useCredentialsStore.ts
-
-**File**: `frontend/src/stores/useCredentialsStore.ts` (17 lines)
-
-```typescript
-import { create } from 'zustand';
-import type { QwenCredentials } from '@/types';
-
-interface CredentialsStore {
-  credentials: QwenCredentials | null;
-  loading: boolean;
-  setCredentials: (credentials: QwenCredentials | null) => void;
-  setLoading: (loading: boolean) => void;
-}
-
-export const useCredentialsStore = create<CredentialsStore>((set) => ({
-  credentials: null,
-  loading: false,
-  setCredentials: (credentials) => set({ credentials }),
-  setLoading: (loading) => set({ loading }),
-}));
-```
-
----
-
-### src/stores/useProxyStore.ts
-
-**File**: `frontend/src/stores/useProxyStore.ts` (228 lines)
-
-```typescript
-import { create } from 'zustand';
-import type { ProxyStatusResponse, ProxyStatusEvent, CredentialsUpdatedEvent, ProvidersUpdatedEvent, ModelsUpdatedEvent, LifecycleUpdateEvent } from '@/types';
-import { useLifecycleStore } from './useLifecycleStore';
-import { useAlertStore } from './useAlertStore';
-
-interface ProxyStore {
-  status: ProxyStatusResponse | null;
-  loading: boolean;
-  connected: boolean;
-  lastUpdate: number;
-  wsProxyStatus: ProxyStatusEvent['status'] | null;
-  setStatus: (status: ProxyStatusResponse | null) => void;
-  setLoading: (loading: boolean) => void;
-  setConnected: (connected: boolean) => void;
-  updateFromProxyStatus: (event: ProxyStatusEvent) => void;
-  updateFromCredentials: (event: CredentialsUpdatedEvent) => void;
-  updateFromProviders: (event: ProvidersUpdatedEvent) => void;
-  updateFromModels: (event: ModelsUpdatedEvent) => void;
-  updateFromLifecycle: (event: LifecycleUpdateEvent) => void;
-}
-
-// Track if we're in a server shutdown to suppress cascade toasts
-let isServerShuttingDown = false;
-let shutdownTimeout: ReturnType<typeof setTimeout> | null = null;
-
-export const useProxyStore = create<ProxyStore>((set) => ({
-  status: null,
-  loading: false,
-  connected: false,
-  lastUpdate: 0,
-  wsProxyStatus: null,
-  setStatus: (status) => set({ status }),
-  setLoading: (loading) => set({ loading }),
-  setConnected: (connected) => set((state) => {
-    // Show toast notification when connection status changes (but not on initial connection)
-    if (state.connected !== connected && state.lastUpdate > 0) {
-      if (connected) {
-        useAlertStore.showAlert('API Server connected', 'success');
-        // Clear shutdown flag when reconnecting
-        isServerShuttingDown = false;
-        if (shutdownTimeout) {
-          clearTimeout(shutdownTimeout);
-          shutdownTimeout = null;
-        }
-      } else {
-        // API disconnected - this is the root cause, set shutdown flag
-        isServerShuttingDown = true;
-        useAlertStore.showAlert('API Server disconnected', 'error');
-
-        // Clear shutdown flag after 2 seconds (allow time for cascade events to be suppressed)
-        if (shutdownTimeout) clearTimeout(shutdownTimeout);
-        shutdownTimeout = setTimeout(() => {
-          isServerShuttingDown = false;
-        }, 2000);
-      }
-    }
-    return { connected };
-  }),
-  updateFromProxyStatus: (event) => set((state) => {
-    // Preserve existing credentials if not included in the update
-    const credentials = event.status.credentials ? {
-      valid: event.status.credentials.valid,
-      expiresAt: event.status.credentials.expiresAt ? event.status.credentials.expiresAt * 1000 : null, // Convert seconds to milliseconds
-    } : (state.wsProxyStatus?.credentials || { valid: false, expiresAt: null });
-
-    const updatedStatus = {
-      ...event.status,
-      credentials,
-    };
-
-    // Check for extension status change and show toast
-    const previousExtensionConnected = state.wsProxyStatus?.extensionConnected;
-    const newExtensionConnected = event.status.extensionConnected;
-
-    if (state.lastUpdate > 0 && previousExtensionConnected !== newExtensionConnected) {
-      if (newExtensionConnected) {
-        useAlertStore.showAlert('Chrome Extension connected', 'success');
-      } else {
-        // Suppress extension disconnect toast if server is shutting down (cascade failure)
-        if (!isServerShuttingDown) {
-          useAlertStore.showAlert('Chrome Extension disconnected', 'error');
-        }
-      }
-    }
-
-    // Initialize lifecycle store on first load if it's empty and proxy is running
-    const lifecycleStore = useLifecycleStore.getState();
-    if (!lifecycleStore.message && event.status.providerRouter?.running) {
-      // Set initial message based on running state
-      lifecycleStore.setState('running', `Running :${event.status.providerRouter.port}`);
-    } else if (!lifecycleStore.message && !event.status.providerRouter?.running && !event.status.qwenProxy?.running) {
-      // Proxy is stopped
-      lifecycleStore.setState('stopped', 'Stopped');
-    }
-
-    return {
-      wsProxyStatus: updatedStatus,
-      status: updatedStatus as any, // Also update status for StatusBar
-      lastUpdate: Date.now()
-    };
-  }),
-  updateFromCredentials: (event) => set((state) => {
-    if (!state.wsProxyStatus) return state;
-
-    const previousValid = state.wsProxyStatus.credentials?.valid;
-    const newValid = event.credentials.valid;
-
-    // Show toast notification when credentials status changes (but not on initial load)
-    if (state.lastUpdate > 0 && previousValid !== newValid) {
-      if (newValid) {
-        useAlertStore.showAlert('Credentials updated successfully', 'success');
-      } else {
-        // Suppress credentials invalid toast if server is shutting down (cascade failure)
-        if (!isServerShuttingDown) {
-          useAlertStore.showAlert('Credentials expired or invalid', 'error');
-        }
-      }
-    }
-
-    const updatedStatus = {
-      ...state.wsProxyStatus,
-      credentials: {
-        valid: event.credentials.valid,
-        expiresAt: event.credentials.expiresAt ? event.credentials.expiresAt * 1000 : null, // Convert seconds to milliseconds
-      },
-    };
-    return {
-      wsProxyStatus: updatedStatus,
-      status: updatedStatus as any, // Also update status for StatusBar
-      lastUpdate: Date.now(),
-    };
-  }),
-  updateFromProviders: (event) => set((state) => {
-    if (!state.wsProxyStatus) return state;
-
-    // Handle both formats: {providers: [...]} and {items: [...], total: N, enabled: N}
-    const providers = event.providers || (event as any).items || [];
-    const total = (event as any).total ?? providers.length;
-    const enabled = (event as any).enabled ?? providers.filter((p: any) => p.enabled).length;
-
-    return {
-      wsProxyStatus: {
-        ...state.wsProxyStatus,
-        providers: {
-          items: providers,
-          total,
-          enabled,
-        },
-      },
-      lastUpdate: Date.now(),
-    };
-  }),
-  updateFromModels: (event) => set((state) => {
-    if (!state.wsProxyStatus) return state;
-
-    // Handle both formats: {models: [...]} and {items: [...], total: N}
-    const models = event.models || (event as any).items || [];
-    const total = (event as any).total ?? models.length;
-
-    return {
-      wsProxyStatus: {
-        ...state.wsProxyStatus,
-        models: {
-          items: models,
-          total,
-        },
-      },
-      lastUpdate: Date.now(),
-    };
-  }),
-  updateFromLifecycle: (event) => {
-    // Check if event has new lifecycle object format
-    if (!(event as any).lifecycle) {
-      console.warn('[ProxyStore] Lifecycle event missing lifecycle object');
-      return;
-    }
-
-    const lifecycle = (event as any).lifecycle;
-
-    // Format lifecycle messages for display (V1 style - concise)
-    const formatMessage = (state: string, port: number | null, error: string | null) => {
-      switch (state) {
-        case 'starting':
-          return `Starting :${port}`;
-        case 'running':
-          return `Running :${port}`;
-        case 'stopping':
-          return 'Stopping';
-        case 'stopped':
-          return 'Stopped';
-        case 'error':
-          return error || 'Error';
-        default:
-          return '';
-      }
-    };
-
-    // Determine lifecycle state
-    const lifecycleState: 'idle' | 'starting' | 'running' | 'stopping' | 'stopped' | 'error' =
-      lifecycle.state === 'starting' ? 'starting' :
-      lifecycle.state === 'running' ? 'running' :
-      lifecycle.state === 'stopping' ? 'stopping' :
-      lifecycle.state === 'stopped' ? 'stopped' :
-      lifecycle.state === 'error' ? 'error' : 'idle';
-
-    const message = formatMessage(lifecycle.state, lifecycle.port, lifecycle.error);
-
-    // Update lifecycle store and show toast notifications
-    if (lifecycleState === 'error' && lifecycle.error) {
-      useLifecycleStore.getState().setError(lifecycle.error);
-      useAlertStore.showAlert(lifecycle.error, 'error');
-    } else if (message) {
-      useLifecycleStore.getState().setState(lifecycleState, message);
-
-      // Only show toasts for final states (running/stopped), not transition states (starting/stopping)
-      // Transition state toasts are shown immediately in useHomePage for better UX
-      switch (lifecycleState) {
-        case 'running':
-          useAlertStore.showAlert('Proxy server started successfully', 'success');
-          break;
-        case 'stopped':
-          useAlertStore.showAlert('Proxy server stopped successfully', 'success');
-          break;
-      }
-    }
-  },
-}));
-```
-
----
-
-### src/stores/useLifecycleStore.ts
-
-**File**: `frontend/src/stores/useLifecycleStore.ts` (22 lines)
-
-```typescript
-import { create } from 'zustand';
-
-export type LifecycleState = 'idle' | 'starting' | 'running' | 'stopping' | 'stopped' | 'error';
-
-interface LifecycleStore {
-  state: LifecycleState;
-  message: string;
-  error: string | null;
-  setState: (state: LifecycleState, message: string) => void;
-  setError: (error: string) => void;
-  clearError: () => void;
-}
-
-export const useLifecycleStore = create<LifecycleStore>((set) => ({
-  state: 'idle',
-  message: '',
-  error: null,
-  setState: (state, message) => set({ state, message, error: null }),
-  setError: (error) => set({ state: 'error', error }),
-  clearError: () => set({ error: null }),
-}));
-```
-
----
-
-### src/stores/useAlertStore.ts
-
-**File**: `frontend/src/stores/useAlertStore.ts` (70 lines)
-
-```typescript
-import { toast } from '@/hooks/useToast';
-
-interface AlertStore {
-  showAlert: (message: string, type: 'success' | 'error' | 'info' | 'warning') => void;
-}
-
-// Toast queue to stagger multiple toasts with proper delays
-let pendingToasts: Array<{ message: string; type: 'success' | 'error' | 'info' | 'warning' }> = [];
-let queueTimeout: ReturnType<typeof setTimeout> | null = null;
-let lastToastMessage: string | null = null;
-let lastToastTime: number = 0;
-const TOAST_STAGGER_DELAY = 300; // 300ms delay between toasts
-const DUPLICATE_SUPPRESS_WINDOW = 1000; // Suppress duplicate messages within 1 second
-
-const scheduleNextToast = () => {
-  // Clear any existing timeout
-  if (queueTimeout) {
-    clearTimeout(queueTimeout);
-    queueTimeout = null;
-  }
-
-  // If queue is empty, we're done
-  if (pendingToasts.length === 0) {
-    return;
-  }
-
-  // Get the next toast from the queue
-  const nextToast = pendingToasts.shift()!;
-
-  // Show the toast
-  const { dismiss } = toast({
-    description: nextToast.message,
-    variant: nextToast.type === 'error' ? 'destructive' : 'default',
-  });
-
-  // Track last toast for deduplication
-  lastToastMessage = nextToast.message;
-  lastToastTime = Date.now();
-
-  // Auto-dismiss after 3 seconds
-  setTimeout(() => {
-    dismiss();
-  }, 3000);
-
-  // Schedule the next toast if there are more in the queue
-  if (pendingToasts.length > 0) {
-    queueTimeout = setTimeout(scheduleNextToast, TOAST_STAGGER_DELAY);
-  }
-};
-
-export const useAlertStore = {
-  showAlert: (message: string, type: 'success' | 'error' | 'info' | 'warning') => {
-    // Deduplicate: skip if same message was shown within the suppression window
-    const now = Date.now();
-    if (lastToastMessage === message && (now - lastToastTime) < DUPLICATE_SUPPRESS_WINDOW) {
-      return;
-    }
-
-    const isFirstToast = pendingToasts.length === 0;
-
-    // Add to queue
-    pendingToasts.push({ message, type });
-
-    // If this is the first toast, show it immediately and start the queue
-    if (isFirstToast) {
-      scheduleNextToast();
-    }
-  },
-} as AlertStore;
-```
-
----
-
-## Phase 12: Pages
-
-**Priority**: P1 (Can start after Phases 7, 8, 9, 10, 11 complete)
-
-This phase implements all main application pages following the architecture pattern.
+This phase implements all 9 main application pages following the architecture pattern: **Pages → Hooks → Feature Components → Constants**.
 
 ### src/pages/HomePage.tsx
 
@@ -1446,9 +723,9 @@ export function ProviderFormPage({ readOnly = false }: ProviderFormPageProps = {
 
 ---
 
-## Phase 13: Application Entry & Routing
+## Phase 12: Application Entry & Routing
 
-**Priority**: P1 (Depends on Phase 12 complete)
+**Priority**: P1 (Depends on Phase 11 complete)
 
 This phase implements the application initialization and routing system.
 
@@ -1556,61 +833,26 @@ createRoot(document.getElementById('root')!).render(
 
 ---
 
-## Phase 14: Styling System
+## Phase 13: Styling System
 
 **Priority**: P1 (Can be done in parallel with components)
 
-This phase implements the complete CSS architecture using Tailwind CSS with custom styles organized by layer.
+This phase implements the CSS entry point that imports the complete styling system.
 
 ### src/index.css
 
-**File**: `frontend/src/index.css` (50 lines)
+**File**: `frontend/src/index.css` (14 lines)
 
 ```css
-/* Import custom component styles first */
-@import './styles/icons.css';
-@import './styles/home.css';
-@import './styles/providers.css';
-@import './styles/models.css';
-@import './styles/credentials.css';
-/* ============================================================================
-   QWEN PROXY - MAIN STYLESHEET
-   Architecture: Modular CSS organized by layer
-   ============================================================================ */
+/* Foundational CSS - Structural and infrastructure styles */
+@import './styles/styles.css';
 
-/* IMPORTANT: All @import must come before @tailwind and any other CSS */
+@tailwind base;
 
-/* Base Styles - Theme variables and global resets */
-@import './styles/base/theme.css';
+@tailwind components;
 
-/* Utility Classes - Common utilities used across the app */
-@import './styles/utilities/common.css';
+@tailwind utilities;
 
-/* Layout Styles - Core layout components */
-@import './styles/layout.css';
-
-/* Page Styles - Page-level styling */
-@import './styles/pages.css';
-@import './styles/pages/providers.css';
-@import './styles/pages/quick-guide.css';
-
-/* Feature Component Styles - Domain-specific components */
-@import './styles/system-features.css';
-@import './styles/quick-guide.css';
-@import './styles/api-guide.css';
-@import './styles/chat-tabs.css';
-@import './styles/chat-quick-test.css';
-@import './styles/chat-custom.css';
-@import './styles/chat-response.css';
-@import './styles/chat-curl.css';
-@import './styles/models2.css';
-
-/* UI Component Styles - Reusable UI components */
-@import './styles/ui-components.css';
-
-/* Legacy Component Styles - To be refactored */
-@import './styles/components/steps.css';
-@import './styles/components/guide.css';
 
 /* Tailwind Directives */
 @tailwind base;
@@ -1618,980 +860,148 @@ This phase implements the complete CSS architecture using Tailwind CSS with cust
 @tailwind utilities;
 ```
 
----
-
-### src/styles/base/theme.css
-
-**File**: `frontend/src/styles/base/theme.css` (83 lines)
-
-```css
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --radius: 0.5rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-
-    /* Status colors */
-    --status-success: 142 76% 36%;
-    --status-info: 221 83% 53%;
-    --status-warning: 45 93% 47%;
-    --status-error: 0 84% 60%;
-    --status-neutral: 0 0% 45%;
-    --status-purple: 271 81% 56%;
-  }
-
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-
-    /* Status colors - dark mode */
-    --status-success: 142 71% 45%;
-    --status-info: 217 91% 60%;
-    --status-warning: 45 93% 58%;
-    --status-error: 0 72% 51%;
-    --status-neutral: 0 0% 63%;
-    --status-purple: 271 91% 65%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-    font-family: Inter, system-ui, sans-serif;
-  }
-}
-```
-
----
-
-### src/styles/utilities/common.css
-
-**File**: `frontend/src/styles/utilities/common.css` (127 lines)
-
-```css
-@layer utilities {
-  .status-success {
-    color: hsl(var(--status-success));
-  }
-  .status-success-dot {
-    background-color: hsl(var(--status-success));
-  }
-  .status-info {
-    color: hsl(var(--status-info));
-  }
-  .status-info-dot {
-    background-color: hsl(var(--status-info));
-  }
-  .status-warning {
-    color: hsl(var(--status-warning));
-  }
-  .status-warning-dot {
-    background-color: hsl(var(--status-warning));
-  }
-  .status-error {
-    color: hsl(var(--status-error));
-  }
-  .status-error-dot {
-    background-color: hsl(var(--status-error));
-  }
-  .status-neutral {
-    color: hsl(var(--status-neutral));
-  }
-  .status-neutral-dot {
-    background-color: hsl(var(--status-neutral));
-  }
-  .status-purple {
-    color: hsl(var(--status-purple));
-  }
-  .status-purple-dot {
-    background-color: hsl(var(--status-purple));
-  }
-}
-
-/* Page Layout */
-.page-container {
-  @apply w-full p-6 h-full flex flex-col;
-}
-
-/* Full-height Card */
-.page-card {
-  @apply flex flex-col h-full;
-}
-
-.page-card-content {
-  @apply flex-1 overflow-hidden;
-}
-
-/* Icon Sizes */
-.icon-sm {
-  @apply h-4 w-4;
-}
-
-.icon-md {
-  @apply h-5 w-5;
-}
-
-.icon-lg {
-  @apply h-8 w-8;
-}
-
-.icon-sm-muted {
-  @apply h-4 w-4 text-muted-foreground;
-}
-
-/* Card Title with Icon */
-.card-title-with-icon {
-  @apply flex items-center gap-2 text-base;
-}
-
-.card-title-with-icon-sm {
-  @apply flex items-center gap-2 text-base;
-}
-
-.icon-primary {
-  @apply h-4 w-4 text-primary;
-}
-
-/* Spacing Utilities */
-.vspace-tight {
-  @apply space-y-0.5;
-}
-
-.vspace-sm {
-  @apply space-y-2;
-}
-
-.vspace-md {
-  @apply space-y-4;
-}
-
-.vspace-lg {
-  @apply space-y-6;
-}
-
-/* Flex Layouts */
-.flex-row {
-  @apply flex items-center gap-2;
-}
-
-.flex-row-between {
-  @apply flex items-center justify-between;
-}
-
-.flex-row-gap-sm {
-  @apply gap-2;
-}
-
-/* Typography */
-.text-setting-label {
-  @apply text-sm font-medium;
-}
-
-.text-setting-description {
-  @apply text-xs text-muted-foreground;
-}
-
-/* Dividers */
-.divider-horizontal {
-  @apply h-px bg-border;
-}
-```
-
----
-
-### src/styles/layout.css
-
-**File**: `frontend/src/styles/layout.css` (184 lines)
-
-```css
-/**
- * Layout Component Styles
- * Styles for AppLayout, Sidebar, TitleBar, StatusBar
- */
-
-/* ========================================
-   AppLayout
-   ======================================== */
-
-.app-layout-root {
-  @apply h-screen flex flex-col;
-}
-
-.app-layout-body {
-  @apply flex-1 flex overflow-hidden;
-}
-
-.app-layout-main {
-  @apply flex-1 overflow-auto;
-}
-
-/* ========================================
-   Sidebar
-   ======================================== */
-
-.sidebar {
-  @apply h-full bg-card border-r border-border flex flex-col transition-all duration-300;
-}
-
-.sidebar-collapsed {
-  @apply w-12;
-}
-
-.sidebar-expanded {
-  @apply w-56;
-}
-
-.sidebar-nav {
-  @apply flex-1 py-2;
-}
-
-.sidebar-item {
-  @apply flex items-center gap-3 px-3 py-2.5 mx-2 text-sm rounded-md transition-colors cursor-pointer text-muted-foreground hover:text-foreground hover:bg-accent;
-}
-
-.sidebar-item-active {
-  @apply bg-accent text-foreground font-medium;
-}
-
-.sidebar-icon {
-  @apply flex-shrink-0;
-}
-
-.sidebar-label {
-  @apply truncate;
-}
-
-.sidebar-toggle {
-  @apply p-2 mx-2 mb-2 flex items-center justify-center rounded-md hover:bg-accent transition-colors text-muted-foreground hover:text-foreground;
-}
-
-.sidebar-nav-container {
-  @apply flex flex-col items-center pt-2 flex-1;
-}
-
-.sidebar-nav-button {
-  @apply w-full h-12 flex items-center justify-center transition-colors relative;
-}
-
-.sidebar-nav-button-active {
-  @apply text-foreground;
-}
-
-.sidebar-nav-button-inactive {
-  @apply text-muted-foreground hover:text-foreground;
-}
-
-.sidebar-nav-indicator {
-  @apply absolute w-0.5 h-12 bg-primary;
-}
-
-.sidebar-nav-indicator-left {
-  @apply left-0;
-}
-
-.sidebar-nav-indicator-right {
-  @apply right-0;
-}
-
-.sidebar-guide-button {
-  @apply w-full h-12 flex items-center justify-center transition-colors relative mt-auto border-t border-border;
-}
-
-.sidebar-settings-button {
-  @apply w-full h-12 flex items-center justify-center transition-colors relative mb-2;
-}
-
-/* ========================================
-   TitleBar
-   ======================================== */
-
-.titlebar {
-  @apply h-10 bg-background border-b border-border flex items-center justify-between;
-}
-
-.titlebar-left {
-  @apply flex items-center gap-2 px-4;
-}
-
-.titlebar-icon {
-  @apply h-5 w-5 text-primary;
-}
-
-.titlebar-title {
-  @apply text-sm font-semibold text-foreground;
-}
-
-.titlebar-right {
-  @apply flex items-center h-full;
-}
-
-.titlebar-button {
-  @apply h-full w-12 flex items-center justify-center hover:bg-accent transition-colors;
-}
-
-.titlebar-button-close {
-  @apply h-full w-12 flex items-center justify-center hover:bg-destructive hover:text-destructive-foreground transition-colors;
-}
-
-.titlebar-button-icon {
-  @apply h-4 w-4;
-}
-
-/* ========================================
-   StatusBar
-   ======================================== */
-
-.statusbar {
-  @apply h-6 bg-muted border-t border-border flex items-center justify-between overflow-hidden;
-  /* Dynamic padding that scales down aggressively on small screens */
-  padding-left: clamp(0.25rem, 1vw, 1rem);
-  padding-right: clamp(0.25rem, 1vw, 1rem);
-  /* Dynamic font size using clamp - scales from 8px to 12px based on viewport */
-  font-size: clamp(0.5rem, 1.5vw, 0.75rem);
-}
-
-.statusbar-left {
-  @apply flex items-center flex-shrink min-w-0;
-  /* Dynamic gap that scales down more aggressively on small screens */
-  gap: clamp(0.25rem, 1vw, 1rem);
-}
-
-.statusbar-right {
-  @apply flex items-center flex-shrink min-w-0;
-  gap: clamp(0.25rem, 1vw, 1rem);
-}
-
-.statusbar-item {
-  @apply flex items-center text-muted-foreground min-w-0;
-  gap: clamp(0.125rem, 0.5vw, 0.375rem);
-  /* Allow text to wrap on very small screens instead of truncating */
-  white-space: nowrap;
-}
-
-.statusbar-item-error {
-  @apply flex items-center text-destructive min-w-0;
-  gap: clamp(0.125rem, 0.5vw, 0.375rem);
-  white-space: nowrap;
-}
-
-.statusbar-separator {
-  @apply bg-border flex-shrink-0;
-  /* Dynamic separator size */
-  height: clamp(0.5rem, 2vw, 0.75rem);
-  width: 1px;
-}
-
-.statusbar-icon {
-  @apply flex-shrink-0;
-  /* Dynamic icon size */
-  height: clamp(0.625rem, 2vw, 0.75rem);
-  width: clamp(0.625rem, 2vw, 0.75rem);
-}
-```
-
----
-
-### src/styles/pages.css
-
-**File**: `frontend/src/styles/pages.css` (85 lines)
-
-```css
-/**
- * Page Component Styles
- * Styles for all page components
- */
-
-/* ========================================
-   Common Page Layout
-   ======================================== */
-
-.page-container {
-  @apply w-full p-6 h-full flex flex-col;
-}
-
-.page-header {
-  @apply mb-6;
-}
-
-.page-title {
-  @apply text-3xl font-bold text-foreground;
-}
-
-.page-subtitle {
-  @apply text-sm text-muted-foreground mt-1;
-}
-
-/* ========================================
-   HomePage Specific
-   ======================================== */
-
-.home-page {
-  @apply page-container;
-}
-
-/* ========================================
-   SettingsPage Specific
-   ======================================== */
-
-.settings-page {
-  @apply page-container;
-}
-
-.settings-section {
-  @apply space-y-4;
-}
-
-.settings-section-title {
-  @apply text-lg font-semibold text-foreground mb-4;
-}
-
-/* ========================================
-   ChatPage Specific
-   ======================================== */
-
-.chat-page {
-  @apply page-container;
-}
-
-/* ========================================
-   ProvidersPage Specific
-   ======================================== */
-
-.providers-page {
-  @apply page-container;
-}
-
-/* ========================================
-   ModelsPage Specific
-   ======================================== */
-
-.models-page {
-  @apply page-container;
-}
-
-/* ========================================
-   Guide Pages
-   ======================================== */
-
-.guide-page {
-  @apply page-container;
-}
-
-.guide-content {
-  @apply space-y-6;
-}
-```
-
----
-
-### src/styles/pages/providers.css
-
-**File**: `frontend/src/styles/pages/providers.css` (66 lines)
-
-```css
-/* Providers Page */
-.providers-container {
-  @apply container max-w-7xl mx-auto p-6 space-y-6;
-}
-
-.providers-header {
-  @apply space-y-2;
-}
-
-.providers-header-title {
-  @apply text-3xl font-bold flex items-center gap-3;
-}
-
-.providers-header-subtitle {
-  @apply text-muted-foreground;
-}
-
-.providers-actions {
-  @apply flex items-center gap-2;
-}
-
-.providers-grid {
-  @apply grid gap-4 md:grid-cols-2 lg:grid-cols-3;
-}
-
-/* Provider Card */
-.provider-card {
-  @apply border rounded-lg bg-card transition-all;
-}
-
-.provider-card-active {
-  @apply ring-2 ring-primary shadow-sm;
-}
-
-.provider-card-header {
-  @apply p-4 space-y-3;
-}
-
-.provider-card-title {
-  @apply flex items-center gap-2 text-lg font-semibold;
-}
-
-.provider-card-badges {
-  @apply flex items-center gap-2 flex-wrap;
-}
-
-.provider-card-description {
-  @apply text-sm text-muted-foreground;
-}
-
-.provider-card-actions {
-  @apply p-4 pt-0 flex flex-col gap-2;
-}
-
-.provider-card-test-result {
-  @apply rounded-lg p-3 text-sm flex items-center gap-2 border;
-}
-
-.provider-card-test-success {
-  @apply bg-primary/10 border-primary/20 text-foreground;
-}
-
-.provider-card-test-error {
-  @apply bg-destructive/10 border-destructive/20 text-foreground;
-}
-```
-
----
-
-### src/styles/pages/quick-guide.css
-
-**File**: `frontend/src/styles/pages/quick-guide.css` (61 lines)
-
-```css
-/* Quick Guide Page */
-.quick-guide-container {
-  @apply container max-w-6xl py-8;
-}
-
-.quick-guide-header {
-  @apply mb-6;
-}
-
-.quick-guide-title-row {
-  @apply flex items-center gap-2 mb-2;
-}
-
-.quick-guide-title {
-  @apply text-2xl font-bold;
-}
-
-.quick-guide-description {
-  @apply text-muted-foreground;
-}
-
-.quick-guide-steps {
-  @apply space-y-6;
-}
-
-.quick-guide-step-header {
-  @apply mb-3;
-}
-
-.quick-guide-step-title {
-  @apply text-lg font-semibold;
-}
-
-.quick-guide-step-description {
-  @apply text-sm text-muted-foreground;
-}
-
-.quick-guide-step-cards {
-  @apply space-y-4;
-}
-
-.quick-guide-success {
-  @apply rounded-lg border border-primary/20 bg-primary/10 p-4;
-}
-
-.quick-guide-success-content {
-  @apply flex items-center gap-2 text-primary;
-}
-
-.quick-guide-success-icon {
-  @apply h-5 w-5;
-}
-
-.quick-guide-success-title {
-  @apply font-semibold;
-}
-
-.quick-guide-success-message {
-  @apply text-sm;
-}
-```
-
----
-
-### src/styles/icons.css
-
-**File**: `frontend/src/styles/icons.css` (22 lines)
-
-```css
-/* Icon size utilities */
-
-.icon-xs {
-  @apply h-3 w-3;
-}
-
-.icon-sm {
-  @apply h-4 w-4;
-}
-
-.icon-md {
-  @apply h-5 w-5;
-}
-
-.icon-lg {
-  @apply h-8 w-8;
-}
-
-.icon-xl {
-  @apply h-12 w-12;
-}
-```
-
----
-
-### src/styles/home.css
-
-**File**: `frontend/src/styles/home.css` (186 lines)
-
-```css
-/* HomePage styles */
-
-.home-page-container {
-  @apply container max-w-7xl py-8 space-y-6;
-}
-
-.home-header-card {
-  @apply flex items-center justify-between;
-}
-
-.home-header-title {
-  @apply flex items-center gap-2;
-}
-
-.home-header-description {
-  @apply text-sm text-muted-foreground;
-}
-
-.home-services-grid {
-  @apply grid grid-cols-1 md:grid-cols-2 gap-6;
-}
-
-.home-service-card {
-  @apply flex flex-col;
-}
-
-.home-service-header {
-  @apply flex items-center justify-between;
-}
-
-.home-service-title {
-  @apply flex items-center gap-2 text-base;
-}
-
-.home-service-content {
-  @apply space-y-3 flex-1;
-}
-
-.home-service-row {
-  @apply flex items-center justify-between;
-}
-
-.home-service-label {
-  @apply text-sm text-muted-foreground;
-}
-
-.home-service-value {
-  @apply text-sm font-mono;
-}
-
-.home-service-footer {
-  @apply w-full;
-}
-
-.home-container {
-  @apply container max-w-6xl py-8 space-y-6;
-}
-
-/* Unified Control Card */
-.home-unified-content {
-  @apply space-y-6;
-}
-
-.home-section {
-  @apply space-y-4;
-}
-
-.home-section-header {
-  @apply flex items-center justify-between;
-}
-
-.home-section-title {
-  @apply flex items-center gap-2 text-sm font-semibold text-muted-foreground uppercase tracking-wide;
-}
-
-.home-section-divider {
-  @apply border-t border-border;
-}
-
-.credentials-info-section-compact {
-  @apply space-y-3 text-sm;
-}
-
-.credentials-logged-out-section-compact {
-  @apply space-y-3;
-}
-
-/* Status Card */
-.home-status-header {
-  @apply flex items-center justify-between;
-}
-
-.home-status-title {
-  @apply flex items-center gap-2;
-}
-
-.home-status-content {
-  @apply space-y-6;
-}
-
-.home-status-indicator {
-  @apply flex items-center gap-3;
-}
-
-.home-status-badge {
-  @apply flex items-center gap-2;
-}
-
-.home-status-label {
-  @apply text-2xl font-bold;
-}
-
-.home-status-label-inactive {
-  @apply text-2xl font-bold text-muted-foreground;
-}
-
-.home-uptime-section {
-  @apply space-y-2 text-sm;
-}
-
-.home-uptime-row {
-  @apply flex items-center gap-2;
-}
-
-.home-uptime-label {
-  @apply text-muted-foreground;
-}
-
-.home-uptime-value {
-  @apply font-medium;
-}
-
-.home-control-buttons {
-  @apply flex gap-2;
-}
-
-.home-start-button {
-  @apply flex items-center gap-2;
-}
-
-.home-stop-button {
-  @apply flex items-center gap-2;
-}
-
-.home-button-icon-spin {
-  @apply animate-spin;
-}
-
-/* Stats Cards */
-.home-stats-grid {
-  @apply grid grid-cols-1 md:grid-cols-3 gap-4;
-}
-
-.home-stats-card-content {
-  @apply pt-6;
-}
-
-.home-stats-card-inner {
-  @apply flex flex-col items-center text-center space-y-2;
-}
-
-.home-stats-icon {
-  @apply h-8 w-8 text-primary;
-}
-
-.home-stats-value {
-  @apply text-3xl font-bold;
-}
-
-.home-stats-label {
-  @apply text-sm text-muted-foreground;
-}
-
-/* Connection Status Badge */
-.connection-status-connected {
-  @apply bg-primary hover:bg-primary/90;
-}
-
-.connection-status-reconnecting {
-  @apply bg-secondary hover:bg-secondary/90;
-}
-
-.connection-status-icon {
-  @apply h-3 w-3 mr-1;
-}
-```
-
----
-
-### Additional CSS Files
-
-The following CSS files provide styles for specific features and components. For brevity, I'll list them with their line counts:
-
-- **src/styles/providers.css** (101 lines) - Providers page styles
-- **src/styles/models.css** (172 lines) - Models page styles
-- **src/styles/models2.css** (126 lines) - Model components styles
-- **src/styles/credentials.css** (102 lines) - Credentials section styles
-- **src/styles/system-features.css** (113 lines) - System control card styles
-- **src/styles/quick-guide.css** (69 lines) - Quick guide component utilities
-- **src/styles/api-guide.css** (173 lines) - API guide component styles
-- **src/styles/ui-components.css** (151 lines) - Reusable UI components
-- **src/styles/components/steps.css** (121 lines) - Step components
-- **src/styles/components/guide.css** (135 lines) - Guide components
-- **src/styles/chat-tabs.css** (18 lines) - Chat tab containers
-- **src/styles/chat-quick-test.css** (50 lines) - Quick test tab
-- **src/styles/chat-custom.css** (38 lines) - Custom chat input
-- **src/styles/chat-curl.css** (42 lines) - cURL examples tab
-- **src/styles/chat-response.css** (55 lines) - Response display
-
-All CSS files follow the same modular architecture with utility classes, component-specific styles, and responsive design patterns.
+**Note**: The complete `styles.css` file (which contains all custom styles organized by layer) is documented in `docs/implementation/09_FRONTEND_COMPLETE_CSS.md`.
+
+The `index.css` file serves as the main CSS entry point and:
+1. Imports the consolidated `styles.css` file containing all custom styles
+2. Includes Tailwind CSS directives for base, components, and utilities layers
 
 ---
 
 ## Implementation Summary
 
-### Phase 11: State Management (6 stores)
-- useUIStore.ts - UI state with localStorage/electron-store persistence
-- useSettingsStore.ts - Application settings
-- useCredentialsStore.ts - Credentials state
-- useProxyStore.ts - Proxy server state with WebSocket sync
-- useLifecycleStore.ts - Application lifecycle state
-- useAlertStore.ts - Toast notifications with queue management
+### Phase 11: Pages (9 files)
 
-### Phase 12: Pages (9 pages)
-- HomePage.tsx - Dashboard with system overview
-- ProvidersPage.tsx - Provider management
-- ModelsPage.tsx - Model browsing and selection
-- SettingsPage.tsx - Application settings
-- ChatPage.tsx - Chat interface
-- BrowserGuidePage.tsx - Chrome extension guide
-- DesktopGuidePage.tsx - Desktop app guide
-- ModelFormPage.tsx - Model details
-- ProviderFormPage.tsx - Provider form (create/edit/view)
+All pages follow the same architectural pattern:
 
-### Phase 13: Application Entry (2 files)
-- App.tsx - Main application with routing (80 lines)
-- main.tsx - React entry point (7 lines)
+1. **Import hooks** for business logic (e.g., `useHomePage`, `useProvidersPage`)
+2. **Import constants** for configuration (e.g., `HOME_TABS`, `PROVIDERS_TITLE`)
+3. **Import feature components** for complex tab content
+4. **Import UI components** (primarily `TabCard` for consistent layout)
+5. **Call hooks** to get state and handlers
+6. **Build data structures** using constant builder functions
+7. **Render TabCard** with tabs array
 
-### Phase 14: Styling System (23+ CSS files)
-- Base styles: theme.css (83 lines)
-- Utilities: common.css (127 lines)
-- Layout: layout.css (184 lines), pages.css (85 lines)
-- Page-specific: providers.css, quick-guide.css, home.css, etc.
-- Component-specific: 18 additional CSS files for features and UI components
-- Main entry: index.css (50 lines)
+**Page Files:**
+- HomePage.tsx (102 lines) - Dashboard with system overview and status
+- ProvidersPage.tsx (88 lines) - Provider management (switch, browse, test)
+- ModelsPage.tsx (110 lines) - Model browsing and selection
+- SettingsPage.tsx (58 lines) - Application settings
+- ChatPage.tsx (45 lines) - Chat interface (custom chat and cURL examples)
+- BrowserGuidePage.tsx (47 lines) - Chrome extension installation guide
+- DesktopGuidePage.tsx (41 lines) - Desktop app installation guide
+- ModelFormPage.tsx (57 lines) - Model details and actions
+- ProviderFormPage.tsx (87 lines) - Provider form (create/edit/view modes)
 
-### Key Architectural Patterns
+### Phase 12: Application Entry (2 files)
 
-1. **State Management**:
-   - Zustand for lightweight global state
-   - Persistence via localStorage (browser) or electron-store (desktop)
-   - WebSocket integration for real-time updates
-   - Toast queue with deduplication
+**App.tsx (80 lines):**
+- Initializes dark mode (`useDarkMode`)
+- Initializes WebSocket connection (`useWebSocket`)
+- Loads persisted UI state and settings on mount
+- Implements client-side routing via switch statement
+- Handles dynamic routes (`/providers/:id`, `/models/:id`)
+- Renders `AppLayout` wrapper and global `Toaster`
 
-2. **Page Components**:
-   - Use TabCard for consistent layout
-   - Business logic in page hooks
-   - Content from constants files
-   - Single responsibility per page
+**main.tsx (7 lines):**
+- React 18 entry point
+- Creates root and renders `<App />`
+- Imports `index.css` for styles
 
-3. **Routing**:
-   - State-based routing via Zustand (no React Router)
-   - Simple switch-case in App.tsx
-   - Support for dynamic routes (/providers/:id, /models/:id)
+### Phase 13: Styling (1 file + reference)
 
-4. **Styling**:
-   - Modular CSS architecture organized by layer
-   - Tailwind CSS with custom utilities
-   - Theme variables for light/dark modes
-   - Component-specific stylesheets
-   - Responsive design with clamp() for dynamic sizing
+**index.css (14 lines):**
+- Imports consolidated `styles.css`
+- Includes Tailwind CSS directives
 
-5. **Initialization**:
-   - Dark mode setup on mount
-   - WebSocket connection on mount
-   - Settings loaded from backend and localStorage
-   - Proper cleanup and error handling
+**Complete CSS Architecture:**
+For the complete CSS file (`styles.css`) with all custom styles organized by layer, see:
+`docs/implementation/09_FRONTEND_COMPLETE_CSS.md`
 
 ---
 
-**Document Version:** 2.0
-**Date:** 2025-01-09
-**Status:** Complete - Updated with verbatim source code
+## Key Architectural Patterns
+
+### 1. Page Component Pattern
+
+**Pages → Hooks → Feature Components → Constants**
+
+```typescript
+// Example: ModelsPage.tsx
+export function ModelsPage() {
+  // 1. Call hook for business logic
+  const { models, activeModel, handleModelSelect } = useModelsPage();
+
+  // 2. Build data structures using constants
+  const selectActions = buildModelSelectActions({ models, activeModel, onSelect: handleModelSelect });
+
+  // 3. Render feature components with data
+  return (
+    <div className="page-container">
+      <TabCard tabs={[
+        { ...MODELS_TABS.SELECT, content: <ModelSelectTab actions={selectActions} /> }
+      ]} />
+    </div>
+  );
+}
+```
+
+### 2. Routing Pattern
+
+**State-based routing** via Zustand (no React Router):
+- Simple switch-case in `App.tsx`
+- Dynamic routes handled via `startsWith()` checks
+- Route state persisted in `useUIStore`
+
+### 3. Initialization Pattern
+
+**App-level initialization** in `App.tsx`:
+1. Dark mode setup (`useDarkMode` hook)
+2. WebSocket connection (`useWebSocket` hook)
+3. Load persisted UI state (`loadSettings`)
+4. Fetch backend settings (`fetchSettings`)
+
+### 4. Tab-Based Layout Pattern
+
+All pages use **TabCard component** for consistent layout:
+- Tabs defined as arrays with `value`, `label`, `description`, `content`
+- Optional `hidden` property for conditional tabs
+- Optional `pageKey` for tab state persistence
+- Optional `contentCardTitle`, `contentCardIcon`, `contentCardActions` for custom card headers
+
+---
+
+## Validation Checklist
+
+### Phase 11: Pages
+- [ ] All 9 pages render correctly
+- [ ] Pages are thin (< 110 lines)
+- [ ] No business logic in page components (moved to hooks)
+- [ ] All tabs functional
+- [ ] Proper loading/error states
+- [ ] Navigation between pages works
+
+### Phase 12: Application Entry
+- [ ] App initializes correctly
+- [ ] Routing works for all 9 pages
+- [ ] Dynamic routes work (`/providers/:id`, `/models/:id`)
+- [ ] Settings load on mount
+- [ ] WebSocket connects successfully
+- [ ] Theme applies correctly
+
+### Phase 13: Styling
+- [ ] CSS imports correctly
+- [ ] Tailwind CSS compiled successfully
+- [ ] Theme switching works (light/dark mode)
+- [ ] All custom styles applied
+- [ ] No style conflicts
+- [ ] Responsive design functional
+
+---
+
+**Document Version:** 3.0
+**Date:** November 9, 2025
+**Status:** Complete - Updated with verbatim source code for Phases 11-13
 **Related Documents**:
 - 01_FRONTEND_V3_REWRITE_IMPLEMENTATION_PLAN.md
 - 04_FRONTEND_CODE_PHASES_1-3.md

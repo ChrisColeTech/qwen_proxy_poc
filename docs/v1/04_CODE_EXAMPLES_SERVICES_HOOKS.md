@@ -7,8 +7,8 @@
 - Use `backend/src/...` instead of `backend/src/...`
 
 The actual reference implementations are located at:
-- Frontend: `/Users/chris/Projects/qwen_proxy_poc/frontend/`
-- Backend: `/Users/chris/Projects/qwen_proxy_poc/backend/`
+- Frontend: `frontend/`
+- Backend: `backend/`
 
 This document contains code examples for services, hooks, and supporting utilities that power the application.
 
@@ -32,7 +32,7 @@ This document contains code examples for services, hooks, and supporting utiliti
 
 ### frontend/src/services/websocket.service.ts
 
-**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/services/websocket.service.ts`
+**Reference**: `frontend/src/services/websocket.service.ts`
 
 ```typescript
 import { io, Socket } from 'socket.io-client';
@@ -194,7 +194,7 @@ export const websocketService = new WebSocketService();
 
 ### frontend/src/hooks/useWebSocket.ts
 
-**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/hooks/useWebSocket.ts`
+**Reference**: `frontend/src/hooks/useWebSocket.ts`
 
 ```typescript
 import { useEffect, useState } from 'react';
@@ -286,7 +286,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
 
 ### frontend/src/stores/useLifecycleStore.ts
 
-**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/stores/useLifecycleStore.ts`
+**Reference**: `frontend/src/stores/useLifecycleStore.ts`
 
 ```typescript
 import { create } from 'zustand';
@@ -1231,7 +1231,7 @@ export const STATUS_POLL_INTERVAL = 10000; // 10 seconds
 
 ### frontend/src/components/ui/environment-badge.tsx
 
-See `/Users/chris/Projects/qwen_proxy_poc/docs/v1/03_CODE_EXAMPLES.md` for component examples including:
+See `docs/v1/03_CODE_EXAMPLES.md` for component examples including:
 - TitleBar
 - StatusBar
 - EnvironmentBadge
@@ -1284,7 +1284,7 @@ This document has been updated with **actual working code from frontend**. All s
 
 ## LEGACY TYPE DEFINITIONS (For Reference)
 
-**NOTE**: The type definitions below are from older documentation. Frontend uses updated types located in `/Users/chris/Projects/qwen_proxy_poc/frontend/src/types/*.types.ts`
+**NOTE**: The type definitions below are from older documentation. Frontend uses updated types located in `frontend/src/types/*.types.ts`
 
 ### LEGACY: frontend/src/vite-env.d.ts (CRITICAL - TypeScript Declarations)
 

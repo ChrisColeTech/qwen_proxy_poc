@@ -12,7 +12,7 @@ Added a `resolve_css_imports()` function to css_analyzer.py that:
 - Returns complete CSS for analysis
 
 ## Files Modified
-- `/Users/chris/Projects/qwen_proxy_poc/tools/theme_tools/css_analyzer.py`
+- `tools/theme_tools/css_analyzer.py`
   - Added `resolve_css_imports()` function (70 lines)
   - Updated `analyze` command to use the new function
   - Added import for `re` module
@@ -176,13 +176,13 @@ Most status color variants unused:
 ## Tool Usage
 
 ```bash
-cd /Users/chris/Projects/qwen_proxy_poc/tools/theme_tools
+cd tools/theme_tools
 
 python3 css_analyzer.py analyze \
-  --tsx-path /Users/chris/Projects/qwen_proxy_poc/frontend/src \
-  --css-file /Users/chris/Projects/qwen_proxy_poc/frontend/src/index.css \
+  --tsx-path frontend/src \
+  --css-file frontend/src/index.css \
   --output-dir ./output \
   --verbose
 ```
 
-Output files location: `/Users/chris/Projects/qwen_proxy_poc/tools/theme_tools/output/`
+Output files location: `tools/theme_tools/output/`

@@ -223,12 +223,12 @@ npx cssstats src/styles/**/*.css
 
 ## Method 6: Python CSS Analyzers (For Flattened CSS)
 
-Located in `/Users/chris/Projects/qwen_proxy_poc/tools/theme_tools/`:
+Located in `tools/theme_tools/`:
 - `css_analyzer.py` - Full analyzer
 - `css_analyzer_simple.py` - Simplified version
 
 ```bash
-cd /Users/chris/Projects/qwen_proxy_poc/tools/theme_tools
+cd tools/theme_tools
 python3 css_analyzer_simple.py analyze \
   --tsx-path ../../frontend/src \
   --css-file ../../frontend/src/index.css \

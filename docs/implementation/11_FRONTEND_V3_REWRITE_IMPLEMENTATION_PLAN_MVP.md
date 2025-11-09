@@ -1,31 +1,4 @@
-# Frontend V3 Rewrite Implementation Plan
-
-## Document Update Summary (November 9, 2025)
-
-This implementation plan has been updated to accurately reflect the current frontend codebase structure. Key changes from the original plan:
-
-**Major Changes:**
-1. **CSS Architecture**: Changed from 23 modular CSS files to a single consolidated `styles.css` file
-2. **Component Count**: Updated from 46 to 45 components (21 UI + 4 Layout + 22 Feature)
-3. **Hooks Organization**: Clarified that there are 13 total hooks (5 core + 8 page-specific)
-4. **Technology Stack**: Added Framer Motion 12.23.24 for animations
-5. **Current State**: All components, hooks, stores, services, and pages are fully implemented
-
-**What Changed:**
-- Phase 13 (Styling): Now reflects single `styles.css` file instead of modular CSS architecture
-- Phase 7 (Hooks): Corrected count from 6+7 to 5+8 hooks (13 total)
-- Phase 8.2 (Custom UI): Removed non-existent `environment-badge.tsx` component
-- Component breakdown: Accurately reflects 21 UI components (12 shadcn + 9 custom)
-- File tree structure: Updated to show actual directory organization
-- Statistics: All metrics updated to match current implementation
-
-**What Stayed the Same:**
-- Architecture pattern: Pages → Hooks → Feature Components → Constants
-- 9 Pages, 9 Constants files, 7 Services, 9 Type files, 6 Stores
-- Phase-by-phase implementation approach
-- Code documentation references (files 04-09)
-
----
+# Frontend V3 Rewrite Implementation Plan MVP
 
 ## Overview
 
@@ -53,21 +26,6 @@ Complete source code for all phases is available in separate documentation files
 This document focuses on **planning, architecture, and implementation steps**. Refer to the code documentation files above for complete source code.
 
 ---
-
-## Current Implementation Summary
-
-**Architecture:**
-- 9 Pages (100% using TypeScript .tsx)
-- 13 Hooks (100% encapsulating business logic)
-- 45 Components total:
-  - 21 UI components (base shadcn + custom)
-  - 4 Layout components
-  - 22 Feature components (organized by domain)
-- 9 Constants files (centralized configuration)
-- 7 Services (API, WebSocket, domain services)
-- 9 Type files (comprehensive type system)
-- 6 Stores (Zustand state management)
-- 1 CSS file (single styles.css with all styles)
 
 **Technology Stack:**
 - React 18.3.1
@@ -173,12 +131,9 @@ cd ..
 1. `frontend/src/types/common.types.ts` - Common types (Route, APIResponse, Platform, Theme, SidebarPosition)
 2. `frontend/src/types/providers.types.ts` - Provider domain types
 3. `frontend/src/types/models.types.ts` - Model domain types (Model, ParsedModel, Capability, CapabilityFilter)
-4. `frontend/src/types/credentials.types.ts` - Credentials types
-5. `frontend/src/types/proxy.types.ts` - Proxy server types
-6. `frontend/src/types/chat.types.ts` - Chat functionality types
-7. `frontend/src/types/home.types.ts` - Home page types
-8. `frontend/src/types/quick-guide.types.ts` - Quick guide types
-9. `frontend/src/types/index.ts` - Type barrel export (re-exports all types)
+4. `frontend/src/types/chat.types.ts` - Chat functionality types
+5. `frontend/src/types/home.types.ts` - Home page types
+6. `frontend/src/types/index.ts` - Type barrel export (re-exports all types)
 
 **Code Reference**: See Phase 2 in `docs/implementation/04_FRONTEND_CODE_PHASES_1-3.md`
 
@@ -227,12 +182,6 @@ cd ..
 3. `frontend/src/constants/models.constants.tsx` - Models page configuration
 4. `frontend/src/constants/settings.constants.tsx` - Settings page tabs
 5. `frontend/src/constants/chat.constants.tsx` - Chat page tabs
-6. `frontend/src/constants/modelForm.constants.tsx` - Model form configuration
-7. `frontend/src/constants/providerForm.constants.tsx` - Provider form configuration
-
-**Guide Constants:**
-8. `frontend/src/constants/browserGuide.constants.tsx` - Browser guide content
-9. `frontend/src/constants/desktopGuide.constants.tsx` - Desktop guide content
 
 **Code Reference**: See Phase 4 in `docs/implementation/05_FRONTEND_CODE_PHASES_4-5.md`
 
@@ -257,14 +206,11 @@ cd ..
 
 **Core Services:**
 1. `frontend/src/services/api.service.ts` - HTTP API service (get, post, put, delete, getSettings, updateSetting)
-2. `frontend/src/services/websocket.service.ts` - WebSocket service (connect, disconnect, on, off, emit)
 
 **Domain Services:**
-3. `frontend/src/services/providers.service.ts` - Provider operations (getProviders, switchProvider, etc.)
-4. `frontend/src/services/models.service.ts` - Model operations (getModels, getAvailableModels, etc.)
-5. `frontend/src/services/credentials.service.ts` - Credentials operations
-6. `frontend/src/services/chatService.ts` - Chat operations (sendMessage, streamChat)
-7. `frontend/src/services/proxy.service.ts` - Proxy management (getStatus, start, stop)
+2. `frontend/src/services/providers.service.ts` - Provider operations (getProviders, switchProvider, etc.)
+3. `frontend/src/services/models.service.ts` - Model operations (getModels, getAvailableModels, etc.)
+4. `frontend/src/services/chatService.ts` - Chat operations (sendMessage, streamChat)
 
 **Code Reference**: See Phase 5 in `docs/implementation/05_FRONTEND_CODE_PHASES_4-5.md`
 
@@ -292,10 +238,7 @@ cd ..
 2. `frontend/src/stores/useSettingsStore.ts` - Application settings (server config, active provider/model)
 
 **Domain Stores:**
-3. `frontend/src/stores/useCredentialsStore.ts` - Credentials state with WebSocket sync
-4. `frontend/src/stores/useProxyStore.ts` - Proxy server state with WebSocket sync
-5. `frontend/src/stores/useLifecycleStore.ts` - Application lifecycle state
-6. `frontend/src/stores/useAlertStore.ts` - Toast notifications with auto-dismiss
+3. `frontend/src/stores/useAlertStore.ts` - Toast notifications with auto-dismiss
 
 **Code Reference**: See Phase 6 in `docs/implementation/06_FRONTEND_CODE_PHASES_6-7.md`
 
@@ -318,22 +261,15 @@ cd ..
 
 ### Files to Create:
 
-**Core Hooks (5 files):**
+**Core Hooks:**
 1. `frontend/src/hooks/useDarkMode.ts` - Theme management (syncs with DOM)
-2. `frontend/src/hooks/useWebSocket.ts` - WebSocket connection management
-3. `frontend/src/hooks/useToast.ts` - Toast notifications interface
-4. `frontend/src/hooks/useExtensionDetection.ts` - Browser extension detection
-5. `frontend/src/hooks/useBrowserGuidePage.ts` - Browser guide logic
+2. `frontend/src/hooks/useToast.ts` - Toast notifications interface
 
-**Page-Specific Hooks (8 files):**
-7. `frontend/src/hooks/useHomePage.ts` - Home page logic (credentials, proxy status)
-8. `frontend/src/hooks/useProvidersPage.ts` - Providers page logic (list, switch)
-9. `frontend/src/hooks/useModelsPage.ts` - Models page logic (filtering, selection)
-10. `frontend/src/hooks/useSettingsPage.ts` - Settings page logic (fetch, update)
-11. `frontend/src/hooks/useDesktopGuidePage.ts` - Desktop guide logic
-12. `frontend/src/hooks/useModelFormPage.ts` - Model form logic
-13. `frontend/src/hooks/useProviderFormPage.ts` - Provider form logic
-14. `frontend/src/hooks/useApiGuidePage.ts` - API guide page logic (already created in phase 7)
+**Page-Specific Hooks**
+3. `frontend/src/hooks/useHomePage.ts` - Home page logic (credentials, proxy status)
+4. `frontend/src/hooks/useProvidersPage.ts` - Providers page logic (list, switch)
+5. `frontend/src/hooks/useModelsPage.ts` - Models page logic (filtering, selection)
+6. `frontend/src/hooks/useSettingsPage.ts` - Settings page logic (fetch, update)
 
 **Code Reference**: See Phase 7 in `docs/implementation/06_FRONTEND_CODE_PHASES_6-7.md`
 
@@ -414,7 +350,7 @@ cd ..
 
 **Objective**: Create feature-specific components organized by domain.
 
-### Files to Create (22 feature components):
+### Files to Create (feature components):
 
 **Home Features (1 component):**
 1. `frontend/src/components/features/home/StatusTab.tsx`
@@ -441,30 +377,15 @@ cd ..
 14. `frontend/src/components/features/settings/DebugTab.tsx`
 15. `frontend/src/components/features/settings/ProxyTab.tsx`
 
-**Guide Features (2 components):**
-16. `frontend/src/components/features/browserGuide/BrowserGuideTab.tsx`
-17. `frontend/src/components/features/desktopGuide/DesktopGuideTab.tsx`
 
-**Model Form Features (2 components):**
-18. `frontend/src/components/features/modelForm/ModelDetailsTab.tsx`
-19. `frontend/src/components/features/modelForm/ModelFormActions.tsx`
-
-**Provider Form Features (3 components):**
-20. `frontend/src/components/features/providerForm/ProviderFormActionsEdit.tsx`
-21. `frontend/src/components/features/providerForm/ProviderFormActionsReadOnly.tsx`
-22. `frontend/src/components/features/providerForm/ProviderFormContent.tsx`
-
-**Note:** All 22 feature components are organized in domain-specific folders:
+**Note:** All feature components are organized in domain-specific folders:
 - `features/home/` - 1 component (StatusTab)
 - `features/chat/` - 2 components (CurlTab, CustomChatTab)
 - `features/quick-guide/` - 1 component (CodeBlock)
 - `features/providers/` - 4 components (AllProvidersTab, ProviderSwitchTab, ProviderTestContent, ProviderTestWrapper)
 - `features/models/` - 4 components (AllModelsTab, ModelSelectTab, ModelTestContent, ModelTestWrapper)
 - `features/settings/` - 3 components (AppearanceTab, DebugTab, ProxyTab)
-- `features/browserGuide/` - 1 component (BrowserGuideTab)
-- `features/desktopGuide/` - 1 component (DesktopGuideTab)
-- `features/modelForm/` - 2 components (ModelDetailsTab, ModelFormActions)
-- `features/providerForm/` - 3 components (ProviderFormActionsEdit, ProviderFormActionsReadOnly, ProviderFormContent)
+
 
 **Code Reference**: See Phase 9 in `docs/implementation/07_FRONTEND_CODE_PHASES_8-10.md`
 
@@ -520,12 +441,7 @@ cd ..
 3. `frontend/src/pages/ModelsPage.tsx` - Model browsing (select, browse all, test)
 4. `frontend/src/pages/SettingsPage.tsx` - Application settings
 5. `frontend/src/pages/ChatPage.tsx` - Chat interface (cURL, custom chat)
-6. `frontend/src/pages/ModelFormPage.tsx` - Model details/form
-7. `frontend/src/pages/ProviderFormPage.tsx` - Provider details/form
 
-**Guide Pages:**
-8. `frontend/src/pages/BrowserGuidePage.tsx` - Browser extension installation guide
-9. `frontend/src/pages/DesktopGuidePage.tsx` - Desktop app installation guide
 
 **Code Reference**: See Phase 11 in `docs/implementation/08_FRONTEND_CODE_PHASES_11-13.md`
 
@@ -635,270 +551,3 @@ The current implementation uses a **single consolidated CSS file** instead of mu
 - No style conflicts
 
 ---
-
-## Final Project Structure
-
-```
-frontend/
-├── public/
-│   └── vite.svg
-├── src/
-│   ├── assets/
-│   ├── components/
-│   │   ├── features/          # 22 feature components organized by domain
-│   │   │   ├── browserGuide/
-│   │   │   │   └── BrowserGuideTab.tsx
-│   │   │   ├── chat/
-│   │   │   │   ├── CurlTab.tsx
-│   │   │   │   └── CustomChatTab.tsx
-│   │   │   ├── desktopGuide/
-│   │   │   │   └── DesktopGuideTab.tsx
-│   │   │   ├── home/
-│   │   │   │   └── StatusTab.tsx
-│   │   │   ├── modelForm/
-│   │   │   │   ├── ModelDetailsTab.tsx
-│   │   │   │   └── ModelFormActions.tsx
-│   │   │   ├── models/
-│   │   │   │   ├── AllModelsTab.tsx
-│   │   │   │   ├── ModelSelectTab.tsx
-│   │   │   │   ├── ModelTestContent.tsx
-│   │   │   │   └── ModelTestWrapper.tsx
-│   │   │   ├── providerForm/
-│   │   │   │   ├── ProviderFormActionsEdit.tsx
-│   │   │   │   ├── ProviderFormActionsReadOnly.tsx
-│   │   │   │   └── ProviderFormContent.tsx
-│   │   │   ├── providers/
-│   │   │   │   ├── AllProvidersTab.tsx
-│   │   │   │   ├── ProviderSwitchTab.tsx
-│   │   │   │   ├── ProviderTestContent.tsx
-│   │   │   │   └── ProviderTestWrapper.tsx
-│   │   │   ├── quick-guide/
-│   │   │   │   └── CodeBlock.tsx
-│   │   │   └── settings/
-│   │   │       ├── AppearanceTab.tsx
-│   │   │       ├── DebugTab.tsx
-│   │   │       └── ProxyTab.tsx
-│   │   ├── layout/            # 4 layout components
-│   │   │   ├── AppLayout.tsx
-│   │   │   ├── Sidebar.tsx
-│   │   │   ├── StatusBar.tsx
-│   │   │   └── TitleBar.tsx
-│   │   └── ui/                # 21 UI components (shadcn + custom)
-│   │       ├── action-list.tsx     # Custom component
-│   │       ├── badge.tsx           # shadcn component
-│   │       ├── button.tsx          # shadcn component
-│   │       ├── card.tsx            # shadcn component
-│   │       ├── content-card.tsx    # Custom component
-│   │       ├── input.tsx           # shadcn component
-│   │       ├── label.tsx           # shadcn component
-│   │       ├── select.tsx          # shadcn component
-│   │       ├── status-indicator.tsx # Custom component
-│   │       ├── status-label.tsx    # Custom component
-│   │       ├── switch.tsx          # shadcn component
-│   │       ├── tab-card.tsx        # Custom component
-│   │       ├── tabs.tsx            # shadcn component
-│   │       ├── textarea.tsx        # shadcn component
-│   │       ├── toast.tsx           # shadcn component
-│   │       ├── toaster.tsx         # Custom component
-│   │       ├── toggle-group.tsx    # shadcn component
-│   │       ├── toggle.tsx          # shadcn component
-│   │       └── tooltip.tsx         # shadcn component
-│   ├── constants/             # 9 constants files
-│   │   ├── browserGuide.constants.tsx
-│   │   ├── chat.constants.tsx
-│   │   ├── desktopGuide.constants.tsx
-│   │   ├── home.constants.tsx
-│   │   ├── modelForm.constants.tsx
-│   │   ├── models.constants.tsx
-│   │   ├── providerForm.constants.tsx
-│   │   ├── providers.constants.tsx
-│   │   └── settings.constants.tsx
-│   ├── hooks/                 # 13 hooks
-│   │   ├── useApiGuidePage.ts
-│   │   ├── useBrowserGuidePage.ts
-│   │   ├── useDarkMode.ts
-│   │   ├── useDesktopGuidePage.ts
-│   │   ├── useExtensionDetection.ts
-│   │   ├── useHomePage.ts
-│   │   ├── useModelFormPage.ts
-│   │   ├── useModelsPage.ts
-│   │   ├── useProviderFormPage.ts
-│   │   ├── useProvidersPage.ts
-│   │   ├── useSettingsPage.ts
-│   │   ├── useToast.ts
-│   │   └── useWebSocket.ts
-│   ├── lib/                   # 4 library utilities
-│   │   ├── api-guide-examples.ts
-│   │   ├── constants.ts
-│   │   ├── router.ts
-│   │   └── utils.ts
-│   ├── pages/                 # 9 pages
-│   │   ├── BrowserGuidePage.tsx
-│   │   ├── ChatPage.tsx
-│   │   ├── DesktopGuidePage.tsx
-│   │   ├── HomePage.tsx
-│   │   ├── ModelFormPage.tsx
-│   │   ├── ModelsPage.tsx
-│   │   ├── ProviderFormPage.tsx
-│   │   ├── ProvidersPage.tsx
-│   │   └── SettingsPage.tsx
-│   ├── services/              # 7 services
-│   │   ├── api.service.ts
-│   │   ├── chatService.ts
-│   │   ├── credentials.service.ts
-│   │   ├── models.service.ts
-│   │   ├── providers.service.ts
-│   │   ├── proxy.service.ts
-│   │   └── websocket.service.ts
-│   ├── stores/                # 6 Zustand stores
-│   │   ├── useAlertStore.ts
-│   │   ├── useCredentialsStore.ts
-│   │   ├── useLifecycleStore.ts
-│   │   ├── useProxyStore.ts
-│   │   ├── useSettingsStore.ts
-│   │   └── useUIStore.ts
-│   ├── styles/                # 1 CSS file
-│   │   └── styles.css         # Single consolidated stylesheet
-│   ├── types/                 # 9 type files
-│   │   ├── chat.types.ts
-│   │   ├── common.types.ts
-│   │   ├── credentials.types.ts
-│   │   ├── home.types.ts
-│   │   ├── index.ts
-│   │   ├── models.types.ts
-│   │   ├── providers.types.ts
-│   │   ├── proxy.types.ts
-│   │   └── quick-guide.types.ts
-│   ├── utils/                 # 2 utility files
-│   │   ├── formatters.ts
-│   │   └── platform.ts
-│   ├── App.tsx                # Main app component
-│   ├── index.css              # Main CSS entry point
-│   ├── main.tsx               # React entry point
-│   └── vite-env.d.ts          # Vite/Electron type definitions
-├── components.json            # shadcn configuration
-├── eslint.config.js
-├── index.html
-├── package.json
-├── postcss.config.js
-├── tailwind.config.js
-├── tsconfig.app.json
-├── tsconfig.json
-├── tsconfig.node.json
-└── vite.config.ts
-```
-
----
-
-## Implementation Guidelines
-
-### Development Workflow
-
-1. **Follow Phase Order**: Complete phases 1-13 in sequence
-2. **Foundation First**: Build types → utils → constants → services → stores → hooks → components → pages
-3. **Test Each Phase**: Validate each phase before moving to next
-4. **Reference Code Docs**: Use the code documentation files for complete implementations
-
-### Architecture Pattern (Pages → Hooks → Feature Components → Constants)
-
-**The Golden Rule:**
-- **Constants** contain data and configuration (tab configs, data builders)
-- **Feature Components** contain complex layouts (receive data via props)
-- **Hooks** contain business logic (state, effects, handlers)
-- **Pages** wire everything together (call hooks, build data, render components)
-
-**Example Flow:**
-```
-Page Component
-  ├─> Calls Hook (business logic)
-  ├─> Calls Data Builders from Constants (creates ActionItem[])
-  ├─> Passes data to Feature Components (layout)
-  └─> Renders TabCard with tabs
-```
-
-### Best Practices
-
-**DO:**
-- Use feature components for complex tab content (> 20 lines JSX)
-- Use data builder functions that return ActionItem[] or other data structures
-- Define all text as constants
-- Keep page components thin (< 100 lines)
-- Put all business logic in hooks
-- Put all configuration in constants files
-- Use `hidden` property for conditional visibility
-- Import types from `@/types`
-- Import constants from `@/constants`
-
-**DON'T:**
-- Write complex inline JSX in page components
-- Write business logic in page or feature components
-- Hardcode strings in page components
-- Create builder functions that return complex JSX layouts (use feature components)
-- Make API calls from components (use services)
-- Use `any` types
-- Skip TypeScript strict mode
-
-### Quality Assurance
-
-- **Type Safety**: 100% TypeScript coverage, no `any` types
-- **Single Responsibility**: Each file has one clear purpose
-- **DRY Principle**: No code duplication
-- **Domain-Driven**: Clear domain boundaries
-- **Performance**: Monitor bundle size and runtime performance
-
----
-
-## Success Criteria
-
-### Technical Criteria
-
-- All phases implemented according to specifications
-- 100% TypeScript coverage with no `any` types
-- All services follow SRP (single responsibility)
-- All shared logic abstracted (DRY principle)
-- Build succeeds with no errors: `npm run build`
-- Application runs without console errors
-
-### Functional Criteria
-
-- All 9 pages render correctly
-- Routing works for all routes (including dynamic routes)
-- WebSocket real-time updates work
-- Theme switching works (light/dark)
-- Settings persist correctly (localStorage)
-- Provider/Model management works
-- Chat functionality works
-- All tabs functional with proper content
-
----
-
-## Summary
-
-This plan provides a complete guide for building the frontend application from scratch following proven architecture patterns. Each phase builds upon the previous, ensuring a solid foundation before adding complexity. The result is a maintainable, type-safe, and well-organized codebase that follows industry best practices.
-
-**Key Statistics:**
-- 9 Pages
-- 13 Hooks
-- 45 Components (21 UI + 4 Layout + 22 Feature)
-- 9 Constants files
-- 7 Services
-- 9 Type files
-- 6 Stores
-- 1 CSS file (styles.css)
-- 4 Library utilities
-- 2 Core utilities
-
-**Next Steps:**
-1. Begin with Phase 1 (Project Initialization)
-2. Follow phases in order
-3. Validate each phase before proceeding
-4. Refer to code documentation files for complete implementations
-5. Follow the PAGE_ARCHITECTURE_GUIDE for detailed patterns
-
----
-
-**Document Version:** 3.1
-**Date:** November 9, 2025
-**Status:** Fully updated to reflect current implementation (all 9 pages complete)
-**Architecture Pattern:** Pages → Hooks → Feature Components → Constants
-**Last Updated:** Corrected CSS architecture, component counts, and hooks organization

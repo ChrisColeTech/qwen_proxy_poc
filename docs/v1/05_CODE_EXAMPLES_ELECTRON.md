@@ -8,7 +8,7 @@
 - Use `backend/src/...` instead of `backend/src/...`
 
 The actual reference implementation is located at:
-- Electron: `/Users/chris/Projects/qwen_proxy_poc/electron/`
+- Electron: `electron/`
 
 This document contains complete code examples for the Electron main process, preload script, and build configuration.
 

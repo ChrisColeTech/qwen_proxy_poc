@@ -6,7 +6,7 @@ The new `detect_dynamic_classes.py` tool has been successfully created and integ
 
 ## Tool Location
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/tools/theme_tools/detect_dynamic_classes.py`
+**File:** `tools/theme_tools/detect_dynamic_classes.py`
 
 ## Integration Status
 
@@ -149,7 +149,7 @@ Found in 4 location(s):
 ### Automatic (Recommended)
 The tool runs automatically when you run the main analyzer:
 ```bash
-cd /Users/chris/Projects/qwen_proxy_poc/tools/theme_tools
+cd tools/theme_tools
 python3 css_analyzer.py analyze \
   --tsx-path ../../frontend/src \
   --css-file ../../frontend/src/index.css \
@@ -289,13 +289,13 @@ Potential improvements for the tool:
 ## Files Created/Modified
 
 ### New Files
-- `/Users/chris/Projects/qwen_proxy_poc/tools/theme_tools/detect_dynamic_classes.py` (new tool)
-- `/Users/chris/Projects/qwen_proxy_poc/tools/theme_tools/output/dynamic_classes_report.txt` (auto-generated)
-- `/Users/chris/Projects/qwen_proxy_poc/tools/theme_tools/DYNAMIC_DETECTION_SUMMARY.md` (this file)
+- `tools/theme_tools/detect_dynamic_classes.py` (new tool)
+- `tools/theme_tools/output/dynamic_classes_report.txt` (auto-generated)
+- `tools/theme_tools/DYNAMIC_DETECTION_SUMMARY.md` (this file)
 
 ### Modified Files
-- `/Users/chris/Projects/qwen_proxy_poc/tools/theme_tools/css_analyzer.py` (integration)
-- `/Users/chris/Projects/qwen_proxy_poc/tools/theme_tools/README.md` (documentation)
+- `tools/theme_tools/css_analyzer.py` (integration)
+- `tools/theme_tools/README.md` (documentation)
 
 ## Conclusion
 

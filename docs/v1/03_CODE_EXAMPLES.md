@@ -7,8 +7,8 @@
 - Use `backend/src/...` instead of `backend/src/...`
 
 The actual reference implementations are located at:
-- Frontend: `/Users/chris/Projects/qwen_proxy_poc/frontend/`
-- Backend: `/Users/chris/Projects/qwen_proxy_poc/backend/`
+- Frontend: `frontend/`
+- Backend: `backend/`
 
 ## Quick Navigation
 
@@ -858,7 +858,7 @@ Frontend contains the current, production-ready React components. Examples below
 
 ### frontend/src/pages/HomePage.tsx
 
-**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/pages/HomePage.tsx`
+**Reference**: `frontend/src/pages/HomePage.tsx`
 
 ```typescript
 import { Activity } from 'lucide-react';
@@ -963,7 +963,7 @@ export function HomePage() {
 
 ### frontend/src/hooks/useHomePage.ts
 
-**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/hooks/useHomePage.ts`
+**Reference**: `frontend/src/hooks/useHomePage.ts`
 
 ```typescript
 import { useState, useEffect } from 'react';
@@ -1092,7 +1092,7 @@ export function useHomePage() {
 
 ### frontend/src/hooks/useExtensionDetection.ts
 
-**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/hooks/useExtensionDetection.ts`
+**Reference**: `frontend/src/hooks/useExtensionDetection.ts`
 
 ```typescript
 import { isElectron } from '@/utils/platform';
@@ -1131,7 +1131,7 @@ export function useExtensionDetection() {
 
 ### frontend/src/constants/home.constants.tsx
 
-**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/constants/home.constants.tsx`
+**Reference**: `frontend/src/constants/home.constants.tsx`
 
 ```typescript
 import type { ReactNode } from 'react';

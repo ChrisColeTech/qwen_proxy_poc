@@ -241,7 +241,7 @@ frontend-v2/
 
 ### Files to Create
 
-#### 1. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/types/common.types.ts`
+#### 1. `frontend-v2/src/types/common.types.ts`
 **Purpose**: Shared types used across the application
 **Responsibility**: Define UI state and status enums
 
@@ -254,7 +254,7 @@ frontend-v2/
 - Simplified UIState (theme only, no sidebar/navigation for single page)
 - Status types must match backend API exactly
 
-#### 2. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/types/credentials.types.ts`
+#### 2. `frontend-v2/src/types/credentials.types.ts`
 **Purpose**: Types matching `/api/qwen/credentials` endpoints
 **Responsibility**: Define credential data structures
 
@@ -267,7 +267,7 @@ frontend-v2/
 - expiresAt is Unix timestamp (number) or null
 - isExpired is computed server-side
 
-#### 3. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/types/proxy.types.ts`
+#### 3. `frontend-v2/src/types/proxy.types.ts`
 **Purpose**: Types matching `/api/proxy/*` endpoints
 **Responsibility**: Define proxy, provider, and model types
 
@@ -282,7 +282,7 @@ frontend-v2/
 - This is the CRITICAL type - must match actual backend response structure exactly
 - Providers and models are nested objects with items arrays
 
-#### 4. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/types/index.ts`
+#### 4. `frontend-v2/src/types/index.ts`
 **Purpose**: Central type export file
 **Responsibility**: Re-export all types for easy importing
 
@@ -314,7 +314,7 @@ frontend-v2/
 
 ### Files to Create
 
-#### 1. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/stores/useUIStore.ts`
+#### 1. `frontend-v2/src/stores/useUIStore.ts`
 **Purpose**: UI state management (theme only for simple dashboard)
 **Responsibility**: Manage theme state with persistence
 
@@ -332,7 +332,7 @@ frontend-v2/
 - Uses Zustand persist middleware for automatic localStorage sync
 - Replaces ThemeContext pattern per doc 01A requirements
 
-#### 2. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/stores/useCredentialsStore.ts`
+#### 2. `frontend-v2/src/stores/useCredentialsStore.ts`
 **Purpose**: Qwen credentials state
 **Responsibility**: Store current credentials and loading state
 
@@ -351,7 +351,7 @@ frontend-v2/
 - Services handle API calls
 - No persistence needed (always fetched fresh)
 
-#### 3. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/stores/useProxyStore.ts`
+#### 3. `frontend-v2/src/stores/useProxyStore.ts`
 **Purpose**: Proxy server state (includes providers and models)
 **Responsibility**: Store proxy status with embedded providers/models data
 
@@ -370,7 +370,7 @@ frontend-v2/
 - No separate provider/model stores needed
 - Polling hook refreshes this automatically
 
-#### 4. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/stores/useAlertStore.ts`
+#### 4. `frontend-v2/src/stores/useAlertStore.ts`
 **Purpose**: Alert/notification messages
 **Responsibility**: Show success or error alerts
 
@@ -413,7 +413,7 @@ frontend-v2/
 
 ### Files to Create
 
-#### 1. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/hooks/useDarkMode.ts`
+#### 1. `frontend-v2/src/hooks/useDarkMode.ts`
 **Purpose**: Theme management hook (doc 01A lines 336-338)
 **Responsibility**: Apply theme to DOM and provide toggle function
 
@@ -431,7 +431,7 @@ frontend-v2/
 - Replaces manual theme context logic
 - Handles dark mode class application automatically
 
-#### 2. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/hooks/useAuth.ts`
+#### 2. `frontend-v2/src/hooks/useAuth.ts`
 **Purpose**: Authentication business logic
 **Responsibility**: Handle connect and revoke credentials operations
 
@@ -452,7 +452,7 @@ frontend-v2/
 - Business logic separated from UI component
 - Handles both Electron IPC and browser-extension flow
 
-#### 3. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/hooks/useProxyControl.ts`
+#### 3. `frontend-v2/src/hooks/useProxyControl.ts`
 **Purpose**: Proxy control business logic
 **Responsibility**: Handle proxy start and stop operations
 
@@ -472,7 +472,7 @@ frontend-v2/
 - Handles API calls and state updates
 - Provides clean interface to UI components
 
-#### 4. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/hooks/useCredentialPolling.ts`
+#### 4. `frontend-v2/src/hooks/useCredentialPolling.ts`
 **Purpose**: Auto-refresh credentials and proxy status
 **Responsibility**: Poll backend for status updates
 
@@ -527,7 +527,7 @@ frontend-v2/
 
 ### Files to Create
 
-#### 1. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/services/credentialsService.ts`
+#### 1. `frontend-v2/src/services/credentialsService.ts`
 **Purpose**: API calls for `/api/qwen/credentials` endpoints
 **Responsibility**: Handle all credential-related API operations
 
@@ -544,7 +544,7 @@ frontend-v2/
 - Returns typed responses matching backend API
 - camelCase naming per doc 01A
 
-#### 2. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/services/proxyService.ts`
+#### 2. `frontend-v2/src/services/proxyService.ts`
 **Purpose**: API calls for `/api/proxy/*` endpoints
 **Responsibility**: Handle all proxy control API operations
 
@@ -589,7 +589,7 @@ frontend-v2/
 
 ### Files to Create
 
-#### 1. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/lib/constants.ts`
+#### 1. `frontend-v2/src/lib/constants.ts`
 **Purpose**: Application constants (doc 01A lines 341-342)
 **Responsibility**: Central location for app-wide constants
 
@@ -605,7 +605,7 @@ frontend-v2/
 - Easy to update globally
 - Type-safe constant values
 
-#### 2. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/utils/formatters.ts`
+#### 2. `frontend-v2/src/utils/formatters.ts`
 **Purpose**: Formatting utilities (doc 01A lines 344-346)
 **Responsibility**: Format data for display
 
@@ -620,7 +620,7 @@ frontend-v2/
 - Handle edge cases (0, null, undefined)
 - Consistent formatting across app
 
-#### 3. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/utils/string.utils.ts`
+#### 3. `frontend-v2/src/utils/string.utils.ts`
 **Purpose**: String manipulation utilities
 **Responsibility**: String truncation and masking
 
@@ -659,14 +659,14 @@ frontend-v2/
 
 #### 1. Install shadcn Badge Component
 **Command**: `npx shadcn@latest add badge`
-**Creates**: `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/components/ui/badge.tsx`
+**Creates**: `frontend-v2/src/components/ui/badge.tsx`
 
 **Purpose**: Base badge component for status indicators
 **Usage**: Will be wrapped by StatusBadge component
 
 #### 2. Install shadcn Alert Component
 **Command**: `npx shadcn@latest add alert`
-**Creates**: `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/components/ui/alert.tsx`
+**Creates**: `frontend-v2/src/components/ui/alert.tsx`
 
 **Purpose**: Base alert component for notifications
 **Usage**: Will be used by StatusAlert component
@@ -700,7 +700,7 @@ frontend-v2/
 
 ### Files to Create
 
-#### 1. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/components/ui/status-badge.tsx`
+#### 1. `frontend-v2/src/components/ui/status-badge.tsx`
 **Purpose**: Application-specific status badge wrapper
 **Responsibility**: Map application status types to badge variants and colors
 
@@ -722,7 +722,7 @@ frontend-v2/
 - Centralizes status display logic
 - Type-safe status values
 
-#### 2. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/components/ui/environment-badge.tsx`
+#### 2. `frontend-v2/src/components/ui/environment-badge.tsx`
 **Purpose**: Desktop/Browser mode indicator
 **Responsibility**: Show current environment with visual indicator
 
@@ -771,7 +771,7 @@ frontend-v2/
 
 ### Files to Create
 
-#### 1. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/components/features/alerts/StatusAlert.tsx`
+#### 1. `frontend-v2/src/components/features/alerts/StatusAlert.tsx`
 **Purpose**: Display success/error alert messages
 **Responsibility**: Show alerts from useAlertStore with dismiss functionality
 
@@ -820,7 +820,7 @@ frontend-v2/
 
 ### Files to Create
 
-#### 1. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/components/features/credentials/CredentialsDetailCard.tsx`
+#### 1. `frontend-v2/src/components/features/credentials/CredentialsDetailCard.tsx`
 **Purpose**: Display current credentials with truncation
 **Responsibility**: Show token, cookies, and expiration in card format
 
@@ -870,7 +870,7 @@ frontend-v2/
 
 ### Files to Create
 
-#### 1. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/components/features/stats/SystemStatsCard.tsx`
+#### 1. `frontend-v2/src/components/features/stats/SystemStatsCard.tsx`
 **Purpose**: Display system status overview in grid layout
 **Responsibility**: Show credentials, proxy, providers, and models status
 
@@ -901,7 +901,7 @@ frontend-v2/
 - All data from stores
 - Responsive grid layout
 
-#### 2. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/components/features/stats/ConnectionGuideCard.tsx`
+#### 2. `frontend-v2/src/components/features/stats/ConnectionGuideCard.tsx`
 **Purpose**: Quick start guide for users
 **Responsibility**: Display step-by-step connection instructions
 
@@ -949,7 +949,7 @@ frontend-v2/
 
 ### Files to Create
 
-#### 1. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/components/features/providers/ProvidersListCard.tsx`
+#### 1. `frontend-v2/src/components/features/providers/ProvidersListCard.tsx`
 **Purpose**: Display list of enabled providers (read-only)
 **Responsibility**: Show providers from proxy status endpoint
 
@@ -980,7 +980,7 @@ frontend-v2/
 - Data comes from proxy status endpoint
 - No separate provider management
 
-#### 2. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/components/features/models/ModelsListCard.tsx`
+#### 2. `frontend-v2/src/components/features/models/ModelsListCard.tsx`
 **Purpose**: Display list of available models (read-only)
 **Responsibility**: Show models from proxy status endpoint
 
@@ -1031,7 +1031,7 @@ frontend-v2/
 
 ### Files to Create
 
-#### 1. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/components/features/authentication/AuthenticationCard.tsx`
+#### 1. `frontend-v2/src/components/features/authentication/AuthenticationCard.tsx`
 **Purpose**: CONSOLIDATED authentication card (all logic inline)
 **Responsibility**: Handle credential connection and revocation in one component
 
@@ -1090,7 +1090,7 @@ frontend-v2/
 
 ### Files to Create
 
-#### 1. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/components/features/proxy/ProxyControlCard.tsx`
+#### 1. `frontend-v2/src/components/features/proxy/ProxyControlCard.tsx`
 **Purpose**: CONSOLIDATED proxy control card (all logic inline)
 **Responsibility**: Handle proxy start/stop and status display in one component
 
@@ -1154,7 +1154,7 @@ frontend-v2/
 
 ### Files to Create
 
-#### 1. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/pages/HomePage.tsx`
+#### 1. `frontend-v2/src/pages/HomePage.tsx`
 **Purpose**: Main dashboard page composing all features
 **Responsibility**: Layout and compose all feature components
 
@@ -1189,7 +1189,7 @@ frontend-v2/
 
 ### Files to Modify
 
-#### 2. `/Users/chris/Projects/qwen_proxy_poc/frontend-v2/src/App.tsx`
+#### 2. `frontend-v2/src/App.tsx`
 **Purpose**: Update to use HomePage
 **Responsibility**: Integrate HomePage into AppLayout
 
@@ -1229,7 +1229,7 @@ frontend-v2/
 
 ### Files to Create
 
-#### 1. `/Users/chris/Projects/qwen_proxy_poc/public/extension-install.html`
+#### 1. `public/extension-install.html`
 **Purpose**: Step-by-step guide for installing Chrome extension
 **Responsibility**: Provide clear installation instructions for browser users
 

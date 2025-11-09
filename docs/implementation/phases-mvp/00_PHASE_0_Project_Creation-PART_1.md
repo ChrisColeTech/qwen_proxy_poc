@@ -1,4 +1,5 @@
 
+
 **Goal:** Configure the monorepo root workspace with npm workspaces, development scripts, and build tools.
 
 ## Step 1: Initialize Root Workspace

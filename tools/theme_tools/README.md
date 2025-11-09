@@ -35,7 +35,7 @@ The theme tools suite provides automated CSS analysis to help you:
 No special installation required. The tool uses standard Python 3 libraries:
 
 ```bash
-cd /Users/chris/Projects/qwen_proxy_poc/tools/theme_tools
+cd tools/theme_tools
 ```
 
 Dependencies (already included in Python 3):
@@ -440,7 +440,7 @@ element.className = userProvidedClass // Unknown at analysis time
 You suspect there's dead CSS in your project:
 
 ```bash
-cd /Users/chris/Projects/qwen_proxy_poc/tools/theme_tools
+cd tools/theme_tools
 python3 css_analyzer.py analyze \
   --tsx-path ../../frontend/src \
   --css-file ../../frontend/src/index.css \

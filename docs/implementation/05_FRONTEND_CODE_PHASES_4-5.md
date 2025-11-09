@@ -1,6 +1,6 @@
 # Frontend V3 Rewrite - Code Documentation: Phases 4-5
 
-This document contains the complete source code for **Phase 4 (Foundation Layer - Constants)** and **Phase 5 (Type Definitions)** of the Frontend V3 Rewrite Implementation Plan.
+This document contains the complete source code for **Phase 4 (Foundation Layer - Constants)** and **Phase 5 (Service Layer)** of the Frontend V3 Rewrite Implementation Plan.
 
 ## Table of Contents
 
@@ -14,16 +14,14 @@ This document contains the complete source code for **Phase 4 (Foundation Layer 
   - [providerForm.constants.tsx](#providerformconstantstsx)
   - [browserGuide.constants.tsx](#browserguideconstantstsx)
   - [desktopGuide.constants.tsx](#desktopguideconstantstsx)
-- [Phase 5: Type Definitions](#phase-5-type-definitions)
-  - [common.types.ts](#commontypests)
-  - [providers.types.ts](#providerstypests)
-  - [models.types.ts](#modelstypests)
-  - [credentials.types.ts](#credentialstypests)
-  - [proxy.types.ts](#proxytypests)
-  - [chat.types.ts](#chattypests)
-  - [home.types.ts](#hometypests)
-  - [quick-guide.types.ts](#quick-guidetypests)
-  - [index.ts](#indexts)
+- [Phase 5: Service Layer](#phase-5-service-layer)
+  - [api.service.ts](#apiservicets)
+  - [websocket.service.ts](#websocketservicets)
+  - [providers.service.ts](#providersservicets)
+  - [models.service.ts](#modelsservicets)
+  - [credentials.service.ts](#credentialsservicets)
+  - [chatService.ts](#chatservicets)
+  - [proxy.service.ts](#proxyservicets)
 
 ---
 
@@ -31,8 +29,7 @@ This document contains the complete source code for **Phase 4 (Foundation Layer 
 
 ## home.constants.tsx
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/constants/home.constants.tsx`
-**Lines:** 147
+**File:** `frontend/src/constants/home.constants.tsx`
 
 ```tsx
 import type { ReactNode } from 'react';
@@ -188,8 +185,7 @@ export const SYSTEM_OVERVIEW_ICON = Gauge;
 
 ## providers.constants.tsx
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/constants/providers.constants.tsx`
-**Lines:** 100
+**File:** `frontend/src/constants/providers.constants.tsx`
 
 ```tsx
 import { Blocks, Settings, Zap, Plus, ChevronRight } from 'lucide-react';
@@ -297,8 +293,7 @@ export const buildProviderActions = (params: {
 
 ## models.constants.tsx
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/constants/models.constants.tsx`
-**Lines:** 87
+**File:** `frontend/src/constants/models.constants.tsx`
 
 ```tsx
 import { Database, ChevronRight } from 'lucide-react';
@@ -393,8 +388,7 @@ export const buildModelActions = (params: {
 
 ## settings.constants.tsx
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/constants/settings.constants.tsx`
-**Lines:** 22
+**File:** `frontend/src/constants/settings.constants.tsx`
 
 ```tsx
 import { Settings } from 'lucide-react';
@@ -425,8 +419,7 @@ export const SETTINGS_ICON = Settings;
 
 ## chat.constants.tsx
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/constants/chat.constants.tsx`
-**Lines:** 47
+**File:** `frontend/src/constants/chat.constants.tsx`
 
 ```tsx
 import { MessageSquare } from 'lucide-react';
@@ -482,8 +475,7 @@ export const buildCurlExamplesContent = (params: {
 
 ## modelForm.constants.tsx
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/constants/modelForm.constants.tsx`
-**Lines:** 65
+**File:** `frontend/src/constants/modelForm.constants.tsx`
 
 ```tsx
 import { Database } from 'lucide-react';
@@ -557,8 +549,7 @@ export const parseCapabilities = (capabilitiesStr: string) => {
 
 ## providerForm.constants.tsx
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/constants/providerForm.constants.tsx`
-**Lines:** 85
+**File:** `frontend/src/constants/providerForm.constants.tsx`
 
 ```tsx
 import { Settings } from 'lucide-react';
@@ -652,8 +643,7 @@ export const TOOLTIP_LABELS = {
 
 ## browserGuide.constants.tsx
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/constants/browserGuide.constants.tsx`
-**Lines:** 18
+**File:** `frontend/src/constants/browserGuide.constants.tsx`
 
 ```tsx
 import { Globe } from 'lucide-react';
@@ -679,8 +669,7 @@ export const BROWSER_GUIDE_ICON = Globe;
 
 ## desktopGuide.constants.tsx
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/constants/desktopGuide.constants.tsx`
-**Lines:** 17
+**File:** `frontend/src/constants/desktopGuide.constants.tsx`
 
 ```tsx
 import { Monitor } from 'lucide-react';
@@ -704,453 +693,942 @@ export const DESKTOP_GUIDE_ICON = Monitor;
 
 ---
 
-# Phase 5: Type Definitions
+# Phase 5: Service Layer
 
-## common.types.ts
+## api.service.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/types/common.types.ts`
-**Lines:** 10
-
-```typescript
-// Common types shared across the application
-
-export interface UIState {
-  theme: 'light' | 'dark';
-  sidebarPosition: 'left' | 'right';
-  showStatusMessages: boolean;
-  showStatusBar: boolean;
-}
-
-export type ProxyStatus = 'running' | 'stopped';
-```
-
----
-
-## providers.types.ts
-
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/types/providers.types.ts`
-**Lines:** 93
+**File:** `frontend/src/services/api.service.ts`
 
 ```typescript
-// Types for ProvidersPage and related components
+export type { Provider } from '@/types/proxy.types';
 
-export type ProviderType = string;
-
-export interface Provider {
-  id: string;
-  name: string;
-  type: ProviderType;
-  enabled: boolean;
-  priority: number;
-  description: string | null;
-  created_at: number;
-  updated_at: number;
-  runtime_status?: string;
-}
+const API_BASE = 'http://localhost:3002';
 
 export interface ProviderConfig {
-  baseURL?: string;
-  timeout?: number;
-  defaultModel?: string;
-  token?: string;
-  cookies?: string;
-  expiresAt?: number;
+  [key: string]: string | number | boolean;
 }
 
-export interface ProviderModel {
-  id: string;
-  name: string;
-  description: string;
-  capabilities: string;
-  created_at: number;
-  updated_at: number;
-  is_default: boolean;
-  provider_config: any | null;
-}
-
-export interface ProviderDetails extends Provider {
-  config?: ProviderConfig;
-  models?: ProviderModel[];
-}
-
-export interface ProviderTypeInfo {
-  value: ProviderType;
-  label: string;
-  description: string;
-  requiredConfig: string[];
-  optionalConfig: string[];
-  configSchema: Record<string, {
-    type: string;
-    description: string;
-    example?: string;
-    default?: any;
-  }>;
-  capabilities: string[];
-}
-
-export interface CreateProviderRequest {
-  id: string;
-  name: string;
-  type: ProviderType;
-  enabled?: boolean;
-  priority?: number;
-  description?: string | null;
-  config?: ProviderConfig;
-}
-
-export interface UpdateProviderRequest {
-  name?: string;
-  type?: ProviderType;
-  enabled?: boolean;
-  priority?: number;
-  description?: string | null;
-}
-
-export interface ProvidersResponse {
-  providers: Provider[];
-  total: number;
-}
-
-export interface ProviderActionState {
-  loading: string | null;
-  error: string | null;
-}
-
-export interface ProvidersTableProps {
-  providers: Provider[];
-  actionLoading: string | null;
-  onToggleEnabled: (provider: Provider) => void;
-  onTest: (provider: Provider) => void;
-  onDelete: (provider: Provider) => void;
-  onCreate?: () => void;
-  onRowClick?: (providerId: string) => void;
-}
-```
-
----
-
-## models.types.ts
-
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/types/models.types.ts`
-**Lines:** 40
-
-```typescript
-// Model types for the Models page
-
-export interface Model {
-  id: string;
-  name: string;
-  description: string;
-  capabilities: string; // JSON string array from backend
-  status: string;
-  created_at: number;
-  updated_at: number;
-}
-
-export interface ParsedModel {
-  id: string;
-  name: string;
-  description: string;
-  capabilities: Capability[];
-  provider: string; // Extracted from description
-}
-
-export interface ModelProvider {
+export interface CreateProviderData {
   id: string;
   name: string;
   type: string;
-  enabled: boolean;
-  priority: number;
-  description: string | null;
-  created_at: number;
-  updated_at: number;
-  is_default: boolean;
-  model_config: any | null;
-}
-
-export interface ModelDetails extends Model {
-  providers: ModelProvider[];
-}
-
-export type Capability = 'chat' | 'vision' | 'tool-call' | 'completion' | 'code' | 'tools';
-
-export type CapabilityFilter = 'all' | 'vision' | 'tool-call' | 'chat';
-```
-
----
-
-## credentials.types.ts
-
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/types/credentials.types.ts`
-**Lines:** 20
-
-```typescript
-// Types for credential management matching /api/qwen/credentials endpoints
-
-export interface QwenCredentials {
-  hasCredentials: boolean;
-  expiresAt: number | null;
-  isValid: boolean;
-  createdAt: number;
-  updatedAt: number;
-}
-
-export interface SetCredentialsRequest {
-  token: string;
-  cookies: string;
-  expiresAt: number;
-}
-
-export interface CredentialStatus {
-  valid: boolean;
-  expiresAt: number | null;
-}
-```
-
----
-
-## proxy.types.ts
-
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/types/proxy.types.ts`
-**Lines:** 54
-
-```typescript
-// Types for proxy management matching /api/proxy/* and /api/providers/* endpoints
-
-export interface Provider {
-  id: string;
-  name: string;
-  type: string;
-  enabled: boolean;
+  enabled?: boolean;
   priority?: number;
   description?: string;
-  baseUrl?: string;
-  created_at?: number;
-  updated_at?: number;
+  config?: ProviderConfig;
 }
 
-export interface Model {
-  id: string;
+export interface UpdateProviderData {
   name?: string;
-  providerId?: string;
+  type?: string;
+  enabled?: boolean;
+  priority?: number;
+  description?: string;
 }
 
-export interface ProxyServerInfo {
-  running: boolean;
-  port?: number;
-  pid?: number;
-  uptime?: number;
-}
+export const apiService = {
+  // Provider CRUD
+  async getProviders() {
+    try {
+      const response = await fetch(`${API_BASE}/api/providers`);
+      if (!response.ok) {
+        throw new Error('Failed to get providers');
+      }
+      const json = await response.json();
+      return {
+        success: true,
+        data: json.providers || []
+      };
+    } catch (error) {
+      console.error('Error getting providers:', error);
+      return { success: false, data: [] };
+    }
+  },
 
-export interface ProxyStatusResponse {
-  status: 'running' | 'stopped' | 'starting' | 'stopping';
-  qwenProxy?: ProxyServerInfo;
-  providerRouter?: ProxyServerInfo;
-  providers?: {
-    items: Provider[];
-    enabled: number;
-    total: number;
-  };
-  models?: {
-    items: Model[];
-    total: number;
-  };
-  credentials?: {
-    valid: boolean;
-    expiresAt: number | null;
-  };
-  extensionConnected?: boolean;
-  message: string;
-}
+  async getProvider(id: string) {
+    try {
+      const response = await fetch(`${API_BASE}/api/providers/${id}`);
+      if (!response.ok) {
+        throw new Error('Failed to get provider');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error getting provider:', error);
+      throw error;
+    }
+  },
 
-export interface ProxyControlResponse {
-  status: 'running' | 'stopped' | 'already_running' | 'error';
-  message: string;
-  qwenProxy?: ProxyServerInfo;
-  providerRouter?: ProxyServerInfo;
-}
+  async createProvider(data: CreateProviderData) {
+    try {
+      const response = await fetch(`${API_BASE}/api/providers`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to create provider');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error creating provider:', error);
+      throw error;
+    }
+  },
+
+  async updateProvider(id: string, data: UpdateProviderData) {
+    try {
+      const response = await fetch(`${API_BASE}/api/providers/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to update provider');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error updating provider:', error);
+      throw error;
+    }
+  },
+
+  async deleteProvider(id: string) {
+    try {
+      const response = await fetch(`${API_BASE}/api/providers/${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to delete provider');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error deleting provider:', error);
+      throw error;
+    }
+  },
+
+  async enableProvider(id: string) {
+    try {
+      const response = await fetch(`${API_BASE}/api/providers/${id}/enable`, {
+        method: 'POST',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to enable provider');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error enabling provider:', error);
+      throw error;
+    }
+  },
+
+  async disableProvider(id: string) {
+    try {
+      const response = await fetch(`${API_BASE}/api/providers/${id}/disable`, {
+        method: 'POST',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to disable provider');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error disabling provider:', error);
+      throw error;
+    }
+  },
+
+  async testProvider(id: string) {
+    try {
+      const response = await fetch(`${API_BASE}/api/providers/${id}/test`, {
+        method: 'POST',
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Provider test failed');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error testing provider:', error);
+      throw error;
+    }
+  },
+
+  // Provider Configuration
+  async getProviderConfig(id: string, mask: boolean = true) {
+    try {
+      const response = await fetch(`${API_BASE}/api/${id}/config?mask=${mask}`);
+      if (!response.ok) {
+        throw new Error('Failed to get provider config');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error getting provider config:', error);
+      throw error;
+    }
+  },
+
+  async updateProviderConfig(id: string, config: ProviderConfig) {
+    try {
+      const response = await fetch(`${API_BASE}/api/${id}/config`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ config }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update provider config');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error updating provider config:', error);
+      throw error;
+    }
+  },
+
+  async updateProviderConfigKey(id: string, key: string, value: string | number | boolean, isSensitive?: boolean) {
+    try {
+      const body: { value: string | number | boolean; is_sensitive?: boolean } = { value };
+      if (isSensitive !== undefined) {
+        body.is_sensitive = isSensitive;
+      }
+      const response = await fetch(`${API_BASE}/api/${id}/config/${key}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update config key');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error updating config key:', error);
+      throw error;
+    }
+  },
+
+  async deleteProviderConfigKey(id: string, key: string) {
+    try {
+      const response = await fetch(`${API_BASE}/api/${id}/config/${key}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete config key');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error deleting config key:', error);
+      throw error;
+    }
+  },
+
+  // Settings
+  async getSettings() {
+    try {
+      const response = await fetch(`${API_BASE}/api/settings`);
+      if (!response.ok) {
+        throw new Error('Failed to get settings');
+      }
+      const json = await response.json();
+      return {
+        success: true,
+        data: json.settings || {}
+      };
+    } catch (error) {
+      console.error('Error getting settings:', error);
+      return { success: false, data: {} };
+    }
+  },
+
+  async getSetting(key: string) {
+    try {
+      const response = await fetch(`${API_BASE}/api/settings/${key}`);
+      if (!response.ok) {
+        throw new Error('Failed to get setting');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error getting setting:', error);
+      throw error;
+    }
+  },
+
+  async updateSetting(key: string, value: string) {
+    try {
+      const response = await fetch(`${API_BASE}/api/settings/${key}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ value }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update setting');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error updating setting:', error);
+      throw error;
+    }
+  },
+
+  async setActiveProvider(id: string) {
+    return this.updateSetting('active_provider', id);
+  },
+};
 ```
 
 ---
 
-## chat.types.ts
+## websocket.service.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/types/chat.types.ts`
-**Lines:** 36
+**File:** `frontend/src/services/websocket.service.ts`
 
 ```typescript
-/**
- * Chat Service Type Definitions
- * Type definitions for chat-related functionality
- */
+import { io, Socket } from 'socket.io-client';
+import type {
+  ProxyStatusEvent,
+  CredentialsUpdatedEvent,
+  ProvidersUpdatedEvent,
+  ModelsUpdatedEvent,
+  LifecycleUpdateEvent,
+  WebSocketConnectionStatus,
+} from '@/types';
 
-export interface ParsedChatResponse {
-  thinking: string | null;
-  mainResponse: string;
+type EventCallback<T> = (data: T) => void;
+
+interface WebSocketCallbacks {
+  onProxyStatus?: EventCallback<ProxyStatusEvent>;
+  onCredentialsUpdated?: EventCallback<CredentialsUpdatedEvent>;
+  onProvidersUpdated?: EventCallback<ProvidersUpdatedEvent>;
+  onModelsUpdated?: EventCallback<ModelsUpdatedEvent>;
+  onLifecycleUpdate?: EventCallback<LifecycleUpdateEvent>;
+  onStatusChange?: (status: WebSocketConnectionStatus) => void;
 }
 
-export interface ChatMessage {
-  role: 'user' | 'assistant' | 'system';
-  content: string;
+class WebSocketService {
+  private socket: Socket | null = null;
+  private callbacks: WebSocketCallbacks = {};
+  private status: WebSocketConnectionStatus = 'disconnected';
+  private reconnectAttempts = 0;
+  private maxReconnectAttempts = 10;
+
+  constructor() {
+    // Service is initialized but not connected
+  }
+
+  connect(url: string = 'http://localhost:3002', callbacks: WebSocketCallbacks = {}): void {
+    if (this.socket?.connected) {
+      console.log('[WebSocket] Already connected');
+      return;
+    }
+
+    console.log('[WebSocket] Connecting to:', url);
+    this.callbacks = callbacks;
+
+    this.socket = io(url, {
+      transports: ['websocket', 'polling'],
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      reconnectionAttempts: this.maxReconnectAttempts,
+    });
+
+    this.setupEventListeners();
+  }
+
+  private setupEventListeners(): void {
+    if (!this.socket) return;
+
+    // Connection events
+    this.socket.on('connect', () => {
+      console.log('[WebSocket] Connected');
+      this.reconnectAttempts = 0;
+      this.updateStatus('connected');
+    });
+
+    this.socket.on('disconnect', (reason) => {
+      console.log('[WebSocket] Disconnected:', reason);
+      this.updateStatus('disconnected');
+    });
+
+    this.socket.on('connect_error', (error) => {
+      console.error('[WebSocket] Connection error:', error.message);
+      this.updateStatus('reconnecting');
+    });
+
+    this.socket.on('reconnect_attempt', (attempt) => {
+      console.log('[WebSocket] Reconnection attempt:', attempt);
+      this.reconnectAttempts = attempt;
+      this.updateStatus('reconnecting');
+    });
+
+    this.socket.on('reconnect', (attempt) => {
+      console.log('[WebSocket] Reconnected after', attempt, 'attempts');
+      this.reconnectAttempts = 0;
+      this.updateStatus('connected');
+    });
+
+    this.socket.on('reconnect_failed', () => {
+      console.error('[WebSocket] Reconnection failed');
+      this.updateStatus('disconnected');
+    });
+
+    // Business events
+    this.socket.on('proxy:status', (data: ProxyStatusEvent) => {
+      console.log('[WebSocket] proxy:status', data);
+      this.callbacks.onProxyStatus?.(data);
+    });
+
+    this.socket.on('credentials:updated', (data: CredentialsUpdatedEvent) => {
+      console.log('[WebSocket] credentials:updated', data);
+      this.callbacks.onCredentialsUpdated?.(data);
+    });
+
+    this.socket.on('providers:updated', (data: ProvidersUpdatedEvent) => {
+      console.log('[WebSocket] providers:updated', data);
+      this.callbacks.onProvidersUpdated?.(data);
+    });
+
+    this.socket.on('models:updated', (data: ModelsUpdatedEvent) => {
+      console.log('[WebSocket] models:updated', data);
+      this.callbacks.onModelsUpdated?.(data);
+    });
+
+    this.socket.on('lifecycle:update', (data: LifecycleUpdateEvent) => {
+      console.log('[WebSocket] lifecycle:update', data);
+      this.callbacks.onLifecycleUpdate?.(data);
+    });
+  }
+
+  private updateStatus(status: WebSocketConnectionStatus): void {
+    this.status = status;
+    this.callbacks.onStatusChange?.(status);
+  }
+
+  disconnect(): void {
+    if (this.socket) {
+      console.log('[WebSocket] Disconnecting');
+      this.socket.disconnect();
+      this.socket = null;
+      this.updateStatus('disconnected');
+    }
+  }
+
+  getStatus(): WebSocketConnectionStatus {
+    return this.status;
+  }
+
+  isConnected(): boolean {
+    return this.socket?.connected ?? false;
+  }
+
+  getReconnectAttempts(): number {
+    return this.reconnectAttempts;
+  }
 }
 
-export interface ChatCompletionRequest {
-  model: string;
-  messages: ChatMessage[];
+// Export singleton instance
+export const websocketService = new WebSocketService();
+```
+
+---
+
+## providers.service.ts
+
+**File:** `frontend/src/services/providers.service.ts`
+
+```typescript
+import type {
+  Provider,
+  ProviderDetails,
+  ProviderTypeInfo,
+  ProvidersResponse,
+  CreateProviderRequest,
+  UpdateProviderRequest
+} from '@/types/providers.types';
+import { useSettingsStore } from '@/stores/useSettingsStore';
+
+const API_URL = 'http://localhost:3002';
+
+class ProvidersService {
+  // Get all providers
+  async getProviders(): Promise<Provider[]> {
+    const response = await fetch(`${API_URL}/api/providers`);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    const data: ProvidersResponse = await response.json();
+    return data.providers;
+  }
+
+  // Get provider details including config and models
+  async getProviderDetails(providerId: string): Promise<ProviderDetails> {
+    const response = await fetch(`${API_URL}/api/providers/${encodeURIComponent(providerId)}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch provider details: ${response.statusText}`);
+    }
+    return await response.json();
+  }
+
+  // Get provider types metadata
+  async getProviderTypes(): Promise<ProviderTypeInfo[]> {
+    const response = await fetch(`${API_URL}/api/providers/types`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch provider types');
+    }
+    const data = await response.json();
+    return data.types;
+  }
+
+  // Create new provider
+  async createProvider(data: CreateProviderRequest): Promise<ProviderDetails> {
+    const response = await fetch(`${API_URL}/api/providers`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error?.message || 'Failed to create provider');
+    }
+    return await response.json();
+  }
+
+  // Update provider
+  async updateProvider(providerId: string, data: UpdateProviderRequest): Promise<ProviderDetails> {
+    const response = await fetch(`${API_URL}/api/providers/${encodeURIComponent(providerId)}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error?.message || 'Failed to update provider');
+    }
+    return await response.json();
+  }
+
+  // Update provider config
+  async updateProviderConfig(providerId: string, config: Record<string, any>): Promise<void> {
+    const response = await fetch(`${API_URL}/api/providers/${encodeURIComponent(providerId)}/config`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ config }),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error?.message || 'Failed to update provider config');
+    }
+  }
+
+  async toggleEnabled(provider: Provider): Promise<void> {
+    const action = provider.enabled ? 'disable' : 'enable';
+    const response = await fetch(`${API_URL}/api/providers/${provider.id}/${action}`, {
+      method: 'POST',
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to ${action} provider`);
+    }
+  }
+
+  async testConnection(providerId: string): Promise<void> {
+    const response = await fetch(`${API_URL}/api/providers/${providerId}/test`, {
+      method: 'POST',
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || 'Connection test failed');
+    }
+  }
+
+  async deleteProvider(providerId: string): Promise<void> {
+    const response = await fetch(`${API_URL}/api/providers/${providerId}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error('Failed to delete provider');
+    }
+  }
+
+  // Switch active provider (updates settings)
+  async switchProvider(providerId: string): Promise<void> {
+    try {
+      // Use the settings store's updateSetting method which handles both API call and store update
+      await useSettingsStore.getState().updateSetting('active_provider', providerId);
+    } catch (error) {
+      console.error('Failed to switch provider:', error);
+      throw error;
+    }
+  }
+
+  // Reload provider in runtime
+  async reloadProvider(providerId: string): Promise<void> {
+    const response = await fetch(`${API_URL}/api/providers/${encodeURIComponent(providerId)}/reload`, {
+      method: 'POST',
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error?.message || 'Failed to reload provider');
+    }
+  }
 }
 
-export interface ChatCompletionResponse {
+export const providersService = new ProvidersService();
+```
+
+---
+
+## models.service.ts
+
+**File:** `frontend/src/services/models.service.ts`
+
+```typescript
+import type { Model, ParsedModel, Capability, ModelDetails } from '@/types/models.types';
+
+const API_BASE_URL = 'http://localhost:3002';
+
+interface OpenAIModel {
   id: string;
   object: string;
   created: number;
-  model: string;
-  choices: Array<{
-    index: number;
-    message: ChatMessage;
-    finish_reason: string;
-  }>;
-  usage?: {
-    prompt_tokens: number;
-    completion_tokens: number;
-    total_tokens: number;
-  };
+  owned_by: string;
 }
+
+class ModelsService {
+  // Get all models from API server database
+  async getModels(): Promise<Model[]> {
+    const response = await fetch(`${API_BASE_URL}/api/models`);
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch models: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.models || [];
+  }
+
+  // Get detailed information for a specific model
+  async getModelDetails(modelId: string): Promise<ModelDetails> {
+    const response = await fetch(`${API_BASE_URL}/api/models/${encodeURIComponent(modelId)}`);
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch model details: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.model;
+  }
+
+  // Get available models from Provider Router (OpenAI-compatible endpoint)
+  async getAvailableModels(providerRouterUrl: string): Promise<Model[]> {
+    const response = await fetch(`${providerRouterUrl}/v1/models`);
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch available models: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    const openaiModels: OpenAIModel[] = data.data || [];
+
+    // Convert OpenAI format to our Model format
+    return openaiModels.map((model) => ({
+      id: model.id,
+      name: model.id,
+      description: '',
+      capabilities: '[]',
+      status: 'active',
+      created_at: model.created,
+      updated_at: model.created
+    }));
+  }
+
+  parseModel(model: Model): ParsedModel {
+    let capabilities: Capability[] = [];
+    try {
+      capabilities = JSON.parse(model.capabilities);
+    } catch {
+      capabilities = [];
+    }
+
+    const providerMatch = model.description.match(/Discovered from (.+)$/);
+    const provider = providerMatch ? providerMatch[1] : 'Unknown';
+
+    return {
+      id: model.id,
+      name: model.name,
+      description: '',
+      capabilities,
+      provider,
+    };
+  }
+
+  getCapabilityDisplay(capability: Capability) {
+    if (capability === 'chat' || capability === 'completion') {
+      return { label: 'chat', color: 'models-capability-chat' };
+    }
+    if (capability === 'vision' || capability.includes('vl')) {
+      return { label: 'vision', color: 'models-capability-vision' };
+    }
+    if (capability === 'tools' || capability === 'tool-call') {
+      return { label: 'tool-call', color: 'models-capability-tools' };
+    }
+    if (capability === 'code') {
+      return { label: 'code', color: 'models-capability-code' };
+    }
+    return null;
+  }
+}
+
+export const modelsService = new ModelsService();
 ```
 
 ---
 
-## home.types.ts
+## credentials.service.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/types/home.types.ts`
-**Lines:** 32
+**File:** `frontend/src/services/credentials.service.ts`
 
 ```typescript
-// Types for HomePage and related components
+import type { CredentialStatus } from '@/types/credentials.types';
+import { CheckCircle, AlertCircle, XCircle } from 'lucide-react';
 
-export interface ProxyStatus {
-  providerRouter?: {
-    running: boolean;
-    port: number;
-    uptime: number;
-  };
-  qwenProxy?: {
-    running: boolean;
-    port: number;
-    uptime: number;
-  };
-  credentials?: {
-    valid: boolean;
-    expiresAt: number | null;
-  };
-  providers?: {
-    items: any[];
-    total: number;
-    enabled: number;
-  };
-  models?: {
-    items: any[];
-    total: number;
-  };
+const API_URL = 'http://localhost:3002';
+
+class CredentialsService {
+  async getStatus(): Promise<CredentialStatus> {
+    const response = await fetch(`${API_URL}/api/qwen/credentials`);
+    if (response.ok) {
+      const data = await response.json();
+      // Transform backend format to frontend format
+      return {
+        valid: data.isValid || false,
+        expiresAt: data.expiresAt ? data.expiresAt * 1000 : null, // Convert seconds to milliseconds
+      };
+    } else if (response.status === 404) {
+      return { valid: false, expiresAt: null };
+    }
+    throw new Error('Failed to fetch credentials status');
+  }
+
+  async deleteCredentials(): Promise<void> {
+    const response = await fetch(`${API_URL}/api/qwen/credentials`, { method: 'DELETE' });
+    if (!response.ok) {
+      throw new Error('Failed to delete credentials');
+    }
+  }
+
+  getStatusInfo(status: CredentialStatus) {
+    if (!status.expiresAt) {
+      return {
+        icon: XCircle,
+        label: 'NOT LOGGED IN',
+        variant: 'secondary' as const,
+        color: 'credentials-status-inactive',
+      };
+    }
+
+    const now = Date.now();
+    const isExpired = status.expiresAt < now;
+
+    if (isExpired) {
+      return {
+        icon: AlertCircle,
+        label: 'EXPIRED',
+        variant: 'destructive' as const,
+        color: 'credentials-status-expired',
+      };
+    }
+
+    return {
+      icon: CheckCircle,
+      label: 'LOGGED IN',
+      variant: 'default' as const,
+      color: 'credentials-status-valid',
+    };
+  }
+
+  formatExpiration(timestamp: number): string {
+    const date = new Date(timestamp);
+    return date.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
+  }
+
+  getTimeRemaining(timestamp: number): string {
+    const now = Date.now();
+    const diff = timestamp - now;
+
+    if (diff <= 0) return 'Expired';
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+    if (days > 0) {
+      return `${days} day${days !== 1 ? 's' : ''}`;
+    }
+    if (hours > 0) {
+      return `${hours} hour${hours !== 1 ? 's' : ''}`;
+    }
+    return 'Less than 1 hour';
+  }
 }
 
-export interface ProxyControlState {
-  loading: boolean;
-  error: string | null;
-}
+export const credentialsService = new CredentialsService();
 ```
 
 ---
 
-## quick-guide.types.ts
+## chatService.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/types/quick-guide.types.ts`
-**Lines:** 4
+**File:** `frontend/src/services/chatService.ts`
 
 ```typescript
-export interface CodeBlockProps {
-  label: string;
-  code: string;
-}
+import type { ParsedChatResponse } from '@/types/chat.types';
+
+export const chatService = {
+  testChat: async (providerRouterUrl: string, model?: string): Promise<string> => {
+    try {
+      const response = await fetch(`${providerRouterUrl}/v1/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer any-key'
+        },
+        body: JSON.stringify({
+          model: model || 'qwen3-max',
+          messages: [{ role: 'user', content: 'Say hello in one sentence' }]
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.choices && data.choices[0]) {
+        return data.choices[0].message.content;
+      }
+
+      return 'Error: No response from server';
+    } catch (error) {
+      console.error('Failed to test chat:', error);
+      return 'Error: Could not connect to Provider Router';
+    }
+  },
+
+  sendChatRequest: async (
+    providerRouterUrl: string,
+    model: string,
+    prompt: string
+  ): Promise<string> => {
+    try {
+      const response = await fetch(`${providerRouterUrl}/v1/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer any-key'
+        },
+        body: JSON.stringify({
+          model,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.choices && data.choices[0]) {
+        return data.choices[0].message.content;
+      }
+
+      return 'Error: No response from server';
+    } catch (error) {
+      console.error('Failed to send chat:', error);
+      return 'Error: Could not connect to Provider Router';
+    }
+  },
+
+  parseResponse: (text: string): ParsedChatResponse => {
+    const thinkMatch = text.match(/<think>([\s\S]*?)<\/think>/);
+
+    if (thinkMatch) {
+      const thinking = thinkMatch[1].trim();
+      const mainResponse = text.replace(/<think>[\s\S]*?<\/think>/, '').trim();
+      return { thinking, mainResponse };
+    }
+
+    return { thinking: null, mainResponse: text };
+  },
+};
 ```
 
 ---
 
-## index.ts
+## proxy.service.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/types/index.ts`
-**Lines:** 70
+**File:** `frontend/src/services/proxy.service.ts`
 
 ```typescript
-// Central type export file
+import type { ProxyStatus } from '@/types/home.types';
 
-export type { UIState, ProxyStatus } from './common.types';
-export type { QwenCredentials, SetCredentialsRequest, CredentialStatus } from './credentials.types';
-export type {
-  Provider,
-  Model,
-  ProxyServerInfo,
-  ProxyStatusResponse,
-  ProxyControlResponse,
-} from './proxy.types';
-export * from "./providers.types"
-export * from './models.types'
+const API_URL = 'http://localhost:3002';
 
-// WebSocket Event Types
-export interface ProxyStatusEvent {
-  status: {
-    status?: string; // 'running' | 'stopped' | 'partial'
-    message?: string;
-    providerRouter: { running: boolean; port: number; uptime: number };
-    qwenProxy: { running: boolean; port: number; uptime: number };
-    credentials: { valid: boolean; expiresAt: number | null };
-    providers: { items: any[]; total: number; enabled: number };
-    models: { items: any[]; total: number };
-    extensionConnected?: boolean;
-  };
-  timestamp: string;
+class ProxyService {
+  async getStatus(): Promise<ProxyStatus> {
+    const response = await fetch(`${API_URL}/api/proxy/status`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch proxy status');
+    }
+    return response.json();
+  }
+
+  async start(): Promise<void> {
+    const response = await fetch(`${API_URL}/api/proxy/start`, { method: 'POST' });
+    if (!response.ok) {
+      throw new Error('Failed to start proxy');
+    }
+  }
+
+  async stop(): Promise<void> {
+    const response = await fetch(`${API_URL}/api/proxy/stop`, { method: 'POST' });
+    if (!response.ok) {
+      throw new Error('Failed to stop proxy');
+    }
+  }
+
+  formatUptime(seconds?: number): string {
+    if (!seconds) return '0s';
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    if (hours > 0) return `${hours}h ${minutes}m`;
+    if (minutes > 0) return `${minutes}m`;
+    return `${Math.floor(seconds)}s`;
+  }
+
+  formatTime(date: Date | null): string {
+    if (!date) return '';
+    return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  }
 }
 
-export interface CredentialsUpdatedEvent {
-  action: 'updated' | 'deleted';
-  credentials: { valid: boolean; expiresAt: number | null };
-  timestamp: string;
-}
-
-export interface ProvidersUpdatedEvent {
-  action: string;
-  providers: any[];
-  timestamp: string;
-}
-
-export interface ModelsUpdatedEvent {
-  action: string;
-  models: any[];
-  timestamp: string;
-}
-
-export interface LifecycleUpdateEvent {
-  providerRouter?: {
-    state: 'starting' | 'running' | 'stopping' | 'stopped' | 'error';
-    port: number | null;
-    running: boolean;
-    error?: string | null;
-  };
-  qwenProxy?: {
-    state: 'starting' | 'running' | 'stopping' | 'stopped' | 'error';
-    port: number | null;
-    running: boolean;
-    error?: string | null;
-  };
-  timestamp: number;
-}
-
-export type WebSocketConnectionStatus = 'connected' | 'disconnected' | 'reconnecting';
-
-export interface WebSocketEvent {
-  type: 'proxy:status' | 'credentials:updated' | 'providers:updated' | 'models:updated' | 'lifecycle:update';
-  data: any;
-  timestamp: string;
-}
+export const proxyService = new ProxyService();
 ```
 
 ---
@@ -1159,26 +1637,24 @@ export interface WebSocketEvent {
 
 This document contains the complete verbatim source code for:
 
-**Phase 4: Foundation Layer - Constants (9 files, 588 lines total)**
-- home.constants.tsx (147 lines)
+**Phase 4: Foundation Layer - Constants (9 files)**
+- home.constants.tsx (148 lines)
 - providers.constants.tsx (100 lines)
 - models.constants.tsx (87 lines)
-- settings.constants.tsx (22 lines)
-- chat.constants.tsx (47 lines)
-- modelForm.constants.tsx (65 lines)
-- providerForm.constants.tsx (85 lines)
+- settings.constants.tsx (23 lines)
+- chat.constants.tsx (48 lines)
+- modelForm.constants.tsx (66 lines)
+- providerForm.constants.tsx (86 lines)
 - browserGuide.constants.tsx (18 lines)
-- desktopGuide.constants.tsx (17 lines)
+- desktopGuide.constants.tsx (18 lines)
 
-**Phase 5: Type Definitions (9 files, 359 lines total)**
-- common.types.ts (10 lines)
-- providers.types.ts (93 lines)
-- models.types.ts (40 lines)
-- credentials.types.ts (20 lines)
-- proxy.types.ts (54 lines)
-- chat.types.ts (36 lines)
-- home.types.ts (32 lines)
-- quick-guide.types.ts (4 lines)
-- index.ts (70 lines)
+**Phase 5: Service Layer (7 files)**
+- api.service.ts (286 lines)
+- websocket.service.ts (146 lines)
+- providers.service.ts (143 lines)
+- models.service.ts (98 lines)
+- credentials.service.ts (91 lines)
+- chatService.ts (74 lines)
+- proxy.service.ts (44 lines)
 
-**Total: 18 files, 947 lines of code**
+**Total: 16 files, 1,476 lines of code**

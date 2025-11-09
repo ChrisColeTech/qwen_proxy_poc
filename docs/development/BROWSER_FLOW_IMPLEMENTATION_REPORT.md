@@ -32,7 +32,7 @@ The frontend had no support for the browser flow:
 
 ### 1. Chrome Extension (NEW)
 
-Created complete Chrome extension at `/Users/chris/Projects/qwen_proxy_poc/extension/`:
+Created complete Chrome extension at `extension/`:
 
 #### `/extension/manifest.json`
 - Manifest V3 configuration
@@ -85,7 +85,7 @@ Created complete Chrome extension at `/Users/chris/Projects/qwen_proxy_poc/exten
 
 ### 2. Frontend Services (NEW)
 
-Created new service files at `/Users/chris/Projects/qwen_proxy_poc/frontend/src/services/`:
+Created new service files at `frontend/src/services/`:
 
 #### `browser-extension.service.ts`
 - `isExtensionInstalled()`: PING/PONG protocol implementation
@@ -106,7 +106,7 @@ Created new service files at `/Users/chris/Projects/qwen_proxy_poc/frontend/src/
 
 ### 3. Frontend App.tsx (COMPLETE REWRITE)
 
-Completely rewrote `/Users/chris/Projects/qwen_proxy_poc/frontend/src/App.tsx`:
+Completely rewrote `frontend/src/App.tsx`:
 
 #### State Management
 - `status`: CredentialStatus (hasCredentials, isValid, expiresAt)
@@ -304,7 +304,7 @@ The following tests are recommended before production use:
 ## File Structure
 
 ```
-/Users/chris/Projects/qwen_proxy_poc/
+
 │
 ├── extension/                          # NEW - Chrome Extension
 │   ├── manifest.json                   # Extension config (Manifest V3)

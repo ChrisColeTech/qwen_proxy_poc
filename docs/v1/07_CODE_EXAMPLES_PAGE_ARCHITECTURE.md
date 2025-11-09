@@ -1,6 +1,6 @@
 # Code Examples: Page Architecture & Component Dependencies
 
-**Reference Implementation:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/`
+**Reference Implementation:** `frontend/src/`
 
 **Purpose:** Complete examples for page architecture following Doc 70-PAGE_ARCHITECTURE_GUIDE.md with TabCard, ActionList, and page hooks pattern.
 

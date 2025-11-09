@@ -23,7 +23,7 @@ Phase 6 implements Zustand stores for application state management, including UI
 
 #### src/stores/useUIStore.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/stores/useUIStore.ts` (259 lines)
+**File:** `frontend/src/stores/useUIStore.ts` (259 lines)
 
 ```typescript
 import { create } from 'zustand';
@@ -288,7 +288,7 @@ export const useUIStore = create<UIStore>((set, get) => ({
 
 #### src/stores/useSettingsStore.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/stores/useSettingsStore.ts` (72 lines)
+**File:** `frontend/src/stores/useSettingsStore.ts` (72 lines)
 
 ```typescript
 import { create } from 'zustand';
@@ -368,7 +368,7 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
 
 #### src/stores/useCredentialsStore.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/stores/useCredentialsStore.ts` (17 lines)
+**File:** `frontend/src/stores/useCredentialsStore.ts` (17 lines)
 
 ```typescript
 import { create } from 'zustand';
@@ -391,7 +391,7 @@ export const useCredentialsStore = create<CredentialsStore>((set) => ({
 
 #### src/stores/useProxyStore.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/stores/useProxyStore.ts` (228 lines)
+**File:** `frontend/src/stores/useProxyStore.ts` (228 lines)
 
 ```typescript
 import { create } from 'zustand';
@@ -625,7 +625,7 @@ export const useProxyStore = create<ProxyStore>((set) => ({
 
 #### src/stores/useLifecycleStore.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/stores/useLifecycleStore.ts` (22 lines)
+**File:** `frontend/src/stores/useLifecycleStore.ts` (22 lines)
 
 ```typescript
 import { create } from 'zustand';
@@ -653,7 +653,7 @@ export const useLifecycleStore = create<LifecycleStore>((set) => ({
 
 #### src/stores/useAlertStore.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/stores/useAlertStore.ts` (70 lines)
+**File:** `frontend/src/stores/useAlertStore.ts` (70 lines)
 
 ```typescript
 import { toast } from '@/hooks/useToast';
@@ -737,7 +737,7 @@ Phase 7 creates custom React hooks that encapsulate all business logic for the a
 
 #### src/hooks/useDarkMode.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/hooks/useDarkMode.ts` (16 lines)
+**File:** `frontend/src/hooks/useDarkMode.ts` (16 lines)
 
 ```typescript
 import { useEffect } from 'react';
@@ -759,7 +759,7 @@ export function useDarkMode() {
 
 #### src/hooks/useWebSocket.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/hooks/useWebSocket.ts` (77 lines)
+**File:** `frontend/src/hooks/useWebSocket.ts` (77 lines)
 
 ```typescript
 import { useEffect, useState } from 'react';
@@ -842,7 +842,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
 
 #### src/hooks/useToast.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/hooks/useToast.ts` (195 lines)
+**File:** `frontend/src/hooks/useToast.ts` (195 lines)
 
 ```typescript
 "use client"
@@ -1043,7 +1043,7 @@ export { useToast, toast }
 
 #### src/hooks/useExtensionDetection.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/hooks/useExtensionDetection.ts` (25 lines)
+**File:** `frontend/src/hooks/useExtensionDetection.ts` (25 lines)
 
 ```typescript
 import { isElectron } from '@/utils/platform';
@@ -1074,7 +1074,7 @@ export function useExtensionDetection() {
 
 #### src/hooks/useApiGuidePage.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/hooks/useApiGuidePage.ts` (32 lines)
+**File:** `frontend/src/hooks/useApiGuidePage.ts` (32 lines)
 
 ```typescript
 import { useState } from 'react';
@@ -1112,7 +1112,7 @@ export function useApiGuidePage() {
 
 #### src/hooks/useBrowserGuidePage.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/hooks/useBrowserGuidePage.ts` (5 lines)
+**File:** `frontend/src/hooks/useBrowserGuidePage.ts` (5 lines)
 
 ```typescript
 export function useBrowserGuidePage() {
@@ -1125,7 +1125,7 @@ export function useBrowserGuidePage() {
 
 #### src/hooks/useHomePage.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/hooks/useHomePage.ts` (121 lines)
+**File:** `frontend/src/hooks/useHomePage.ts` (121 lines)
 
 ```typescript
 import { useState, useEffect } from 'react';
@@ -1252,7 +1252,7 @@ export function useHomePage() {
 
 #### src/hooks/useProvidersPage.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/hooks/useProvidersPage.ts` (80 lines)
+**File:** `frontend/src/hooks/useProvidersPage.ts` (80 lines)
 
 ```typescript
 import { useState, useEffect } from 'react';
@@ -1338,7 +1338,7 @@ export function useProvidersPage() {
 
 #### src/hooks/useModelsPage.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/hooks/useModelsPage.ts` (218 lines)
+**File:** `frontend/src/hooks/useModelsPage.ts` (218 lines)
 
 ```typescript
 import { useState, useEffect, useMemo } from 'react';
@@ -1562,7 +1562,7 @@ export function useModelsPage() {
 
 #### src/hooks/useSettingsPage.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/hooks/useSettingsPage.ts` (39 lines)
+**File:** `frontend/src/hooks/useSettingsPage.ts` (39 lines)
 
 ```typescript
 import { useUIStore } from '@/stores/useUIStore';
@@ -1607,7 +1607,7 @@ export function useSettingsPage() {
 
 #### src/hooks/useDesktopGuidePage.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/hooks/useDesktopGuidePage.ts` (5 lines)
+**File:** `frontend/src/hooks/useDesktopGuidePage.ts` (5 lines)
 
 ```typescript
 export function useDesktopGuidePage() {
@@ -1618,7 +1618,7 @@ export function useDesktopGuidePage() {
 
 #### src/hooks/useModelFormPage.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/hooks/useModelFormPage.ts` (82 lines)
+**File:** `frontend/src/hooks/useModelFormPage.ts` (82 lines)
 
 ```typescript
 import { useState, useEffect } from 'react';
@@ -1706,7 +1706,7 @@ export function useModelFormPage() {
 
 #### src/hooks/useProviderFormPage.ts
 
-**File:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/hooks/useProviderFormPage.ts` (253 lines)
+**File:** `frontend/src/hooks/useProviderFormPage.ts` (253 lines)
 
 ```typescript
 import { useState, useEffect } from 'react';
