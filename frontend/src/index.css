@@ -1,38 +1,7 @@
-/* Import custom component styles first */
-@import './styles/icons.css';
-@import './styles/models.css';
-@import './styles/credentials.css';
 /* ============================================================================
-   QWEN PROXY - MAIN STYLESHEET
-   Architecture: Modular CSS organized by layer
+   QWEN PROXY - CLEANED STYLESHEET
+   Generated from CSS analysis - Only used classes included (17.2% usage)
    ============================================================================ */
 
-/* IMPORTANT: All @import must come before @tailwind and any other CSS */
-
-/* Base Styles - Theme variables and global resets */
-@import './styles/base/theme.css';
-
-/* Utility Classes - Common utilities used across the app */
-@import './styles/utilities/common.css';
-
-/* Layout Styles - Core layout components */
-@import './styles/layout.css';
-
-/* Page Styles - Page-level styling */
-@import './styles/pages.css';
-
-/* Feature Component Styles - Domain-specific components */
-@import './styles/quick-guide.css';
-@import './styles/api-guide.css';
-
-/* UI Component Styles - Reusable UI components */
-@import './styles/ui-components.css';
-
-/* Legacy Component Styles - To be refactored */
-@import './styles/components/steps.css';
-@import './styles/components/guide.css';
-
-/* Tailwind Directives */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Import cleaned CSS with only used classes */
+@import './styles-cleaned.css';
