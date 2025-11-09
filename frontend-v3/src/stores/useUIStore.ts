@@ -120,7 +120,7 @@ export const useUIStore = create<UIStore>((set, get) => ({
     theme: 'dark',
     sidebarPosition: 'left',
     showStatusMessages: true,
-    showStatusBar: isElectron(),
+    showStatusBar: !!isElectron(),
   },
   statusMessage: 'Ready',
   currentRoute: '/',

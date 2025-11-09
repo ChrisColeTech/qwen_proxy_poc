@@ -172,9 +172,11 @@ export const buildStatusTabContent = (
   const effectiveModel = activeModel !== 'None' ? activeModel : 'qwen3-max';
 
   return (
-  <div className="space-y-8">
-    {/* Active Configuration Section */}
-    <div className="space-y-3">
+  <div className="demo-container" style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
+    <div className="provider-switch-list" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+      <div className="space-y-8">
+        {/* Active Configuration Section */}
+        <div className="space-y-3">
       <h3 className="text-sm font-semibold tracking-tight">Active Configuration</h3>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1">
@@ -268,6 +270,8 @@ export const buildStatusTabContent = (
           />
         </TabsContent>
       </Tabs>
+    </div>
+      </div>
     </div>
   </div>
   );
