@@ -3,7 +3,7 @@ import { useLifecycleStore } from '@/stores/useLifecycleStore';
 import { useSettingsStore } from '@/stores/useSettingsStore';
 import { useUIStore } from '@/stores/useUIStore';
 import { EnvironmentBadge } from '@/components/ui/environment-badge';
-import { StatusBadge } from '@/components/ui/status-badge';
+import { StatusLabel } from '@/components/ui/status-label';
 import { Badge } from '@/components/ui/badge';
 
 export function StatusBar() {
@@ -41,11 +41,11 @@ export function StatusBar() {
           <>
             <EnvironmentBadge />
             <div className="statusbar-separator" />
-            <StatusBadge status={apiServerStatus}>API Server</StatusBadge>
+            <StatusLabel status={apiServerStatus}>API Server</StatusLabel>
             <div className="statusbar-separator" />
-            <StatusBadge status={extensionStatus}>Extension</StatusBadge>
+            <StatusLabel status={extensionStatus}>Extension</StatusLabel>
             <div className="statusbar-separator" />
-            <StatusBadge status={credentialStatus} />
+            <StatusLabel status={credentialStatus} />
             {activeProvider && (
               <>
                 <div className="statusbar-separator" />
@@ -76,7 +76,7 @@ export function StatusBar() {
         )}
       </div>
       {showStatusMessages && displayMessage && (
-        <StatusBadge status={isError ? 'invalid' : isProxyRunning ? 'running' : 'stopped'}>
+        <StatusLabel status={isError ? 'invalid' : isProxyRunning ? 'running' : 'stopped'}>
           {isTransitioning && (
             <svg
               className="animate-spin -ml-1 mr-2 h-3 w-3 inline-block"
@@ -100,7 +100,7 @@ export function StatusBar() {
             </svg>
           )}
           {displayMessage}
-        </StatusBadge>
+        </StatusLabel>
       )}
     </div>
   );
