@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Database } from 'lucide-react';
+import { ArrowLeft, Database, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { TabCard } from '@/components/ui/tab-card';
 import { Tooltip, TooltipProvider } from '@/components/ui/tooltip';
 import { useUIStore } from '@/stores/useUIStore';
+import { useAlertStore } from '@/stores/useAlertStore';
 import { modelsService } from '@/services/models.service';
+import { providersService } from '@/services/providers.service';
 import type { ModelDetails } from '@/types/models.types';
 
 export function ModelFormPage() {
@@ -20,6 +22,7 @@ export function ModelFormPage() {
 
   const [model, setModel] = useState<ModelDetails | null>(null);
   const [loading, setLoading] = useState(true);
+  const [settingDefault, setSettingDefault] = useState(false);
 
   useEffect(() => {
     const loadModel = async () => {
@@ -38,6 +41,38 @@ export function ModelFormPage() {
       loadModel();
     }
   }, [id, setCurrentRoute]);
+
+  const handleSetAsDefault = async () => {
+    if (!model || !model.providers || model.providers.length === 0) {
+      useAlertStore.showAlert('No providers linked to this model', 'error');
+      return;
+    }
+
+    setSettingDefault(true);
+    try {
+      // Set this model as default for all linked providers
+      const updatePromises = model.providers.map(async (provider) => {
+        try {
+          await providersService.updateProviderConfig(provider.id, { defaultModel: model.id });
+        } catch (error) {
+          console.error(`Failed to update provider ${provider.name}:`, error);
+          throw error;
+        }
+      });
+
+      await Promise.all(updatePromises);
+
+      useAlertStore.showAlert(
+        `Set ${model.name} as default for ${model.providers.length} provider(s)`,
+        'success'
+      );
+    } catch (error) {
+      console.error('Failed to set model as default:', error);
+      useAlertStore.showAlert('Failed to set model as default', 'error');
+    } finally {
+      setSettingDefault(false);
+    }
+  };
 
   const formatDate = (timestamp: number) => {
     return new Date(timestamp).toLocaleDateString('en-US', {
@@ -248,6 +283,22 @@ export function ModelFormPage() {
           </Button>
         </Tooltip>
       </TooltipProvider>
+      {model && model.providers && model.providers.length > 0 && (
+        <TooltipProvider>
+          <Tooltip content="Set as default model for linked providers">
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={handleSetAsDefault}
+              disabled={settingDefault}
+              aria-label="Set as default model"
+            >
+              <Star className="icon-sm" />
+            </Button>
+          </Tooltip>
+        </TooltipProvider>
+      )}
     </div>
   );
 
