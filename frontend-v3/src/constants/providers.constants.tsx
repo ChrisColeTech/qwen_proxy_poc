@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipProvider } from '@/components/ui/tooltip';
 import { StatusIndicator } from '@/components/ui/status-indicator';
 import { ActionList } from '@/components/ui/action-list';
-import { ProviderTestContent } from '@/components/features/providers/ProviderTestContent';
+import { ProviderTestWrapper } from '@/components/features/providers/ProviderTestWrapper';
 import type { ActionItem } from './home.constants';
 import type { Provider } from '@/types/providers.types';
 
@@ -206,24 +206,14 @@ export const buildProviderTestContent = (params: {
   providers: Provider[];
   providerRouterUrl: string;
 }) => {
-  const { activeProvider, providers, providerRouterUrl } = params;
-
-  const provider = providers.find(p => p.id === activeProvider);
+  const provider = params.providers.find(p => p.id === params.activeProvider);
   const providerName = provider?.name || 'Unknown Provider';
 
-  if (!provider) {
-    return (
-      <div className="vspace-md flex items-center justify-center py-8">
-        <p className="text-muted-foreground">No provider selected</p>
-      </div>
-    );
-  }
-
   return (
-    <ProviderTestContent
-      activeProvider={activeProvider}
+    <ProviderTestWrapper
+      activeProvider={params.activeProvider}
       providerName={providerName}
-      providerRouterUrl={providerRouterUrl}
+      providerRouterUrl={params.providerRouterUrl}
     />
   );
 };

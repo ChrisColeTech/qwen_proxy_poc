@@ -285,10 +285,10 @@ export function ProviderDetailsPage() {
             <div className="space-y-2">
               {provider.models.map((model) => (
                 <div
-                  key={model.model_id}
+                  key={model.id}
                   className="flex items-center justify-between p-3 border rounded"
                 >
-                  <span className="font-medium">{model.model_id}</span>
+                  <span className="font-medium">{model.id}</span>
                   {model.is_default && (
                     <Badge variant="default">Default</Badge>
                   )}

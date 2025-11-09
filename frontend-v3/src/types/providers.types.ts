@@ -24,9 +24,14 @@ export interface ProviderConfig {
 }
 
 export interface ProviderModel {
-  model_id: string;
+  id: string;
+  name: string;
+  description: string;
+  capabilities: string;
+  created_at: number;
+  updated_at: number;
   is_default: boolean;
-  config: any | null;
+  provider_config: any | null;
 }
 
 export interface ProviderDetails extends Provider {

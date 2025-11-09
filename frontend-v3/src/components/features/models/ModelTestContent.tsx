@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FlaskConical, Play, RefreshCw, Zap } from 'lucide-react';
+import { FlaskConical, Play, RefreshCw } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipProvider } from '@/components/ui/tooltip';
@@ -114,6 +114,31 @@ curl ${providerRouterUrl || `http://localhost:${port}`}/v1/chat/completions \\
           <FlaskConical className="icon-primary" />
           <span className="demo-label-text">Model Test</span>
         </div>
+        <div className="flex items-center gap-2">
+          {loading && (
+            <Badge variant="secondary" className="min-w-[100px] justify-center">
+              <RefreshCw className="h-3 w-3 animate-spin mr-1" />
+              Waiting...
+            </Badge>
+          )}
+          <TooltipProvider>
+            <Tooltip content={loading ? "Testing model..." : "Test model with active provider"}>
+              <Button
+                onClick={handleTest}
+                disabled={loading}
+                size="icon"
+                variant="outline"
+                aria-label="Test model"
+              >
+                {loading ? (
+                  <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Play className="h-3.5 w-3.5" />
+                )}
+              </Button>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </div>
 
       <div className="provider-switch-list" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
@@ -124,49 +149,16 @@ curl ${providerRouterUrl || `http://localhost:${port}`}/v1/chat/completions \\
               Send a test chat completion request using <strong>{modelName}</strong> on <strong>{providerName}</strong> to verify the model is working correctly.
             </p>
 
-            <div className="demo-container">
-              <div className="demo-header">
-                <div className="demo-label">
-                  <Zap className="icon-primary" />
-                  <span className="demo-label-text">Test Response</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  {loading && (
-                    <Badge variant="secondary" className="min-w-[100px] justify-center">
-                      <RefreshCw className="h-3 w-3 animate-spin mr-1" />
-                      Waiting...
-                    </Badge>
-                  )}
-                  <TooltipProvider>
-                    <Tooltip content="Test model with active provider">
-                      <Button
-                        onClick={handleTest}
-                        disabled={loading}
-                        size="icon"
-                        variant="outline"
-                        aria-label="Test model"
-                      >
-                        {loading ? (
-                          <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-                        ) : (
-                          <Play className="h-3.5 w-3.5" />
-                        )}
-                      </Button>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
+            {response && (
+              <div className="p-4 rounded-lg bg-muted/50 border">
+                <pre className="text-sm whitespace-pre-wrap break-words font-mono">{response}</pre>
               </div>
-              {response && (
-                <div className="p-4 rounded-lg bg-muted/50 border">
-                  <pre className="text-sm whitespace-pre-wrap break-words font-mono">{response}</pre>
-                </div>
-              )}
-              {!response && !loading && (
-                <div className="flex items-center justify-center py-8 text-muted-foreground">
-                  Click the <Play className="h-3.5 w-3.5 mx-1 inline" /> button above to test this model
-                </div>
-              )}
-            </div>
+            )}
+            {!response && !loading && (
+              <div className="flex items-center justify-center py-8 text-muted-foreground">
+                Click the <Play className="h-3.5 w-3.5 mx-1 inline" /> button above to test this model
+              </div>
+            )}
           </div>
 
           {/* Divider */}
