@@ -93,39 +93,6 @@
   .status-success {
     color: hsl(var(--status-success));
   }
-  .status-success-dot {
-    background-color: hsl(var(--status-success));
-  }
-  .status-info {
-    color: hsl(var(--status-info));
-  }
-  .status-info-dot {
-    background-color: hsl(var(--status-info));
-  }
-  .status-warning {
-    color: hsl(var(--status-warning));
-  }
-  .status-warning-dot {
-    background-color: hsl(var(--status-warning));
-  }
-  .status-error {
-    color: hsl(var(--status-error));
-  }
-  .status-error-dot {
-    background-color: hsl(var(--status-error));
-  }
-  .status-neutral {
-    color: hsl(var(--status-neutral));
-  }
-  .status-neutral-dot {
-    background-color: hsl(var(--status-neutral));
-  }
-  .status-purple {
-    color: hsl(var(--status-purple));
-  }
-  .status-purple-dot {
-    background-color: hsl(var(--status-purple));
-  }
 }
 
 @keyframes pulse {

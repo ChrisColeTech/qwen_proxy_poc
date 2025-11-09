@@ -251,7 +251,8 @@ def extract_foundational_css_rules(css_content):
 def extract_css_rules_for_classes(css_content, target_classes):
     """Extract CSS rules for specific classes only (no foundational CSS)"""
     rules = []
-    
+    seen_selectors = set()  # Track selectors to prevent duplicates
+
     # Remove comments but preserve structure
     processed_content = re.sub(r'/\*.*?\*/', '', css_content, flags=re.DOTALL)
     
@@ -302,8 +303,9 @@ def extract_css_rules_for_classes(css_content, target_classes):
                     if re.search(rf'\.{re.escape(target_class)}(?![a-zA-Z0-9_-])', selector):
                         contains_target_class = True
                         break
-                
-                if contains_target_class:
+
+                if contains_target_class and selector not in seen_selectors:
+                    seen_selectors.add(selector)
                     rules.append(f"{selector} {{\n{rule_body}\n}}")
             
             pos = i
@@ -374,8 +376,9 @@ def extract_css_rules_for_classes(css_content, target_classes):
             if re.search(rf'\.{re.escape(target_class)}(?![a-zA-Z0-9_-])', selector):
                 contains_target_class = True
                 break
-        
-        if contains_target_class:
+
+        if contains_target_class and selector not in seen_selectors:
+            seen_selectors.add(selector)
             rules.append(f"{selector} {{\n{rule_body}\n}}")
     
     return rules

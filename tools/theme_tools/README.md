@@ -89,7 +89,7 @@ python3 css_analyzer.py report --analysis-file css_analysis.json
 
 ### Output Files
 
-When you run the analyzer, it generates **7 files**:
+When you run the analyzer, it generates **8 files** (7 main analysis files + 1 dynamic detection report):
 
 #### 1. `css_analysis.json`
 **Purpose:** Machine-readable analysis data
@@ -202,6 +202,23 @@ Contains actual CSS rules (selectors + properties) for classes found in your cod
 
 Contains CSS rules for unused classes. Useful for archiving before deletion, or for debugging why certain styles aren't working (if they're in this file, they're not being referenced!).
 
+#### 9. `output/dynamic_classes_report.txt`
+**Purpose:** Report of potentially dynamic class usage
+
+This report identifies CSS classes that were marked as "unused" by the static analyzer but were found in dynamic contexts. It helps catch false negatives - classes that ARE actually used but in ways that are hard to detect statically.
+
+**Example findings:**
+- `sidebar-nav-indicator-left` - Found in ternary operator: `sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'`
+- `theme-dark` - Found in classList operation: `element.classList.add('theme-dark')`
+
+Each finding includes:
+- The file where it was found
+- The detection type (ternary operator, cn() utility, template literal, etc.)
+- Confidence level (definite, high, medium, or possible)
+- Code context showing how the class is used
+
+**Important:** This report is automatically generated when you run `css_analyzer.py analyze`. Review it before removing "unused" classes to avoid accidentally deleting classes that are actually used dynamically.
+
 ### Understanding the Results
 
 #### Usage Percentage
@@ -311,6 +328,34 @@ python3 scan_css_classes.py --file ../../frontend/src/index.css
 - **fix_theme_variables.py**: Fixes CSS variable names in theme files
 - **css_flattener.py**: Converts @layer-wrapped CSS to flat structure
 
+### Dynamic Class Detection
+
+- **detect_dynamic_classes.py**: Detects dynamically used CSS classes that static analysis might miss
+
+This tool is automatically run as part of the main `css_analyzer.py` workflow, but can also be run standalone:
+
+```bash
+python3 detect_dynamic_classes.py \
+  --tsx-path ../../frontend/src \
+  --unused-classes unused_classes.txt \
+  --output output/dynamic_classes_report.txt \
+  --verbose
+```
+
+The dynamic class detector searches for classes used in patterns that are hard to detect statically:
+- Classes in ternary operators: `condition ? 'class-a' : 'class-b'`
+- Classes in cn() utility calls: `cn('base', condition && 'dynamic-class')`
+- Classes in template literals: `` `prefix-${variable}` ``
+- Classes in string concatenation: `'prefix-' + variable`
+- Classes in object/map lookups: `{ active: 'active-class' }`
+- Classes in classList operations: `classList.add('dynamic-class')`
+
+Each finding is assigned a confidence level:
+- **Definite**: Class is definitely used (e.g., in classList operations)
+- **High**: Very likely used (e.g., in ternary operators, cn() calls)
+- **Medium**: Likely used (e.g., in template literals, string concatenation)
+- **Possible**: Might be used (e.g., as function parameters)
+
 ### Other Analysis Tools
 
 - **analyze_frontend_css.py**: Comprehensive CSS analysis for the entire frontend
@@ -416,12 +461,23 @@ python3 css_analyzer.py analyze \
    📋 ./analysis-output/used_classes.txt, ./analysis-output/unused_classes.txt, ./analysis-output/css_classes.txt
    🎨 ./analysis-output/foundational.css, ./analysis-output/used.css, ./analysis-output/unused.css
 
-📈 Summary: 20.1% CSS usage rate
+📈 Summary: 79.7% CSS usage rate
    ✅ 55 classes used
-   ⚠️  219 classes unused
+   ⚠️  14 classes unused
+
+🔍 Running dynamic class detection...
+   ⚠️  Found 8 potentially dynamic classes (see ./analysis-output/output/dynamic_classes_report.txt)
 ```
 
-Check `unused_classes.txt` for classes you can safely remove!
+Check `unused_classes.txt` for classes you can potentially remove!
+
+But wait - before removing any classes, check the dynamic detection report:
+
+```bash
+cat ./output/dynamic_classes_report.txt
+```
+
+The report shows that 3 sidebar indicator classes are actually used in ternary operators! These should NOT be removed despite being marked as "unused" by the static analyzer.
 
 ### Example 2: Verifying a Class is Used
 
@@ -483,18 +539,21 @@ python3 extract_used_css.py \
 
 1. **Run regularly**: Run the analyzer after major refactoring sessions to identify cleanup opportunities.
 
-2. **Review unused classes carefully**: Just because a class is marked "unused" doesn't mean it should be deleted. Consider:
+2. **Always check the dynamic detection report**: The analyzer now automatically runs dynamic class detection. Review the `output/dynamic_classes_report.txt` file before removing any "unused" classes. Classes marked as "definite" or "high confidence" in the report should NOT be removed.
+
+3. **Review unused classes carefully**: Just because a class is marked "unused" doesn't mean it should be deleted. Consider:
+   - Is it reported in the dynamic detection report?
    - Is it used by external tools or docs?
    - Is it a utility class for future use?
-   - Is it loaded dynamically in ways the tool can't detect?
+   - Is it loaded dynamically in ways even the dynamic detector can't catch?
 
-3. **Use verbose mode for debugging**: If a class isn't being detected, run with `--verbose` to see which files are being scanned.
+4. **Use verbose mode for debugging**: If a class isn't being detected, run with `--verbose` to see which files are being scanned.
 
-4. **Check both .ts and .tsx files**: The tool now scans both file types, which is crucial for detecting classes added in hooks or utility files.
+5. **Check both .ts and .tsx files**: The tool now scans both file types, which is crucial for detecting classes added in hooks or utility files.
 
-5. **Commit before major deletions**: Before removing unused CSS based on the analysis, commit your changes so you can easily revert if needed.
+6. **Commit before major deletions**: Before removing unused CSS based on the analysis, commit your changes so you can easily revert if needed.
 
-6. **Compare with git history**: Cross-reference unused classes with your git history to see when they were last modified and by whom.
+7. **Compare with git history**: Cross-reference unused classes with your git history to see when they were last modified and by whom.
 
 ## Troubleshooting
 

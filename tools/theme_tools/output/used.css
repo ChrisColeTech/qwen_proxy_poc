@@ -43,22 +43,6 @@ color: hsl(var(--status-success));
 @apply h-4 w-4;
 }
 
-.model-filters-row {
-@apply flex flex-col sm:flex-row gap-3 px-4 py-3 border-b;
-}
-
-.model-filter-group {
-@apply flex items-center gap-2;
-}
-
-.model-filter-label {
-@apply text-sm text-muted-foreground whitespace-nowrap;
-}
-
-.models-filter-select {
-@apply w-[180px];
-}
-
 .page-container {
 @apply w-full p-6 h-full flex flex-col;
 }
@@ -69,10 +53,6 @@ color: hsl(var(--status-success));
 
 .page-card-content {
 @apply flex-1 overflow-hidden;
-}
-
-.icon-sm {
-@apply h-4 w-4;
 }
 
 .card-title-with-icon {
@@ -181,10 +161,6 @@ color: hsl(var(--status-success));
   width: 1px;
 }
 
-.page-container {
-@apply w-full p-6 h-full flex flex-col;
-}
-
 .code-block-container {
 @apply space-y-2;
 }
@@ -261,107 +237,11 @@ color: hsl(var(--status-success));
 @apply text-green-600 dark:text-green-500;
 }
 
-.card-title-with-icon {
-@apply flex items-center gap-2 text-base;
-}
-
-.status-success {
-color: hsl(var(--status-success));
-}
-
-.page-card {
-@apply flex-1 flex flex-col overflow-hidden;
-}
-
-.page-card-content {
-@apply flex-1 flex flex-col overflow-hidden;
-}
-
 .tab-container {
 @apply w-full flex flex-col flex-1 overflow-hidden;
 }
 
 .tab-content {
 @apply mt-4 flex-1 flex flex-col overflow-auto;
-}
-
-.status-success {
-color: hsl(var(--status-success));
-}
-
-.step-description {
-@apply text-sm text-muted-foreground;
-}
-
-.demo-container {
-@apply rounded-lg border border-border bg-muted/30 p-4 space-y-3;
-}
-
-.demo-header {
-@apply flex items-center justify-between;
-}
-
-.demo-label {
-@apply flex items-center gap-2;
-}
-
-.demo-label-text {
-@apply text-sm font-medium;
-}
-
-.provider-switch-list {
-@apply space-y-2;
-}
-
-.provider-switch-item {
-@apply flex items-center justify-between bg-background rounded px-4 py-3 transition-colors;
-}
-
-.provider-switch-info {
-@apply flex items-center gap-3;
-}
-
-.provider-switch-details {
-@apply space-y-0;
-}
-
-.provider-switch-name {
-@apply text-sm font-medium;
-}
-
-.provider-switch-type {
-@apply text-xs text-muted-foreground;
-}
-
-.provider-switch-actions {
-@apply flex items-center gap-2;
-}
-
-.code-block-container {
-@apply space-y-2;
-}
-
-.code-block-label {
-@apply text-sm font-medium;
-}
-
-.code-block-wrapper {
-@apply relative;
-}
-
-.code-block-pre {
-@apply bg-muted rounded-lg p-4 text-xs font-mono overflow-x-auto;
-}
-
-.code-block-code {
-@apply text-foreground;
-}
-
-.code-block-copy-button {
-@apply absolute top-2 right-2 h-7 w-7;
-}
-
-.status-icon-success {
-@apply text-primary;
 }
 

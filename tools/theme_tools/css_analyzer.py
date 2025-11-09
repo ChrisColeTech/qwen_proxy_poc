@@ -15,6 +15,7 @@ from extract_used_css import (
     extract_css_rules_for_classes,
     extract_foundational_css_rules
 )
+from detect_dynamic_classes import DynamicClassDetector
 
 def resolve_css_imports(css_file, base_dir=None, visited=None):
     """
@@ -262,10 +263,39 @@ def analyze(tsx_path, css_file, output_dir, verbose):
     click.echo(f"   📝 {report_file}")
     click.echo(f"   📋 {used_classes_file}, {unused_classes_file}, {css_classes_file}")
     click.echo(f"   🎨 {foundational_css_file}, {used_css_file}, {unused_css_file}")
-    
+
     click.echo(f"\n📈 Summary: {analysis_data['summary']['usage_percentage']:.1f}% CSS usage rate")
     click.echo(f"   ✅ {len(used_css_classes)} classes used")
     click.echo(f"   ⚠️  {len(unused_css_classes)} classes unused")
+
+    # Step 6: Run dynamic class detection (FINAL STEP)
+    click.echo(f"\n🔍 Running dynamic class detection...")
+    dynamic_output = os.path.join(output_dir, 'output')
+    os.makedirs(dynamic_output, exist_ok=True)
+
+    try:
+        detector = DynamicClassDetector(tsx_path, unused_classes_file, verbose)
+        unused_classes_set = detector.load_unused_classes()
+
+        if verbose:
+            click.echo(f"   Scanning {len(unused_classes_set)} unused classes for dynamic usage...")
+
+        detector.scan_all_files(unused_classes_set)
+
+        dynamic_report_file = os.path.join(dynamic_output, 'dynamic_classes_report.txt')
+        detector.generate_report(dynamic_report_file)
+
+        classes_found = len(set(finding['class_name'] for finding in detector.findings))
+        if classes_found > 0:
+            click.echo(f"   ⚠️  Found {classes_found} potentially dynamic classes (see {dynamic_report_file})")
+        else:
+            click.echo(f"   ✅ No dynamic class usage detected")
+
+    except Exception as e:
+        click.echo(f"   Warning: Dynamic detection failed: {e}")
+        if verbose:
+            import traceback
+            traceback.print_exc()
 
 @cli.command()
 @click.option('--analysis-file', '-a', default='css_analysis.json', help='Analysis JSON file to read')

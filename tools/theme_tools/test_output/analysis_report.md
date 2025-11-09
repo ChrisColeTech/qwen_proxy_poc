@@ -5,11 +5,11 @@
 
 ## Summary
 
-- **Total CSS Classes Defined:** 233
+- **Total CSS Classes Defined:** 274
 - **Custom Classes Used in Code:** 56
-- **CSS Classes Actually Used:** 51
-- **CSS Classes Unused:** 182
-- **Usage Rate:** 21.9%
+- **CSS Classes Actually Used:** 55
+- **CSS Classes Unused:** 219
+- **Usage Rate:** 20.1%
 
 ## Used CSS Classes
 
@@ -28,6 +28,10 @@
 - ✅ `divider-horizontal`
 - ✅ `icon-primary`
 - ✅ `icon-sm`
+- ✅ `model-filter-group`
+- ✅ `model-filter-label`
+- ✅ `model-filters-row`
+- ✅ `models-filter-select`
 - ✅ `page-card`
 - ✅ `page-card-content`
 - ✅ `page-container`
@@ -159,6 +163,12 @@
 - ⚠️ `model-check-icon`
 - ⚠️ `model-count-badge`
 - ⚠️ `model-count-icon`
+- ⚠️ `model-details-capabilities`
+- ⚠️ `model-details-content`
+- ⚠️ `model-details-dialog`
+- ⚠️ `model-details-label`
+- ⚠️ `model-details-section`
+- ⚠️ `model-details-text`
 - ⚠️ `model-header-actions`
 - ⚠️ `model-item`
 - ⚠️ `model-item-badge`
@@ -169,7 +179,38 @@
 - ⚠️ `model-loading-icon`
 - ⚠️ `model-refresh-button`
 - ⚠️ `model-refresh-icon`
+- ⚠️ `models-capability-badge`
+- ⚠️ `models-capability-chat`
+- ⚠️ `models-capability-code`
+- ⚠️ `models-capability-label`
+- ⚠️ `models-capability-tools`
+- ⚠️ `models-capability-vision`
+- ⚠️ `models-card`
+- ⚠️ `models-card-capabilities`
+- ⚠️ `models-card-content`
+- ⚠️ `models-card-description`
+- ⚠️ `models-card-provider`
+- ⚠️ `models-card-provider-text`
+- ⚠️ `models-card-title`
+- ⚠️ `models-container`
+- ⚠️ `models-content`
+- ⚠️ `models-count`
+- ⚠️ `models-empty-button`
+- ⚠️ `models-empty-icon`
+- ⚠️ `models-empty-state`
+- ⚠️ `models-empty-text`
+- ⚠️ `models-error-state`
+- ⚠️ `models-error-text`
+- ⚠️ `models-filter-select-inline`
+- ⚠️ `models-filters-container`
+- ⚠️ `models-filters-row`
+- ⚠️ `models-grid`
+- ⚠️ `models-header`
+- ⚠️ `models-loading-spinner`
+- ⚠️ `models-loading-state`
 - ⚠️ `models-page`
+- ⚠️ `models-refresh-spin`
+- ⚠️ `models-title`
 - ⚠️ `next-steps-bullet`
 - ⚠️ `next-steps-card`
 - ⚠️ `next-steps-emphasis`

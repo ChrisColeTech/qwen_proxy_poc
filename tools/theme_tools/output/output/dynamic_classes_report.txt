@@ -1,0 +1,1883 @@
+# Dynamic CSS Class Usage Report
+
+This report identifies CSS classes marked as 'unused' but found in dynamic contexts.
+These classes may be false negatives in the static analysis.
+
+## Summary
+
+- Total supposedly unused classes scanned: 28
+- Classes with dynamic usage detected: 28
+- Total detection instances: 97
+
+### Confidence Breakdown
+
+- Definite matches: 5
+- High confidence: 14
+- Medium confidence: 69
+- Possible matches: 9
+
+---
+
+## Detailed Findings
+
+### `chat-page`
+
+Found in 7 location(s):
+
+**1. src/components/features/home/StatusTab.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `from openai import OpenAI
+
+client = OpenAI(
+    base_url="http:
+    api_key="dummy-key"
+)
+
+response = client.chat.completions.create(
+    model="${model}",
+    messages=[{"role": "user", "content": "Hello!"}]
+)
+
+print(response.choices[0].message.content)`
+  ```
+
+**2. src/components/features/home/StatusTab.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  baseURL: 'http:
+  apiKey: 'dummy-key'
+});
+
+const completion = await openai.chat.completions.create({
+  model: '${model}',
+  messages: [{ role: 'user', content: 'Hello!' }]
+});
+
+console.log(completion.choices[0].message.content);`
+  ```
+
+**3. src/components/features/chat/CurlTab.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `{
+  "id": "chatcmpl-123",
+  "object": "chat.completion",
+  "created": 1234567890,
+  "model": "${activeModel}",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Hello! How can I help you today?"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 10,
+    "completion_tokens": 20,
+    "total_tokens": 30
+  }
+}`
+  ```
+
+**4. src/components/features/providers/ProviderTestContent.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `from openai import OpenAI
+
+# Configure client to use Provider Router
+client = OpenAI(
+    base_url="${providerRouterUrl || 'http:
+    api_key="any-key"  # Authentication via Qwen credentials
+)
+
+# Test ${providerName} provider with its default model
+response = client.chat.completions.create(
+    model="${modelForExample}",
+    messages=[{"role": "user", "content": "Say hello in one sentence"}]
+)
+
+print(response.choices[0].message.content)`
+  ```
+
+**5. src/components/features/providers/ProviderTestContent.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `import OpenAI from 'openai';
+
+
+const openai = new OpenAI({
+  baseURL: '${providerRouterUrl || 'http:
+  apiKey: 'any-key'  
+});
+
+
+const completion = await openai.chat.completions.create({
+  model: '${modelForExample}',
+  messages: [{ role: 'user', content: 'Say hello in one sentence' }]
+});
+
+console.log(completion.choices[0].message.content);`
+  ```
+
+**6. src/components/features/models/ModelTestContent.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `from openai import OpenAI
+
+# Configure client to use Provider Router
+client = OpenAI(
+    base_url="${providerRouterUrl || 'http:
+    api_key="any-key"  # Authentication via Qwen credentials
+)
+
+# Test ${modelName} model on ${providerName}
+response = client.chat.completions.create(
+    model="${modelId}",
+    messages=[{"role": "user", "content": "Say hello in one sentence"}]
+)
+
+print(response.choices[0].message.content)`
+  ```
+
+**7. src/components/features/models/ModelTestContent.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `import OpenAI from 'openai';
+
+
+const openai = new OpenAI({
+  baseURL: '${providerRouterUrl || 'http:
+  apiKey: 'any-key'  
+});
+
+
+const completion = await openai.chat.completions.create({
+  model: '${modelId}',
+  messages: [{ role: 'user', content: 'Say hello in one sentence' }]
+});
+
+console.log(completion.choices[0].message.content);`
+  ```
+
+---
+
+### `credentials-container`
+
+Found in 2 location(s):
+
+**1. src/components/features/providers/ProviderTestContent.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `from openai import OpenAI
+
+# Configure client to use Provider Router
+client = OpenAI(
+    base_url="${providerRouterUrl || 'http:
+    api_key="any-key"  # Authentication via Qwen credentials
+)
+
+# Test ${providerName} provider with its default model
+response = client.chat.completions.create(
+    model="${modelForExample}",
+    messages=[{"role": "user", "content": "Say hello in one sentence"}]
+)
+
+print(response.choices[0].message.content)`
+  ```
+
+**2. src/components/features/models/ModelTestContent.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `from openai import OpenAI
+
+# Configure client to use Provider Router
+client = OpenAI(
+    base_url="${providerRouterUrl || 'http:
+    api_key="any-key"  # Authentication via Qwen credentials
+)
+
+# Test ${modelName} model on ${providerName}
+response = client.chat.completions.create(
+    model="${modelId}",
+    messages=[{"role": "user", "content": "Say hello in one sentence"}]
+)
+
+print(response.choices[0].message.content)`
+  ```
+
+---
+
+### `credentials-content`
+
+Found in 2 location(s):
+
+**1. src/components/features/providers/ProviderTestContent.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `from openai import OpenAI
+
+# Configure client to use Provider Router
+client = OpenAI(
+    base_url="${providerRouterUrl || 'http:
+    api_key="any-key"  # Authentication via Qwen credentials
+)
+
+# Test ${providerName} provider with its default model
+response = client.chat.completions.create(
+    model="${modelForExample}",
+    messages=[{"role": "user", "content": "Say hello in one sentence"}]
+)
+
+print(response.choices[0].message.content)`
+  ```
+
+**2. src/components/features/models/ModelTestContent.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `from openai import OpenAI
+
+# Configure client to use Provider Router
+client = OpenAI(
+    base_url="${providerRouterUrl || 'http:
+    api_key="any-key"  # Authentication via Qwen credentials
+)
+
+# Test ${modelName} model on ${providerName}
+response = client.chat.completions.create(
+    model="${modelId}",
+    messages=[{"role": "user", "content": "Say hello in one sentence"}]
+)
+
+print(response.choices[0].message.content)`
+  ```
+
+---
+
+### `credentials-icon`
+
+Found in 2 location(s):
+
+**1. src/components/features/providers/ProviderTestContent.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `from openai import OpenAI
+
+# Configure client to use Provider Router
+client = OpenAI(
+    base_url="${providerRouterUrl || 'http:
+    api_key="any-key"  # Authentication via Qwen credentials
+)
+
+# Test ${providerName} provider with its default model
+response = client.chat.completions.create(
+    model="${modelForExample}",
+    messages=[{"role": "user", "content": "Say hello in one sentence"}]
+)
+
+print(response.choices[0].message.content)`
+  ```
+
+**2. src/components/features/models/ModelTestContent.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `from openai import OpenAI
+
+# Configure client to use Provider Router
+client = OpenAI(
+    base_url="${providerRouterUrl || 'http:
+    api_key="any-key"  # Authentication via Qwen credentials
+)
+
+# Test ${modelName} model on ${providerName}
+response = client.chat.completions.create(
+    model="${modelId}",
+    messages=[{"role": "user", "content": "Say hello in one sentence"}]
+)
+
+print(response.choices[0].message.content)`
+  ```
+
+---
+
+### `credentials-status-expired`
+
+Found in 3 location(s):
+
+**1. src/services/credentials.service.ts**
+
+- **Detection Type:** Ternary Operator
+- **Confidence:** DEFINITE
+- **Context:**
+  ```
+  icon: AlertCircle,         label: 'EXPIRED',         variant: 'destructive' as const,         color: 'credentials-status-expired',       };     }      return {       icon: CheckCircle,       label: 'LOGGED IN',       variant: 'de
+  ```
+
+**2. src/services/credentials.service.ts**
+
+- **Detection Type:** Template Literal Direct
+- **Confidence:** HIGH
+- **Context:**
+  ```
+  `, { method: 'DELETE' });
+    if (!response.ok) {
+      throw new Error('Failed to delete credentials');
+    }
+  }
+
+  getStatusInfo(status: CredentialStatus) {
+    if (!status.expiresAt) {
+      return {
+        icon: XCircle,
+        label: 'NOT LOGGED IN',
+        variant: 'secondary' as const,
+        color: 'credentials-status-inactive',
+      };
+    }
+
+    const now = Date.now();
+    const isExpired = status.expiresAt < now;
+
+    if (isExpired) {
+      return {
+        icon: AlertCircle,
+        label: 'EXPIRED',
+        variant: 'destructive' as const,
+        color: 'credentials-status-expired',
+      };
+    }
+
+    return {
+      icon: CheckCircle,
+      label: 'LOGGED IN',
+      variant: 'default' as const,
+      color: 'credentials-status-valid',
+    };
+  }
+
+  formatExpiration(timestamp: number): string {
+    const date = new Date(timestamp);
+    return date.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
+  }
+
+  getTimeRemaining(timestamp: number): string {
+    const now = Date.now();
+    const diff = timestamp - now;
+
+    if (diff <= 0) return 'Expired';
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+    if (days > 0) {
+      return `
+  ```
+
+**3. src/services/credentials.service.ts**
+
+- **Detection Type:** Object Literal
+- **Confidence:** HIGH
+- **Context:**
+  ```
+  {
+      return {
+        icon: AlertCircle,
+        label: 'EXPIRED',
+        variant: 'destructive' as const,
+        color: 'credentials-status-expired',
+      }
+  ```
+
+---
+
+### `credentials-status-inactive`
+
+Found in 3 location(s):
+
+**1. src/services/credentials.service.ts**
+
+- **Detection Type:** Ternary Operator
+- **Confidence:** DEFINITE
+- **Context:**
+  ```
+  icon: XCircle,         label: 'NOT LOGGED IN',         variant: 'secondary' as const,         color: 'credentials-status-inactive',       };     }      const now = Date.now();     const isExpired = status.expiresAt < now;      if
+  ```
+
+**2. src/services/credentials.service.ts**
+
+- **Detection Type:** Template Literal Direct
+- **Confidence:** HIGH
+- **Context:**
+  ```
+  `, { method: 'DELETE' });
+    if (!response.ok) {
+      throw new Error('Failed to delete credentials');
+    }
+  }
+
+  getStatusInfo(status: CredentialStatus) {
+    if (!status.expiresAt) {
+      return {
+        icon: XCircle,
+        label: 'NOT LOGGED IN',
+        variant: 'secondary' as const,
+        color: 'credentials-status-inactive',
+      };
+    }
+
+    const now = Date.now();
+    const isExpired = status.expiresAt < now;
+
+    if (isExpired) {
+      return {
+        icon: AlertCircle,
+        label: 'EXPIRED',
+        variant: 'destructive' as const,
+        color: 'credentials-status-expired',
+      };
+    }
+
+    return {
+      icon: CheckCircle,
+      label: 'LOGGED IN',
+      variant: 'default' as const,
+      color: 'credentials-status-valid',
+    };
+  }
+
+  formatExpiration(timestamp: number): string {
+    const date = new Date(timestamp);
+    return date.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
+  }
+
+  getTimeRemaining(timestamp: number): string {
+    const now = Date.now();
+    const diff = timestamp - now;
+
+    if (diff <= 0) return 'Expired';
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+    if (days > 0) {
+      return `
+  ```
+
+**3. src/services/credentials.service.ts**
+
+- **Detection Type:** Object Literal
+- **Confidence:** HIGH
+- **Context:**
+  ```
+  {
+    if (!status.expiresAt) {
+      return {
+        icon: XCircle,
+        label: 'NOT LOGGED IN',
+        variant: 'secondary' as const,
+        color: 'credentials-status-inactive',
+      }
+  ```
+
+---
+
+### `credentials-status-valid`
+
+Found in 3 location(s):
+
+**1. src/services/credentials.service.ts**
+
+- **Detection Type:** Ternary Operator
+- **Confidence:** DEFINITE
+- **Context:**
+  ```
+  {       icon: CheckCircle,       label: 'LOGGED IN',       variant: 'default' as const,       color: 'credentials-status-valid',     };   }    formatExpiration(timestamp: number): string {     const date = new Date(timestamp);
+  ```
+
+**2. src/services/credentials.service.ts**
+
+- **Detection Type:** Template Literal Direct
+- **Confidence:** HIGH
+- **Context:**
+  ```
+  `, { method: 'DELETE' });
+    if (!response.ok) {
+      throw new Error('Failed to delete credentials');
+    }
+  }
+
+  getStatusInfo(status: CredentialStatus) {
+    if (!status.expiresAt) {
+      return {
+        icon: XCircle,
+        label: 'NOT LOGGED IN',
+        variant: 'secondary' as const,
+        color: 'credentials-status-inactive',
+      };
+    }
+
+    const now = Date.now();
+    const isExpired = status.expiresAt < now;
+
+    if (isExpired) {
+      return {
+        icon: AlertCircle,
+        label: 'EXPIRED',
+        variant: 'destructive' as const,
+        color: 'credentials-status-expired',
+      };
+    }
+
+    return {
+      icon: CheckCircle,
+      label: 'LOGGED IN',
+      variant: 'default' as const,
+      color: 'credentials-status-valid',
+    };
+  }
+
+  formatExpiration(timestamp: number): string {
+    const date = new Date(timestamp);
+    return date.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
+  }
+
+  getTimeRemaining(timestamp: number): string {
+    const now = Date.now();
+    const diff = timestamp - now;
+
+    if (diff <= 0) return 'Expired';
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+    if (days > 0) {
+      return `
+  ```
+
+**3. src/services/credentials.service.ts**
+
+- **Detection Type:** Object Literal
+- **Confidence:** HIGH
+- **Context:**
+  ```
+  {
+      icon: CheckCircle,
+      label: 'LOGGED IN',
+      variant: 'default' as const,
+      color: 'credentials-status-valid',
+    }
+  ```
+
+---
+
+### `explore-grid`
+
+Found in 1 location(s):
+
+**1. src/components/ui/tab-card.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `grid w-full ${getGridCols()}`
+  ```
+
+---
+
+### `flex-row`
+
+Found in 1 location(s):
+
+**1. src/components/ui/status-label.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `flex items-center gap-2 flex-shrink-0 min-w-0 ${textColor}`
+  ```
+
+---
+
+### `flex-row-between`
+
+Found in 2 location(s):
+
+**1. src/components/features/modelForm/ModelDetailsTab.tsx**
+
+- **Detection Type:** Object Literal
+- **Confidence:** HIGH
+- **Context:**
+  ```
+  {model.description && (
+        <>
+          <div className="flex-row-between">
+            <div className="vspace-tight">
+              <div className="text-setting-label">{FIELD_LABELS.DESCRIPTION}
+  ```
+
+**2. src/components/features/modelForm/ModelDetailsTab.tsx**
+
+- **Detection Type:** Function Parameter
+- **Confidence:** POSSIBLE
+- **Context:**
+  ```
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.2 }}
+      className="vspace-md p-4"
+    >
+      {}
+      <div className="flex-row-between">
+        <div className="vspace-tight">
+          <div className="text-setting-label">{FIELD_LABELS.MODEL_ID}</div>
+          <div className="text-setting-description">{FIELD_LABELS.MODEL_ID_DESC}</div>
+        </div>
+        <Input
+          value={model.id}
+          disabled
+          className="flex-1 max-w-md"
+          aria-label={FIELD_LABELS.MODEL_ID}
+        />
+      </div>
+
+      <div className="divider-horizontal" />
+
+      {}
+      <div className="flex-row-between">
+        <div className="vspace-tight">
+          <div className="text-setting-label">{FIELD_LABELS.MODEL_NAME}</div>
+          <div className="text-setting-description">{FIELD_LABELS.MODEL_NAME_DESC}</div>
+        </div>
+        <Input
+          value={model.name}
+          disabled
+          className="flex-1 max-w-md"
+          aria-label={FIELD_LABELS.MODEL_NAME}
+        />
+      </div>
+
+      <div className="divider-horizontal" />
+
+      {}
+      {model.description && (
+        <>
+          <div className="flex-row-between">
+            <div className="vspace-tight">
+              <div className="text-setting-label">{FIELD_LABELS.DESCRIPTION}</div>
+              <div className="text-setting-description">{FIELD_LABELS.DESCRIPTION_DESC}</div>
+            </div>
+            <Input
+              value={model.description}
+              disabled
+              className="flex-1 max-w-md"
+              aria-label={FIELD_LABELS.DESCRIPTION}
+            />
+          </div>
+          <div className="divider-horizontal" />
+        </>
+      )
+  ```
+
+---
+
+### `model-item`
+
+Found in 22 location(s):
+
+**1. src/pages/ModelsPage.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `/models/${encodeURIComponent(modelId)}`
+  ```
+
+**2. src/pages/ModelFormPage.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `/models/${model.id}`
+  ```
+
+**3. src/components/ui/status-label.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `flex items-center gap-2 flex-shrink-0 min-w-0 ${textColor}`
+  ```
+
+**4. src/components/features/home/StatusTab.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `from openai import OpenAI
+
+client = OpenAI(
+    base_url="http:
+    api_key="dummy-key"
+)
+
+response = client.chat.completions.create(
+    model="${model}",
+    messages=[{"role": "user", "content": "Hello!"}]
+)
+
+print(response.choices[0].message.content)`
+  ```
+
+**5. src/components/features/home/StatusTab.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  baseURL: 'http:
+  apiKey: 'dummy-key'
+});
+
+const completion = await openai.chat.completions.create({
+  model: '${model}',
+  messages: [{ role: 'user', content: 'Hello!' }]
+});
+
+console.log(completion.choices[0].message.content);`
+  ```
+
+**6. src/components/features/home/StatusTab.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `curl http:
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer any-key" \\
+  -d '{"model": "${effectiveModel}", "messages": [{"role": "user", "content": "Hello!"}]}'`
+  ```
+
+**7. src/components/features/chat/CurlTab.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `curl ${providerRouterUrl || 'http:
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer any-key" \\
+  -d '{
+    "model": "${activeModel}",
+    "messages": [
+      {"role": "user", "content": "Say hello in one sentence"}
+    ]
+  }'`
+  ```
+
+**8. src/components/features/chat/CurlTab.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `{
+  "id": "chatcmpl-123",
+  "object": "chat.completion",
+  "created": 1234567890,
+  "model": "${activeModel}",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Hello! How can I help you today?"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 10,
+    "completion_tokens": 20,
+    "total_tokens": 30
+  }
+}`
+  ```
+
+**9. src/components/features/providers/ProviderTestContent.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `from openai import OpenAI
+
+# Configure client to use Provider Router
+client = OpenAI(
+    base_url="${providerRouterUrl || 'http:
+    api_key="any-key"  # Authentication via Qwen credentials
+)
+
+# Test ${providerName} provider with its default model
+response = client.chat.completions.create(
+    model="${modelForExample}",
+    messages=[{"role": "user", "content": "Say hello in one sentence"}]
+)
+
+print(response.choices[0].message.content)`
+  ```
+
+**10. src/components/features/providers/ProviderTestContent.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `import OpenAI from 'openai';
+
+
+const openai = new OpenAI({
+  baseURL: '${providerRouterUrl || 'http:
+  apiKey: 'any-key'  
+});
+
+
+const completion = await openai.chat.completions.create({
+  model: '${modelForExample}',
+  messages: [{ role: 'user', content: 'Say hello in one sentence' }]
+});
+
+console.log(completion.choices[0].message.content);`
+  ```
+
+**11. src/components/features/providers/ProviderTestContent.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `# Test ${providerName} provider with its default model
+curl ${providerRouterUrl || `http:
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer any-key" \\
+  -d '{
+    "model": "${modelForExample}",
+    "messages": [
+      {"role": "user", "content": "Say hello in one sentence"}
+    ]
+  }'`
+  ```
+
+**12. src/components/features/models/ModelTestContent.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `from openai import OpenAI
+
+# Configure client to use Provider Router
+client = OpenAI(
+    base_url="${providerRouterUrl || 'http:
+    api_key="any-key"  # Authentication via Qwen credentials
+)
+
+# Test ${modelName} model on ${providerName}
+response = client.chat.completions.create(
+    model="${modelId}",
+    messages=[{"role": "user", "content": "Say hello in one sentence"}]
+)
+
+print(response.choices[0].message.content)`
+  ```
+
+**13. src/components/features/models/ModelTestContent.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `import OpenAI from 'openai';
+
+
+const openai = new OpenAI({
+  baseURL: '${providerRouterUrl || 'http:
+  apiKey: 'any-key'  
+});
+
+
+const completion = await openai.chat.completions.create({
+  model: '${modelId}',
+  messages: [{ role: 'user', content: 'Say hello in one sentence' }]
+});
+
+console.log(completion.choices[0].message.content);`
+  ```
+
+**14. src/components/features/models/ModelTestContent.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `# Test ${modelName} model on ${providerName}
+curl ${providerRouterUrl || `http:
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer any-key" \\
+  -d '{
+    "model": "${modelId}",
+    "messages": [
+      {"role": "user", "content": "Say hello in one sentence"}
+    ]
+  }'`
+  ```
+
+**15. src/stores/useSettingsStore.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `Switched to model: ${value}`
+  ```
+
+**16. src/hooks/useModelsPage.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `Auto-selected model: ${firstModel}`
+  ```
+
+**17. src/hooks/useModelsPage.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `Auto-selected default model: ${firstModel}`
+  ```
+
+**18. src/hooks/useModelFormPage.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `Set ${model.name} as default for ${model.providers.length} provider(s)`
+  ```
+
+**19. src/services/models.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `Failed to fetch models: ${response.statusText}`
+  ```
+
+**20. src/services/models.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `${API_BASE_URL}/api/models/${encodeURIComponent(modelId)}`
+  ```
+
+**21. src/services/models.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `Failed to fetch model details: ${response.statusText}`
+  ```
+
+**22. src/services/models.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `Failed to fetch available models: ${response.statusText}`
+  ```
+
+---
+
+### `models-page`
+
+Found in 5 location(s):
+
+**1. src/pages/ModelsPage.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `/models/${encodeURIComponent(modelId)}`
+  ```
+
+**2. src/pages/ModelFormPage.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `/models/${model.id}`
+  ```
+
+**3. src/services/models.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `Failed to fetch models: ${response.statusText}`
+  ```
+
+**4. src/services/models.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `${API_BASE_URL}/api/models/${encodeURIComponent(modelId)}`
+  ```
+
+**5. src/services/models.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `Failed to fetch available models: ${response.statusText}`
+  ```
+
+---
+
+### `providers-page`
+
+Found in 15 location(s):
+
+**1. src/pages/ProvidersPage.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `/providers/${providerId}`
+  ```
+
+**2. src/hooks/useProviderFormPage.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `/providers/${id}/edit`
+  ```
+
+**3. src/services/api.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `${API_BASE}/api/providers/${id}`
+  ```
+
+**4. src/services/api.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `${API_BASE}/api/providers/${id}`
+  ```
+
+**5. src/services/api.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `${API_BASE}/api/providers/${id}`
+  ```
+
+**6. src/services/api.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `${API_BASE}/api/providers/${id}/enable`
+  ```
+
+**7. src/services/api.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `${API_BASE}/api/providers/${id}/disable`
+  ```
+
+**8. src/services/api.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `${API_BASE}/api/providers/${id}/test`
+  ```
+
+**9. src/services/providers.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `${API_URL}/api/providers/${encodeURIComponent(providerId)}`
+  ```
+
+**10. src/services/providers.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `${API_URL}/api/providers/${encodeURIComponent(providerId)}`
+  ```
+
+**11. src/services/providers.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `${API_URL}/api/providers/${encodeURIComponent(providerId)}/config`
+  ```
+
+**12. src/services/providers.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `${API_URL}/api/providers/${provider.id}/${action}`
+  ```
+
+**13. src/services/providers.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `${API_URL}/api/providers/${providerId}/test`
+  ```
+
+**14. src/services/providers.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `${API_URL}/api/providers/${providerId}`
+  ```
+
+**15. src/services/providers.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `${API_URL}/api/providers/${encodeURIComponent(providerId)}/reload`
+  ```
+
+---
+
+### `settings-page`
+
+Found in 2 location(s):
+
+**1. src/services/api.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `${API_BASE}/api/settings/${key}`
+  ```
+
+**2. src/services/api.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `${API_BASE}/api/settings/${key}`
+  ```
+
+---
+
+### `settings-section`
+
+Found in 2 location(s):
+
+**1. src/services/api.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `${API_BASE}/api/settings/${key}`
+  ```
+
+**2. src/services/api.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `${API_BASE}/api/settings/${key}`
+  ```
+
+---
+
+### `sidebar-item`
+
+Found in 1 location(s):
+
+**1. src/components/ui/status-label.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `flex items-center gap-2 flex-shrink-0 min-w-0 ${textColor}`
+  ```
+
+---
+
+### `sidebar-nav-indicator`
+
+Found in 3 location(s):
+
+**1. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Cn Utility
+- **Confidence:** HIGH
+- **Context:**
+  ```
+  cn(
+      'sidebar-nav-indicator',
+      sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'
+    )
+  ```
+
+**2. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Object Literal
+- **Confidence:** HIGH
+- **Context:**
+  ```
+  {
+    return cn(
+      'sidebar-nav-indicator',
+      sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'
+    );
+  }
+  ```
+
+**3. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Function Parameter
+- **Confidence:** POSSIBLE
+- **Context:**
+  ```
+  cn(
+      'sidebar-nav-indicator',
+      sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'
+    )
+  ```
+
+---
+
+### `sidebar-nav-indicator-left`
+
+Found in 4 location(s):
+
+**1. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Ternary Operator
+- **Confidence:** DEFINITE
+- **Context:**
+  ```
+  catorClass = () => {     return cn(       'sidebar-nav-indicator',       sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'     );   };    return (     <div className={cn(       'sidebar sideba
+  ```
+
+**2. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Cn Utility
+- **Confidence:** HIGH
+- **Context:**
+  ```
+  cn(
+      'sidebar-nav-indicator',
+      sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'
+    )
+  ```
+
+**3. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Object Literal
+- **Confidence:** HIGH
+- **Context:**
+  ```
+  {
+    return cn(
+      'sidebar-nav-indicator',
+      sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'
+    );
+  }
+  ```
+
+**4. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Function Parameter
+- **Confidence:** POSSIBLE
+- **Context:**
+  ```
+  cn(
+      'sidebar-nav-indicator',
+      sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'
+    )
+  ```
+
+---
+
+### `sidebar-nav-indicator-right`
+
+Found in 4 location(s):
+
+**1. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Ternary Operator
+- **Confidence:** DEFINITE
+- **Context:**
+  ```
+  cn(       'sidebar-nav-indicator',       sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'     );   };    return (     <div className={cn(       'sidebar sidebar-collapsed',       sidebarPos
+  ```
+
+**2. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Cn Utility
+- **Confidence:** HIGH
+- **Context:**
+  ```
+  cn(
+      'sidebar-nav-indicator',
+      sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'
+    )
+  ```
+
+**3. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Object Literal
+- **Confidence:** HIGH
+- **Context:**
+  ```
+  {
+    return cn(
+      'sidebar-nav-indicator',
+      sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'
+    );
+  }
+  ```
+
+**4. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Function Parameter
+- **Confidence:** POSSIBLE
+- **Context:**
+  ```
+  cn(
+      'sidebar-nav-indicator',
+      sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'
+    )
+  ```
+
+---
+
+### `status-error`
+
+Found in 1 location(s):
+
+**1. src/services/providers.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `HTTP ${response.status}: ${response.statusText}`
+  ```
+
+---
+
+### `status-indicator`
+
+Found in 1 location(s):
+
+**1. src/services/providers.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `HTTP ${response.status}: ${response.statusText}`
+  ```
+
+---
+
+### `status-info`
+
+Found in 1 location(s):
+
+**1. src/services/providers.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `HTTP ${response.status}: ${response.statusText}`
+  ```
+
+---
+
+### `status-neutral`
+
+Found in 1 location(s):
+
+**1. src/services/providers.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `HTTP ${response.status}: ${response.statusText}`
+  ```
+
+---
+
+### `status-purple`
+
+Found in 1 location(s):
+
+**1. src/services/providers.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `HTTP ${response.status}: ${response.statusText}`
+  ```
+
+---
+
+### `status-warning`
+
+Found in 1 location(s):
+
+**1. src/services/providers.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `HTTP ${response.status}: ${response.statusText}`
+  ```
+
+---
+
+### `statusbar-item`
+
+Found in 1 location(s):
+
+**1. src/components/ui/status-label.tsx**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `flex items-center gap-2 flex-shrink-0 min-w-0 ${textColor}`
+  ```
+
+---
+
+### `text-setting-description`
+
+Found in 2 location(s):
+
+**1. src/components/features/modelForm/ModelDetailsTab.tsx**
+
+- **Detection Type:** Function Parameter
+- **Confidence:** POSSIBLE
+- **Context:**
+  ```
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.2 }}
+      className="vspace-md p-4"
+    >
+      {}
+      <div className="flex-row-between">
+        <div className="vspace-tight">
+          <div className="text-setting-label">{FIELD_LABELS.MODEL_ID}</div>
+          <div className="text-setting-description">{FIELD_LABELS.MODEL_ID_DESC}</div>
+        </div>
+        <Input
+          value={model.id}
+          disabled
+          className="flex-1 max-w-md"
+          aria-label={FIELD_LABELS.MODEL_ID}
+        />
+      </div>
+
+      <div className="divider-horizontal" />
+
+      {}
+      <div className="flex-row-between">
+        <div className="vspace-tight">
+          <div className="text-setting-label">{FIELD_LABELS.MODEL_NAME}</div>
+          <div className="text-setting-description">{FIELD_LABELS.MODEL_NAME_DESC}</div>
+        </div>
+        <Input
+          value={model.name}
+          disabled
+          className="flex-1 max-w-md"
+          aria-label={FIELD_LABELS.MODEL_NAME}
+        />
+      </div>
+
+      <div className="divider-horizontal" />
+
+      {}
+      {model.description && (
+        <>
+          <div className="flex-row-between">
+            <div className="vspace-tight">
+              <div className="text-setting-label">{FIELD_LABELS.DESCRIPTION}</div>
+              <div className="text-setting-description">{FIELD_LABELS.DESCRIPTION_DESC}</div>
+            </div>
+            <Input
+              value={model.description}
+              disabled
+              className="flex-1 max-w-md"
+              aria-label={FIELD_LABELS.DESCRIPTION}
+            />
+          </div>
+          <div className="divider-horizontal" />
+        </>
+      )
+  ```
+
+**2. src/components/features/providerForm/ProviderFormContent.tsx**
+
+- **Detection Type:** Function Parameter
+- **Confidence:** POSSIBLE
+- **Context:**
+  ```
+  return (
+    <form onSubmit={handleSubmit}>
+      <div className="vspace-md p-4">
+        {}
+        <div className="flex-row-between gap-4">
+          <div className="vspace-tight flex-1">
+            <div className="text-setting-label">
+              {FIELD_LABELS.NAME} <span className="text-destructive" aria-hidden="true">*</span>
+            </div>
+            <div id="name-description" className="text-setting-description">
+              {FIELD_LABELS.NAME_DESC}
+            </div>
+          </div>
+          <Input
+            id="name"
+            value={formData.name}
+            onChange={(e)
+  ```
+
+---
+
+### `text-setting-label`
+
+Found in 4 location(s):
+
+**1. src/components/features/modelForm/ModelDetailsTab.tsx**
+
+- **Detection Type:** Object Literal
+- **Confidence:** HIGH
+- **Context:**
+  ```
+  {model.description && (
+        <>
+          <div className="flex-row-between">
+            <div className="vspace-tight">
+              <div className="text-setting-label">{FIELD_LABELS.DESCRIPTION}
+  ```
+
+**2. src/components/features/modelForm/ModelDetailsTab.tsx**
+
+- **Detection Type:** Function Parameter
+- **Confidence:** POSSIBLE
+- **Context:**
+  ```
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.2 }}
+      className="vspace-md p-4"
+    >
+      {}
+      <div className="flex-row-between">
+        <div className="vspace-tight">
+          <div className="text-setting-label">{FIELD_LABELS.MODEL_ID}</div>
+          <div className="text-setting-description">{FIELD_LABELS.MODEL_ID_DESC}</div>
+        </div>
+        <Input
+          value={model.id}
+          disabled
+          className="flex-1 max-w-md"
+          aria-label={FIELD_LABELS.MODEL_ID}
+        />
+      </div>
+
+      <div className="divider-horizontal" />
+
+      {}
+      <div className="flex-row-between">
+        <div className="vspace-tight">
+          <div className="text-setting-label">{FIELD_LABELS.MODEL_NAME}</div>
+          <div className="text-setting-description">{FIELD_LABELS.MODEL_NAME_DESC}</div>
+        </div>
+        <Input
+          value={model.name}
+          disabled
+          className="flex-1 max-w-md"
+          aria-label={FIELD_LABELS.MODEL_NAME}
+        />
+      </div>
+
+      <div className="divider-horizontal" />
+
+      {}
+      {model.description && (
+        <>
+          <div className="flex-row-between">
+            <div className="vspace-tight">
+              <div className="text-setting-label">{FIELD_LABELS.DESCRIPTION}</div>
+              <div className="text-setting-description">{FIELD_LABELS.DESCRIPTION_DESC}</div>
+            </div>
+            <Input
+              value={model.description}
+              disabled
+              className="flex-1 max-w-md"
+              aria-label={FIELD_LABELS.DESCRIPTION}
+            />
+          </div>
+          <div className="divider-horizontal" />
+        </>
+      )
+  ```
+
+**3. src/components/features/chat/CustomChatTab.tsx**
+
+- **Detection Type:** Function Parameter
+- **Confidence:** POSSIBLE
+- **Context:**
+  ```
+  return (
+    <div className="demo-container" style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
+      <div className="demo-header" style={{ flexShrink: 0 }}>
+        <div className="demo-label">
+          <MessageSquare className="icon-primary" />
+          <span className="demo-label-text">Custom Chat</span>
+        </div>
+      </div>
+
+      <div className="vspace-md" style={{ flexShrink: 0 }}>
+        <p className="text-sm text-muted-foreground mb-4">
+          Enter your own prompt and send it to the active provider. The response will appear below with thinking process parsing.
+        </p>
+
+        {}
+        <div className="vspace-md">
+          <div className="flex-row-between mb-2">
+            <label className="text-setting-label">Your Prompt</label>
+          </div>
+          <Textarea
+            value={prompt}
+            onChange={(e)
+  ```
+
+**4. src/components/features/providerForm/ProviderFormContent.tsx**
+
+- **Detection Type:** Function Parameter
+- **Confidence:** POSSIBLE
+- **Context:**
+  ```
+  return (
+    <form onSubmit={handleSubmit}>
+      <div className="vspace-md p-4">
+        {}
+        <div className="flex-row-between gap-4">
+          <div className="vspace-tight flex-1">
+            <div className="text-setting-label">
+              {FIELD_LABELS.NAME} <span className="text-destructive" aria-hidden="true">*</span>
+            </div>
+            <div id="name-description" className="text-setting-description">
+              {FIELD_LABELS.NAME_DESC}
+            </div>
+          </div>
+          <Input
+            id="name"
+            value={formData.name}
+            onChange={(e)
+  ```
+
+---
+
+## Recommendations
+
+### Definite and High Confidence Matches
+
+These classes are very likely used in your application and should NOT be removed:
+
+- `credentials-status-expired`
+- `credentials-status-inactive`
+- `credentials-status-valid`
+- `flex-row-between`
+- `sidebar-nav-indicator`
+- `sidebar-nav-indicator-left`
+- `sidebar-nav-indicator-right`
+- `text-setting-label`
+
+### Medium Confidence Matches
+
+These classes are likely used dynamically. Review the context before removing:
+
+- `chat-page`
+- `credentials-container`
+- `credentials-content`
+- `credentials-icon`
+- `explore-grid`
+- `flex-row`
+- `model-item`
+- `models-page`
+- `providers-page`
+- `settings-page`
+- `settings-section`
+- `sidebar-item`
+- `status-error`
+- `status-indicator`
+- `status-info`
+- `status-neutral`
+- `status-purple`
+- `status-warning`
+- `statusbar-item`
+
+### Possible Matches
+
+These classes might be used. Manual review recommended:
+
+- `text-setting-description`
+
+---
+
+## Next Steps
+
+1. Review all **definite** and **high confidence** matches - these should be removed from the unused list
+2. Investigate **medium confidence** matches by examining the code context
+3. Manually check **possible** matches to confirm actual usage
+4. Update the CSS analyzer to improve detection of these patterns

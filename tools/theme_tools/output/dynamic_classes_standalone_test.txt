@@ -1,0 +1,280 @@
+# Dynamic CSS Class Usage Report
+
+This report identifies CSS classes marked as 'unused' but found in dynamic contexts.
+These classes may be false negatives in the static analysis.
+
+## Summary
+
+- Total supposedly unused classes scanned: 8
+- Classes with dynamic usage detected: 8
+- Total detection instances: 16
+
+### Confidence Breakdown
+
+- Definite matches: 2
+- High confidence: 6
+- Medium confidence: 5
+- Possible matches: 3
+
+---
+
+## Detailed Findings
+
+### `sidebar-nav-indicator`
+
+Found in 3 location(s):
+
+**1. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Cn Utility
+- **Confidence:** HIGH
+- **Context:**
+  ```
+  cn(
+      'sidebar-nav-indicator',
+      sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'
+    )
+  ```
+
+**2. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Object Literal
+- **Confidence:** HIGH
+- **Context:**
+  ```
+  {
+    return cn(
+      'sidebar-nav-indicator',
+      sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'
+    );
+  }
+  ```
+
+**3. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Function Parameter
+- **Confidence:** POSSIBLE
+- **Context:**
+  ```
+  cn(
+      'sidebar-nav-indicator',
+      sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'
+    )
+  ```
+
+---
+
+### `sidebar-nav-indicator-left`
+
+Found in 4 location(s):
+
+**1. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Ternary Operator
+- **Confidence:** DEFINITE
+- **Context:**
+  ```
+  catorClass = () => {     return cn(       'sidebar-nav-indicator',       sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'     );   };    return (     <div className={cn(       'sidebar sideba
+  ```
+
+**2. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Cn Utility
+- **Confidence:** HIGH
+- **Context:**
+  ```
+  cn(
+      'sidebar-nav-indicator',
+      sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'
+    )
+  ```
+
+**3. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Object Literal
+- **Confidence:** HIGH
+- **Context:**
+  ```
+  {
+    return cn(
+      'sidebar-nav-indicator',
+      sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'
+    );
+  }
+  ```
+
+**4. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Function Parameter
+- **Confidence:** POSSIBLE
+- **Context:**
+  ```
+  cn(
+      'sidebar-nav-indicator',
+      sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'
+    )
+  ```
+
+---
+
+### `sidebar-nav-indicator-right`
+
+Found in 4 location(s):
+
+**1. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Ternary Operator
+- **Confidence:** DEFINITE
+- **Context:**
+  ```
+  cn(       'sidebar-nav-indicator',       sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'     );   };    return (     <div className={cn(       'sidebar sidebar-collapsed',       sidebarPos
+  ```
+
+**2. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Cn Utility
+- **Confidence:** HIGH
+- **Context:**
+  ```
+  cn(
+      'sidebar-nav-indicator',
+      sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'
+    )
+  ```
+
+**3. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Object Literal
+- **Confidence:** HIGH
+- **Context:**
+  ```
+  {
+    return cn(
+      'sidebar-nav-indicator',
+      sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'
+    );
+  }
+  ```
+
+**4. src/components/layout/Sidebar.tsx**
+
+- **Detection Type:** Function Parameter
+- **Confidence:** POSSIBLE
+- **Context:**
+  ```
+  cn(
+      'sidebar-nav-indicator',
+      sidebarPosition === 'left' ? 'sidebar-nav-indicator-left' : 'sidebar-nav-indicator-right'
+    )
+  ```
+
+---
+
+### `status-error`
+
+Found in 1 location(s):
+
+**1. src/services/providers.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `HTTP ${response.status}: ${response.statusText}`
+  ```
+
+---
+
+### `status-info`
+
+Found in 1 location(s):
+
+**1. src/services/providers.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `HTTP ${response.status}: ${response.statusText}`
+  ```
+
+---
+
+### `status-neutral`
+
+Found in 1 location(s):
+
+**1. src/services/providers.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `HTTP ${response.status}: ${response.statusText}`
+  ```
+
+---
+
+### `status-purple`
+
+Found in 1 location(s):
+
+**1. src/services/providers.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `HTTP ${response.status}: ${response.statusText}`
+  ```
+
+---
+
+### `status-warning`
+
+Found in 1 location(s):
+
+**1. src/services/providers.service.ts**
+
+- **Detection Type:** Template Literal
+- **Confidence:** MEDIUM
+- **Context:**
+  ```
+  `HTTP ${response.status}: ${response.statusText}`
+  ```
+
+---
+
+## Recommendations
+
+### Definite and High Confidence Matches
+
+These classes are very likely used in your application and should NOT be removed:
+
+- `sidebar-nav-indicator`
+- `sidebar-nav-indicator-left`
+- `sidebar-nav-indicator-right`
+
+### Medium Confidence Matches
+
+These classes are likely used dynamically. Review the context before removing:
+
+- `status-error`
+- `status-info`
+- `status-neutral`
+- `status-purple`
+- `status-warning`
+
+### Possible Matches
+
+These classes might be used. Manual review recommended:
+
+
+---
+
+## Next Steps
+
+1. Review all **definite** and **high confidence** matches - these should be removed from the unused list
+2. Investigate **medium confidence** matches by examining the code context
+3. Manually check **possible** matches to confirm actual usage
+4. Update the CSS analyzer to improve detection of these patterns

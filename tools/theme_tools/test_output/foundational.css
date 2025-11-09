@@ -1,3 +1,11 @@
+/* Foundational CSS - Structural and infrastructure styles */
+
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -26,7 +34,7 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
 
-    /* Status colors */
+    
     --status-success: 142 76% 36%;
     --status-info: 221 83% 53%;
     --status-warning: 45 93% 47%;
@@ -61,7 +69,7 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
 
-    /* Status colors - dark mode */
+    
     --status-success: 142 71% 45%;
     --status-info: 217 91% 60%;
     --status-warning: 45 93% 58%;
@@ -80,3 +88,53 @@
     font-family: Inter, system-ui, sans-serif;
   }
 }
+
+@layer utilities {
+  .status-success {
+    color: hsl(var(--status-success));
+  }
+  .status-success-dot {
+    background-color: hsl(var(--status-success));
+  }
+  .status-info {
+    color: hsl(var(--status-info));
+  }
+  .status-info-dot {
+    background-color: hsl(var(--status-info));
+  }
+  .status-warning {
+    color: hsl(var(--status-warning));
+  }
+  .status-warning-dot {
+    background-color: hsl(var(--status-warning));
+  }
+  .status-error {
+    color: hsl(var(--status-error));
+  }
+  .status-error-dot {
+    background-color: hsl(var(--status-error));
+  }
+  .status-neutral {
+    color: hsl(var(--status-neutral));
+  }
+  .status-neutral-dot {
+    background-color: hsl(var(--status-neutral));
+  }
+  .status-purple {
+    color: hsl(var(--status-purple));
+  }
+  .status-purple-dot {
+    background-color: hsl(var(--status-purple));
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
