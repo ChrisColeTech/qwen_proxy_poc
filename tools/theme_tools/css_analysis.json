@@ -1,133 +1,101 @@
 {
   "summary": {
-    "tsx_files_analyzed": 30,
-    "total_css_classes": 41,
-    "custom_classes_used": 25,
-    "css_classes_used": 18,
-    "css_classes_unused": 23,
-    "usage_percentage": 43.90243902439025,
-    "foundational_rules": 14,
-    "layer_structure": {
-      "base_rules": 14,
-      "component_layers": 1,
-      "utility_layers": 1,
-      "standalone_sections": 1
-    }
+    "tsx_files_analyzed": 66,
+    "total_css_classes": 1,
+    "custom_classes_used": 81,
+    "css_classes_used": 0,
+    "css_classes_unused": 1,
+    "usage_percentage": 0.0
   },
   "used_custom_classes": [
-    "Panel",
-    "Settings",
-    "btn-destructive",
-    "btn-gaming-primary",
-    "btn-gaming-secondary",
-    "btn-muted",
-    "btn-primary",
-    "btn-secondary",
-    "capitalize",
-    "card-gaming",
-    "floating-particle",
-    "floating-particle-primary",
-    "floating-particle-secondary",
-    "glass",
-    "glass-hover",
-    "glass-layout",
-    "gpu-accelerated",
-    "group",
-    "hover-glow",
-    "hover-grow",
-    "input-gaming",
-    "isActive",
-    "isSettingsPanelOpen",
-    "object-contain",
-    "sparkle"
+    "Authenticate",
+    "Build",
+    "Chrome",
+    "Click",
+    "Convenience",
+    "Extension",
+    "Install",
+    "Proxy",
+    "Qwen",
+    "SelectItem",
+    "Start",
+    "TabsTrigger",
+    "ToastClose",
+    "ToastDescription",
+    "TooltipProps",
+    "card-title-with-icon",
+    "children",
+    "className",
+    "code-block-code",
+    "code-block-container",
+    "code-block-copy-button",
+    "code-block-label",
+    "code-block-pre",
+    "code-block-wrapper",
+    "component",
+    "const",
+    "dashboard",
+    "demo-container",
+    "demo-header",
+    "demo-label",
+    "demo-label-text",
+    "divider-horizontal",
+    "icon-primary",
+    "icon-sm",
+    "interface",
+    "model-filter-group",
+    "model-filter-label",
+    "model-filters-row",
+    "models-filter-select",
+    "on",
+    "page-card",
+    "page-card-content",
+    "page-container",
+    "provider-switch-actions",
+    "provider-switch-details",
+    "provider-switch-info",
+    "provider-switch-item",
+    "provider-switch-list",
+    "provider-switch-name",
+    "provider-switch-type",
+    "proxy",
+    "return",
+    "ring-offset-background",
+    "server",
+    "sidebar-icon",
+    "sidebar-nav-container",
+    "status-icon-success",
+    "status-success",
+    "statusbar",
+    "statusbar-left",
+    "statusbar-separator",
+    "step-description",
+    "string",
+    "tab-container",
+    "tab-content",
+    "that",
+    "the",
+    "titlebar",
+    "titlebar-button",
+    "titlebar-button-close",
+    "titlebar-button-icon",
+    "titlebar-left",
+    "titlebar-right",
+    "titlebar-title",
+    "to",
+    "toastVariants",
+    "tooltip",
+    "vspace-md",
+    "vspace-tight",
+    "with",
+    "wraps"
   ],
   "all_css_classes": [
-    "animate-float",
-    "animate-pulse-glow",
-    "animate-twinkle",
-    "animation-delay-100",
-    "animation-delay-1000",
-    "animation-delay-1500",
-    "animation-delay-1800",
-    "animation-delay-200",
-    "animation-delay-2000",
-    "animation-delay-300",
-    "animation-delay-500",
-    "animation-delay-800",
-    "bg-gaming-gradient",
-    "bg-theme-gradient",
-    "bg-theme-primary",
-    "bg-theme-secondary",
-    "btn-destructive",
-    "btn-gaming-primary",
-    "btn-gaming-secondary",
-    "btn-muted",
-    "btn-primary",
-    "btn-secondary",
-    "btn-standard",
-    "card-gaming",
-    "floating-particle",
-    "floating-particle-primary",
-    "floating-particle-secondary",
-    "glass",
-    "glass-hover",
-    "glass-layout",
-    "gpu-accelerated",
-    "hover-glow",
-    "hover-grow",
-    "input-gaming",
-    "shadow-gaming",
-    "shadow-gaming-hover",
-    "shadow-primary",
-    "sparkle",
-    "text-gaming-gradient",
-    "text-primary-gradient",
-    "text-secondary-gradient"
+    "css"
   ],
-  "used_css_classes": [
-    "btn-destructive",
-    "btn-gaming-primary",
-    "btn-gaming-secondary",
-    "btn-muted",
-    "btn-primary",
-    "btn-secondary",
-    "card-gaming",
-    "floating-particle",
-    "floating-particle-primary",
-    "floating-particle-secondary",
-    "glass",
-    "glass-hover",
-    "glass-layout",
-    "gpu-accelerated",
-    "hover-glow",
-    "hover-grow",
-    "input-gaming",
-    "sparkle"
-  ],
+  "used_css_classes": [],
   "unused_css_classes": [
-    "animate-float",
-    "animate-pulse-glow",
-    "animate-twinkle",
-    "animation-delay-100",
-    "animation-delay-1000",
-    "animation-delay-1500",
-    "animation-delay-1800",
-    "animation-delay-200",
-    "animation-delay-2000",
-    "animation-delay-300",
-    "animation-delay-500",
-    "animation-delay-800",
-    "bg-gaming-gradient",
-    "bg-theme-gradient",
-    "bg-theme-primary",
-    "bg-theme-secondary",
-    "btn-standard",
-    "shadow-gaming",
-    "shadow-gaming-hover",
-    "shadow-primary",
-    "text-gaming-gradient",
-    "text-primary-gradient",
-    "text-secondary-gradient"
+    "css"
   ],
   "file_analysis": {
     "src/App.tsx": {
@@ -140,217 +108,587 @@
       "total_classes": 0,
       "custom_count": 0
     },
-    "src/components/CapturedPieces.tsx": {
+    "src/constants/providers.constants.tsx": {
       "custom_classes": [
-        "card-gaming"
+        "icon-sm"
       ],
-      "total_classes": 23,
+      "total_classes": 3,
       "custom_count": 1
     },
-    "src/components/CheckmateModal.tsx": {
+    "src/constants/home.constants.tsx": {
       "custom_classes": [
-        "capitalize"
+        "icon-sm"
       ],
-      "total_classes": 46,
+      "total_classes": 3,
       "custom_count": 1
     },
-    "src/components/DraggedPiece.tsx": {
+    "src/constants/chat.constants.tsx": {
       "custom_classes": [],
       "total_classes": 0,
       "custom_count": 0
     },
-    "src/components/InstructionsFAB.tsx": {
-      "custom_classes": [
-        "group"
-      ],
-      "total_classes": 22,
-      "custom_count": 1
-    },
-    "src/components/InstructionsModal.tsx": {
-      "custom_classes": [],
-      "total_classes": 51,
-      "custom_count": 0
-    },
-    "src/components/PromotionModal.tsx": {
-      "custom_classes": [
-        "capitalize",
-        "group",
-        "object-contain"
-      ],
-      "total_classes": 58,
-      "custom_count": 3
-    },
-    "src/components/SettingsPanel.tsx": {
-      "custom_classes": [
-        "glass-layout"
-      ],
-      "total_classes": 61,
-      "custom_count": 1
-    },
-    "src/components/SlotMachine.tsx": {
-      "custom_classes": [
-        "btn-destructive",
-        "btn-secondary",
-        "card-gaming"
-      ],
-      "total_classes": 83,
-      "custom_count": 3
-    },
-    "src/components/TestBoard.tsx": {
+    "src/constants/modelForm.constants.tsx": {
       "custom_classes": [],
       "total_classes": 0,
       "custom_count": 0
     },
-    "src/components/ThemeDemo.tsx": {
-      "custom_classes": [
-        "btn-gaming-primary",
-        "btn-gaming-secondary",
-        "card-gaming",
-        "glass",
-        "glass-hover",
-        "gpu-accelerated",
-        "hover-glow",
-        "hover-grow",
-        "input-gaming"
-      ],
-      "total_classes": 74,
-      "custom_count": 9
-    },
-    "src/components/ThemeSwitcher.tsx": {
-      "custom_classes": [],
-      "total_classes": 19,
-      "custom_count": 0
-    },
-    "src/contexts/InstructionsContext.tsx": {
+    "src/constants/settings.constants.tsx": {
       "custom_classes": [],
       "total_classes": 0,
       "custom_count": 0
     },
-    "src/contexts/ThemeContext.tsx": {
+    "src/constants/browserGuide.constants.tsx": {
       "custom_classes": [],
       "total_classes": 0,
       "custom_count": 0
     },
-    "src/pages/DragTestPage.tsx": {
-      "custom_classes": [
-        "btn-destructive",
-        "btn-muted",
-        "btn-primary",
-        "btn-secondary",
-        "card-gaming",
-        "gpu-accelerated",
-        "group"
-      ],
-      "total_classes": 76,
-      "custom_count": 7
+    "src/constants/providerForm.constants.tsx": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
     },
-    "src/pages/LayoutTestPage.tsx": {
+    "src/constants/desktopGuide.constants.tsx": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/constants/models.constants.tsx": {
       "custom_classes": [
-        "card-gaming"
+        "icon-sm"
       ],
-      "total_classes": 5,
+      "total_classes": 3,
       "custom_count": 1
     },
-    "src/pages/PlayPage.tsx": {
+    "src/pages/SettingsPage.tsx": {
       "custom_classes": [
-        "card-gaming"
+        "page-container"
       ],
-      "total_classes": 15,
+      "total_classes": 1,
       "custom_count": 1
     },
-    "src/pages/SlotMachineTestPage.tsx": {
+    "src/pages/DesktopGuidePage.tsx": {
       "custom_classes": [
-        "btn-destructive",
-        "btn-muted",
-        "btn-primary",
-        "btn-secondary",
-        "card-gaming",
-        "gpu-accelerated",
-        "group"
+        "page-container"
       ],
-      "total_classes": 78,
-      "custom_count": 7
-    },
-    "src/pages/UIAudioTestPage.tsx": {
-      "custom_classes": [
-        "card-gaming"
-      ],
-      "total_classes": 5,
+      "total_classes": 1,
       "custom_count": 1
     },
-    "src/pages/UITestPage.tsx": {
+    "src/pages/ModelsPage.tsx": {
       "custom_classes": [
-        "card-gaming"
+        "page-container"
       ],
-      "total_classes": 5,
+      "total_classes": 1,
       "custom_count": 1
     },
-    "src/pages/WorkerTestPage.tsx": {
+    "src/pages/ModelFormPage.tsx": {
       "custom_classes": [
-        "btn-muted",
-        "btn-primary",
-        "btn-secondary",
-        "card-gaming"
+        "page-container"
       ],
-      "total_classes": 56,
+      "total_classes": 6,
+      "custom_count": 1
+    },
+    "src/pages/ProviderFormPage.tsx": {
+      "custom_classes": [
+        "page-container"
+      ],
+      "total_classes": 1,
+      "custom_count": 1
+    },
+    "src/pages/ProvidersPage.tsx": {
+      "custom_classes": [
+        "page-container"
+      ],
+      "total_classes": 1,
+      "custom_count": 1
+    },
+    "src/pages/BrowserGuidePage.tsx": {
+      "custom_classes": [
+        "page-container"
+      ],
+      "total_classes": 1,
+      "custom_count": 1
+    },
+    "src/pages/ChatPage.tsx": {
+      "custom_classes": [
+        "page-container"
+      ],
+      "total_classes": 1,
+      "custom_count": 1
+    },
+    "src/pages/HomePage.tsx": {
+      "custom_classes": [
+        "page-container"
+      ],
+      "total_classes": 1,
+      "custom_count": 1
+    },
+    "src/components/ui/tabs.tsx": {
+      "custom_classes": [
+        "TabsTrigger",
+        "className",
+        "const",
+        "ring-offset-background"
+      ],
+      "total_classes": 9,
       "custom_count": 4
     },
-    "src/providers/DragProvider.tsx": {
+    "src/components/ui/card.tsx": {
+      "custom_classes": [
+        "className",
+        "return"
+      ],
+      "total_classes": 2,
+      "custom_count": 2
+    },
+    "src/components/ui/status-label.tsx": {
       "custom_classes": [],
-      "total_classes": 0,
+      "total_classes": 20,
       "custom_count": 0
     },
-    "src/components/layout/AppLayout.tsx": {
-      "custom_classes": [
-        "Panel",
-        "Settings",
-        "glass-layout",
-        "isSettingsPanelOpen"
-      ],
-      "total_classes": 35,
-      "custom_count": 4
-    },
-    "src/components/layout/BackgroundEffects.tsx": {
-      "custom_classes": [
-        "floating-particle",
-        "floating-particle-primary",
-        "floating-particle-secondary",
-        "sparkle"
-      ],
-      "total_classes": 104,
-      "custom_count": 4
-    },
-    "src/components/layout/Header.tsx": {
-      "custom_classes": [
-        "glass-layout"
-      ],
-      "total_classes": 41,
-      "custom_count": 1
-    },
-    "src/components/layout/MainContent.tsx": {
+    "src/components/ui/toaster.tsx": {
       "custom_classes": [],
       "total_classes": 2,
       "custom_count": 0
     },
-    "src/components/layout/MenuButton.tsx": {
+    "src/components/ui/environment-badge.tsx": {
       "custom_classes": [],
       "total_classes": 21,
       "custom_count": 0
     },
-    "src/components/layout/MenuDropdown.tsx": {
+    "src/components/ui/status-indicator.tsx": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/components/ui/label.tsx": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/components/ui/tooltip.tsx": {
       "custom_classes": [
-        "glass-layout",
-        "group"
+        "Convenience",
+        "TooltipProps",
+        "children",
+        "className",
+        "component",
+        "interface",
+        "string",
+        "that",
+        "tooltip",
+        "with",
+        "wraps"
       ],
-      "total_classes": 34,
+      "total_classes": 13,
+      "custom_count": 11
+    },
+    "src/components/ui/switch.tsx": {
+      "custom_classes": [
+        "className"
+      ],
+      "total_classes": 1,
+      "custom_count": 1
+    },
+    "src/components/ui/toggle-group.tsx": {
+      "custom_classes": [],
+      "total_classes": 4,
+      "custom_count": 0
+    },
+    "src/components/ui/content-card.tsx": {
+      "custom_classes": [
+        "demo-container",
+        "demo-header",
+        "demo-label",
+        "demo-label-text",
+        "icon-primary"
+      ],
+      "total_classes": 10,
+      "custom_count": 5
+    },
+    "src/components/ui/tab-card.tsx": {
+      "custom_classes": [
+        "card-title-with-icon",
+        "icon-sm",
+        "page-card",
+        "page-card-content",
+        "step-description",
+        "tab-container",
+        "tab-content"
+      ],
+      "total_classes": 16,
+      "custom_count": 7
+    },
+    "src/components/ui/badge.tsx": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/components/ui/action-list.tsx": {
+      "custom_classes": [
+        "demo-container",
+        "demo-header",
+        "demo-label",
+        "demo-label-text",
+        "icon-primary",
+        "provider-switch-actions",
+        "provider-switch-details",
+        "provider-switch-info",
+        "provider-switch-item",
+        "provider-switch-list",
+        "provider-switch-name",
+        "provider-switch-type"
+      ],
+      "total_classes": 12,
+      "custom_count": 12
+    },
+    "src/components/ui/button.tsx": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/components/ui/toggle.tsx": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/components/ui/toast.tsx": {
+      "custom_classes": [
+        "ToastClose",
+        "ToastDescription",
+        "className",
+        "const",
+        "toastVariants"
+      ],
+      "total_classes": 7,
+      "custom_count": 5
+    },
+    "src/components/ui/select.tsx": {
+      "custom_classes": [
+        "SelectItem",
+        "className",
+        "const"
+      ],
+      "total_classes": 14,
+      "custom_count": 3
+    },
+    "src/components/ui/textarea.tsx": {
+      "custom_classes": [
+        "className"
+      ],
+      "total_classes": 1,
+      "custom_count": 1
+    },
+    "src/components/ui/input.tsx": {
+      "custom_classes": [
+        "className"
+      ],
+      "total_classes": 1,
+      "custom_count": 1
+    },
+    "src/components/layout/TitleBar.tsx": {
+      "custom_classes": [
+        "titlebar",
+        "titlebar-button",
+        "titlebar-button-close",
+        "titlebar-button-icon",
+        "titlebar-left",
+        "titlebar-right",
+        "titlebar-title"
+      ],
+      "total_classes": 7,
+      "custom_count": 7
+    },
+    "src/components/layout/AppLayout.tsx": {
+      "custom_classes": [],
+      "total_classes": 8,
+      "custom_count": 0
+    },
+    "src/components/layout/StatusBar.tsx": {
+      "custom_classes": [
+        "statusbar",
+        "statusbar-left",
+        "statusbar-separator"
+      ],
+      "total_classes": 13,
+      "custom_count": 3
+    },
+    "src/components/layout/Sidebar.tsx": {
+      "custom_classes": [
+        "sidebar-icon",
+        "sidebar-nav-container"
+      ],
+      "total_classes": 4,
       "custom_count": 2
     },
-    "src/components/layout/TabBar.tsx": {
+    "src/components/features/desktopGuide/DesktopGuideTab.tsx": {
       "custom_classes": [
-        "isActive"
+        "Click",
+        "Start",
+        "dashboard",
+        "divider-horizontal",
+        "on",
+        "proxy",
+        "server",
+        "the",
+        "to",
+        "vspace-md"
       ],
-      "total_classes": 26,
+      "total_classes": 78,
+      "custom_count": 10
+    },
+    "src/components/features/settings/ProxyTab.tsx": {
+      "custom_classes": [
+        "demo-container",
+        "demo-header",
+        "demo-label",
+        "demo-label-text",
+        "icon-primary",
+        "provider-switch-list",
+        "vspace-md"
+      ],
+      "total_classes": 10,
+      "custom_count": 7
+    },
+    "src/components/features/settings/DebugTab.tsx": {
+      "custom_classes": [
+        "demo-container",
+        "demo-header",
+        "demo-label",
+        "demo-label-text",
+        "icon-primary",
+        "provider-switch-list",
+        "vspace-md"
+      ],
+      "total_classes": 10,
+      "custom_count": 7
+    },
+    "src/components/features/settings/AppearanceTab.tsx": {
+      "custom_classes": [
+        "divider-horizontal",
+        "vspace-md",
+        "vspace-tight"
+      ],
+      "total_classes": 7,
+      "custom_count": 3
+    },
+    "src/components/features/home/StatusTab.tsx": {
+      "custom_classes": [
+        "demo-container",
+        "demo-header",
+        "demo-label",
+        "demo-label-text",
+        "icon-primary",
+        "provider-switch-list",
+        "status-success"
+      ],
+      "total_classes": 41,
+      "custom_count": 7
+    },
+    "src/components/features/browserGuide/BrowserGuideTab.tsx": {
+      "custom_classes": [
+        "Authenticate",
+        "Build",
+        "Chrome",
+        "Extension",
+        "Install",
+        "Proxy",
+        "Qwen",
+        "Start",
+        "divider-horizontal",
+        "vspace-md",
+        "with"
+      ],
+      "total_classes": 63,
+      "custom_count": 11
+    },
+    "src/components/features/modelForm/ModelFormActions.tsx": {
+      "custom_classes": [
+        "icon-sm"
+      ],
+      "total_classes": 3,
       "custom_count": 1
+    },
+    "src/components/features/modelForm/ModelDetailsTab.tsx": {
+      "custom_classes": [
+        "divider-horizontal",
+        "vspace-md",
+        "vspace-tight"
+      ],
+      "total_classes": 32,
+      "custom_count": 3
+    },
+    "src/components/features/chat/CustomChatTab.tsx": {
+      "custom_classes": [
+        "demo-container",
+        "demo-header",
+        "demo-label",
+        "demo-label-text",
+        "divider-horizontal",
+        "icon-primary",
+        "provider-switch-list",
+        "vspace-md"
+      ],
+      "total_classes": 40,
+      "custom_count": 8
+    },
+    "src/components/features/chat/CurlTab.tsx": {
+      "custom_classes": [
+        "demo-container",
+        "demo-header",
+        "demo-label",
+        "demo-label-text",
+        "divider-horizontal",
+        "icon-primary",
+        "provider-switch-list",
+        "vspace-md"
+      ],
+      "total_classes": 19,
+      "custom_count": 8
+    },
+    "src/components/features/providers/ProviderTestContent.tsx": {
+      "custom_classes": [
+        "demo-container",
+        "demo-header",
+        "demo-label",
+        "demo-label-text",
+        "icon-primary",
+        "provider-switch-list",
+        "vspace-md"
+      ],
+      "total_classes": 41,
+      "custom_count": 7
+    },
+    "src/components/features/providers/ProviderSwitchTab.tsx": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/components/features/providers/AllProvidersTab.tsx": {
+      "custom_classes": [
+        "demo-container",
+        "demo-header",
+        "demo-label",
+        "demo-label-text",
+        "icon-primary",
+        "icon-sm",
+        "model-filters-row",
+        "provider-switch-actions",
+        "provider-switch-details",
+        "provider-switch-info",
+        "provider-switch-item",
+        "provider-switch-list",
+        "provider-switch-name",
+        "provider-switch-type"
+      ],
+      "total_classes": 14,
+      "custom_count": 14
+    },
+    "src/components/features/providers/ProviderTestWrapper.tsx": {
+      "custom_classes": [
+        "vspace-md"
+      ],
+      "total_classes": 13,
+      "custom_count": 1
+    },
+    "src/components/features/models/ModelTestWrapper.tsx": {
+      "custom_classes": [
+        "vspace-md"
+      ],
+      "total_classes": 13,
+      "custom_count": 1
+    },
+    "src/components/features/models/AllModelsTab.tsx": {
+      "custom_classes": [
+        "demo-container",
+        "demo-header",
+        "demo-label",
+        "demo-label-text",
+        "icon-primary",
+        "model-filter-group",
+        "model-filter-label",
+        "model-filters-row",
+        "models-filter-select",
+        "provider-switch-actions",
+        "provider-switch-details",
+        "provider-switch-info",
+        "provider-switch-item",
+        "provider-switch-list",
+        "provider-switch-name",
+        "provider-switch-type"
+      ],
+      "total_classes": 16,
+      "custom_count": 16
+    },
+    "src/components/features/models/ModelSelectTab.tsx": {
+      "custom_classes": [
+        "demo-container",
+        "demo-header",
+        "demo-label",
+        "demo-label-text",
+        "icon-primary",
+        "model-filter-group",
+        "model-filter-label",
+        "model-filters-row",
+        "models-filter-select",
+        "provider-switch-actions",
+        "provider-switch-details",
+        "provider-switch-info",
+        "provider-switch-item",
+        "provider-switch-list",
+        "provider-switch-name",
+        "provider-switch-type"
+      ],
+      "total_classes": 16,
+      "custom_count": 16
+    },
+    "src/components/features/models/ModelTestContent.tsx": {
+      "custom_classes": [
+        "demo-container",
+        "demo-header",
+        "demo-label",
+        "demo-label-text",
+        "icon-primary",
+        "provider-switch-list",
+        "vspace-md"
+      ],
+      "total_classes": 39,
+      "custom_count": 7
+    },
+    "src/components/features/providerForm/ProviderFormActionsReadOnly.tsx": {
+      "custom_classes": [
+        "icon-sm"
+      ],
+      "total_classes": 3,
+      "custom_count": 1
+    },
+    "src/components/features/providerForm/ProviderFormContent.tsx": {
+      "custom_classes": [
+        "divider-horizontal",
+        "vspace-md",
+        "vspace-tight"
+      ],
+      "total_classes": 14,
+      "custom_count": 3
+    },
+    "src/components/features/providerForm/ProviderFormActionsEdit.tsx": {
+      "custom_classes": [
+        "icon-sm"
+      ],
+      "total_classes": 3,
+      "custom_count": 1
+    },
+    "src/components/features/quick-guide/CodeBlock.tsx": {
+      "custom_classes": [
+        "code-block-code",
+        "code-block-container",
+        "code-block-copy-button",
+        "code-block-label",
+        "code-block-pre",
+        "code-block-wrapper",
+        "status-icon-success"
+      ],
+      "total_classes": 7,
+      "custom_count": 7
     }
   }
 }

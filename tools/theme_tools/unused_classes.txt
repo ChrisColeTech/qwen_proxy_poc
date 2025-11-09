@@ -1,25 +1,3 @@
 # CSS Classes NOT Used in TSX Files
 
-animate-float
-animate-pulse-glow
-animate-twinkle
-animation-delay-100
-animation-delay-1000
-animation-delay-1500
-animation-delay-1800
-animation-delay-200
-animation-delay-2000
-animation-delay-300
-animation-delay-500
-animation-delay-800
-bg-gaming-gradient
-bg-theme-gradient
-bg-theme-primary
-bg-theme-secondary
-btn-standard
-shadow-gaming
-shadow-gaming-hover
-shadow-primary
-text-gaming-gradient
-text-primary-gradient
-text-secondary-gradient
+css
