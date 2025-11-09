@@ -1,0 +1,1 @@
+export interface ComputerConfig { difficulty: number; }

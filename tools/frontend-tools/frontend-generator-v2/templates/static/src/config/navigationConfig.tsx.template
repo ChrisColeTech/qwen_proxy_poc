@@ -1,0 +1,98 @@
+import * as React from 'react'
+import type { NavigationItem, NavigationConfig } from '@/types/navigation'
+import { createIconElement } from '@/utils/iconUtils'
+
+const pageModules = import.meta.glob('../pages/**/[A-Z]*Page.tsx', { eager: true })
+
+const panelModules = import.meta.glob('../pages/**/[A-Z]*Panel.tsx', { eager: true })
+
+export const navigationItems: NavigationItem[] = Object.entries(pageModules)
+  .map(([pagePath, pageModule]) => {
+    const folderMatch = pagePath.match(/\/pages\/([^/]+)\//)
+    let folderName = folderMatch?.[1]
+
+    if (!folderName) {
+      const fileMatch = pagePath.match(/\/pages\/([^/]+)\.tsx$/)
+      folderName = fileMatch?.[1]?.replace('Page', '').toLowerCase()
+    }
+
+    const typedPageModule = pageModule as {
+      navigationConfig?: NavigationConfig
+      default?: React.ComponentType<unknown>
+    }
+
+    if (!typedPageModule?.navigationConfig || !folderName || !typedPageModule?.default) {
+      return null
+    }
+
+    const panelPath = Object.keys(panelModules).find(
+      (path) => path.includes(`/pages/${folderName}/`) && path.includes('Panel.tsx'),
+    )
+
+    const panelModule = panelPath
+      ? (panelModules[panelPath] as { default?: React.ComponentType<unknown> })
+      : null
+
+    return {
+      ...typedPageModule.navigationConfig,
+      page: typedPageModule.default,
+      panel: panelModule?.default || undefined,
+    } as NavigationItem
+  })
+  .filter((item): item is NavigationItem => item !== null)
+  .sort((a, b) => (a.order || 999) - (b.order || 999))
+
+export const getNavigationItem = (id: string): NavigationItem | undefined => {
+  return navigationItems.find((item) => item.id === id)
+}
+
+export const getAllNavigationItems = (): NavigationItem[] => {
+  return navigationItems
+}
+
+export const getSidebarItems = (): NavigationItem[] => {
+  return navigationItems.filter((item) => item.showInSidebar)
+}
+
+export const getPageComponent = (id: string): React.ComponentType<unknown> | undefined => {
+  const item = getNavigationItem(id)
+  return item?.page
+}
+
+export const getPanelComponent = (id: string): React.ComponentType<unknown> | undefined => {
+  const item = getNavigationItem(id)
+  return item?.panel
+}
+
+export const getIcon = (id: string, size: number): React.ReactElement | null => {
+  const item = getNavigationItem(id)
+  if (item?.iconComponent) {
+    return createIconElement(item.iconComponent, size)
+  }
+  const panelItem = panelModules[
+    `../pages/${id.replace('-panel', '')}/${
+      id.charAt(0).toUpperCase() + id.slice(1).replace('-panel', '')
+    }Panel.tsx`
+  ] as { navigationConfig?: NavigationConfig }
+  if (panelItem?.navigationConfig?.iconComponent) {
+    return createIconElement(panelItem.navigationConfig.iconComponent, size)
+  }
+  return null
+}
+
+export const getTabIcon = (id: string): React.ReactElement | null => {
+  return getIcon(id, 12)
+}
+
+export const getSidebarIcon = (id: string): React.ReactElement | null => {
+  return getIcon(id, 16)
+}
+
+export const getPageIcon = (id: string): React.ReactElement | null => {
+  return getIcon(id, 20)
+}
+
+export const getTabTitle = (id: string): string => {
+  const item = getNavigationItem(id)
+  return item?.label || id
+}

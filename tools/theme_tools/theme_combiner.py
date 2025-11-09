@@ -1,0 +1,376 @@
+#!/usr/bin/env python3
+"""
+Theme Combiner Tool - Extracts and combines theme CSS from multiple files
+"""
+import re
+import click
+import os
+from pathlib import Path
+
+
+def extract_theme_rules(css_content, source_file):
+    """Extract theme-related CSS rules from CSS content"""
+    theme_rules = []
+    comments = []
+    
+    # Remove general comments but preserve theme section headers
+    lines = css_content.split('\n')
+    current_content = []
+    
+    for line in lines:
+        # Preserve theme section comments
+        if (re.match(r'/\*\s*=+', line) or 
+            'COLOR SCHEME' in line.upper() or 
+            'THEME' in line.upper() and ('*/' in line or '/*' in line)):
+            comments.append(line)
+            current_content.append(line)
+        else:
+            current_content.append(line)
+    
+    processed_content = '\n'.join(current_content)
+    
+    # Extract theme-related rules based on patterns
+    theme_patterns = [
+        # CSS Variables themes (from themes.css)
+        r'(\.color-[a-zA-Z-]+(?:\.[a-zA-Z-]+)*\s*\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\})',
+        
+        # Tailwind CSS themes (from index.css) 
+        r'(\.theme-[a-zA-Z-]+(?:\.[a-zA-Z-]+)*\s*\{[^{}]*\})',
+        r'(\.(dark|light)\s*\{[^{}]*\})',
+        
+        # Root theme variables
+        r'(:root\s*\{[^{}]*\})',
+        
+        # Layer-wrapped theme rules
+        r'(@layer\s+[^{]*\{[^{}]*(?:theme|color|dark|light)[^{}]*\{[^{}]*\}[^{}]*\})'
+    ]
+    
+    for pattern in theme_patterns:
+        matches = re.finditer(pattern, processed_content, re.DOTALL | re.IGNORECASE)
+        for match in matches:
+            rule = match.group(1).strip()
+            if rule and rule not in [r['css'] for r in theme_rules]:
+                theme_rules.append({
+                    'css': rule,
+                    'source': source_file,
+                    'type': classify_theme_rule(rule)
+                })
+    
+    # Also extract theme section comments
+    comment_sections = []
+    comment_pattern = r'(/\*\s*=+[^*]*\*+[^/]*?/)'
+    comment_matches = re.finditer(comment_pattern, processed_content, re.DOTALL)
+    for match in comment_matches:
+        comment = match.group(1).strip()
+        if any(keyword in comment.upper() for keyword in ['THEME', 'COLOR SCHEME', 'ENHANCED EFFECTS']):
+            comment_sections.append(comment)
+    
+    return theme_rules, comment_sections
+
+
+def classify_theme_rule(rule):
+    """Classify theme rules by type for better organization"""
+    rule_lower = rule.lower()
+    
+    if '.color-' in rule_lower:
+        if '.high-contrast' in rule_lower:
+            return 'detox-high-contrast'
+        elif '.dark' in rule_lower:
+            return 'detox-dark'
+        else:
+            return 'detox-light'
+    elif '.theme-' in rule_lower:
+        if '-light' in rule_lower:
+            return 'gaming-light'
+        else:
+            return 'gaming-dark'
+    elif rule_lower.strip().startswith(':root'):
+        return 'root-variables'
+    elif rule_lower.strip().startswith('.dark'):
+        return 'dark-mode'
+    elif rule_lower.strip().startswith('.light'):
+        return 'light-mode'
+    else:
+        return 'other'
+
+
+def extract_enhanced_effects_utilities(css_content):
+    """Extract enhanced effects utility classes"""
+    utilities = []
+    
+    # Look for utility sections
+    utility_patterns = [
+        r'(/\*[^*]*ENHANCED EFFECTS UTILITY[^*]*\*/.*?)(?=/\*|$)',
+        r'(\.cyberpunk-glow\s*\{[^{}]*\})',
+        r'(\.neon-text\s*\{[^{}]*\})',
+        r'(\.neon-border\s*\{[^{}]*\})',
+        r'(@media\s*\([^)]*prefers-reduced-motion[^)]*\)[^{}]*\{[^{}]*\})'
+    ]
+    
+    for pattern in utility_patterns:
+        matches = re.finditer(pattern, css_content, re.DOTALL | re.IGNORECASE)
+        for match in matches:
+            utilities.append(match.group(1).strip())
+    
+    return utilities
+
+
+def organize_themes_by_system(theme_rules):
+    """Organize themes by system (detox vs gaming) and type"""
+    organized = {
+        'detox_themes': [],
+        'gaming_themes': [],
+        'base_variables': [],
+        'other': []
+    }
+    
+    for rule in theme_rules:
+        rule_type = rule['type']
+        
+        if rule_type.startswith('detox'):
+            organized['detox_themes'].append(rule)
+        elif rule_type.startswith('gaming'):
+            organized['gaming_themes'].append(rule)
+        elif rule_type in ['root-variables', 'dark-mode', 'light-mode']:
+            organized['base_variables'].append(rule)
+        else:
+            organized['other'].append(rule)
+    
+    return organized
+
+
+def generate_combined_themes_css(organized_themes, enhanced_effects, comments):
+    """Generate the combined themes CSS file"""
+    output_lines = []
+    
+    # File header
+    output_lines.extend([
+        "/* =============================================================================",
+        "   UNIFIED THEMES CSS - Combined from index.css and themes.css",
+        "   Generated by theme_combiner.py",
+        "   ============================================================================= */",
+        ""
+    ])
+    
+    # Base variables first
+    if organized_themes['base_variables']:
+        output_lines.extend([
+            "/* =============================================================================",
+            "   BASE THEME VARIABLES",
+            "   ============================================================================= */",
+            ""
+        ])
+        
+        for rule in organized_themes['base_variables']:
+            output_lines.extend([
+                f"/* From: {rule['source']} */",
+                rule['css'],
+                ""
+            ])
+    
+    # Gaming themes (Tailwind-based)
+    if organized_themes['gaming_themes']:
+        output_lines.extend([
+            "/* =============================================================================",
+            "   GAMING THEMES (Tailwind CSS Variables)",
+            "   ============================================================================= */",
+            ""
+        ])
+        
+        # Group by theme name
+        gaming_themes_grouped = {}
+        for rule in organized_themes['gaming_themes']:
+            # Extract theme name from CSS
+            theme_match = re.search(r'\.theme-([a-zA-Z-]+)', rule['css'])
+            if theme_match:
+                theme_name = theme_match.group(1)
+                if theme_name not in gaming_themes_grouped:
+                    gaming_themes_grouped[theme_name] = []
+                gaming_themes_grouped[theme_name].append(rule)
+        
+        for theme_name, rules in gaming_themes_grouped.items():
+            output_lines.extend([
+                f"/* {theme_name.replace('-', ' ').title()} Theme */",
+                ""
+            ])
+            for rule in rules:
+                output_lines.extend([
+                    rule['css'],
+                    ""
+                ])
+    
+    # Detox themes (CSS Variables based)
+    if organized_themes['detox_themes']:
+        output_lines.extend([
+            "/* =============================================================================",
+            "   DETOX PROFESSIONAL THEMES (CSS Variables)",
+            "   ============================================================================= */",
+            ""
+        ])
+        
+        # Group by theme name
+        detox_themes_grouped = {}
+        for rule in organized_themes['detox_themes']:
+            # Extract theme name from CSS
+            theme_match = re.search(r'\.color-([a-zA-Z-]+)', rule['css'])
+            if theme_match:
+                theme_name = theme_match.group(1)
+                if theme_name not in detox_themes_grouped:
+                    detox_themes_grouped[theme_name] = {'light': [], 'dark': [], 'high_contrast': []}
+                
+                if '.high-contrast' in rule['css']:
+                    detox_themes_grouped[theme_name]['high_contrast'].append(rule)
+                elif '.dark' in rule['css']:
+                    detox_themes_grouped[theme_name]['dark'].append(rule)
+                else:
+                    detox_themes_grouped[theme_name]['light'].append(rule)
+        
+        for theme_name, variants in detox_themes_grouped.items():
+            theme_title = theme_name.replace('-', ' ').title()
+            output_lines.extend([
+                f"/* {theme_title} Color Scheme */",
+                ""
+            ])
+            
+            # Light mode first
+            for rule in variants['light']:
+                output_lines.extend([
+                    rule['css'],
+                    ""
+                ])
+            
+            # Dark mode
+            for rule in variants['dark']:
+                output_lines.extend([
+                    rule['css'],
+                    ""
+                ])
+            
+            # High contrast variants
+            for rule in variants['high_contrast']:
+                output_lines.extend([
+                    rule['css'],
+                    ""
+                ])
+    
+    # Enhanced effects utilities
+    if enhanced_effects:
+        output_lines.extend([
+            "/* =============================================================================",
+            "   ENHANCED EFFECTS UTILITIES",
+            "   ============================================================================= */",
+            ""
+        ])
+        
+        for utility in enhanced_effects:
+            output_lines.extend([
+                utility,
+                ""
+            ])
+    
+    # Other rules
+    if organized_themes['other']:
+        output_lines.extend([
+            "/* =============================================================================",
+            "   OTHER THEME-RELATED RULES",
+            "   ============================================================================= */",
+            ""
+        ])
+        
+        for rule in organized_themes['other']:
+            output_lines.extend([
+                f"/* From: {rule['source']} */",
+                rule['css'],
+                ""
+            ])
+    
+    return '\n'.join(output_lines)
+
+
+@click.command()
+@click.option('--input', '-i', multiple=True, help='Input CSS files (can specify multiple)', required=True)
+@click.option('--output', '-o', help='Output combined themes file', default='combined_themes.css')
+@click.option('--verbose', '-v', is_flag=True, help='Verbose output')
+@click.option('--base-path', '-b', help='Base path for resolving relative paths', default='.')
+def main(input, output, verbose, base_path):
+    """
+    Combine theme CSS from multiple files into a single unified themes file.
+    
+    Examples:
+        python theme_combiner.py -i ../src/index.css -i ../src/styles/themes.css -o unified_themes.css -v
+    """
+    
+    all_theme_rules = []
+    all_enhanced_effects = []
+    all_comments = []
+    
+    # Process each input file
+    for input_file in input:
+        # Resolve relative paths
+        if not os.path.isabs(input_file):
+            input_file = os.path.join(base_path, input_file)
+            
+        if not os.path.exists(input_file):
+            click.echo(f"Error: Input file {input_file} not found")
+            continue
+        
+        if verbose:
+            click.echo(f"📁 Processing {input_file}...")
+        
+        try:
+            with open(input_file, 'r', encoding='utf-8') as f:
+                css_content = f.read()
+        except Exception as e:
+            click.echo(f"Error reading {input_file}: {e}")
+            continue
+        
+        # Extract theme rules
+        theme_rules, comments = extract_theme_rules(css_content, os.path.basename(input_file))
+        all_theme_rules.extend(theme_rules)
+        all_comments.extend(comments)
+        
+        # Extract enhanced effects utilities
+        enhanced_effects = extract_enhanced_effects_utilities(css_content)
+        all_enhanced_effects.extend(enhanced_effects)
+        
+        if verbose:
+            click.echo(f"   🎨 Found {len(theme_rules)} theme rules")
+            click.echo(f"   ✨ Found {len(enhanced_effects)} enhanced effects")
+    
+    if not all_theme_rules:
+        click.echo("No theme rules found in any input files")
+        return
+    
+    # Organize themes by system
+    organized_themes = organize_themes_by_system(all_theme_rules)
+    
+    if verbose:
+        click.echo(f"\n📊 Theme Analysis:")
+        click.echo(f"   🔧 Detox themes: {len(organized_themes['detox_themes'])}")
+        click.echo(f"   🎮 Gaming themes: {len(organized_themes['gaming_themes'])}")
+        click.echo(f"   🏗️  Base variables: {len(organized_themes['base_variables'])}")
+        click.echo(f"   ✨ Enhanced effects: {len(all_enhanced_effects)}")
+        click.echo(f"   📝 Other rules: {len(organized_themes['other'])}")
+    
+    # Generate combined CSS
+    combined_css = generate_combined_themes_css(organized_themes, all_enhanced_effects, all_comments)
+    
+    # Write output file
+    try:
+        with open(output, 'w', encoding='utf-8') as f:
+            f.write(combined_css)
+        
+        click.echo(f"\n✅ Combined themes written to {output}")
+        
+        if verbose:
+            file_size = os.path.getsize(output)
+            click.echo(f"   📏 File size: {file_size:,} bytes")
+            click.echo(f"   📄 Lines: {len(combined_css.splitlines()):,}")
+            
+    except Exception as e:
+        click.echo(f"Error writing output file: {e}")
+        return
+
+
+if __name__ == '__main__':
+    main()

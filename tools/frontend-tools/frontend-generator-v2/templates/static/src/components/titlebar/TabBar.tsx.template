@@ -1,0 +1,292 @@
+import React, { useState, useRef, useEffect, useCallback } from 'react'
+import {
+  DndContext,
+  PointerSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  closestCenter,
+  DragOverlay,
+  type DragStartEvent,
+  type DragEndEvent,
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  useSortable,
+  arrayMove,
+  horizontalListSortingStrategy,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import { X, ChevronLeft, ChevronRight } from 'lucide-react'
+import type { Tab } from '../../types/tab'
+
+export type { Tab }
+
+interface TabBarProps {
+  tabs: Tab[]
+  onTabClick: (tabId: string) => void
+  onTabClose: (tabId: string) => void
+  onTabReorder?: (reorderedTabs: Tab[]) => void
+  className?: string
+  activeTabId?: string | null
+}
+
+interface SortableTabProps {
+  tab: Tab
+  isActive: boolean
+  isDragging?: boolean
+  onTabClick: (tabId: string) => void
+  onTabClose: (e: React.MouseEvent, tabId: string) => void
+  attributes: any
+  listeners: any
+  refProp: (node: HTMLElement | null) => void
+  style: React.CSSProperties
+}
+
+const SortableTabItem: React.FC<SortableTabProps> = ({
+  tab,
+  isActive,
+  isDragging,
+  onTabClick,
+  onTabClose,
+  attributes,
+  listeners,
+  refProp,
+  style,
+}) => {
+  return (
+    <div
+      ref={refProp}
+      {...attributes}
+      {...listeners}
+      style={style}
+      className={`
+          flex items-center justify-between gap-2 px-3 h-7 min-w-0 max-w-48 app-border-t-2 group relative select-none
+          focus:outline-none
+          ${
+            isActive
+              ? 'bg-background text-text app-border-l app-border-r app-border-t-accent font-semibold z-10 active-tab-break'
+              : ' text-text-muted hover:bg-surface-hover hover:text-text app-border-t-transparent font-normal'
+          }
+          ${isDragging ? 'opacity-50 shadow-lg' : ''}
+        `.trim()}
+      onClick={() => onTabClick(tab.id)}
+      onAuxClick={(e) => e.button === 1 && onTabClose(e, tab.id)}
+      title={tab.title}
+      aria-selected={isActive}
+      role="tab"
+      tabIndex={isActive ? 0 : -1}
+    >
+      {tab.icon && (
+        <div
+          className={`tab-icon flex-shrink-0 w-4 h-4 [&_svg]:stroke-${isActive ? '[1.5]' : '1'}`}
+        >
+          {tab.icon}
+        </div>
+      )}
+      <span className="truncate text-sm flex-grow min-w-0">{tab.title}</span>
+      <button
+        type="button"
+        onClick={(e) => onTabClose(e, tab.id)}
+        className={`
+            p-0.5 rounded-sm text-text-muted hover:text-text hover:bg-surface-active focus:outline-none focus:bg-surface-active
+            ${
+              isActive
+                ? 'opacity-75 group-hover:opacity-100'
+                : 'opacity-0 group-hover:opacity-100 focus:opacity-100'
+            } shrink-0 ml-1
+          `.trim()}
+        aria-label={`Close tab ${tab.title}`}
+        style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+      >
+        <X size={12} strokeWidth={2.5} />
+      </button>
+    </div>
+  )
+}
+
+const TabBar = ({
+  tabs,
+  onTabClick,
+  onTabClose,
+  onTabReorder,
+  className,
+  activeTabId,
+}: TabBarProps) => {
+  const [draggingTabId, setDraggingTabId] = useState<string | null>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [showLeftArrow, setShowLeftArrow] = useState(false)
+  const [showRightArrow, setShowRightArrow] = useState(false)
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: (_event: KeyboardEvent): { x: number; y: number } => {
+        return { x: 0, y: 0 }
+      },
+    }),
+  )
+
+  const checkScrollArrows = useCallback(() => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current
+      setShowLeftArrow(scrollLeft > 0)
+      setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 1)
+    }
+  }, [])
+
+  useEffect(() => {
+    checkScrollArrows()
+    const currentScrollRef = scrollRef.current
+    currentScrollRef?.addEventListener('scroll', checkScrollArrows)
+    window.addEventListener('resize', checkScrollArrows)
+    return () => {
+      currentScrollRef?.removeEventListener('scroll', checkScrollArrows)
+      window.removeEventListener('resize', checkScrollArrows)
+    }
+  }, [tabs, checkScrollArrows])
+
+  const handleScroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const scrollAmount = scrollRef.current.clientWidth * 0.8
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
+      })
+    }
+  }
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setDraggingTabId(event.active.id as string)
+  }
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    setDraggingTabId(null)
+    const { active, over } = event
+    if (over && active.id !== over.id && onTabReorder) {
+      const oldIndex = tabs.findIndex((tab) => tab.id === active.id)
+      const newIndex = tabs.findIndex((tab) => tab.id === over.id)
+      onTabReorder(arrayMove(tabs, oldIndex, newIndex))
+    }
+  }
+
+  const handleTabCloseInternal = (e: React.MouseEvent, tabId: string) => {
+    e.stopPropagation()
+    onTabClose(tabId)
+  }
+
+  const draggingTab = tabs.find((tab) => tab.id === draggingTabId)
+
+  return (
+    <div
+      className={`flex-1 flex items-end pt-1 relative overflow-hidden min-w-0 ${className || ''}`}
+      style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+    >
+      {showLeftArrow && (
+        <button
+          onClick={() => handleScroll('left')}
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-20 h-full px-1 bg-gradient-to-r from-surface via-surface to-transparent flex items-center justify-center text-text-muted hover:text-text"
+          aria-label="Scroll tabs left"
+        >
+          <div className="[&_svg]:stroke-1">
+            <ChevronLeft size={16} />
+          </div>
+        </button>
+      )}
+      <div
+        ref={scrollRef}
+        className={`
+            flex items-end overflow-x-auto scrollbar-none w-full
+            ${showLeftArrow ? 'pl-6' : ''}
+            ${showRightArrow ? 'pr-6' : ''}
+          `.trim()}
+        onScroll={checkScrollArrows}
+      >
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          onDragCancel={() => setDraggingTabId(null)}
+        >
+          <SortableContext
+            items={tabs.map((tab) => tab.id)}
+            strategy={horizontalListSortingStrategy}
+          >
+            {tabs.map((tab) => (
+              <SortableTabWrapper
+                key={tab.id}
+                tab={tab}
+                isActive={tab.id === activeTabId}
+                onTabClick={onTabClick}
+                onTabClose={handleTabCloseInternal}
+                isDraggable={!!onTabReorder}
+              />
+            ))}
+          </SortableContext>
+          {onTabReorder && (
+            <DragOverlay dropAnimation={null}>
+              {draggingTabId && draggingTab ? (
+                <SortableTabItem
+                  tab={draggingTab}
+                  isActive={draggingTab.id === activeTabId}
+                  isDragging
+                  onTabClick={() => {}}
+                  onTabClose={() => {}}
+                  attributes={{}}
+                  listeners={{}}
+                  refProp={() => {}}
+                  style={{}}
+                />
+              ) : null}
+            </DragOverlay>
+          )}
+        </DndContext>
+      </div>
+      {showRightArrow && (
+        <button
+          onClick={() => handleScroll('right')}
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-20 h-full px-1 bg-gradient-to-l from-surface via-surface to-transparent flex items-center justify-center text-text-muted hover:text-text"
+          aria-label="Scroll tabs right"
+        >
+          <div className="[&_svg]:stroke-1">
+            <ChevronRight size={16} />
+          </div>
+        </button>
+      )}
+    </div>
+  )
+}
+
+const SortableTabWrapper: React.FC<
+  Omit<SortableTabProps, 'attributes' | 'listeners' | 'refProp' | 'style' | 'isDragging'> & {
+    isDraggable: boolean
+  }
+> = ({ tab, isActive, onTabClick, onTabClose, isDraggable }) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: tab.id,
+    disabled: !isDraggable,
+  })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 100 : undefined,
+  }
+
+  return (
+    <SortableTabItem
+      tab={tab}
+      isActive={isActive}
+      isDragging={isDragging}
+      onTabClick={onTabClick}
+      onTabClose={onTabClose}
+      attributes={attributes}
+      listeners={listeners}
+      refProp={setNodeRef}
+      style={style}
+    />
+  )
+}
+
+export default TabBar

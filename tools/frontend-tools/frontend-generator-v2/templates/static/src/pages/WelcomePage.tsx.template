@@ -1,0 +1,26 @@
+import { Home } from 'lucide-react'
+import type { NavigationConfig } from '@/types/navigation'
+
+const WelcomePage = () => {
+  return (
+    <div className="flex flex-col items-center justify-center h-full bg-background text-text">
+      <Home size={64} className="text-primary mb-4" />
+      <h1 className="text-4xl font-bold mb-2">Welcome to LLM App</h1>
+      <p className="text-lg text-text-muted">
+        Start by opening a new tab or exploring the sidebar.
+      </p>
+    </div>
+  )
+}
+
+export default WelcomePage
+
+// Export the navigation config for auto-discovery
+export const navigationConfig: NavigationConfig = {
+  id: 'welcome',
+  label: 'Welcome',
+  iconComponent: Home,
+  showInSidebar: false,
+  closable: true,
+  order: 0,
+}

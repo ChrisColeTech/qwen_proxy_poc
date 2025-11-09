@@ -1,0 +1,284 @@
+/* =============================================================================
+   GAMING THEMES
+   Immersive gaming themes with special effects and vibrant colors
+   ============================================================================= */
+
+/* Cyber Neon Gaming Theme */
+
+.theme-cyber-neon {
+    --background: #0a0a0a;
+    --foreground: #ff0080;
+    --card: #1a0a1a;
+    --card-foreground: #ff0080;
+    --popover: #1a0a1a;
+    --popover-foreground: #ff0080;
+    --primary: #ff0080;
+    --primary-foreground: #000000;
+    --secondary: #00ff41;
+    --secondary-foreground: #000000;
+    --muted: #2a1a2a;
+    --muted-foreground: #ff0080;
+    --accent: #00bfff;
+    --accent-foreground: #000000;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #ff0080;
+    --input: #1a0a1a;
+    --ring: #ff0080;
+    --radius: 0.75rem;
+    --titlebar: #0a0a0a;
+    --titlebar-foreground: #ff0080;
+    --titlebar-hover: #1a0a1a;
+    --titlebar-close-hover: #ff0080;
+  }
+
+.theme-cyber-neon-light {
+    --background: #f8f0ff;
+    --foreground: #800040;
+    --card: #f0e6ff;
+    --card-foreground: #800040;
+    --popover: #f0e6ff;
+    --popover-foreground: #800040;
+    --primary: #c0007f;
+    --primary-foreground: #ffffff;
+    --secondary: #00b341;
+    --secondary-foreground: #ffffff;
+    --muted: #e6ccff;
+    --muted-foreground: #600030;
+    --accent: #0080cc;
+    --accent-foreground: #ffffff;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #c0007f;
+    --input: #e6ccff;
+    --ring: #c0007f;
+    --radius: 0.75rem;
+    --titlebar: #f0e6ff;
+    --titlebar-foreground: #800040;
+    --titlebar-hover: #e6ccff;
+    --titlebar-close-hover: #ef4444;
+  }
+
+/* Dragon Gold Gaming Theme */
+
+.theme-dragon-gold {
+    --background: #1a0f0a;
+    --foreground: #fff4e6;
+    --card: #2d1a0f;
+    --card-foreground: #fff4e6;
+    --popover: #2d1a0f;
+    --popover-foreground: #fff4e6;
+    --primary: #ffd700;
+    --primary-foreground: #000000;
+    --secondary: #dc2626;
+    --secondary-foreground: #ffffff;
+    --muted: #4a2c1a;
+    --muted-foreground: #d97706;
+    --accent: #f59e0b;
+    --accent-foreground: #000000;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #dc2626;
+    --input: #2d1a0f;
+    --ring: #ffd700;
+    --radius: 0.75rem;
+    --titlebar: #1a0f0a;
+    --titlebar-foreground: #ffd700;
+    --titlebar-hover: #2d1a0f;
+    --titlebar-close-hover: #dc2626;
+  }
+
+.theme-dragon-gold-light {
+    --background: #fff8f0;
+    --foreground: #7c2d12;
+    --card: #fef3e2;
+    --card-foreground: #7c2d12;
+    --popover: #fef3e2;
+    --popover-foreground: #7c2d12;
+    --primary: #d97706;
+    --primary-foreground: #ffffff;
+    --secondary: #b91c1c;
+    --secondary-foreground: #ffffff;
+    --muted: #fed7aa;
+    --muted-foreground: #7c2d12;
+    --accent: #f59e0b;
+    --accent-foreground: #ffffff;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #b91c1c;
+    --input: #fed7aa;
+    --ring: #d97706;
+    --radius: 0.75rem;
+    --titlebar: #fef3e2;
+    --titlebar-foreground: #7c2d12;
+    --titlebar-hover: #fed7aa;
+    --titlebar-close-hover: #ef4444;
+  }
+
+/* Shadow Knight Gaming Theme */
+
+.theme-shadow-knight {
+    --background: #000000;
+    --foreground: #c0c0c0;
+    --card: #0f1419;
+    --card-foreground: #c0c0c0;
+    --popover: #0f1419;
+    --popover-foreground: #c0c0c0;
+    --primary: #4682b4;
+    --primary-foreground: #ffffff;
+    --secondary: #2f4f4f;
+    --secondary-foreground: #c0c0c0;
+    --muted: #1c1c1c;
+    --muted-foreground: #778899;
+    --accent: #708090;
+    --accent-foreground: #ffffff;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #4682b4;
+    --input: #0f1419;
+    --ring: #4682b4;
+    --radius: 0.75rem;
+    --titlebar: #000000;
+    --titlebar-foreground: #4682b4;
+    --titlebar-hover: #0f1419;
+    --titlebar-close-hover: #dc2626;
+  }
+
+.theme-shadow-knight-light {
+    --background: #f0f8ff;
+    --foreground: #2f4f4f;
+    --card: #e6f3ff;
+    --card-foreground: #2f4f4f;
+    --popover: #e6f3ff;
+    --popover-foreground: #2f4f4f;
+    --primary: #4682b4;
+    --primary-foreground: #ffffff;
+    --secondary: #708090;
+    --secondary-foreground: #ffffff;
+    --muted: #ddeeff;
+    --muted-foreground: #2f4f4f;
+    --accent: #87ceeb;
+    --accent-foreground: #2f4f4f;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #4682b4;
+    --input: #ddeeff;
+    --ring: #4682b4;
+    --radius: 0.75rem;
+    --titlebar: #e6f3ff;
+    --titlebar-foreground: #2f4f4f;
+    --titlebar-hover: #ddeeff;
+    --titlebar-close-hover: #ef4444;
+  }
+
+/* Forest Mystique Gaming Theme */
+
+.theme-forest-mystique {
+    --background: #0f1a0f;
+    --foreground: #f5fbf5;
+    --card: #1a331a;
+    --card-foreground: #f5fbf5;
+    --popover: #1a331a;
+    --popover-foreground: #f5fbf5;
+    --primary: #34d058;
+    --primary-foreground: #0f1a0f;
+    --secondary: #1a331a;
+    --secondary-foreground: #f5fbf5;
+    --muted: #2d4a2d;
+    --muted-foreground: #94a394;
+    --accent: #22c55e;
+    --accent-foreground: #0f1a0f;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #4a6741;
+    --input: #2d4a2d;
+    --ring: #34d058;
+    --radius: 0.75rem;
+    --titlebar: #0f1a0f;
+    --titlebar-foreground: #34d058;
+    --titlebar-hover: #1a331a;
+    --titlebar-close-hover: #dc2626;
+  }
+
+.theme-forest-mystique-light {
+    --background: #f5fbf5;
+    --foreground: #0f1a0f;
+    --card: #f0f8f0;
+    --card-foreground: #0f1a0f;
+    --popover: #f0f8f0;
+    --popover-foreground: #0f1a0f;
+    --primary: #15803d;
+    --primary-foreground: #ffffff;
+    --secondary: #0f1a0f;
+    --secondary-foreground: #f5fbf5;
+    --muted: #cbd5cb;
+    --muted-foreground: #475547;
+    --accent: #16a34a;
+    --accent-foreground: #ffffff;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #94a394;
+    --input: #e2e8e2;
+    --ring: #15803d;
+    --radius: 0.75rem;
+    --titlebar: #f0f8f0;
+    --titlebar-foreground: #0f1a0f;
+    --titlebar-hover: #e2e8e2;
+    --titlebar-close-hover: #ef4444;
+  }
+
+/* Royal Purple Gaming Theme */
+
+.theme-royal-purple {
+    --background: #1a0f1a;
+    --foreground: #fbf5fb;
+    --card: #2a1a33;
+    --card-foreground: #fbf5fb;
+    --popover: #2a1a33;
+    --popover-foreground: #fbf5fb;
+    --primary: #a855f7;
+    --primary-foreground: #1a0f1a;
+    --secondary: #2a1a33;
+    --secondary-foreground: #fbf5fb;
+    --muted: #3d2d4a;
+    --muted-foreground: #a394a3;
+    --accent: #c084fc;
+    --accent-foreground: #1a0f1a;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #5a4167;
+    --input: #3d2d4a;
+    --ring: #a855f7;
+    --radius: 0.75rem;
+    --titlebar: #1a0f1a;
+    --titlebar-foreground: #a855f7;
+    --titlebar-hover: #2a1a33;
+    --titlebar-close-hover: #dc2626;
+  }
+
+.theme-royal-purple-light {
+    --background: #fbf5fb;
+    --foreground: #1a0f1a;
+    --card: #f5f0f8;
+    --card-foreground: #1a0f1a;
+    --popover: #f5f0f8;
+    --popover-foreground: #1a0f1a;
+    --primary: #7c3aed;
+    --primary-foreground: #ffffff;
+    --secondary: #1a0f1a;
+    --secondary-foreground: #fbf5fb;
+    --muted: #d5cbd5;
+    --muted-foreground: #554755;
+    --accent: #8b5cf6;
+    --accent-foreground: #ffffff;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #a394a3;
+    --input: #e8e2e8;
+    --ring: #7c3aed;
+    --radius: 0.75rem;
+    --titlebar: #f5f0f8;
+    --titlebar-foreground: #1a0f1a;
+    --titlebar-hover: #e8e2e8;
+    --titlebar-close-hover: #ef4444;
+  }

@@ -1,0 +1,851 @@
+/* =============================================================================
+   PROFESSIONAL THEMES
+   Solid color professional themes without special effects
+   ============================================================================= */
+
+/* =============================================================================
+   ONYX THEME
+   Onyx professional color scheme (was onyx)
+   ============================================================================= */
+
+.theme-onyx {
+  /* Light mode - matches existing theme */
+  --background: #ffffff;
+  --surface: #f5f5f5;
+  --surface-hover: rgba(0, 0, 0, 0.05);
+  --text: #121212;
+  --text-muted: #6e6e6e;
+  --text-background: #ffffff;
+  --accent: #121212;
+  --accent-hover: #2a2a2a;
+  --border: #e5e5e5;
+  --border-thin: rgba(229, 229, 229, 0.2);
+  --input-bg: #ffffff;
+  --scrollbar: #d1d5db;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  
+  /* Status colors - theme-aware */
+  --status-error: #dc2626;
+  --status-error-bg: rgba(220, 38, 38, 0.1);
+  --status-warning: #d97706;
+  --status-warning-bg: rgba(217, 119, 6, 0.1);
+  --status-info: #2563eb;
+  --status-info-bg: rgba(37, 99, 235, 0.1);
+  --status-success: #059669;
+  --status-success-bg: rgba(5, 150, 105, 0.1);
+  
+  /* Enhanced effects (none for regular theme) */
+  --accent-glow: none;
+  --text-glow: none;
+  --neon-border: none;
+}
+
+.theme-onyx.dark {
+  /* Dark mode - matches existing dark theme */
+  --background: #121212;
+  --surface: #1e1e1e;
+  --surface-hover: rgba(255, 255, 255, 0.05);
+  --text: #ffffff;
+  --text-muted: #9e9e9e;
+  --text-background: #121212;
+  --accent: #ffffff;
+  --accent-hover: #e0e0e0;
+  --border: #2a2a2a;
+  --border-thin: rgba(42, 42, 42, 0.3);
+  --input-bg: #2a2a2a;
+  --scrollbar: #3a3a3a;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  
+  /* Status colors - theme-aware (brighter for dark mode) */
+  --status-error: #ef4444;
+  --status-error-bg: rgba(239, 68, 68, 0.15);
+  --status-warning: #f59e0b;
+  --status-warning-bg: rgba(245, 158, 11, 0.15);
+  --status-info: #3b82f6;
+  --status-info-bg: rgba(59, 130, 246, 0.15);
+  --status-success: #10b981;
+  --status-success-bg: rgba(16, 185, 129, 0.15);
+}
+
+/* =============================================================================
+   SAGE THEME
+   Sage professional color scheme (was detox-analyzer)
+   ============================================================================= */
+
+.theme-sage {
+  /* Light mode - clean analysis environment */
+  --background: #ffffff;
+  --surface: #f8fafb;
+  --surface-hover: rgba(16, 185, 129, 0.05);
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --text-background: #ffffff;
+  --accent: #10b981;
+  --accent-hover: #059669;
+  --border: #e2e8f0;
+  --border-thin: rgba(16, 185, 129, 0.2);
+  --input-bg: #ffffff;
+  --scrollbar: #10b981;
+  --shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+  
+  /* Status colors - detox analyzer theme */
+  --status-error: #dc2626;
+  --status-error-bg: rgba(220, 38, 38, 0.1);
+  --status-warning: #d97706;
+  --status-warning-bg: rgba(217, 119, 6, 0.1);
+  --status-info: #0369a1;
+  --status-info-bg: rgba(3, 105, 161, 0.1);
+  --status-success: #10b981;
+  --status-success-bg: rgba(16, 185, 129, 0.1);
+  
+  /* Enhanced effects (none for regular theme) */
+  --accent-glow: none;
+  --text-glow: none;
+  --neon-border: none;
+}
+
+.theme-sage.dark {
+  /* Dark mode - focused analysis environment */
+  --background: #0c1710;
+  --surface: #1a2e23;
+  --surface-hover: rgba(34, 197, 94, 0.1);
+  --text: #ecfdf5;
+  --text-muted: #bbf7d0;
+  --text-background: #0c1710;
+  --accent: #22c55e;
+  --accent-hover: #16a34a;
+  --border: #166534;
+  --border-thin: rgba(22, 101, 52, 0.6);
+  --input-bg: #1a2e23;
+  --scrollbar: #22c55e;
+  --shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+  
+  /* Status colors - detox analyzer dark */
+  --status-error: #ef4444;
+  --status-error-bg: rgba(239, 68, 68, 0.15);
+  --status-warning: #f59e0b;
+  --status-warning-bg: rgba(245, 158, 11, 0.15);
+  --status-info: #0ea5e9;
+  --status-info-bg: rgba(14, 165, 233, 0.15);
+  --status-success: #22c55e;
+  --status-success-bg: rgba(34, 197, 94, 0.15);
+}
+
+/* =============================================================================
+   AMBER THEME
+   Amber professional color scheme (was reverse-engineer)
+   ============================================================================= */
+
+.theme-amber {
+  /* Light reverse engineer */
+  --background: #ffffff;
+  --surface: #fafafa;
+  --surface-hover: rgba(255, 107, 53, 0.05);
+  --text: #212121;
+  --text-muted: #616161;
+  --text-background: #ffffff;
+  --accent: #ff6b35;
+  --accent-hover: #e55a2b;
+  --border: #e0e0e0;
+  --border-thin: rgba(255, 107, 53, 0.2);
+  --input-bg: #ffffff;
+  --scrollbar: #ff8a65;
+  --shadow: 0 2px 8px rgba(255, 107, 53, 0.1);
+  
+  /* Status colors - reverse engineer theme */
+  --status-error: #d32f2f;
+  --status-error-bg: rgba(211, 47, 47, 0.1);
+  --status-warning: #f57c00;
+  --status-warning-bg: rgba(245, 124, 0, 0.1);
+  --status-info: #1976d2;
+  --status-info-bg: rgba(25, 118, 210, 0.1);
+  --status-success: #388e3c;
+  --status-success-bg: rgba(56, 142, 60, 0.1);
+  
+  /* Enhanced effects (none for regular theme) */
+  --accent-glow: none;
+  --text-glow: none;
+  --neon-border: none;
+}
+
+.theme-amber.dark {
+  /* Dark reverse engineer */
+  --background: #121212;
+  --surface: #1e1e1e;
+  --surface-hover: rgba(255, 138, 101, 0.1);
+  --text: #e0e0e0;
+  --text-muted: #9e9e9e;
+  --text-background: #121212;
+  --accent: #ff8a65;
+  --accent-hover: #ff7043;
+  --border: #424242;
+  --border-thin: rgba(255, 138, 101, 0.6);
+  --input-bg: #1e1e1e;
+  --scrollbar: #ff8a65;
+  --shadow: 0 2px 8px rgba(255, 138, 101, 0.3);
+  
+  /* Status colors - reverse engineer dark */
+  --status-error: #ef5350;
+  --status-error-bg: rgba(239, 83, 80, 0.15);
+  --status-warning: #ffb74d;
+  --status-warning-bg: rgba(255, 183, 77, 0.15);
+  --status-info: #42a5f5;
+  --status-info-bg: rgba(66, 165, 245, 0.15);
+  --status-success: #66bb6a;
+  --status-success-bg: rgba(102, 187, 106, 0.15);
+}
+
+/* =============================================================================
+   CRIMSON THEME
+   Crimson professional color scheme (was malware-hunter)
+   ============================================================================= */
+
+.theme-crimson {
+  /* Light malware hunter */
+  --background: #ffffff;
+  --surface: #fefefe;
+  --surface-hover: rgba(220, 38, 38, 0.05);
+  --text: #1a1a1a;
+  --text-muted: #666666;
+  --text-background: #ffffff;
+  --accent: #dc2626;
+  --accent-hover: #b91c1c;
+  --border: #d1d5db;
+  --border-thin: rgba(220, 38, 38, 0.2);
+  --input-bg: #ffffff;
+  --scrollbar: #ef4444;
+  --shadow: 0 2px 8px rgba(220, 38, 38, 0.1);
+  
+  /* Status colors - malware hunter theme */
+  --status-error: #dc2626;
+  --status-error-bg: rgba(220, 38, 38, 0.1);
+  --status-warning: #d97706;
+  --status-warning-bg: rgba(217, 119, 6, 0.1);
+  --status-info: #2563eb;
+  --status-info-bg: rgba(37, 99, 235, 0.1);
+  --status-success: #059669;
+  --status-success-bg: rgba(5, 150, 105, 0.1);
+  
+  /* Enhanced effects (none for regular theme) */
+  --accent-glow: none;
+  --text-glow: none;
+  --neon-border: none;
+}
+
+.theme-crimson.dark {
+  /* Dark malware hunter */
+  --background: #0f0f0f;
+  --surface: #1a1a1a;
+  --surface-hover: rgba(239, 68, 68, 0.1);
+  --text: #fafafa;
+  --text-muted: #a3a3a3;
+  --text-background: #0f0f0f;
+  --accent: #ef4444;
+  --accent-hover: #dc2626;
+  --border: #374151;
+  --border-thin: rgba(55, 65, 81, 0.6);
+  --input-bg: #1a1a1a;
+  --scrollbar: #ef4444;
+  --shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+  
+  /* Status colors - malware hunter dark */
+  --status-error: #ef4444;
+  --status-error-bg: rgba(239, 68, 68, 0.15);
+  --status-warning: #f59e0b;
+  --status-warning-bg: rgba(245, 158, 11, 0.15);
+  --status-info: #3b82f6;
+  --status-info-bg: rgba(59, 130, 246, 0.15);
+  --status-success: #10b981;
+  --status-success-bg: rgba(16, 185, 129, 0.15);
+}
+
+/* =============================================================================
+   GOLD THEME
+   Gold professional color scheme (was script-sleuth)
+   ============================================================================= */
+
+.theme-gold {
+  /* Light script sleuth */
+  --background: #ffffff;
+  --surface: #f9fafb;
+  --surface-hover: rgba(245, 158, 11, 0.05);
+  --text: #111827;
+  --text-muted: #6b7280;
+  --text-background: #ffffff;
+  --accent: #f59e0b;
+  --accent-hover: #d97706;
+  --border: #d1d5db;
+  --border-thin: rgba(245, 158, 11, 0.2);
+  --input-bg: #ffffff;
+  --scrollbar: #fbbf24;
+  --shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
+  
+  /* Status colors - script sleuth theme */
+  --status-error: #dc2626;
+  --status-error-bg: rgba(220, 38, 38, 0.1);
+  --status-warning: #f59e0b;
+  --status-warning-bg: rgba(245, 158, 11, 0.1);
+  --status-info: #0369a1;
+  --status-info-bg: rgba(3, 105, 161, 0.1);
+  --status-success: #059669;
+  --status-success-bg: rgba(5, 150, 105, 0.1);
+  
+  /* Enhanced effects (none for regular theme) */
+  --accent-glow: none;
+  --text-glow: none;
+  --neon-border: none;
+}
+
+.theme-gold.dark {
+  /* Dark script sleuth */
+  --background: #111827;
+  --surface: #1f2937;
+  --surface-hover: rgba(251, 191, 36, 0.1);
+  --text: #f9fafb;
+  --text-muted: #9ca3af;
+  --text-background: #111827;
+  --accent: #fbbf24;
+  --accent-hover: #f59e0b;
+  --border: #4b5563;
+  --border-thin: rgba(75, 85, 99, 0.6);
+  --input-bg: #1f2937;
+  --scrollbar: #fbbf24;
+  --shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
+  
+  /* Status colors - script sleuth dark */
+  --status-error: #ef4444;
+  --status-error-bg: rgba(239, 68, 68, 0.15);
+  --status-warning: #fbbf24;
+  --status-warning-bg: rgba(251, 191, 36, 0.15);
+  --status-info: #0ea5e9;
+  --status-info-bg: rgba(14, 165, 233, 0.15);
+  --status-success: #10b981;
+  --status-success-bg: rgba(16, 185, 129, 0.15);
+}
+
+/* =============================================================================
+   COPPER THEME
+   Copper professional color scheme (was debug-master)
+   ============================================================================= */
+
+.theme-copper {
+  /* Light debug master */
+  --background: #ffffff;
+  --surface: #fefefe;
+  --surface-hover: rgba(234, 88, 12, 0.05);
+  --text: #1f2937;
+  --text-muted: #6b7280;
+  --text-background: #ffffff;
+  --accent: #ea580c;
+  --accent-hover: #dc2626;
+  --border: #e5e7eb;
+  --border-thin: rgba(234, 88, 12, 0.2);
+  --input-bg: #ffffff;
+  --scrollbar: #fb923c;
+  --shadow: 0 2px 8px rgba(234, 88, 12, 0.1);
+  
+  /* Status colors - debug master theme */
+  --status-error: #dc2626;
+  --status-error-bg: rgba(220, 38, 38, 0.1);
+  --status-warning: #ea580c;
+  --status-warning-bg: rgba(234, 88, 12, 0.1);
+  --status-info: #0369a1;
+  --status-info-bg: rgba(3, 105, 161, 0.1);
+  --status-success: #059669;
+  --status-success-bg: rgba(5, 150, 105, 0.1);
+  
+  /* Enhanced effects (warm glow for debug master) */
+  --accent-glow: 0 0 8px rgba(234, 88, 12, 0.4);
+  --text-glow: 0 0 4px rgba(234, 88, 12, 0.3);
+  --neon-border: 0 0 6px rgba(234, 88, 12, 0.3);
+}
+
+.theme-copper.dark {
+  /* Dark debug master */
+  --background: #1f1108;
+  --surface: #431a03;
+  --surface-hover: rgba(249, 115, 22, 0.1);
+  --text: #fff7ed;
+  --text-muted: #fed7aa;
+  --text-background: #1f1108;
+  --accent: #f97316;
+  --accent-hover: #fb923c;
+  --border: #9a3412;
+  --border-thin: rgba(154, 52, 18, 0.6);
+  --input-bg: #431a03;
+  --scrollbar: #f97316;
+  --shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+  
+  /* Status colors - debug master dark */
+  --status-error: #ef4444;
+  --status-error-bg: rgba(239, 68, 68, 0.15);
+  --status-warning: #f97316;
+  --status-warning-bg: rgba(249, 115, 22, 0.15);
+  --status-info: #0ea5e9;
+  --status-info-bg: rgba(14, 165, 233, 0.15);
+  --status-success: #10b981;
+  --status-success-bg: rgba(16, 185, 129, 0.15);
+  
+  /* Enhanced debug effects for dark mode */
+  --accent-glow: 0 0 12px rgba(249, 115, 22, 0.6);
+  --text-glow: 0 0 6px rgba(249, 115, 22, 0.4);
+  --neon-border: 0 0 8px rgba(249, 115, 22, 0.4);
+}
+
+/* =============================================================================
+   VIOLET THEME
+   Violet professional color scheme (was hex-analyst)
+   ============================================================================= */
+
+.theme-violet {
+  /* Light hex analyst */
+  --background: #ffffff;
+  --surface: #faf5ff;
+  --surface-hover: rgba(147, 51, 234, 0.05);
+  --text: #581c87;
+  --text-muted: #7c2d92;
+  --text-background: #ffffff;
+  --accent: #9333ea;
+  --accent-hover: #7c3aed;
+  --border: #ddd6fe;
+  --border-thin: rgba(147, 51, 234, 0.2);
+  --input-bg: #ffffff;
+  --scrollbar: #c4b5fd;
+  --shadow: 0 2px 8px rgba(147, 51, 234, 0.1);
+  
+  /* Status colors - hex analyst theme */
+  --status-error: #e11d48;
+  --status-error-bg: rgba(225, 29, 72, 0.1);
+  --status-warning: #d97706;
+  --status-warning-bg: rgba(217, 119, 6, 0.1);
+  --status-info: #7c3aed;
+  --status-info-bg: rgba(124, 58, 237, 0.1);
+  --status-success: #059669;
+  --status-success-bg: rgba(5, 150, 105, 0.1);
+  
+  /* Enhanced effects (none for regular theme) */
+  --accent-glow: none;
+  --text-glow: none;
+  --neon-border: none;
+}
+
+.theme-violet.dark {
+  /* Dark hex analyst */
+  --background: #1a0f2e;
+  --surface: #2d1b4e;
+  --surface-hover: rgba(168, 85, 247, 0.1);
+  --text: #e9d5ff;
+  --text-muted: #ddd6fe;
+  --text-background: #1a0f2e;
+  --accent: #a855f7;
+  --accent-hover: #c084fc;
+  --border: #6b21a8;
+  --border-thin: rgba(107, 33, 168, 0.6);
+  --input-bg: #2d1b4e;
+  --scrollbar: #a855f7;
+  --shadow: 0 2px 8px rgba(147, 51, 234, 0.3);
+  
+  /* Status colors - hex analyst dark */
+  --status-error: #f43f5e;
+  --status-error-bg: rgba(244, 63, 94, 0.15);
+  --status-warning: #f59e0b;
+  --status-warning-bg: rgba(245, 158, 11, 0.15);
+  --status-info: #a855f7;
+  --status-info-bg: rgba(168, 85, 247, 0.15);
+  --status-success: #10b981;
+  --status-success-bg: rgba(16, 185, 129, 0.15);
+}
+
+/* =============================================================================
+   MATRIX THEME
+   Matrix professional color scheme (was binary-explorer)
+   ============================================================================= */
+
+.theme-matrix {
+  /* Light binary explorer */
+  --background: #ffffff;
+  --surface: #f5f5f5;
+  --surface-hover: rgba(0, 255, 0, 0.05);
+  --text: #000000;
+  --text-muted: #333333;
+  --text-background: #ffffff;
+  --accent: #00aa00;
+  --accent-hover: #008800;
+  --border: #cccccc;
+  --border-thin: rgba(0, 170, 0, 0.2);
+  --input-bg: #ffffff;
+  --scrollbar: #00aa00;
+  --shadow: 0 2px 8px rgba(0, 170, 0, 0.1);
+  
+  /* Status colors - binary explorer theme */
+  --status-error: #ef4444;
+  --status-error-bg: rgba(239, 68, 68, 0.2);
+  --status-warning: #f59e0b;
+  --status-warning-bg: rgba(245, 158, 11, 0.2);
+  --status-info: #06b6d4;
+  --status-info-bg: rgba(6, 182, 212, 0.2);
+  --status-success: #10b981;
+  --status-success-bg: rgba(16, 185, 129, 0.2);
+  
+  /* Enhanced effects (subtle for light mode) */
+  --accent-glow: 0 0 5px currentColor;
+  --text-glow: 0 0 3px currentColor;
+  --neon-border: 0 0 3px currentColor;
+}
+
+.theme-matrix.dark {
+  /* Dark binary explorer - ENHANCED EFFECTS */
+  --background: #000000;
+  --surface: #001100;
+  --surface-hover: rgba(0, 255, 0, 0.1);
+  --text: #00ff00;
+  --text-muted: #00cc00;
+  --text-background: #000000;
+  --accent: #00ff00;
+  --accent-hover: #33ff33;
+  --border: #00aa00;
+  --border-thin: rgba(0, 170, 0, 0.6);
+  --input-bg: #001100;
+  --scrollbar: #00ff00;
+  --shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+  
+  /* Status colors - binary explorer dark */
+  --status-error: #ff4444;
+  --status-error-bg: rgba(255, 68, 68, 0.25);
+  --status-warning: #ffaa00;
+  --status-warning-bg: rgba(255, 170, 0, 0.25);
+  --status-info: #00ccff;
+  --status-info-bg: rgba(0, 204, 255, 0.25);
+  --status-success: #00ff00;
+  --status-success-bg: rgba(0, 255, 0, 0.25);
+  
+  /* Enhanced matrix effects for dark mode */
+  --accent-glow: 0 0 8px currentColor, 0 0 15px currentColor;
+  --text-glow: 0 0 5px currentColor, 0 0 10px currentColor;
+  --neon-border: 0 0 5px currentColor;
+}
+
+/* =============================================================================
+   NEON THEME
+   Neon professional color scheme (was cyber-forensics)
+   ============================================================================= */
+
+.theme-neon {
+  /* Light cyber forensics - neon on light background */
+  --background: #ffffff;
+  --surface: #f5f5f5;
+  --surface-hover: rgba(255, 0, 255, 0.05);
+  --text: #000000;
+  --text-muted: #333333;
+  --text-background: #ffffff;
+  --accent: #ff00ff;
+  --accent-hover: #cc00cc;
+  --border: #00ffff;
+  --border-thin: rgba(0, 255, 255, 0.4);
+  --input-bg: #ffffff;
+  --scrollbar: #ff00ff;
+  --shadow: 0 0 20px rgba(255, 0, 255, 0.3), 0 0 40px rgba(0, 255, 255, 0.2);
+  
+  /* Status colors - cyber forensics neon */
+  --status-error: #ff0066;
+  --status-error-bg: rgba(255, 0, 102, 0.2);
+  --status-warning: #ffaa00;
+  --status-warning-bg: rgba(255, 170, 0, 0.2);
+  --status-info: #00ffff;
+  --status-info-bg: rgba(0, 255, 255, 0.2);
+  --status-success: #00ff00;
+  --status-success-bg: rgba(0, 255, 0, 0.2);
+  
+  /* Enhanced cyber forensics effects */
+  --accent-glow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
+  --text-glow: 0 0 5px currentColor, 0 0 10px currentColor;
+  --neon-border: 0 0 5px currentColor, 0 0 10px currentColor, inset 0 0 5px currentColor;
+}
+
+.theme-neon.dark {
+  /* Dark cyber forensics - MAXIMUM NEON INTENSITY */
+  --background: #000000;
+  --surface: #0a0a0a;
+  --surface-hover: rgba(0, 255, 255, 0.1);
+  --text: #00ff00;
+  --text-muted: #00cc00;
+  --text-background: #000000;
+  --accent: #00ffff;
+  --accent-hover: #33ffff;
+  --border: #ff00ff;
+  --border-thin: rgba(255, 0, 255, 0.6);
+  --input-bg: #0a0a0a;
+  --scrollbar: #00ff00;
+  --shadow: 0 0 30px rgba(0, 255, 255, 0.6), 0 0 60px rgba(255, 0, 255, 0.4), 0 0 90px rgba(0, 255, 0, 0.2);
+  
+  /* Status colors - cyber forensics neon dark */
+  --status-error: #ff0066;
+  --status-error-bg: rgba(255, 0, 102, 0.25);
+  --status-warning: #ffaa00;
+  --status-warning-bg: rgba(255, 170, 0, 0.25);
+  --status-info: #00ffff;
+  --status-info-bg: rgba(0, 255, 255, 0.25);
+  --status-success: #00ff00;
+  --status-success-bg: rgba(0, 255, 0, 0.25);
+  
+  /* Intense cyber forensics effects for dark mode */
+  --accent-glow: 0 0 15px currentColor, 0 0 30px currentColor, 0 0 45px currentColor;
+  --text-glow: 0 0 8px currentColor, 0 0 15px currentColor;
+  --neon-border: 0 0 8px currentColor, 0 0 15px currentColor, inset 0 0 8px currentColor;
+}
+
+/* =============================================================================
+   SCARLET THEME
+   Scarlet professional color scheme (was threat-hunter)
+   ============================================================================= */
+
+.theme-scarlet {
+  /* Light threat hunter */
+  --background: #ffffff;
+  --surface: #fef2f2;
+  --surface-hover: rgba(220, 38, 38, 0.05);
+  --text: #1f2937;
+  --text-muted: #6b7280;
+  --text-background: #ffffff;
+  --accent: #dc2626;
+  --accent-hover: #b91c1c;
+  --border: #fecaca;
+  --border-thin: rgba(220, 38, 38, 0.2);
+  --input-bg: #ffffff;
+  --scrollbar: #dc2626;
+  --shadow: 0 2px 8px rgba(220, 38, 38, 0.1);
+  
+  /* Status colors - threat hunter theme */
+  --status-error: #dc2626;
+  --status-error-bg: rgba(220, 38, 38, 0.1);
+  --status-warning: #ea580c;
+  --status-warning-bg: rgba(234, 88, 12, 0.1);
+  --status-info: #0369a1;
+  --status-info-bg: rgba(3, 105, 161, 0.1);
+  --status-success: #059669;
+  --status-success-bg: rgba(5, 150, 105, 0.1);
+  
+  /* Enhanced effects (none for regular theme) */
+  --accent-glow: none;
+  --text-glow: none;
+  --neon-border: none;
+}
+
+.theme-scarlet.dark {
+  /* Dark threat hunter */
+  --background: #1f1117;
+  --surface: #451a1a;
+  --surface-hover: rgba(239, 68, 68, 0.1);
+  --text: #fef2f2;
+  --text-muted: #fecaca;
+  --text-background: #1f1117;
+  --accent: #ef4444;
+  --accent-hover: #f87171;
+  --border: #991b1b;
+  --border-thin: rgba(153, 27, 27, 0.6);
+  --input-bg: #451a1a;
+  --scrollbar: #ef4444;
+  --shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+  
+  /* Status colors - threat hunter dark */
+  --status-error: #ef4444;
+  --status-error-bg: rgba(239, 68, 68, 0.15);
+  --status-warning: #f97316;
+  --status-warning-bg: rgba(249, 115, 22, 0.15);
+  --status-info: #0ea5e9;
+  --status-info-bg: rgba(14, 165, 233, 0.15);
+  --status-success: #10b981;
+  --status-success-bg: rgba(16, 185, 129, 0.15);
+}
+
+/* =============================================================================
+   AZURE THEME
+   Azure professional color scheme (was packet-tracer)
+   ============================================================================= */
+
+.theme-azure {
+  /* Light packet tracer */
+  --background: #ffffff;
+  --surface: #f0f9ff;
+  --surface-hover: rgba(59, 130, 246, 0.05);
+  --text: #1f2937;
+  --text-muted: #6b7280;
+  --text-background: #ffffff;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --border: #bfdbfe;
+  --border-thin: rgba(37, 99, 235, 0.2);
+  --input-bg: #ffffff;
+  --scrollbar: #2563eb;
+  --shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+  
+  /* Status colors - packet tracer theme */
+  --status-error: #dc2626;
+  --status-error-bg: rgba(220, 38, 38, 0.1);
+  --status-warning: #ea580c;
+  --status-warning-bg: rgba(234, 88, 12, 0.1);
+  --status-info: #2563eb;
+  --status-info-bg: rgba(37, 99, 235, 0.1);
+  --status-success: #059669;
+  --status-success-bg: rgba(5, 150, 105, 0.1);
+  
+  /* Enhanced effects (none for regular theme) */
+  --accent-glow: none;
+  --text-glow: none;
+  --neon-border: none;
+}
+
+.theme-azure.dark {
+  /* Dark packet tracer */
+  --background: #0c1120;
+  --surface: #1e293b;
+  --surface-hover: rgba(96, 165, 250, 0.1);
+  --text: #f1f5f9;
+  --text-muted: #cbd5e1;
+  --text-background: #0c1120;
+  --accent: #60a5fa;
+  --accent-hover: #93c5fd;
+  --border: #1e40af;
+  --border-thin: rgba(30, 64, 175, 0.6);
+  --input-bg: #1e293b;
+  --scrollbar: #60a5fa;
+  --shadow: 0 2px 8px rgba(96, 165, 250, 0.3);
+  
+  /* Status colors - packet tracer dark */
+  --status-error: #ef4444;
+  --status-error-bg: rgba(239, 68, 68, 0.15);
+  --status-warning: #f97316;
+  --status-warning-bg: rgba(249, 115, 22, 0.15);
+  --status-info: #60a5fa;
+  --status-info-bg: rgba(96, 165, 250, 0.15);
+  --status-success: #10b981;
+  --status-success-bg: rgba(16, 185, 129, 0.15);
+}
+
+/* =============================================================================
+   BRONZE THEME
+   Bronze professional color scheme (was malware-analyst)
+   ============================================================================= */
+
+.theme-bronze {
+  /* Light malware analyst */
+  --background: #ffffff;
+  --surface: #fffbeb;
+  --surface-hover: rgba(245, 158, 11, 0.05);
+  --text: #1f2937;
+  --text-muted: #6b7280;
+  --text-background: #ffffff;
+  --accent: #f59e0b;
+  --accent-hover: #d97706;
+  --border: #fde68a;
+  --border-thin: rgba(245, 158, 11, 0.2);
+  --input-bg: #ffffff;
+  --scrollbar: #f59e0b;
+  --shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
+  
+  /* Status colors - malware analyst theme */
+  --status-error: #dc2626;
+  --status-error-bg: rgba(220, 38, 38, 0.1);
+  --status-warning: #f59e0b;
+  --status-warning-bg: rgba(245, 158, 11, 0.1);
+  --status-info: #0369a1;
+  --status-info-bg: rgba(3, 105, 161, 0.1);
+  --status-success: #059669;
+  --status-success-bg: rgba(5, 150, 105, 0.1);
+  
+  /* Enhanced effects (none for regular theme) */
+  --accent-glow: none;
+  --text-glow: none;
+  --neon-border: none;
+}
+
+.theme-bronze.dark {
+  /* Dark malware analyst */
+  --background: #1c1917;
+  --surface: #451a03;
+  --surface-hover: rgba(251, 146, 60, 0.1);
+  --text: #fffbeb;
+  --text-muted: #fde68a;
+  --text-background: #1c1917;
+  --accent: #fb923c;
+  --accent-hover: #fdba74;
+  --border: #92400e;
+  --border-thin: rgba(146, 64, 14, 0.6);
+  --input-bg: #451a03;
+  --scrollbar: #fb923c;
+  --shadow: 0 2px 8px rgba(251, 146, 60, 0.3);
+  
+  /* Status colors - malware analyst dark */
+  --status-error: #ef4444;
+  --status-error-bg: rgba(239, 68, 68, 0.15);
+  --status-warning: #fb923c;
+  --status-warning-bg: rgba(251, 146, 60, 0.15);
+  --status-info: #0ea5e9;
+  --status-info-bg: rgba(14, 165, 233, 0.15);
+  --status-success: #10b981;
+  --status-success-bg: rgba(16, 185, 129, 0.15);
+}
+
+/* =============================================================================
+   TEAL THEME
+   Teal professional color scheme (was digital-sleuth)
+   ============================================================================= */
+
+.theme-teal {
+  /* Light digital sleuth */
+  --background: #ffffff;
+  --surface: #f0fdfa;
+  --surface-hover: rgba(20, 184, 166, 0.05);
+  --text: #1f2937;
+  --text-muted: #6b7280;
+  --text-background: #ffffff;
+  --accent: #14b8a6;
+  --accent-hover: #0d9488;
+  --border: #99f6e4;
+  --border-thin: rgba(20, 184, 166, 0.2);
+  --input-bg: #ffffff;
+  --scrollbar: #14b8a6;
+  --shadow: 0 2px 8px rgba(20, 184, 166, 0.1);
+  
+  /* Status colors - digital sleuth theme */
+  --status-error: #dc2626;
+  --status-error-bg: rgba(220, 38, 38, 0.1);
+  --status-warning: #ea580c;
+  --status-warning-bg: rgba(234, 88, 12, 0.1);
+  --status-info: #14b8a6;
+  --status-info-bg: rgba(20, 184, 166, 0.1);
+  --status-success: #059669;
+  --status-success-bg: rgba(5, 150, 105, 0.1);
+  
+  /* Enhanced effects (none for regular theme) */
+  --accent-glow: none;
+  --text-glow: none;
+  --neon-border: none;
+}
+
+.theme-teal.dark {
+  /* Dark digital sleuth */
+  --background: #042f2e;
+  --surface: #134e4a;
+  --surface-hover: rgba(45, 212, 191, 0.1);
+  --text: #f0fdfa;
+  --text-muted: #99f6e4;
+  --text-background: #042f2e;
+  --accent: #2dd4bf;
+  --accent-hover: #5eead4;
+  --border: #0f766e;
+  --border-thin: rgba(15, 118, 110, 0.6);
+  --input-bg: #134e4a;
+  --scrollbar: #2dd4bf;
+  --shadow: 0 2px 8px rgba(45, 212, 191, 0.3);
+  
+  /* Status colors - digital sleuth dark */
+  --status-error: #ef4444;
+  --status-error-bg: rgba(239, 68, 68, 0.15);
+  --status-warning: #f97316;
+  --status-warning-bg: rgba(249, 115, 22, 0.15);
+  --status-info: #2dd4bf;
+  --status-info-bg: rgba(45, 212, 191, 0.15);
+  --status-success: #10b981;
+  --status-success-bg: rgba(16, 185, 129, 0.15);
+}

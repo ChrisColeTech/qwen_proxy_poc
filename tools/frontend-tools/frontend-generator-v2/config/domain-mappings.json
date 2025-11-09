@@ -1,0 +1,21 @@
+{
+  "description": "Domain mappings for frontend generation",
+  "domain_mappings": {
+    "users": "user-management",
+    "user_profiles": "user-management",
+    "user_sessions": "authentication",
+    "user_achievements": "user-management",
+    "user_content_progress": "learning",
+    "games": "gameplay",
+    "historic_games": "gameplay",
+    "openings": "chess-theory",
+    "puzzles": "puzzles",
+    "puzzle_sources": "puzzles",
+    "puzzle_attempts": "puzzles",
+    "content": "learning",
+    "achievements": "user-management",
+    "auth": "authentication",
+    "keys": "api-management",
+    "storage": "app-settings"
+  }
+}

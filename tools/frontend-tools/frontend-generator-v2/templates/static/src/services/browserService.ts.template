@@ -1,0 +1,288 @@
+export class BrowserService {
+  private readonly SETTINGS_STORAGE_KEY = 'app-settings'
+  private readonly FILE_QUEUE_STORAGE_KEY = 'app-file-queue'
+
+  constructor() {
+    console.log('BrowserService initialized - running in browser environment')
+  }
+
+  // Settings operations using localStorage
+  async saveSettings(settings: Record<string, unknown>): Promise<void> {
+    try {
+      localStorage.setItem(this.SETTINGS_STORAGE_KEY, JSON.stringify(settings))
+      console.log('Settings saved to localStorage:', settings)
+    } catch (error) {
+      console.error('Failed to save settings to localStorage:', error)
+      throw new Error('Failed to save settings')
+    }
+  }
+
+  async loadSettings(): Promise<Record<string, unknown> | null> {
+    try {
+      const stored = localStorage.getItem(this.SETTINGS_STORAGE_KEY)
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        console.log('Settings loaded from localStorage:', parsed)
+        return parsed
+      }
+      console.log('No settings found in localStorage')
+      return null
+    } catch (error) {
+      console.error('Failed to load settings from localStorage:', error)
+      return null
+    }
+  }
+
+  // File operations - mock implementations using browser APIs
+  async openFile(): Promise<{ path: string; content: string } | null> {
+    return new Promise((resolve) => {
+      const input = document.createElement('input')
+      input.type = 'file'
+      input.accept = '*/*'
+
+      input.onchange = (event) => {
+        const file = (event.target as HTMLInputElement).files?.[0]
+        if (file) {
+          const reader = new FileReader()
+          reader.onload = (e) => {
+            const content = e.target?.result as string
+            resolve({
+              path: file.name, // In browser, we only have the filename
+              content: content,
+            })
+          }
+          reader.onerror = () => {
+            console.error('Failed to read file')
+            resolve(null)
+          }
+          reader.readAsText(file)
+        } else {
+          resolve(null)
+        }
+      }
+
+      input.oncancel = () => resolve(null)
+      input.click()
+    })
+  }
+
+  async saveFile(path: string, content: string): Promise<boolean> {
+    try {
+      // In browser, we can't save to a specific path, so we'll trigger a download
+      const blob = new Blob([content], { type: 'text/plain' })
+      const url = URL.createObjectURL(blob)
+
+      const a = document.createElement('a')
+      a.href = url
+      a.download = path.split('/').pop() || 'file.txt' // Use filename from path
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+
+      URL.revokeObjectURL(url)
+
+      console.log(`File saved (downloaded): ${path}`)
+      return true
+    } catch (error) {
+      console.error('Failed to save file:', error)
+      return false
+    }
+  }
+
+  async saveFileAs(content: string): Promise<{ path: string; success: boolean } | null> {
+    try {
+      // Create a default filename with timestamp
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+      const defaultFilename = `file-${timestamp}.txt`
+
+      const blob = new Blob([content], { type: 'text/plain' })
+      const url = URL.createObjectURL(blob)
+
+      const a = document.createElement('a')
+      a.href = url
+      a.download = defaultFilename
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+
+      URL.revokeObjectURL(url)
+
+      console.log(`File saved as (downloaded): ${defaultFilename}`)
+      return {
+        path: defaultFilename,
+        success: true,
+      }
+    } catch (error) {
+      console.error('Failed to save file as:', error)
+      return null
+    }
+  }
+
+  // Window operations - mock implementations
+  minimizeWindow(): void {
+    console.log('Mock: Window minimize requested (not supported in browser)')
+    // In a real browser app, you might show a notification or hide the app in some way
+  }
+
+  async maximizeWindow(): Promise<void> {
+    console.log('Mock: Window maximize requested')
+    // Try to enter fullscreen mode as a browser equivalent
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch((err) => {
+        console.log('Failed to enter fullscreen:', err)
+      })
+    }
+  }
+
+  closeWindow(): void {
+    console.log('Mock: Window close requested')
+    // In browser, we can only close the current tab/window
+    if (confirm('Are you sure you want to close this tab?')) {
+      window.close()
+    }
+  }
+
+  async isMaximized(): Promise<boolean> {
+    // Check if in fullscreen mode as browser equivalent
+    return !!document.fullscreenElement
+  }
+
+  // Dialog operations - browser implementations
+  async showSaveDialog(defaultPath?: string): Promise<string | null> {
+    console.log('Mock: Save dialog requested with default path:', defaultPath)
+
+    // Use browser prompt as a simple implementation
+    const filename = prompt('Enter filename to save:', defaultPath || 'file.txt')
+    return filename
+  }
+
+  async showOpenDialog(): Promise<string[] | null> {
+    console.log('Mock: Open dialog requested')
+
+    return new Promise((resolve) => {
+      const input = document.createElement('input')
+      input.type = 'file'
+      input.multiple = true
+      input.accept = '*/*'
+
+      input.onchange = (event) => {
+        const files = Array.from((event.target as HTMLInputElement).files || [])
+        const filenames = files.map((file) => file.name)
+        resolve(filenames.length > 0 ? filenames : null)
+      }
+
+      input.oncancel = () => resolve(null)
+      input.click()
+    })
+  }
+
+  async showMessageBox(
+    message: string,
+    type: 'info' | 'warning' | 'error' = 'info',
+  ): Promise<void> {
+    console.log(`Mock: Message box (${type}):`, message)
+
+    // Use browser alert for simple implementation
+    switch (type) {
+      case 'error':
+        alert(`Error: ${message}`)
+        break
+      case 'warning':
+        alert(`Warning: ${message}`)
+        break
+      case 'info':
+      default:
+        alert(message)
+        break
+    }
+  }
+
+  // File queue operations using localStorage
+  async saveFileQueue(queue: any[]): Promise<void> {
+    try {
+      localStorage.setItem(this.FILE_QUEUE_STORAGE_KEY, JSON.stringify(queue))
+      console.log('File queue saved to localStorage:', queue.length, 'items')
+    } catch (error) {
+      console.error('Failed to save file queue to localStorage:', error)
+      throw new Error('Failed to save file queue')
+    }
+  }
+
+  async loadFileQueue(): Promise<any[] | null> {
+    try {
+      const stored = localStorage.getItem(this.FILE_QUEUE_STORAGE_KEY)
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        console.log('File queue loaded from localStorage:', parsed.length, 'items')
+        return parsed
+      }
+      console.log('No file queue found in localStorage')
+      return null
+    } catch (error) {
+      console.error('Failed to load file queue from localStorage:', error)
+      return null
+    }
+  }
+
+  async exportFileQueue(queue: any[]): Promise<string | null> {
+    try {
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+      const filename = `file-queue-${timestamp}.json`
+      const content = JSON.stringify(queue, null, 2)
+
+      const blob = new Blob([content], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filename
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+
+      URL.revokeObjectURL(url)
+
+      console.log('File queue exported (downloaded):', filename)
+      return filename
+    } catch (error) {
+      console.error('Failed to export file queue:', error)
+      return null
+    }
+  }
+
+  async importFileQueue(): Promise<any[] | null> {
+    return new Promise((resolve) => {
+      const input = document.createElement('input')
+      input.type = 'file'
+      input.accept = '.json'
+
+      input.onchange = (event) => {
+        const file = (event.target as HTMLInputElement).files?.[0]
+        if (file) {
+          const reader = new FileReader()
+          reader.onload = (e) => {
+            try {
+              const content = e.target?.result as string
+              const queue = JSON.parse(content)
+              console.log('File queue imported from file:', queue.length, 'items')
+              resolve(queue)
+            } catch (error) {
+              console.error('Failed to parse imported file queue:', error)
+              resolve(null)
+            }
+          }
+          reader.onerror = () => {
+            console.error('Failed to read file queue file')
+            resolve(null)
+          }
+          reader.readAsText(file)
+        } else {
+          resolve(null)
+        }
+      }
+
+      input.oncancel = () => resolve(null)
+      input.click()
+    })
+  }
+}

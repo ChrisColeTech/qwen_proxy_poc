@@ -1,0 +1,962 @@
+{
+  "achievements": [
+    {
+      "entity": "achievements",
+      "method": "POST",
+      "path": "/",
+      "handler": "createAchievement",
+      "auth_required": true,
+      "payload": {
+        "name": "test_name",
+        "description": "test_description",
+        "category": "test_category",
+        "icon": "test_icon",
+        "points": 100,
+        "difficulty": "test_difficulty",
+        "requirements": {
+          "data": "test_requirements"
+        }
+      },
+      "url_params": {}
+    },
+    {
+      "entity": "achievements",
+      "method": "GET",
+      "path": "/:id",
+      "handler": "getAchievementById",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "71i8h76gzmewklmrl"
+      }
+    },
+    {
+      "entity": "achievements",
+      "method": "PUT",
+      "path": "/:id",
+      "handler": "updateAchievement",
+      "auth_required": true,
+      "payload": {
+        "name": "test_name",
+        "description": "test_description",
+        "category": "test_category",
+        "icon": "test_icon",
+        "points": 100,
+        "difficulty": "test_difficulty",
+        "requirements": {
+          "data": "test_requirements"
+        }
+      },
+      "url_params": {
+        "id": "71i8h76gzmewklmrl"
+      }
+    },
+    {
+      "entity": "achievements",
+      "method": "DELETE",
+      "path": "/:id",
+      "handler": "deleteAchievement",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "71i8h76gzmewklmrl"
+      }
+    },
+    {
+      "entity": "achievements",
+      "method": "GET",
+      "path": "/",
+      "handler": "listAchievements",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {}
+    }
+  ],
+  "content": [
+    {
+      "entity": "content",
+      "method": "POST",
+      "path": "/",
+      "handler": "createContent",
+      "auth_required": true,
+      "payload": {
+        "title": "test_title",
+        "content_type": "exercise",
+        "parent_id": null,
+        "order_index": 100,
+        "description": "test_description",
+        "content_body": {
+          "data": "test_content_body"
+        },
+        "difficulty_level": "beginner",
+        "estimated_duration": 100,
+        "category": "test_category",
+        "objectives": [
+          "test_objectives"
+        ],
+        "prerequisites": [
+          "test_prerequisites"
+        ],
+        "is_published": true,
+        "version": 100,
+        "id": "test_id"
+      },
+      "url_params": {}
+    },
+    {
+      "entity": "content",
+      "method": "GET",
+      "path": "/:id",
+      "handler": "getContentById",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "ca47e209-7d59-4f59-965b-b5f518743b24"
+      }
+    },
+    {
+      "entity": "content",
+      "method": "PUT",
+      "path": "/:id",
+      "handler": "updateContent",
+      "auth_required": true,
+      "payload": {
+        "title": "test_title",
+        "content_type": "course",
+        "parent_id": null,
+        "order_index": 100,
+        "description": "test_description",
+        "content_body": {
+          "data": "test_content_body"
+        },
+        "difficulty_level": "intermediate",
+        "estimated_duration": 100,
+        "category": "test_category",
+        "objectives": [
+          "test_objectives"
+        ],
+        "prerequisites": [
+          "test_prerequisites"
+        ],
+        "is_published": true,
+        "version": 100,
+        "id": "test_id"
+      },
+      "url_params": {
+        "id": "ca47e209-7d59-4f59-965b-b5f518743b24"
+      }
+    },
+    {
+      "entity": "content",
+      "method": "DELETE",
+      "path": "/:id",
+      "handler": "deleteContent",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "ca47e209-7d59-4f59-965b-b5f518743b24"
+      }
+    },
+    {
+      "entity": "content",
+      "method": "GET",
+      "path": "/",
+      "handler": "listContents",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {}
+    }
+  ],
+  "games": [
+    {
+      "entity": "games",
+      "method": "POST",
+      "path": "/",
+      "handler": "createGame",
+      "auth_required": true,
+      "payload": {
+        "ai_level": 1,
+        "user_color": "white",
+        "time_control": "blitz",
+        "current_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+      },
+      "url_params": {}
+    },
+    {
+      "entity": "games",
+      "method": "GET",
+      "path": "/:id",
+      "handler": "getGameById",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "ede4bd25-edaa-476f-b4b4-54985d195f92"
+      }
+    },
+    {
+      "entity": "games",
+      "method": "PUT",
+      "path": "/:id",
+      "handler": "updateGame",
+      "auth_required": true,
+      "payload": {
+        "user_id": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "userId": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "ai_level": 1,
+        "user_color": "white",
+        "current_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "pgn": "1. e4 e5 2. Nf3 Nc6",
+        "status": "test_status",
+        "result": "1-0",
+        "time_control": "rapid",
+        "started_at": "2025-09-14T23:36:21.192458+00:00",
+        "completed_at": "2025-09-14T23:36:21.192492+00:00"
+      },
+      "url_params": {
+        "id": "ede4bd25-edaa-476f-b4b4-54985d195f92"
+      }
+    },
+    {
+      "entity": "games",
+      "method": "DELETE",
+      "path": "/:id",
+      "handler": "deleteGame",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "ede4bd25-edaa-476f-b4b4-54985d195f92"
+      }
+    },
+    {
+      "entity": "games",
+      "method": "GET",
+      "path": "/",
+      "handler": "listGames",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {}
+    }
+  ],
+  "historic_games": [
+    {
+      "entity": "historic_games",
+      "method": "POST",
+      "path": "/",
+      "handler": "createHistoricGame",
+      "auth_required": true,
+      "payload": {
+        "white_player": "test_white_player",
+        "black_player": "test_black_player",
+        "white_rating": 1500,
+        "black_rating": 1500,
+        "tournament_name": "test_tournament_name",
+        "tournament_year": 100,
+        "opening_name": "test_opening_name",
+        "opening_eco": "test_opening_eco",
+        "result": "1-0",
+        "pgn": "1. e4 e5 2. Nf3 Nc6",
+        "id": "test_id"
+      },
+      "url_params": {}
+    },
+    {
+      "entity": "historic_games",
+      "method": "GET",
+      "path": "/:id",
+      "handler": "getHistoricGameById",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "a8807179-5d78-4ae2-bd6d-1dca993c4788"
+      }
+    },
+    {
+      "entity": "historic_games",
+      "method": "PUT",
+      "path": "/:id",
+      "handler": "updateHistoricGame",
+      "auth_required": true,
+      "payload": {
+        "white_player": "test_white_player",
+        "black_player": "test_black_player",
+        "white_rating": 1500,
+        "black_rating": 1500,
+        "tournament_name": "test_tournament_name",
+        "tournament_year": 100,
+        "opening_name": "test_opening_name",
+        "opening_eco": "test_opening_eco",
+        "result": "1/2-1/2",
+        "pgn": "1. e4 e5 2. Nf3 Nc6",
+        "id": "test_id"
+      },
+      "url_params": {
+        "id": "a8807179-5d78-4ae2-bd6d-1dca993c4788"
+      }
+    },
+    {
+      "entity": "historic_games",
+      "method": "DELETE",
+      "path": "/:id",
+      "handler": "deleteHistoricGame",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "a8807179-5d78-4ae2-bd6d-1dca993c4788"
+      }
+    },
+    {
+      "entity": "historic_games",
+      "method": "GET",
+      "path": "/",
+      "handler": "listHistoricGames",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {}
+    }
+  ],
+  "openings": [
+    {
+      "entity": "openings",
+      "method": "POST",
+      "path": "/",
+      "handler": "createOpening",
+      "auth_required": true,
+      "payload": {
+        "name": "test_name",
+        "eco_code": "C20",
+        "moves": "test_moves",
+        "description": "test_description",
+        "popularity_score": 100,
+        "difficulty_level": "beginner"
+      },
+      "url_params": {}
+    },
+    {
+      "entity": "openings",
+      "method": "GET",
+      "path": "/:id",
+      "handler": "getOpeningById",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "g3foqsapbmewklm2n"
+      }
+    },
+    {
+      "entity": "openings",
+      "method": "PUT",
+      "path": "/:id",
+      "handler": "updateOpening",
+      "auth_required": true,
+      "payload": {
+        "name": "test_name",
+        "eco_code": "E00",
+        "moves": "test_moves",
+        "description": "test_description",
+        "popularity_score": 100,
+        "difficulty_level": "beginner"
+      },
+      "url_params": {
+        "id": "g3foqsapbmewklm2n"
+      }
+    },
+    {
+      "entity": "openings",
+      "method": "DELETE",
+      "path": "/:id",
+      "handler": "deleteOpening",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "g3foqsapbmewklm2n"
+      }
+    },
+    {
+      "entity": "openings",
+      "method": "GET",
+      "path": "/",
+      "handler": "listOpenings",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {}
+    }
+  ],
+  "puzzle_attempts": [
+    {
+      "entity": "puzzle_attempts",
+      "method": "POST",
+      "path": "/",
+      "handler": "createPuzzleAttempt",
+      "auth_required": true,
+      "payload": {
+        "user_id": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "userId": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "puzzle_id": "f7046ae5-ff73-4ecb-a58f-ed5eab8c7625",
+        "moves": "test_moves",
+        "correct": true,
+        "time_taken": 30,
+        "hints_used": 100,
+        "rating_change": 1500,
+        "attempted_at": "2025-09-14T23:36:21.899904+00:00",
+        "id": "test_id"
+      },
+      "url_params": {}
+    },
+    {
+      "entity": "puzzle_attempts",
+      "method": "GET",
+      "path": "/:id",
+      "handler": "getPuzzleAttemptById",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "54e609fc-c59f-415c-a239-db576fdc8c2d"
+      }
+    },
+    {
+      "entity": "puzzle_attempts",
+      "method": "PUT",
+      "path": "/:id",
+      "handler": "updatePuzzleAttempt",
+      "auth_required": true,
+      "payload": {
+        "user_id": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "userId": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "puzzle_id": "f7046ae5-ff73-4ecb-a58f-ed5eab8c7625",
+        "moves": "test_moves",
+        "correct": true,
+        "time_taken": 30,
+        "hints_used": 100,
+        "rating_change": 1500,
+        "attempted_at": "2025-09-14T23:36:22.269599+00:00",
+        "id": "test_id"
+      },
+      "url_params": {
+        "id": "54e609fc-c59f-415c-a239-db576fdc8c2d"
+      }
+    },
+    {
+      "entity": "puzzle_attempts",
+      "method": "DELETE",
+      "path": "/:id",
+      "handler": "deletePuzzleAttempt",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "54e609fc-c59f-415c-a239-db576fdc8c2d"
+      }
+    },
+    {
+      "entity": "puzzle_attempts",
+      "method": "GET",
+      "path": "/",
+      "handler": "listPuzzleAttempts",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {}
+    }
+  ],
+  "puzzle_sources": [
+    {
+      "entity": "puzzle_sources",
+      "method": "POST",
+      "path": "/",
+      "handler": "createPuzzleSource",
+      "auth_required": true,
+      "payload": {
+        "source_id": "871w34jjimewklnso",
+        "name": "test_name",
+        "description": "test_description",
+        "total_puzzles": 100,
+        "average_rating": 1500,
+        "is_active": true,
+        "attribution": "test_attribution",
+        "license": "test_license",
+        "url": "test_url",
+        "id": "test_id"
+      },
+      "url_params": {}
+    },
+    {
+      "entity": "puzzle_sources",
+      "method": "GET",
+      "path": "/:id",
+      "handler": "getPuzzleSourceById",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "871w34jjimewklnso"
+      }
+    },
+    {
+      "entity": "puzzle_sources",
+      "method": "PUT",
+      "path": "/:id",
+      "handler": "updatePuzzleSource",
+      "auth_required": true,
+      "payload": {
+        "name": "test_name",
+        "description": "test_description",
+        "total_puzzles": 100,
+        "average_rating": 1500,
+        "is_active": true,
+        "attribution": "test_attribution",
+        "license": "test_license",
+        "url": "test_url",
+        "id": "test_id",
+        "source_id": "test_source_246"
+      },
+      "url_params": {
+        "id": "871w34jjimewklnso"
+      }
+    },
+    {
+      "entity": "puzzle_sources",
+      "method": "DELETE",
+      "path": "/:id",
+      "handler": "deletePuzzleSource",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "871w34jjimewklnso"
+      }
+    },
+    {
+      "entity": "puzzle_sources",
+      "method": "GET",
+      "path": "/",
+      "handler": "listPuzzleSources",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {}
+    }
+  ],
+  "puzzles": [
+    {
+      "entity": "puzzles",
+      "method": "POST",
+      "path": "/",
+      "handler": "createPuzzle",
+      "auth_required": true,
+      "payload": {
+        "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "solution_moves": "test_solution_moves",
+        "themes": [
+          "tactics",
+          "fork"
+        ],
+        "rating": 1500,
+        "description": "test_description"
+      },
+      "url_params": {}
+    },
+    {
+      "entity": "puzzles",
+      "method": "GET",
+      "path": "/:id",
+      "handler": "getPuzzleById",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "f7046ae5-ff73-4ecb-a58f-ed5eab8c7625"
+      }
+    },
+    {
+      "entity": "puzzles",
+      "method": "PUT",
+      "path": "/:id",
+      "handler": "updatePuzzle",
+      "auth_required": true,
+      "payload": {
+        "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "solution_moves": "test_solution_moves",
+        "themes": [
+          "middlegame",
+          "attack"
+        ],
+        "rating": 1500,
+        "description": "test_description"
+      },
+      "url_params": {
+        "id": "f7046ae5-ff73-4ecb-a58f-ed5eab8c7625"
+      }
+    },
+    {
+      "entity": "puzzles",
+      "method": "DELETE",
+      "path": "/:id",
+      "handler": "deletePuzzle",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "f7046ae5-ff73-4ecb-a58f-ed5eab8c7625"
+      }
+    },
+    {
+      "entity": "puzzles",
+      "method": "GET",
+      "path": "/",
+      "handler": "listPuzzles",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {}
+    }
+  ],
+  "user_achievements": [
+    {
+      "entity": "user_achievements",
+      "method": "POST",
+      "path": "/",
+      "handler": "createUserAchievement",
+      "auth_required": true,
+      "payload": {
+        "user_id": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "userId": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "achievement_id": "71i8h76gzmewklmrl",
+        "earned_at": "2025-09-14T23:36:23.039785+00:00",
+        "progress": 0.5,
+        "id": "test_id"
+      },
+      "url_params": {}
+    },
+    {
+      "entity": "user_achievements",
+      "method": "GET",
+      "path": "/:id",
+      "handler": "getUserAchievementById",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "b8da819f-0ccb-4cd0-85d0-0d600e5e31e6"
+      }
+    },
+    {
+      "entity": "user_achievements",
+      "method": "PUT",
+      "path": "/:id",
+      "handler": "updateUserAchievement",
+      "auth_required": true,
+      "payload": {
+        "user_id": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "userId": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "earned_at": "2025-09-14T23:36:23.401123+00:00",
+        "progress": 0.5,
+        "id": "test_id",
+        "achievement_id": "0uCkPqrssdaD3m0Jl"
+      },
+      "url_params": {
+        "id": "b8da819f-0ccb-4cd0-85d0-0d600e5e31e6"
+      }
+    },
+    {
+      "entity": "user_achievements",
+      "method": "DELETE",
+      "path": "/:id",
+      "handler": "deleteUserAchievement",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "b8da819f-0ccb-4cd0-85d0-0d600e5e31e6"
+      }
+    },
+    {
+      "entity": "user_achievements",
+      "method": "GET",
+      "path": "/",
+      "handler": "listUserAchievements",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {}
+    }
+  ],
+  "user_content_progress": [
+    {
+      "entity": "user_content_progress",
+      "method": "POST",
+      "path": "/",
+      "handler": "createUserContentProgre",
+      "auth_required": true,
+      "payload": {
+        "user_id": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "userId": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "content_id": "117e1c9c-006e-4ccb-95cd-5aac7bebc79a",
+        "status": "completed",
+        "progress_percentage": 0.5,
+        "time_spent": 30,
+        "completion_score": 100,
+        "started_at": "2025-09-14T23:36:23.401411+00:00",
+        "completed_at": "2025-09-14T23:36:23.401424+00:00",
+        "last_accessed": "2025-09-14T23:36:23.401433+00:00",
+        "notes": "test_notes",
+        "bookmarked": true,
+        "id": "test_id"
+      },
+      "url_params": {}
+    },
+    {
+      "entity": "user_content_progress",
+      "method": "GET",
+      "path": "/:id",
+      "handler": "getUserContentProgreById",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "67eb7b7f-d4d4-4d81-be62-ad19f9439e03"
+      }
+    },
+    {
+      "entity": "user_content_progress",
+      "method": "PUT",
+      "path": "/:id",
+      "handler": "updateUserContentProgre",
+      "auth_required": true,
+      "payload": {
+        "user_id": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "userId": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "content_id": "f6201bfd-9db0-40e3-80b1-c31dc84e84fa",
+        "status": "not_started",
+        "progress_percentage": 0.5,
+        "time_spent": 30,
+        "completion_score": 100,
+        "started_at": "2025-09-14T23:36:23.927833+00:00",
+        "completed_at": "2025-09-14T23:36:23.927849+00:00",
+        "last_accessed": "2025-09-14T23:36:23.927854+00:00",
+        "notes": "test_notes",
+        "bookmarked": true,
+        "id": "test_id"
+      },
+      "url_params": {
+        "id": "67eb7b7f-d4d4-4d81-be62-ad19f9439e03"
+      }
+    },
+    {
+      "entity": "user_content_progress",
+      "method": "DELETE",
+      "path": "/:id",
+      "handler": "deleteUserContentProgre",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "67eb7b7f-d4d4-4d81-be62-ad19f9439e03"
+      }
+    },
+    {
+      "entity": "user_content_progress",
+      "method": "GET",
+      "path": "/",
+      "handler": "listUserContentProgres",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {}
+    }
+  ],
+  "user_profiles": [
+    {
+      "entity": "user_profiles",
+      "method": "POST",
+      "path": "/",
+      "handler": "createUserProfile",
+      "auth_required": true,
+      "payload": {
+        "user_id": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "userId": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "display_name": "test_display_name",
+        "avatar_url": "test_avatar_url",
+        "bio": "test_bio",
+        "country": "test_country",
+        "timezone": "test_timezone",
+        "id": "test_id"
+      },
+      "url_params": {}
+    },
+    {
+      "entity": "user_profiles",
+      "method": "GET",
+      "path": "/:id",
+      "handler": "getUserProfileById",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "87084d35-ecc0-4f8f-98c2-875f024836a6"
+      }
+    },
+    {
+      "entity": "user_profiles",
+      "method": "PUT",
+      "path": "/:id",
+      "handler": "updateUserProfile",
+      "auth_required": true,
+      "payload": {
+        "user_id": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "userId": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "display_name": "test_display_name",
+        "avatar_url": "test_avatar_url",
+        "bio": "test_bio",
+        "country": "test_country",
+        "timezone": "test_timezone",
+        "id": "test_id"
+      },
+      "url_params": {
+        "id": "87084d35-ecc0-4f8f-98c2-875f024836a6"
+      }
+    },
+    {
+      "entity": "user_profiles",
+      "method": "DELETE",
+      "path": "/:id",
+      "handler": "deleteUserProfile",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "87084d35-ecc0-4f8f-98c2-875f024836a6"
+      }
+    },
+    {
+      "entity": "user_profiles",
+      "method": "GET",
+      "path": "/",
+      "handler": "listUserProfiles",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {}
+    }
+  ],
+  "user_sessions": [
+    {
+      "entity": "user_sessions",
+      "method": "POST",
+      "path": "/",
+      "handler": "createUserSession",
+      "auth_required": true,
+      "payload": {
+        "user_id": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "userId": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "refresh_token": "token_20250914193624",
+        "expires_at": "2025-09-14T23:36:24.279028+00:00",
+        "id": "test_id"
+      },
+      "url_params": {}
+    },
+    {
+      "entity": "user_sessions",
+      "method": "GET",
+      "path": "/:id",
+      "handler": "getUserSessionById",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "f51e79cb-12b6-4e60-ad5a-2f030fe8295f"
+      }
+    },
+    {
+      "entity": "user_sessions",
+      "method": "PUT",
+      "path": "/:id",
+      "handler": "updateUserSession",
+      "auth_required": true,
+      "payload": {
+        "user_id": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "userId": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+        "refresh_token": "token_20250914193627",
+        "expires_at": "2025-09-14T23:36:27.071632+00:00",
+        "id": "test_id"
+      },
+      "url_params": {
+        "id": "f51e79cb-12b6-4e60-ad5a-2f030fe8295f"
+      }
+    },
+    {
+      "entity": "user_sessions",
+      "method": "DELETE",
+      "path": "/:id",
+      "handler": "deleteUserSession",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "f51e79cb-12b6-4e60-ad5a-2f030fe8295f"
+      }
+    },
+    {
+      "entity": "user_sessions",
+      "method": "GET",
+      "path": "/",
+      "handler": "listUserSessions",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {}
+    }
+  ],
+  "users": [
+    {
+      "entity": "users",
+      "method": "POST",
+      "path": "/",
+      "handler": "createUser",
+      "auth_required": true,
+      "payload": {
+        "username": "testuser_193627_3hti8o",
+        "email": "testuser_193627_3hti8o@example.com",
+        "password_hash": "password123",
+        "chess_elo": 1500,
+        "puzzle_rating": 1500,
+        "preferences": {
+          "theme": "default",
+          "value": "test_preferences"
+        }
+      },
+      "url_params": {}
+    },
+    {
+      "entity": "users",
+      "method": "GET",
+      "path": "/:id",
+      "handler": "getUserById",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "1f0b8b68-b59f-4522-b960-b75ea7b786fe"
+      }
+    },
+    {
+      "entity": "users",
+      "method": "PUT",
+      "path": "/:id",
+      "handler": "updateUser",
+      "auth_required": true,
+      "payload": {
+        "username": "testuser_193627_gewpt8",
+        "email": "testuser_193627_gewpt8@example.com",
+        "password_hash": "password123",
+        "chess_elo": 1500,
+        "puzzle_rating": 1500,
+        "preferences": {
+          "theme": "default",
+          "value": "test_preferences"
+        }
+      },
+      "url_params": {
+        "id": "1f0b8b68-b59f-4522-b960-b75ea7b786fe"
+      }
+    },
+    {
+      "entity": "users",
+      "method": "DELETE",
+      "path": "/:id",
+      "handler": "deleteUser",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {
+        "id": "1f0b8b68-b59f-4522-b960-b75ea7b786fe"
+      }
+    },
+    {
+      "entity": "users",
+      "method": "GET",
+      "path": "/",
+      "handler": "listUsers",
+      "auth_required": true,
+      "payload": null,
+      "url_params": {}
+    }
+  ]
+}

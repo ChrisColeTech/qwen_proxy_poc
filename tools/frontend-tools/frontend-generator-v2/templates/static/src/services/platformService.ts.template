@@ -1,0 +1,235 @@
+import { BrowserService } from '@/services/browserService'
+import { ElectronService } from '@/services/electronService'
+
+export interface PlatformService {
+  // Settings operations
+  saveSettings(settings: Record<string, unknown>): Promise<void>
+  loadSettings(): Promise<Record<string, unknown> | null>
+
+  // File operations
+  openFile(): Promise<{ path: string; content: string } | null>
+  saveFile(path: string, content: string): Promise<boolean>
+  saveFileAs(content: string): Promise<{ path: string; success: boolean } | null>
+
+  // File queue operations
+  saveFileQueue(files: any[]): Promise<void>
+  loadFileQueue(): Promise<any[] | null>
+  exportFileQueue(files: any[]): Promise<string | null>
+  importFileQueue(): Promise<any[] | null>
+
+  // Window operations
+  minimizeWindow(): void
+  maximizeWindow(): Promise<void>
+  closeWindow(): void
+  isMaximized(): Promise<boolean>
+  onWindowStateChange: (callback: (state: { isMaximized: boolean }) => void) => () => void
+
+  // Dialog operations
+  showSaveDialog(defaultPath?: string): Promise<string | null>
+  showOpenDialog(): Promise<string[] | null>
+  showMessageBox(message: string, type?: 'info' | 'warning' | 'error'): Promise<void>
+
+  // Platform detection
+  isElectron(): boolean
+  isBrowser(): boolean
+  getPlatform(): 'electron' | 'browser'
+}
+
+class PlatformServiceImpl implements PlatformService {
+  private electronService: ElectronService
+  private browserService: BrowserService
+  private _isElectron: boolean
+
+  constructor() {
+    // Detect if we're running in Electron
+    this._isElectron =
+      !!(window as Window & { electronAPI?: unknown }).electronAPI ||
+      !!(window as Window & { require?: unknown }).require
+
+    console.log('PlatformService initialized - isElectron:', this._isElectron)
+
+    this.electronService = new ElectronService()
+    this.browserService = new BrowserService()
+  }
+
+  isElectron(): boolean {
+    return this._isElectron
+  }
+
+  isBrowser(): boolean {
+    return !this._isElectron
+  }
+
+  getPlatform(): 'electron' | 'browser' {
+    return this._isElectron ? 'electron' : 'browser'
+  }
+
+  // Settings operations
+  async saveSettings(settings: Record<string, unknown>): Promise<void> {
+    if (this._isElectron) {
+      return this.electronService.saveSettings(settings)
+    } else {
+      return this.browserService.saveSettings(settings)
+    }
+  }
+
+  async loadSettings(): Promise<Record<string, unknown> | null> {
+    if (this._isElectron) {
+      return this.electronService.loadSettings()
+    } else {
+      return this.browserService.loadSettings()
+    }
+  }
+
+  // File operations
+  async openFile(): Promise<{ path: string; content: string } | null> {
+    if (this._isElectron) {
+      return this.electronService.openFile()
+    } else {
+      return this.browserService.openFile()
+    }
+  }
+
+  async saveFile(path: string, content: string): Promise<boolean> {
+    if (this._isElectron) {
+      return this.electronService.saveFile(path, content)
+    } else {
+      return this.browserService.saveFile(path, content)
+    }
+  }
+
+  async saveFileAs(content: string): Promise<{ path: string; success: boolean } | null> {
+    if (this._isElectron) {
+      return this.electronService.saveFileAs(content)
+    } else {
+      return this.browserService.saveFileAs(content)
+    }
+  }
+
+  // File queue operations
+  async saveFileQueue(files: any[]): Promise<void> {
+    console.log(
+      'PlatformService.saveFileQueue called - using',
+      this._isElectron ? 'Electron' : 'Browser',
+    )
+    if (this._isElectron) {
+      return this.electronService.saveFileQueue(files)
+    } else {
+      return this.browserService.saveFileQueue(files)
+    }
+  }
+
+  async loadFileQueue(): Promise<any[] | null> {
+    console.log(
+      'PlatformService.loadFileQueue called - using',
+      this._isElectron ? 'Electron' : 'Browser',
+    )
+    if (this._isElectron) {
+      return this.electronService.loadFileQueue()
+    } else {
+      return this.browserService.loadFileQueue()
+    }
+  }
+
+  async exportFileQueue(files: any[]): Promise<string | null> {
+    if (this._isElectron) {
+      return this.electronService.exportFileQueue(files)
+    } else {
+      return this.browserService.exportFileQueue(files)
+    }
+  }
+
+  async importFileQueue(): Promise<any[] | null> {
+    if (this._isElectron) {
+      return this.electronService.importFileQueue()
+    } else {
+      return this.browserService.importFileQueue()
+    }
+  }
+
+  // Window operations
+  minimizeWindow(): void {
+    if (this._isElectron) {
+      this.electronService.minimizeWindow()
+    } else {
+      this.browserService.minimizeWindow()
+    }
+  }
+
+  async maximizeWindow(): Promise<void> {
+    if (this._isElectron) {
+      await this.electronService.maximizeWindow()
+    } else {
+      await this.browserService.maximizeWindow()
+    }
+  }
+
+  closeWindow(): void {
+    if (this._isElectron) {
+      this.electronService.closeWindow()
+    } else {
+      this.browserService.closeWindow()
+    }
+  }
+
+  async isMaximized(): Promise<boolean> {
+    if (this._isElectron) {
+      return await this.electronService.isMaximized()
+    } else {
+      return await this.browserService.isMaximized()
+    }
+  }
+
+  onWindowStateChange(callback: (state: { isMaximized: boolean }) => void): () => void {
+    if (this._isElectron) {
+      return this.electronService.onWindowStateChange(callback)
+    } else {
+      // In browser, we can simulate this or return a no-op
+      console.warn('onWindowStateChange is not fully supported in browser environment.')
+      return () => {} // No-op unsubscribe
+    }
+  }
+
+  // Dialog operations
+  async showSaveDialog(defaultPath?: string): Promise<string | null> {
+    if (this._isElectron) {
+      return this.electronService.showSaveDialog(defaultPath)
+    } else {
+      return this.browserService.showSaveDialog(defaultPath)
+    }
+  }
+
+  async showOpenDialog(): Promise<string[] | null> {
+    if (this._isElectron) {
+      return this.electronService.showOpenDialog()
+    } else {
+      return this.browserService.showOpenDialog()
+    }
+  }
+
+  async showMessageBox(
+    message: string,
+    type: 'info' | 'warning' | 'error' = 'info',
+  ): Promise<void> {
+    if (this._isElectron) {
+      return this.electronService.showMessageBox(message, type)
+    } else {
+      return this.browserService.showMessageBox(message, type)
+    }
+  }
+}
+
+// Singleton instance
+let platformServiceInstance: PlatformServiceImpl | null = null
+
+export const getPlatformService = (): PlatformService => {
+  if (!platformServiceInstance) {
+    platformServiceInstance = new PlatformServiceImpl()
+  }
+  return platformServiceInstance
+}
+
+export const initializePlatformService = (): PlatformService => {
+  platformServiceInstance = new PlatformServiceImpl()
+  return platformServiceInstance
+}

@@ -1,0 +1,529 @@
+/* Flattened CSS - All class rules without @layer wrappers */
+
+.dark {
+--background: #0f172a;
+    --foreground: #f8fafc;
+    --card: #1e293b;
+    --card-foreground: #f8fafc;
+    --popover: #1e293b;
+    --popover-foreground: #f8fafc;
+    --primary: #64748b;
+    --primary-foreground: #f8fafc;
+    --secondary: #94a3b8;
+    --secondary-foreground: #0f172a;
+    --muted: #334155;
+    --muted-foreground: #94a3b8;
+    --accent: #475569;
+    --accent-foreground: #f8fafc;
+    --destructive: #ef4444;
+    --destructive-foreground: #f8fafc;
+    --border: #334155;
+    --input: #334155;
+    --ring: #0099ff;
+}
+
+.theme-cyber-neon {
+--background: #0a0a0a;
+    --foreground: #ff0080;
+    --card: #1a0a1a;
+    --card-foreground: #ff0080;
+    --primary: #ff0080;
+    --primary-foreground: #000000;
+    --secondary: #00ff41;
+    --secondary-foreground: #000000;
+    --muted: #2a1a2a;
+    --muted-foreground: #ff0080;
+    --accent: #00bfff;
+    --accent-foreground: #000000;
+    --border: #ff0080;
+    --input: #1a0a1a;
+    --ring: #ff0080;
+}
+
+.theme-dragon-gold {
+--background: #1a0f0a;
+    --foreground: #fff4e6;
+    --card: #2d1a0f;
+    --card-foreground: #fff4e6;
+    --primary: #ffd700;
+    --primary-foreground: #000000;
+    --secondary: #dc2626;
+    --secondary-foreground: #ffffff;
+    --accent: #f59e0b;
+    --accent-foreground: #000000;
+    --muted: #4a2c1a;
+    --muted-foreground: #d97706;
+    --border: #dc2626;
+    --input: #2d1a0f;
+    --ring: #ffd700;
+}
+
+.theme-shadow-knight {
+--background: #000000;
+    --foreground: #c0c0c0;
+    --card: #0f1419;
+    --card-foreground: #c0c0c0;
+    --primary: #4682b4;
+    --primary-foreground: #ffffff;
+    --secondary: #2f4f4f;
+    --secondary-foreground: #c0c0c0;
+    --accent: #708090;
+    --accent-foreground: #ffffff;
+    --muted: #1c1c1c;
+    --muted-foreground: #778899;
+    --border: #4682b4;
+    --input: #0f1419;
+    --ring: #4682b4;
+}
+
+.theme-forest-mystique {
+--background: #0f1a0f;
+    --foreground: #f5fbf5;
+    --card: #1a331a;
+    --card-foreground: #f5fbf5;
+    --primary: #34d058;
+    --primary-foreground: #0f1a0f;
+    --secondary: #1a331a;
+    --secondary-foreground: #f5fbf5;
+    --accent: #22c55e;
+    --accent-foreground: #0f1a0f;
+    --muted: #2d4a2d;
+    --muted-foreground: #94a394;
+    --border: #4a6741;
+    --input: #2d4a2d;
+    --ring: #34d058;
+}
+
+.theme-royal-purple {
+--background: #1a0f1a;
+    --foreground: #fbf5fb;
+    --card: #2a1a33;
+    --card-foreground: #fbf5fb;
+    --primary: #a855f7;
+    --primary-foreground: #1a0f1a;
+    --secondary: #2a1a33;
+    --secondary-foreground: #fbf5fb;
+    --accent: #c084fc;
+    --accent-foreground: #1a0f1a;
+    --muted: #3d2d4a;
+    --muted-foreground: #a394a3;
+    --border: #5a4167;
+    --input: #3d2d4a;
+    --ring: #a855f7;
+}
+
+.theme-cyber-neon-light {
+--background: #f8f0ff;
+    --foreground: #800040;
+    --card: #f0e6ff;
+    --card-foreground: #800040;
+    --primary: #c0007f;
+    --primary-foreground: #ffffff;
+    --secondary: #00b341;
+    --secondary-foreground: #ffffff;
+    --muted: #e6ccff;
+    --muted-foreground: #600030;
+    --accent: #0080cc;
+    --accent-foreground: #ffffff;
+    --border: #c0007f;
+    --input: #e6ccff;
+    --ring: #c0007f;
+}
+
+.theme-dragon-gold-light {
+--background: #fff8f0;
+    --foreground: #7c2d12;
+    --card: #fef3e2;
+    --card-foreground: #7c2d12;
+    --primary: #d97706;
+    --primary-foreground: #ffffff;
+    --secondary: #b91c1c;
+    --secondary-foreground: #ffffff;
+    --accent: #f59e0b;
+    --accent-foreground: #ffffff;
+    --muted: #fed7aa;
+    --muted-foreground: #7c2d12;
+    --border: #b91c1c;
+    --input: #fed7aa;
+    --ring: #d97706;
+}
+
+.theme-shadow-knight-light {
+--background: #f0f8ff;
+    --foreground: #2f4f4f;
+    --card: #e6f3ff;
+    --card-foreground: #2f4f4f;
+    --primary: #4682b4;
+    --primary-foreground: #ffffff;
+    --secondary: #708090;
+    --secondary-foreground: #ffffff;
+    --accent: #87ceeb;
+    --accent-foreground: #2f4f4f;
+    --muted: #ddeeff;
+    --muted-foreground: #2f4f4f;
+    --border: #4682b4;
+    --input: #ddeeff;
+    --ring: #4682b4;
+}
+
+.theme-forest-mystique-light {
+--background: #f5fbf5;
+    --foreground: #0f1a0f;
+    --card: #f0f8f0;
+    --card-foreground: #0f1a0f;
+    --primary: #15803d;
+    --primary-foreground: #ffffff;
+    --secondary: #0f1a0f;
+    --secondary-foreground: #f5fbf5;
+    --muted: #cbd5cb;
+    --muted-foreground: #475547;
+    --accent: #16a34a;
+    --accent-foreground: #ffffff;
+    --border: #94a394;
+    --input: #e2e8e2;
+    --ring: #15803d;
+}
+
+.theme-royal-purple-light {
+--background: #fbf5fb;
+    --foreground: #1a0f1a;
+    --card: #f5f0f8;
+    --card-foreground: #1a0f1a;
+    --primary: #7c3aed;
+    --primary-foreground: #ffffff;
+    --secondary: #1a0f1a;
+    --secondary-foreground: #fbf5fb;
+    --muted: #d5cbd5;
+    --muted-foreground: #554755;
+    --accent: #8b5cf6;
+    --accent-foreground: #ffffff;
+    --border: #a394a3;
+    --input: #e8e2e8;
+    --ring: #7c3aed;
+}
+
+.gpu-accelerated {
+transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+.bg-theme-gradient {
+background: linear-gradient(
+      135deg,
+      #0099ff20 0%,
+      #00cc4420 50%,
+      #ff660020 100%
+    );
+}
+
+.bg-theme-primary {
+background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+}
+
+.bg-theme-secondary {
+background: linear-gradient(135deg, var(--secondary) 0%, var(--muted) 100%);
+}
+
+.glass {
+backdrop-filter: blur(24px);
+    background-color: color-mix(in srgb, var(--card) 80%, transparent);
+    border: 1px solid color-mix(in srgb, var(--border) 20%, transparent);
+}
+
+.glass-hover {
+transition: all 0.5s;
+}
+
+.glass-hover:hover {
+background-color: color-mix(in srgb, var(--card) 90%, transparent);
+    border-color: color-mix(in srgb, var(--border) 40%, transparent);
+}
+
+.hover-glow {
+transition: all 0.3s;
+}
+
+.hover-glow:hover {
+box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+      0 0 30px color-mix(in srgb, var(--primary) 30%, transparent);
+}
+
+.hover-grow {
+transition: transform 0.2s;
+}
+
+.hover-grow:hover {
+transform: scale(1.05);
+}
+
+.btn-gaming-primary {
+width: 100%;
+    background: linear-gradient(135deg, #0099ff, #ff6600);
+    color: #ffffff;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 0 20px #0099ff40;
+    border: 1px solid #0099ff60;
+    transition: all 0.3s;
+}
+
+.btn-gaming-primary:hover {
+opacity: 0.95;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 0 40px #0099ff80;
+    transform: translateY(-2px) scale(1.02);
+    border-color: #0099ff;
+}
+
+.btn-gaming-primary:active {
+animation: button-press 0.2s ease-in-out;
+}
+
+.btn-gaming-secondary {
+width: 100%;
+    background-color: rgb(0 0 0 / 0.2);
+    border: 1px solid rgb(255 255 255 / 0.2);
+    color: var(--foreground);
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    transition: all 0.3s;
+}
+
+.btn-gaming-secondary:hover {
+background-color: rgb(0 0 0 / 0.3);
+    border-color: rgb(255 255 255 / 0.3);
+    transform: scale(1.05);
+}
+
+.card-gaming {
+backdrop-filter: blur(16px);
+    background-color: rgba(255, 255, 255, 0.03); 
+    border: 1px solid rgba(255, 255, 255, 0.05); 
+    box-shadow: 0 8px 32px -8px rgb(0 0 0 / 0.15); 
+    border-radius: 0.75rem; 
+    transition: all 0.5s;
+    animation: card-entrance 0.6s ease-out;
+}
+
+.card-gaming:hover {
+border-color: rgba(255, 255, 255, 0.08); 
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.glass-layout {
+-webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    background-color: rgb(var(--foreground) / 0.03);
+    
+    background-color: rgb(var(--foreground) / 0.03);
+    border: 1px solid rgb(var(--border) / 0.2);
+
+    box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.15);
+    transition: all 0.5s;
+}
+
+.input-gaming {
+background-color: rgb(0 0 0 / 0.3); 
+    border: 1px solid rgb(255 255 255 / 0.2); 
+    color: var(--foreground); 
+    border-radius: 0.5rem; 
+    transition: all 0.3s;
+}
+
+.input-gaming::placeholder {
+color: var(--muted-foreground);
+}
+
+.input-gaming:focus {
+border-color: rgb(255 255 255 / 0.4); 
+    outline: none; 
+    box-shadow: 0 0 0 2px rgb(255 255 255 / 0.2);
+}
+
+.btn-standard {
+@apply font-medium py-3 px-6 rounded-xl shadow-lg hover:shadow-xl;
+    @apply border border-border hover:border-primary;
+    @apply backdrop-blur-sm;
+    @apply transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98];
+    @apply disabled:opacity-50 disabled:cursor-not-allowed gpu-accelerated;
+}
+
+.btn-primary {
+@apply btn-standard text-primary-foreground;
+    background-color: var(--primary);
+    opacity: 0.8;
+}
+
+.btn-primary:hover {
+opacity: 0.9;
+}
+
+.btn-secondary {
+@apply btn-standard text-secondary-foreground hover:text-primary;
+    background-color: var(--secondary);
+    opacity: 0.7;
+}
+
+.btn-secondary:hover {
+opacity: 0.8;
+}
+
+.btn-muted {
+@apply btn-standard text-muted-foreground;
+    background-color: var(--muted);
+    opacity: 0.9;
+}
+
+.btn-muted:hover {
+opacity: 1;
+}
+
+.btn-destructive {
+@apply btn-standard text-destructive-foreground;
+    background-color: var(--destructive);
+    opacity: 0.8;
+}
+
+.btn-destructive:hover {
+opacity: 0.9;
+}
+
+.bg-gaming-gradient {
+background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--primary) 10%, transparent) 0%,
+      color-mix(in srgb, var(--secondary) 10%, transparent) 50%,
+      color-mix(in srgb, var(--accent) 10%, transparent) 100%
+    );
+}
+
+.floating-particle {
+position: absolute;
+    border-radius: 50%;
+    opacity: 0.2;
+    filter: blur(12px);
+    animation: pulse-glow 4s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.floating-particle-primary {
+background: linear-gradient(135deg, var(--primary), var(--accent));
+}
+
+.floating-particle-secondary {
+background: linear-gradient(135deg, var(--secondary), var(--muted));
+}
+
+.sparkle {
+position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 3s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.animation-delay-100 {
+animation-delay: 100ms;
+}
+
+.animation-delay-200 {
+animation-delay: 200ms;
+}
+
+.animation-delay-500 {
+animation-delay: 500ms;
+}
+
+.animation-delay-1000 {
+animation-delay: 1000ms;
+}
+
+.animation-delay-2000 {
+animation-delay: 2000ms;
+}
+
+.text-gaming-gradient {
+background: linear-gradient(to right, var(--primary), var(--accent));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.text-primary-gradient {
+background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.text-secondary-gradient {
+background: linear-gradient(135deg, var(--secondary) 0%, var(--muted) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.shadow-gaming {
+box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+}
+
+.shadow-gaming-hover {
+box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25),
+      0 0 30px color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+.shadow-primary {
+box-shadow: 0 10px 25px -3px color-mix(in srgb, var(--primary) 25%, transparent);
+}
+
+.animation-delay-100 {
+animation-delay: 0.1s;
+}
+
+.animation-delay-200 {
+animation-delay: 0.2s;
+}
+
+.animation-delay-300 {
+animation-delay: 0.3s;
+}
+
+.animation-delay-500 {
+animation-delay: 0.5s;
+}
+
+.animation-delay-800 {
+animation-delay: 0.8s;
+}
+
+.animation-delay-1000 {
+animation-delay: 1s;
+}
+
+.animation-delay-1500 {
+animation-delay: 1.5s;
+}
+
+.animation-delay-1800 {
+animation-delay: 1.8s;
+}
+
+.animation-delay-2000 {
+animation-delay: 2s;
+}
+
+.animate-pulse-glow,
+  .animate-float,
+  .animate-twinkle {
+animation: none;
+}
+
+.hover-grow {
+@apply hover:scale-100;
+}
+
+.gpu-accelerated {
+will-change: auto;
+}
+

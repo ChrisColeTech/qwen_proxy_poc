@@ -4,7 +4,7 @@
 This phase creates custom React hooks that encapsulate business logic, following the principle of separating concerns. Hooks compose services and stores to provide clean, reusable APIs for components and pages.
 
 **Priority**: P0  
-**Files Created**: 18  
+**Files Created**: 20
 **Files Modified**: 0  
 **Description**: Custom React hooks encapsulating business logic
 
@@ -62,6 +62,8 @@ This phase creates custom React hooks that encapsulate business logic, following
 7. `frontend/src/hooks/useBrowserGuidePage.ts` - Browser guide logic
 8. `frontend/src/hooks/useDesktopGuidePage.ts` - Desktop guide logic
 9. `frontend/src/hooks/useCustomChat.ts` - Custom chat interface
+10. `frontend/src/hooks/useModelFormPage.ts` - Model form page logic
+11. `frontend/src/hooks/useProviderFormPage.ts` - Provider form page logic
 
 **Validation**:
 - [ ] Single responsibility per hook
@@ -88,12 +90,15 @@ frontend/src/
 │   ├── useCredentials.ts
 │   ├── useHomePage.ts
 │   ├── useProvidersPage.ts
+│   ├── useProvidersPage.ts
 │   ├── useModelsPage.ts
 │   ├── useSettingsPage.ts
 │   ├── useChatPage.ts
 │   ├── useApiGuidePage.ts
 │   ├── useBrowserGuidePage.ts
 │   ├── useDesktopGuidePage.ts
+│   ├── useModelFormPage.ts
+│   ├── useProviderFormPage.ts
 │   └── useCustomChat.ts
 ```
 

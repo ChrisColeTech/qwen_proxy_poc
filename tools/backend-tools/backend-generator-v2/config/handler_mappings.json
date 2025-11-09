@@ -1,0 +1,131 @@
+{
+  "description": "Configuration for mapping route handlers to their parameters",
+  "exact_mappings": {
+    "getNextPuzzle": "req.userId",
+    "solvePuzzle": "req.params.id, req.body",
+    "getPuzzleHint": "req.params.id",
+    "getPuzzleCategories": "",
+    "getPuzzleHistory": "req.userId",
+    "createCustomPuzzle": "req.body",
+    "getCustomPuzzles": "",
+    
+    "getContentByType": "req.params.type",
+    "getContentByCategory": "req.params.category",
+    "getChildContent": "req.params.id",
+    
+    "getGames": "",
+    "getGameById": "req.params.id",
+    "createGame": "req.body",
+    "updateGame": "req.params.id, req.body",
+    "analyzeGame": "req.params.id, req.body",
+    "getGameAnalysis": "req.params.id",
+    "getGameReviews": "",
+    "getGamesByPlayer": "req.params.player",
+    "searchGames": "req.query",
+    "completeGame": "req.params.id, req.body",
+    
+    "getHistoricGamesByPlayer": "req.params.player",
+    "getHistoricGamesByTournament": "req.params.tournament",
+    
+    "getUserProfileByUserId": "req.params.userId",
+    "getUserSessionsByUserId": "req.params.userId",
+    "cleanupExpiredSessions": "",
+    
+    "register": "req.body",
+    "login": "req.body",
+    "getCurrentUser": "req.userId",
+    "updateProfile": "req.userId, req.body",
+    "changePassword": "req.userId, req.body",
+    "verifyToken": "req.body.token",
+    "forgotPassword": "req.body",
+    "resetPassword": "req.body",
+    "logout": "",
+    "checkEmailAvailability": "req.body",
+    "checkUsernameAvailability": "req.body",
+    "deleteAccount": "req.userId",
+    "healthCheck": "",
+    
+    "getUserProgress": "req.params.userId",
+    "updateProgress": "req.userId, req.body",
+    "getProgressStats": "",
+    "enrollInPath": "req.params.id, req.userId",
+
+    "getStorageValue": "req.params.key",
+    "setStorageValue": "req.params.key, req.body.value",
+    "deleteStorageValue": "req.params.key"
+  },
+  
+  "pattern_rules": [
+    {
+      "pattern": ".*ById$",
+      "parameters": "req.params.id",
+      "description": "Methods ending with ById take id parameter"
+    },
+    {
+      "pattern": ".*ByUser.*",
+      "parameters": "req.params.userId",
+      "description": "Methods with ByUser take userId parameter"
+    },
+    {
+      "pattern": ".*ByAchievement.*",
+      "parameters": "req.params.achievementId",
+      "description": "Methods with ByAchievement take achievementId parameter"
+    },
+    {
+      "pattern": ".*ByContent.*",
+      "parameters": "req.params.contentId",
+      "description": "Methods with ByContent take contentId parameter"
+    },
+    {
+      "pattern": ".*ByPuzzle.*",
+      "parameters": "req.params.puzzleId",
+      "description": "Methods with ByPuzzle take puzzleId parameter"
+    },
+    {
+      "pattern": ".*ByPlayer.*",
+      "parameters": "req.params.playerId",
+      "description": "Methods with ByPlayer take playerId parameter"
+    },
+    {
+      "pattern": ".*ByCategory.*",
+      "parameters": "req.params.category",
+      "description": "Methods with ByCategory take category parameter"
+    },
+    {
+      "pattern": "^create.*",
+      "parameters": "req.body",
+      "description": "Create methods take request body"
+    },
+    {
+      "pattern": "^update.*",
+      "parameters": "req.params.id, req.body",
+      "description": "Update methods take id and body"
+    },
+    {
+      "pattern": "^delete.*",
+      "parameters": "req.params.id",
+      "description": "Delete methods take id parameter"
+    },
+    {
+      "pattern": "^getAll.*",
+      "parameters": "",
+      "description": "GetAll methods take no parameters"
+    },
+    {
+      "pattern": "^list.*",
+      "parameters": "",
+      "description": "List methods take no parameters"
+    }
+  ],
+  
+  "special_cases": {
+    "learning_path_update_progress": {
+      "pattern": "updateProgress.*:id.*learningpath",
+      "parameters": "req.params.id, req.userId, req.body"
+    },
+    "progress_update_no_id": {
+      "pattern": "updateProgress.*/update",
+      "parameters": "req.userId, req.body"
+    }
+  }
+}

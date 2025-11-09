@@ -1,0 +1,27 @@
+# Custom Classes Used in TSX Files
+
+Panel
+Settings
+btn-destructive
+btn-gaming-primary
+btn-gaming-secondary
+btn-muted
+btn-primary
+btn-secondary
+capitalize
+card-gaming
+floating-particle
+floating-particle-primary
+floating-particle-secondary
+glass
+glass-hover
+glass-layout
+gpu-accelerated
+group
+hover-glow
+hover-grow
+input-gaming
+isActive
+isSettingsPanelOpen
+object-contain
+sparkle

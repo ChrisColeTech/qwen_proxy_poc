@@ -1,0 +1,124 @@
+{
+  "description": "Test configuration for the new backend generator",
+  "endpoints": {
+    "puzzles": {
+      "entity": "Puzzle",
+      "entities": "puzzles", 
+      "table_name": "puzzles",
+      "properties": {
+        "id": "string",
+        "fen": "string",
+        "solution_moves": "string",
+        "themes": "string",
+        "rating": "number",
+        "description": "string",
+        "created_at": "string"
+      },
+      "methods": [
+        "getNextPuzzle",
+        "solvePuzzle",
+        "getPuzzleHint"
+      ],
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/next",
+          "handler": "getNextPuzzle",
+          "auth_required": true
+        },
+        {
+          "method": "POST",
+          "path": "/:id/solve",
+          "handler": "solvePuzzle", 
+          "auth_required": true
+        },
+        {
+          "method": "GET",
+          "path": "/:id/hint",
+          "handler": "getPuzzleHint",
+          "auth_required": true
+        }
+      ]
+    },
+    
+    "users": {
+      "entity": "User",
+      "entities": "users",
+      "table_name": "users", 
+      "properties": {
+        "id": "string",
+        "username": "string",
+        "email": "string",
+        "chess_elo": "number",
+        "puzzle_rating": "number",
+        "created_at": "string",
+        "updated_at": "string"
+      },
+      "methods": [
+        "getUserProfile",
+        "updateUserProfile"
+      ],
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/profile",
+          "handler": "getUserProfile",
+          "auth_required": true
+        },
+        {
+          "method": "PUT",
+          "path": "/profile",
+          "handler": "updateUserProfile",
+          "auth_required": true
+        }
+      ]
+    },
+
+    "auth": {
+      "entity": "Auth", 
+      "entities": "auth",
+      "table_name": "users",
+      "route_prefix": "auth",
+      "special_routing": true,
+      "properties": {
+        "id": "string",
+        "username": "string", 
+        "email": "string",
+        "created_at": "string",
+        "updated_at": "string"
+      },
+      "methods": [
+        "register",
+        "login", 
+        "getCurrentUser",
+        "logout"
+      ],
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/register",
+          "handler": "register",
+          "auth_required": false
+        },
+        {
+          "method": "POST",
+          "path": "/login", 
+          "handler": "login",
+          "auth_required": false
+        },
+        {
+          "method": "GET",
+          "path": "/me",
+          "handler": "getCurrentUser",
+          "auth_required": true
+        },
+        {
+          "method": "POST",
+          "path": "/logout",
+          "handler": "logout", 
+          "auth_required": false
+        }
+      ]
+    }
+  }
+}

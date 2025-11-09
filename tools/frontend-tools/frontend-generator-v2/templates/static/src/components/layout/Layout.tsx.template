@@ -1,0 +1,257 @@
+import React, { useEffect } from 'react'
+import TitleBar from '@/components/layout/TitleBar'
+import StatusBar from '@/components/layout/StatusBar'
+import Sidebar from '@/components/layout/Sidebar'
+import SidePanel from '@/components/layout/SidePanel'
+import { useTabs } from '@/hooks/useTabs'
+import { useRouterSync } from '@/hooks/useRouterSync'
+import { useSettings } from '@/hooks/useSettings'
+import { getTabIcon, getPanelComponent, getPageComponent } from '@/config/navigationConfig'
+import { initializeAppService, getAppService } from '@/services/appService'
+import WelcomePage from '@/pages/WelcomePage'
+import SettingsPage from '@/pages/settings/SettingsPage'
+import type { Tab } from '@/types/tab'
+
+const Layout = (): React.ReactElement => {
+  const {
+    settings,
+    updateSetting,
+    // Removed setSidebarItemVisibility as it's no longer passed directly to SettingsPage
+    toggleSidebarItemVisibility,
+    isSidebarItemVisible,
+    toggleSidebarItemPin,
+  } = useSettings()
+  const activeTab = settings.activeSidebarTab
+  const isExpanded = settings.sidebarExpanded
+  const {
+    tabs,
+    activeTabId,
+    addTab,
+    removeTab,
+    setActiveTab: setActiveTabInHook,
+    reorderTabs,
+  } = useTabs()
+
+  // Initialize router sync to keep URL in sync with tabs
+  useRouterSync()
+
+  // Check if current active tab has a panel
+  const currentTabHasPanel = activeTab ? !!getPanelComponent(activeTab) : false
+
+  // Initialize app service
+  useEffect(() => {
+    initializeAppService({
+      onTabAdd: addTab,
+      onTabRemove: removeTab,
+      onTabActivate: setActiveTabInHook,
+      onSidebarChange: (tabId: string) => updateSetting('activeSidebarTab', tabId),
+    })
+  }, [addTab, removeTab, setActiveTabInHook, updateSetting])
+
+  // Auto-collapse panel when switching to a tab that doesn't have a panel
+  useEffect(() => {
+    if (!currentTabHasPanel && isExpanded) {
+      updateSetting('sidebarExpanded', false)
+    }
+  }, [activeTab, currentTabHasPanel, isExpanded, updateSetting])
+
+  // Add icons to tabs since they can't be serialized to localStorage
+  const tabsWithIcons: Tab[] = tabs.map((tab) => ({
+    ...tab,
+    icon: getTabIcon(tab.id),
+    closable: tab.closable,
+  }))
+
+  // Event handlers - delegate to app service
+  const handleTabChange = (tabId: string) => {
+    const appService = getAppService()
+    appService?.changeSidebarItem(tabId)
+  }
+
+  const handleTabClick = (tabId: string) => {
+    const appService = getAppService()
+    appService?.handleTabClick(tabId)
+  }
+
+  const handleTabClose = (tabId: string) => {
+    // If closing the currently active tab that has a panel open, close the panel
+    if (tabId === activeTabId && tabId === activeTab && isExpanded) {
+      const tabHasPanel = !!getPanelComponent(tabId)
+      if (tabHasPanel) {
+        updateSetting('sidebarExpanded', false)
+      }
+    }
+
+    const appService = getAppService()
+    appService?.handleTabClose(tabId, activeTabId)
+  }
+
+  const handleTabReorder = (newTabs: Tab[]) => {
+    reorderTabs(newTabs)
+  }
+
+  const handleSettingsClick = () => {
+    const appService = getAppService()
+    appService?.openSettings()
+  }
+
+  const renderMainContent = () => {
+    // Get all open tabs to render them persistently
+    const allTabIds = tabs.map((t) => t.id)
+
+    return (
+      <div className="h-full">
+        {/* Render all open tab contents, but only show the active one */}
+        {allTabIds.map((tabId) => {
+          const isActive = tabId === activeTabId
+
+          let PageComponent: React.ComponentType<object> | undefined
+          let pageContent: React.ReactNode = null
+
+          // Special case for settings (needs props)
+          if (tabId === 'settings') {
+            pageContent = (
+              <SettingsPage
+                settings={settings}
+                onSettingChange={updateSetting}
+                isSidebarItemVisible={(id: string, defaultVisible: boolean) => isSidebarItemVisible(id, defaultVisible)}
+              />
+            )
+          } else {
+            // Auto-discover page component
+            PageComponent = getPageComponent(tabId) || undefined
+            if (PageComponent) {
+              pageContent = <PageComponent />
+            }
+          }
+
+          if (!pageContent) {
+            return null
+          }
+
+          return (
+            <div
+              key={tabId}
+              style={{
+                display: isActive ? 'block' : 'none',
+                height: '100%',
+              }}
+            >
+              {pageContent}
+            </div>
+          )
+        })}
+
+        {/* Show welcome page if no tabs are open */}
+        {allTabIds.length === 0 && <WelcomePage />}
+      </div>
+    )
+  }
+
+  const sidebarElements =
+    settings.sidebarPosition === 'left' ? (
+      <>
+        <Sidebar
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+          isExpanded={isExpanded}
+          onToggleExpanded={() => updateSetting('sidebarExpanded', !isExpanded)}
+          position={settings.sidebarPosition}
+          onSettingsClick={handleSettingsClick}
+          activeTabId={activeTabId}
+          showToggleButton={currentTabHasPanel}
+          isSidebarItemVisible={isSidebarItemVisible}
+          pinnedItems={settings.pinnedSidebarItems}
+          onToggleVisibility={toggleSidebarItemVisibility}
+          onTogglePin={toggleSidebarItemPin}
+        />
+        <SidePanel
+          activeTab={activeTab}
+          isVisible={isExpanded}
+          theme={settings.theme}
+          sidebarPosition={settings.sidebarPosition}
+        />
+      </>
+    ) : (
+      <>
+        <SidePanel
+          activeTab={activeTab}
+          isVisible={isExpanded}
+          theme={settings.theme}
+          sidebarPosition={settings.sidebarPosition}
+        />
+        <Sidebar
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+          isExpanded={isExpanded}
+          onToggleExpanded={() => updateSetting('sidebarExpanded', !isExpanded)}
+          position={settings.sidebarPosition}
+          onSettingsClick={handleSettingsClick}
+          activeTabId={activeTabId}
+          showToggleButton={currentTabHasPanel}
+          isSidebarItemVisible={isSidebarItemVisible}
+          pinnedItems={settings.pinnedSidebarItems}
+          onToggleVisibility={toggleSidebarItemVisibility}
+          onTogglePin={toggleSidebarItemPin}
+        />
+      </>
+    )
+
+  // Generate CSS classes based on settings
+  const getCssClasses = () => {
+    const classes = ['h-screen', 'flex', 'flex-col', 'bg-background', 'text-text']
+
+    // Theme class
+    if (settings.theme === 'dark') {
+      classes.push('dark')
+    }
+
+    // High contrast class
+    if (settings.highContrast) {
+      classes.push('high-contrast')
+    }
+
+    // Font size class
+    classes.push(`font-${settings.fontSize}`)
+
+    // Icon size class
+    classes.push(`icon-${settings.iconSize}`)
+
+    // Border thickness class
+    classes.push(`border-${settings.borderThickness}`)
+
+    const classString = classes.join(' ')
+    console.log('Applied CSS classes:', classString, 'from settings:', settings)
+    return classString
+  }
+
+  return (
+    <div className={getCssClasses()}>
+      <TitleBar
+        sidebarPosition={settings.sidebarPosition}
+        onToggleSidebarPosition={() =>
+          updateSetting('sidebarPosition', settings.sidebarPosition === 'left' ? 'right' : 'left')
+        }
+        theme={settings.theme}
+        onToggleTheme={() => updateSetting('theme', settings.theme === 'dark' ? 'light' : 'dark')}
+        tabs={tabsWithIcons}
+        onTabClick={handleTabClick}
+        onTabClose={handleTabClose}
+        onTabReorder={handleTabReorder}
+        activeTabId={activeTabId}
+      />
+
+      <div className="flex-1 flex min-h-0">
+        {settings.sidebarPosition === 'left' && sidebarElements}
+
+        <main className="flex-1 bg-background overflow-hidden">{renderMainContent()}</main>
+
+        {settings.sidebarPosition === 'right' && sidebarElements}
+      </div>
+
+      {settings.showStatusBar && <StatusBar />}
+    </div>
+  )
+}
+
+export default Layout

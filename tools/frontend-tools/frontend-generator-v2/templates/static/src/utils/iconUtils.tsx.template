@@ -1,0 +1,19 @@
+import React from 'react'
+
+export const createIconElement = (
+  IconComponent: React.ElementType,
+  size: number,
+  className?: string,
+) => {
+  return <IconComponent size={size} className={className} />
+}
+
+// Example: Get specific icon size based on context and global setting
+export const getIconSizeForContext = (
+  context: 'sidebar' | 'tab' | 'page',
+  iconSizeSetting: 'small' | 'medium' | 'large',
+): number => {
+  const baseSizes = { sidebar: 16, tab: 12, page: 20 }
+  const scaleFactors = { small: 0.9, medium: 1, large: 1.15 }
+  return Math.round(baseSizes[context] * scaleFactors[iconSizeSetting])
+}

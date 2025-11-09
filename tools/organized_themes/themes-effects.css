@@ -1,0 +1,49 @@
+/* =============================================================================
+   ENHANCED EFFECTS UTILITIES
+   Special effect utilities for gaming themes
+   ============================================================================= */
+
+/* =============================================================================
+   ENHANCED EFFECTS UTILITY CLASSES
+   Special classes for themes that support enhanced effects
+   ============================================================================= */
+
+/* Cyberpunk glow effect utility */
+.cyberpunk-glow {
+  box-shadow: var(--accent-glow);
+}
+
+.neon-text {
+  text-shadow: var(--text-glow);
+}
+
+.neon-border {
+  box-shadow: var(--neon-border);
+}
+
+/* Motion safe/reduce overrides */
+@media (prefers-reduced-motion: reduce) {
+  .cyberpunk-glow,
+  .neon-text,
+  .neon-border {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}
+
+.cyberpunk-glow {
+  box-shadow: var(--accent-glow);
+}
+
+.neon-text {
+  text-shadow: var(--text-glow);
+}
+
+.neon-border {
+  box-shadow: var(--neon-border);
+}
+
+.neon-border {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }

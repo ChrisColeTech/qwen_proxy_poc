@@ -1,0 +1,5 @@
+{
+  "default_template": "basic_service",
+  "output_directory": "services",
+  "file_extension": ".ts"
+}

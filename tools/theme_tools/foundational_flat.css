@@ -1,0 +1,168 @@
+/* Foundational CSS - Infrastructure and structural styles */
+
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05) rotate(180deg);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-30px) scale(1.2);
+  }
+}
+
+@keyframes drift {
+  0% {
+    transform: translateX(0px) translateY(0px) scale(1);
+  }
+  33% {
+    transform: translateX(40px) translateY(-30px) scale(1.05);
+  }
+  66% {
+    transform: translateX(-25px) translateY(-45px) scale(0.95);
+  }
+  100% {
+    transform: translateX(60px) translateY(-20px) scale(1.02);
+  }
+}
+
+@keyframes hover {
+  0%,
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+  33% {
+    transform: translateY(-15px) scale(1.05);
+  }
+  66% {
+    transform: translateY(5px) scale(0.95);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes card-entrance {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px) scale(1);
+  }
+}
+
+@keyframes button-press {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+:root {
+--background: #ffffff;
+    --foreground: #0f172a;
+    --card: #ffffff;
+    --card-foreground: #0f172a;
+    --popover: #ffffff;
+    --popover-foreground: #0f172a;
+    --primary: #334155;
+    --primary-foreground: #ffffff;
+    --secondary: #64748b;
+    --secondary-foreground: #f8fafc;
+    --muted: #f1f5f9;
+    --muted-foreground: #64748b;
+    --accent: #475569;
+    --accent-foreground: #ffffff;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #e2e8f0;
+    --input: #e2e8f0;
+    --ring: #0099ff;
+    --radius: 0.75rem;
+
+    
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+      "Segoe UI", "Roboto", sans-serif;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+border-color: var(--border);
+}
+
+body {
+background-color: var(--background);
+    color: var(--foreground);
+    min-height: 100vh;
+    margin: 0;
+}
+
+html,
+  body {
+background: transparent;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+}
+
+#root {
+width: 100%;
+    min-height: 100vh;
+}
+

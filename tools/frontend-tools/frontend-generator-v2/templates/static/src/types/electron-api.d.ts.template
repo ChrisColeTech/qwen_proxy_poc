@@ -1,0 +1,50 @@
+export interface ElectronAPI {
+  storage: {
+    saveSettings: (settings: Record<string, unknown>) => Promise<void>
+    loadSettings: () => Promise<Record<string, unknown> | null>
+  }
+  file: {
+    openFile: () => Promise<{ path: string; content: string } | null>
+    saveFile: (path: string, content: string) => Promise<boolean>
+    saveFileAs: (content: string) => Promise<{ path: string; success: boolean } | null>
+  }
+  fileQueue: {
+    saveFileQueue: (queue: any[]) => Promise<void>
+    loadFileQueue: () => Promise<any[] | null>
+    exportFileQueue: (queue: any[]) => Promise<string | null>
+    importFileQueue: () => Promise<any[] | null>
+  }
+  window: {
+    minimize: () => void
+    maximize: () => void // Should toggle maximize/unmaximize
+    unmaximize: () => void // Specific unmaximize
+    close: () => void
+    isMaximized: () => boolean // Changed to Promise in service
+  }
+  dialog: {
+    showSaveDialog: (defaultPath?: string) => Promise<string | null>
+    showOpenDialog: () => Promise<string[] | null> // Assuming can return multiple paths
+    showMessageBox: (message: string, type?: 'info' | 'warning' | 'error') => Promise<void> // 'type' is optional
+  }
+  app: {
+    getVersion: () => string
+    getPath: () => string // e.g., app path, userData path
+  }
+  dev: {
+    openDevTools: () => void
+    reload: () => void
+  }
+  // Added based on preload.js for API process control
+  startApiProcess: () => Promise<boolean>
+  stopApiProcess: () => Promise<boolean>
+  restartApiProcess: () => Promise<boolean>
+  getApiStatus: () => Promise<{ isRunning: boolean; pid: number | null }>
+  // Added based on preload.js for window state changes
+  onWindowStateChange: (callback: (state: { isMaximized: boolean }) => void) => () => void
+}
+
+declare global {
+  interface Window {
+    electronAPI?: ElectronAPI
+  }
+}

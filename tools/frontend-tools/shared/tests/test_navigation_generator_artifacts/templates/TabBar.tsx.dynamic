@@ -1,0 +1,5 @@
+import { {{ICON_IMPORTS}} } from "lucide-react";
+
+const tabs: Tab[] = [
+{{TAB_CONFIGURATIONS}}
+];

@@ -1,0 +1,4 @@
+// Navigation configuration
+const navConfig = {
+{{NAVIGATION_CONFIG}}
+};

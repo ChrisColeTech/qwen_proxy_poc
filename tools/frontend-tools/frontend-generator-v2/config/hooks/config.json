@@ -1,0 +1,5 @@
+{
+  "default_template": "basic_hook",
+  "output_directory": "hooks",
+  "file_extension": ".ts"
+}

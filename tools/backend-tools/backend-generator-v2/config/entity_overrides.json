@@ -1,0 +1,82 @@
+{
+  "description": "Special handling configurations for specific entities",
+  "entity_overrides": {
+    "auth": {
+      "entity_name": "Auth",
+      "model_imports": "LoginRequest, RegisterRequest, UserInfo, AuthResponse, CreateAuthRequest, UpdateAuthRequest",
+      "special_model": true,
+      "table_name": "users",
+      "format_method": "formatAuthResponse",
+      "return_type": "UserInfo"
+    },
+    "learningpath": {
+      "entity_name": "LearningPath",
+      "model_imports": "LearningPathResponse, CreateLearningPathRequest, UpdateLearningPathRequest",
+      "special_naming": true
+    }
+  },
+  
+  "property_mappings": {
+    "solutionMoves": {
+      "database_column": "solution_moves",
+      "json_parse": true,
+      "default_value": "[]"
+    },
+    "themes": {
+      "database_column": "themes", 
+      "json_parse": true,
+      "default_value": "[]",
+      "entity_filter": ["Puzzle"]
+    }
+  },
+  
+  "parameter_mappings": {
+    "userId": "user_id",
+    "achievementId": "achievement_id",
+    "puzzleId": "puzzle_id",
+    "contentId": "content_id",
+    "playerId": "player_id",
+    "tournament": "tournament_name"
+  },
+  
+  "standard_crud_methods": [
+    "getAll{Entities}",
+    "get{Entity}ById",
+    "create{Entity}",
+    "update{Entity}",
+    "delete{Entity}"
+  ],
+  
+  "common_endpoints": [
+    {
+      "method": "GET",
+      "path": "/",
+      "handler": "getAll{Entities}",
+      "auth_required": true
+    },
+    {
+      "method": "GET", 
+      "path": "/:id",
+      "handler": "get{Entity}ById",
+      "auth_required": true
+    },
+    {
+      "method": "POST",
+      "path": "/",
+      "handler": "create{Entity}",
+      "auth_required": true
+    },
+    {
+      "method": "PUT",
+      "path": "/:id", 
+      "handler": "update{Entity}",
+      "auth_required": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/:id",
+      "handler": "delete{Entity}",
+      "auth_required": true
+    }
+  ]
+}

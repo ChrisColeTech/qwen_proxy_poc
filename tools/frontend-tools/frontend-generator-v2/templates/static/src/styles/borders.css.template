@@ -1,0 +1,208 @@
+/* Custom Border System - Controlled thickness */
+
+/* Border thickness variants applied globally */
+.border-none .app-border {
+  border-width: 0;
+}
+
+.border-none .app-border-t {
+  border-top-width: 0;
+}
+
+.border-none .app-border-r {
+  border-right-width: 0;
+}
+
+.border-none .app-border-b {
+  border-bottom-width: 0;
+}
+
+.border-none .app-border-l {
+  border-left-width: 0;
+}
+
+.border-thin .app-border {
+  border: 1px solid var(--border-thin);
+}
+
+.border-thin .app-border-t {
+  border-top: 1px solid var(--border-thin);
+}
+
+.border-thin .app-border-r {
+  border-right: 1px solid var(--border-thin);
+}
+
+.border-thin .app-border-b {
+  border-bottom: 1px solid var(--border-thin);
+}
+
+.border-thin .app-border-l {
+  border-left: 1px solid var(--border-thin);
+}
+
+.border-medium .app-border {
+  border-width: 1px;
+}
+
+.border-medium .app-border-t {
+  border-top-width: 1px;
+}
+
+.border-medium .app-border-r {
+  border-right-width: 1px;
+}
+
+.border-medium .app-border-b {
+  border-bottom-width: 1px;
+}
+
+.border-medium .app-border-l {
+  border-left-width: 1px;
+}
+
+.border-thick .app-border {
+  border-width: 2px;
+}
+
+.border-thick .app-border-t {
+  border-top-width: 2px;
+}
+
+.border-thick .app-border-r {
+  border-right-width: 2px;
+}
+
+.border-thick .app-border-b {
+  border-bottom-width: 2px;
+}
+
+.border-thick .app-border-l {
+  border-left-width: 2px;
+}
+
+/* High contrast mode - handled by CSS variables automatically */
+/* --border-thin is set to full opacity colors in high contrast mode */
+
+.high-contrast.border-medium .app-border {
+  border-width: 2px;
+}
+
+.high-contrast.border-medium .app-border-t {
+  border-top-width: 2px;
+}
+
+.high-contrast.border-medium .app-border-r {
+  border-right-width: 2px;
+}
+
+.high-contrast.border-medium .app-border-b {
+  border-bottom-width: 2px;
+}
+
+.high-contrast.border-medium .app-border-l {
+  border-left-width: 2px;
+}
+
+.high-contrast.border-thick .app-border {
+  border-width: 3px;
+}
+
+.high-contrast.border-thick .app-border-t {
+  border-top-width: 3px;
+}
+
+.high-contrast.border-thick .app-border-r {
+  border-right-width: 3px;
+}
+
+.high-contrast.border-thick .app-border-b {
+  border-bottom-width: 3px;
+}
+
+.high-contrast.border-thick .app-border-l {
+  border-left-width: 3px;
+}
+
+/* Custom border classes to replace Tailwind */
+
+/* Generic border */
+.app-border {
+  border: 1px solid var(--border);
+}
+
+/* Directional borders */
+.app-border-t {
+  border-top: 1px solid var(--border);
+}
+
+.app-border-r {
+  border-right: 1px solid var(--border);
+}
+
+.app-border-b {
+  border-bottom: 1px solid var(--border);
+}
+
+.app-border-l {
+  border-left: 1px solid var(--border);
+}
+
+/* Special border variants */
+.app-border-2 {
+  border: 2px solid var(--border);
+}
+
+.app-border-t-2 {
+  border-top: 2px solid var(--border);
+}
+
+.app-border-accent {
+  border: 1px solid var(--accent);
+}
+
+.app-border-t-accent {
+  border-top: 1px solid var(--accent);
+}
+
+.app-border-transparent {
+  border: 1px solid transparent;
+}
+
+.app-border-t-transparent {
+  border-top: 1px solid transparent;
+}
+
+.app-border-b-transparent {
+  border-bottom: 1px solid transparent;
+}
+
+.app-border-b-background {
+  border-bottom: 1px solid var(--background);
+}
+
+/* Active tab that breaks through title bar border */
+.active-tab-break {
+  position: relative;
+}
+
+.active-tab-break::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 1px;
+  right: 1px;
+  height: 2px;
+  background-color: var(--background);
+  z-index: 10;
+}
+
+/* Background borders (for separators) */
+.app-bg-border {
+  background-color: var(--border);
+}
+
+/* Thin separator - always 1px regardless of border thickness setting */
+.separator {
+  background-color: var(--border);
+}

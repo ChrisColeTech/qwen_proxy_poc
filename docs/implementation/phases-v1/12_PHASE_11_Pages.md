@@ -4,7 +4,7 @@
 This phase implements the main application pages and guide pages. Each page composes feature components and uses page-specific hooks to handle logic and data fetching.
 
 **Priority**: P1  
-**Files Created**: 7  
+**Files Created**: 9
 **Files Modified**: 0  
 **Description**: Main application pages
 
@@ -19,6 +19,8 @@ This phase implements the main application pages and guide pages. Each page comp
 3. `frontend/src/pages/ModelsPage.tsx` - Models browsing (available models vs all models tabs)
 4. `frontend/src/pages/SettingsPage.tsx` - Application settings (server config, active provider/model)
 5. `frontend/src/pages/ChatPage.tsx` - Chat interface (quick test, custom chat, cURL examples)
+6. `frontend/src/pages/ModelFormPage.tsx` - Model form page
+7. `frontend/src/pages/ProviderFormPage.tsx` - Provider form page
 
 **Validation**:
 - [ ] Pages use appropriate hooks
@@ -50,6 +52,8 @@ frontend/src/
 │   ├── ModelsPage.tsx
 │   ├── SettingsPage.tsx
 │   ├── ChatPage.tsx
+│   ├── ModelFormPage.tsx
+│   ├── ProviderFormPage.tsx
 │   ├── BrowserGuidePage.tsx
 │   └── DesktopGuidePage.tsx
 ```

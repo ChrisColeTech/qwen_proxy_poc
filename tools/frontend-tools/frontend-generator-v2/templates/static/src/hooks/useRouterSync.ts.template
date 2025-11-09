@@ -1,0 +1,62 @@
+import { useEffect, useRef } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useTabs } from './useTabs'
+
+export const useRouterSync = () => {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { tabs, activeTabId, addTab, setActiveTab } = useTabs()
+
+  // Track if we're internally navigating to prevent loops
+  const isInternalNavigation = useRef(false)
+
+  // Sync URL to tabs when URL changes (browser back/forward, direct link)
+  useEffect(() => {
+    // Skip if this navigation was triggered by our own tab change
+    if (isInternalNavigation.current) {
+      isInternalNavigation.current = false
+      return
+    }
+
+    const hash = location.hash.slice(1) // Remove leading #
+    const path = hash.startsWith('/') ? hash.slice(1) : hash // Remove leading / from path
+    const tabId = path || 'welcome' // Default to welcome if root
+
+    // Check if tab is already open
+    const existingTab = tabs.find(t => t.id === tabId)
+
+    if (existingTab) {
+      // Tab exists, just activate it
+      if (activeTabId !== tabId) {
+        setActiveTab(tabId)
+      }
+    } else {
+      // Tab doesn't exist, open it
+      // The navigationConfig will provide the details
+      addTab({
+        id: tabId,
+        title: tabId, // Will be overridden by navigationConfig
+        closable: true,
+      })
+    }
+  }, [location.hash, tabs, activeTabId, addTab, setActiveTab])
+
+  // Sync tabs to URL when active tab changes
+  useEffect(() => {
+    if (activeTabId) {
+      const currentPath = `/${activeTabId}`
+      const currentHash = location.hash.slice(1) // Remove leading #
+
+      if (currentHash !== currentPath) {
+        isInternalNavigation.current = true
+        navigate(currentPath, { replace: false })
+      }
+    }
+  }, [activeTabId, location.hash, navigate])
+
+  return {
+    navigateToTab: (tabId: string) => {
+      navigate(`/${tabId}`)
+    }
+  }
+}

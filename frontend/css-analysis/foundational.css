@@ -1,0 +1,8 @@
+/* Foundational CSS - Structural and infrastructure styles */
+
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+

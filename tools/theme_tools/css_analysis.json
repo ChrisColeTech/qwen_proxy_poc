@@ -1,0 +1,356 @@
+{
+  "summary": {
+    "tsx_files_analyzed": 30,
+    "total_css_classes": 41,
+    "custom_classes_used": 25,
+    "css_classes_used": 18,
+    "css_classes_unused": 23,
+    "usage_percentage": 43.90243902439025,
+    "foundational_rules": 14,
+    "layer_structure": {
+      "base_rules": 14,
+      "component_layers": 1,
+      "utility_layers": 1,
+      "standalone_sections": 1
+    }
+  },
+  "used_custom_classes": [
+    "Panel",
+    "Settings",
+    "btn-destructive",
+    "btn-gaming-primary",
+    "btn-gaming-secondary",
+    "btn-muted",
+    "btn-primary",
+    "btn-secondary",
+    "capitalize",
+    "card-gaming",
+    "floating-particle",
+    "floating-particle-primary",
+    "floating-particle-secondary",
+    "glass",
+    "glass-hover",
+    "glass-layout",
+    "gpu-accelerated",
+    "group",
+    "hover-glow",
+    "hover-grow",
+    "input-gaming",
+    "isActive",
+    "isSettingsPanelOpen",
+    "object-contain",
+    "sparkle"
+  ],
+  "all_css_classes": [
+    "animate-float",
+    "animate-pulse-glow",
+    "animate-twinkle",
+    "animation-delay-100",
+    "animation-delay-1000",
+    "animation-delay-1500",
+    "animation-delay-1800",
+    "animation-delay-200",
+    "animation-delay-2000",
+    "animation-delay-300",
+    "animation-delay-500",
+    "animation-delay-800",
+    "bg-gaming-gradient",
+    "bg-theme-gradient",
+    "bg-theme-primary",
+    "bg-theme-secondary",
+    "btn-destructive",
+    "btn-gaming-primary",
+    "btn-gaming-secondary",
+    "btn-muted",
+    "btn-primary",
+    "btn-secondary",
+    "btn-standard",
+    "card-gaming",
+    "floating-particle",
+    "floating-particle-primary",
+    "floating-particle-secondary",
+    "glass",
+    "glass-hover",
+    "glass-layout",
+    "gpu-accelerated",
+    "hover-glow",
+    "hover-grow",
+    "input-gaming",
+    "shadow-gaming",
+    "shadow-gaming-hover",
+    "shadow-primary",
+    "sparkle",
+    "text-gaming-gradient",
+    "text-primary-gradient",
+    "text-secondary-gradient"
+  ],
+  "used_css_classes": [
+    "btn-destructive",
+    "btn-gaming-primary",
+    "btn-gaming-secondary",
+    "btn-muted",
+    "btn-primary",
+    "btn-secondary",
+    "card-gaming",
+    "floating-particle",
+    "floating-particle-primary",
+    "floating-particle-secondary",
+    "glass",
+    "glass-hover",
+    "glass-layout",
+    "gpu-accelerated",
+    "hover-glow",
+    "hover-grow",
+    "input-gaming",
+    "sparkle"
+  ],
+  "unused_css_classes": [
+    "animate-float",
+    "animate-pulse-glow",
+    "animate-twinkle",
+    "animation-delay-100",
+    "animation-delay-1000",
+    "animation-delay-1500",
+    "animation-delay-1800",
+    "animation-delay-200",
+    "animation-delay-2000",
+    "animation-delay-300",
+    "animation-delay-500",
+    "animation-delay-800",
+    "bg-gaming-gradient",
+    "bg-theme-gradient",
+    "bg-theme-primary",
+    "bg-theme-secondary",
+    "btn-standard",
+    "shadow-gaming",
+    "shadow-gaming-hover",
+    "shadow-primary",
+    "text-gaming-gradient",
+    "text-primary-gradient",
+    "text-secondary-gradient"
+  ],
+  "file_analysis": {
+    "src/App.tsx": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/main.tsx": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/components/CapturedPieces.tsx": {
+      "custom_classes": [
+        "card-gaming"
+      ],
+      "total_classes": 23,
+      "custom_count": 1
+    },
+    "src/components/CheckmateModal.tsx": {
+      "custom_classes": [
+        "capitalize"
+      ],
+      "total_classes": 46,
+      "custom_count": 1
+    },
+    "src/components/DraggedPiece.tsx": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/components/InstructionsFAB.tsx": {
+      "custom_classes": [
+        "group"
+      ],
+      "total_classes": 22,
+      "custom_count": 1
+    },
+    "src/components/InstructionsModal.tsx": {
+      "custom_classes": [],
+      "total_classes": 51,
+      "custom_count": 0
+    },
+    "src/components/PromotionModal.tsx": {
+      "custom_classes": [
+        "capitalize",
+        "group",
+        "object-contain"
+      ],
+      "total_classes": 58,
+      "custom_count": 3
+    },
+    "src/components/SettingsPanel.tsx": {
+      "custom_classes": [
+        "glass-layout"
+      ],
+      "total_classes": 61,
+      "custom_count": 1
+    },
+    "src/components/SlotMachine.tsx": {
+      "custom_classes": [
+        "btn-destructive",
+        "btn-secondary",
+        "card-gaming"
+      ],
+      "total_classes": 83,
+      "custom_count": 3
+    },
+    "src/components/TestBoard.tsx": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/components/ThemeDemo.tsx": {
+      "custom_classes": [
+        "btn-gaming-primary",
+        "btn-gaming-secondary",
+        "card-gaming",
+        "glass",
+        "glass-hover",
+        "gpu-accelerated",
+        "hover-glow",
+        "hover-grow",
+        "input-gaming"
+      ],
+      "total_classes": 74,
+      "custom_count": 9
+    },
+    "src/components/ThemeSwitcher.tsx": {
+      "custom_classes": [],
+      "total_classes": 19,
+      "custom_count": 0
+    },
+    "src/contexts/InstructionsContext.tsx": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/contexts/ThemeContext.tsx": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/pages/DragTestPage.tsx": {
+      "custom_classes": [
+        "btn-destructive",
+        "btn-muted",
+        "btn-primary",
+        "btn-secondary",
+        "card-gaming",
+        "gpu-accelerated",
+        "group"
+      ],
+      "total_classes": 76,
+      "custom_count": 7
+    },
+    "src/pages/LayoutTestPage.tsx": {
+      "custom_classes": [
+        "card-gaming"
+      ],
+      "total_classes": 5,
+      "custom_count": 1
+    },
+    "src/pages/PlayPage.tsx": {
+      "custom_classes": [
+        "card-gaming"
+      ],
+      "total_classes": 15,
+      "custom_count": 1
+    },
+    "src/pages/SlotMachineTestPage.tsx": {
+      "custom_classes": [
+        "btn-destructive",
+        "btn-muted",
+        "btn-primary",
+        "btn-secondary",
+        "card-gaming",
+        "gpu-accelerated",
+        "group"
+      ],
+      "total_classes": 78,
+      "custom_count": 7
+    },
+    "src/pages/UIAudioTestPage.tsx": {
+      "custom_classes": [
+        "card-gaming"
+      ],
+      "total_classes": 5,
+      "custom_count": 1
+    },
+    "src/pages/UITestPage.tsx": {
+      "custom_classes": [
+        "card-gaming"
+      ],
+      "total_classes": 5,
+      "custom_count": 1
+    },
+    "src/pages/WorkerTestPage.tsx": {
+      "custom_classes": [
+        "btn-muted",
+        "btn-primary",
+        "btn-secondary",
+        "card-gaming"
+      ],
+      "total_classes": 56,
+      "custom_count": 4
+    },
+    "src/providers/DragProvider.tsx": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/components/layout/AppLayout.tsx": {
+      "custom_classes": [
+        "Panel",
+        "Settings",
+        "glass-layout",
+        "isSettingsPanelOpen"
+      ],
+      "total_classes": 35,
+      "custom_count": 4
+    },
+    "src/components/layout/BackgroundEffects.tsx": {
+      "custom_classes": [
+        "floating-particle",
+        "floating-particle-primary",
+        "floating-particle-secondary",
+        "sparkle"
+      ],
+      "total_classes": 104,
+      "custom_count": 4
+    },
+    "src/components/layout/Header.tsx": {
+      "custom_classes": [
+        "glass-layout"
+      ],
+      "total_classes": 41,
+      "custom_count": 1
+    },
+    "src/components/layout/MainContent.tsx": {
+      "custom_classes": [],
+      "total_classes": 2,
+      "custom_count": 0
+    },
+    "src/components/layout/MenuButton.tsx": {
+      "custom_classes": [],
+      "total_classes": 21,
+      "custom_count": 0
+    },
+    "src/components/layout/MenuDropdown.tsx": {
+      "custom_classes": [
+        "glass-layout",
+        "group"
+      ],
+      "total_classes": 34,
+      "custom_count": 2
+    },
+    "src/components/layout/TabBar.tsx": {
+      "custom_classes": [
+        "isActive"
+      ],
+      "total_classes": 26,
+      "custom_count": 1
+    }
+  }
+}

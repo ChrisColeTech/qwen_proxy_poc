@@ -1,0 +1,33 @@
+import { getPageIcon, getNavigationItem } from '../../config/navigationConfig'
+
+interface PageHeaderProps {
+  pageId: string
+  title?: string
+  description?: string
+  children?: React.ReactNode
+}
+
+const PageHeader = ({ pageId, title, description, children }: PageHeaderProps) => {
+  const navigationItem = getNavigationItem(pageId)
+  const displayTitle = title || navigationItem?.label || pageId
+
+  return (
+    <div className="bg-surface app-border overflow-hidden">
+      <div
+        className={`bg-gradient-to-r from-surface to-background px-6 py-4${
+          children ? ' app-border-b' : ''
+        }`}
+      >
+        <div className="flex items-center gap-3">
+          <div className="page-icon">{getPageIcon(pageId)}</div>
+          <h2 className="text-lg font-semibold">{displayTitle}</h2>
+        </div>
+        {description && <p className="text-sm text-text-muted mt-1">{description}</p>}
+      </div>
+
+      {children && <div className="p-6">{children}</div>}
+    </div>
+  )
+}
+
+export default PageHeader

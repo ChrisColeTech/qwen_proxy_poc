@@ -1,0 +1,72 @@
+{
+  "version": "1.0.0",
+  "generated_by": "mobile-pages-v2",
+  "last_updated": "2025-09-16T08:31:04.537443",
+  "pages": {
+    "testsection": {
+      "id": "testsection",
+      "name": "TestSection",
+      "type": "parent",
+      "parent_id": null,
+      "icon": "Settings",
+      "description": "UI Testing Components",
+      "route": "/testsection",
+      "component_name": "TestSectionPage",
+      "has_mobile": false,
+      "created_at": "2025-09-16T08:31:04.523508"
+    },
+    "gaming": {
+      "id": "gaming",
+      "name": "Gaming",
+      "type": "parent",
+      "parent_id": null,
+      "icon": "Gamepad",
+      "description": "Gaming & Entertainment",
+      "route": "/gaming",
+      "component_name": "GamingPage",
+      "has_mobile": false,
+      "created_at": "2025-09-16T08:31:04.526848"
+    },
+    "layouttest": {
+      "id": "layouttest",
+      "name": "LayoutTest",
+      "type": "child",
+      "parent_id": "testsection",
+      "icon": "Navigation",
+      "description": "Responsive layout testing",
+      "route": "/layouttest",
+      "component_name": "LayoutTestPage",
+      "has_mobile": true,
+      "created_at": "2025-09-16T08:31:04.530120"
+    },
+    "dragtest": {
+      "id": "dragtest",
+      "name": "DragTest",
+      "type": "child",
+      "parent_id": "testsection",
+      "icon": "Navigation",
+      "description": "Drag and drop interactions",
+      "route": "/dragtest",
+      "component_name": "DragTestPage",
+      "has_mobile": false,
+      "created_at": "2025-09-16T08:31:04.533866"
+    },
+    "blackjackgame": {
+      "id": "blackjackgame",
+      "name": "BlackjackGame",
+      "type": "child",
+      "parent_id": "gaming",
+      "icon": "Navigation",
+      "description": "Classic blackjack card game",
+      "route": "/blackjackgame",
+      "component_name": "BlackjackGamePage",
+      "has_mobile": true,
+      "created_at": "2025-09-16T08:31:04.537424"
+    }
+  },
+  "metadata": {
+    "total_pages": 5,
+    "parent_pages": 2,
+    "child_pages": 3
+  }
+}

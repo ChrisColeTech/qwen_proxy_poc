@@ -1,0 +1,62 @@
+{
+  "description": "Templates for generating service methods based on method patterns",
+  "method_templates": {
+    "getById": {
+      "pattern": ".*ById$",
+      "template": "async {method_name}(id: string): Promise<{entity}Response> {\n    const result = await this.db.query('SELECT * FROM {table_name} WHERE id = $1', [id]);\n    if (!result.rows.length) throw new Error('{entity} not found');\n    \n    return this.format{entity}Response(result.rows[0]);\n  }",
+      "return_type": "Promise<{entity}Response>"
+    },
+    
+    "getAll": {
+      "pattern": "^(getAll|list).*",
+      "template": "async {method_name}(): Promise<{entity}Response[]> {\n    const result = await this.db.query('SELECT * FROM {table_name} ORDER BY created_at DESC LIMIT 50');\n    return result.rows.map(row => this.format{entity}Response(row));\n  }",
+      "return_type": "Promise<{entity}Response[]>"
+    },
+    
+    "create": {
+      "pattern": "^create.*",
+      "template": "async {method_name}(data: Create{entity}Request): Promise<{entity}Response> {\n    const { {DESTRUCTURE_FIELDS} } = data;\n    const id = uuidv4();\n    const result = await this.db.query(`\n      INSERT INTO {table_name} ({INSERT_FIELDS})\n      VALUES ({INSERT_PARAMS})\n      RETURNING *\n    `, [{PARAM_ARRAY}]);\n    \n    return this.format{entity}Response(result.rows[0]);\n  }",
+      "return_type": "Promise<{entity}Response>"
+    },
+    
+    "update": {
+      "pattern": "^update.*",
+      "template": "async {method_name}(id: string, data: Update{entity}Request): Promise<{entity}Response> {\n    const { {DESTRUCTURE_FIELDS} } = data;\n    const result = await this.db.query(`\n      UPDATE {table_name} \n      SET {UPDATE_FIELDS}\n      WHERE id = $1\n      RETURNING *\n    `, [{UPDATE_PARAM_ARRAY}]);\n    \n    if (!result.rows.length) throw new Error('{entity} not found');\n    return this.format{entity}Response(result.rows[0]);\n  }",
+      "return_type": "Promise<{entity}Response>"
+    },
+    
+    "delete": {
+      "pattern": "^delete.*",
+      "template": "async {method_name}(id: string): Promise<void> {\n    const result = await this.db.query('DELETE FROM {table_name} WHERE id = $1', [id]);\n    if (result.rowCount === 0) throw new Error('{entity} not found');\n  }",
+      "return_type": "Promise<void>"
+    }
+  },
+  
+  "specialized_methods": {
+    "auth": {
+      "register": {
+        "template": "async register(registerData: any): Promise<any> {\n    const { username, email, password } = registerData;\n\n    // Check if user already exists\n    const existingUser = await this.db.query(\n      'SELECT id FROM {table_name} WHERE email = $1 OR username = $2',\n      [email, username]\n    );\n\n    if (existingUser.rows.length > 0) {\n      throw new Error('User with this email or username already exists');\n    }\n\n    // Hash password\n    const bcrypt = require('bcrypt');\n    const passwordHash = await bcrypt.hash(password, 12);\n\n    // Create user\n    const userId = require('uuid').v4();\n    const result = await this.db.query(`\n      INSERT INTO {table_name} (id, username, email, password_hash, chess_elo, puzzle_rating, preferences, created_at, updated_at)\n      VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())\n      RETURNING *\n    `, [userId, username, email, passwordHash, 1000, 1000, '{}']);\n\n    if (!result.rows.length) {\n      throw new Error('Failed to create user');\n    }\n\n    return this.format{entity}Response(result.rows[0]);\n  }",
+        "return_type": "Promise<any>"
+      },
+      
+      "login": {
+        "template": "async login(loginData: any): Promise<any> {\n    const { email, password } = loginData;\n\n    // Find user by email\n    const result = await this.db.query(\n      'SELECT * FROM {table_name} WHERE email = $1',\n      [email]\n    );\n\n    if (!result.rows.length) {\n      throw new Error('Invalid credentials');\n    }\n\n    const user = result.rows[0];\n\n    // Verify password\n    const bcrypt = require('bcrypt');\n    const isValidPassword = await bcrypt.compare(password, user.password_hash);\n    if (!isValidPassword) {\n      throw new Error('Invalid credentials');\n    }\n\n    // Generate JWT token\n    const jwt = require('jsonwebtoken');\n    const token = jwt.sign(\n      { \n        id: user.id, \n        email: user.email,\n        username: user.username \n      },\n      process.env.JWT_SECRET!,\n      { expiresIn: '7d' }\n    );\n\n    return {\n      user: this.format{entity}Response(user),\n      token\n    };\n  }",
+        "return_type": "Promise<any>"
+      }
+    },
+    
+    "puzzle": {
+      "getNextPuzzle": {
+        "template": "async getNextPuzzle(userId: string): Promise<{entity}Response> {\n    const result = await this.db.query(`\n      SELECT * FROM {table_name} \n      WHERE id NOT IN (\n        SELECT puzzle_id FROM puzzle_attempts WHERE user_id = $1\n      )\n      ORDER BY rating ASC\n      LIMIT 1\n    `, [userId]);\n    \n    if (!result.rows.length) {\n      throw new Error('No more puzzles available');\n    }\n    \n    return this.format{entity}Response(result.rows[0]);\n  }",
+        "return_type": "Promise<{entity}Response>"
+      },
+      
+      "solvePuzzle": {
+        "template": "async solvePuzzle(puzzleId: string, solution: any): Promise<any> {\n    const puzzle = await this.db.query('SELECT * FROM {table_name} WHERE id = $1', [puzzleId]);\n    if (!puzzle.rows.length) {\n      throw new Error('Puzzle not found');\n    }\n    \n    // TODO: Implement solution validation logic\n    const isCorrect = true; // Placeholder\n    \n    return {\n      correct: isCorrect,\n      puzzle: this.format{entity}Response(puzzle.rows[0])\n    };\n  }",
+        "return_type": "Promise<any>"
+      }
+    }
+  },
+  
+  "format_method_template": "private format{entity}Response(row: any): {entity}Response {\n    return {\n{format_fields}\n    };\n  }"
+}

@@ -1,0 +1,79 @@
+import { initializeNavigationService, NavigationService } from './navigationService'
+import { initializeTabService, TabService, type TabCallbacks } from './tabService'
+import { getNavigationItem } from '../config/navigationConfig' // Import getNavigationItem
+
+export interface AppServiceCallbacks extends TabCallbacks {
+  onSidebarChange: (tabId: string) => void
+}
+
+export class AppService {
+  private navigationService: NavigationService
+  private tabService: TabService
+  private sidebarActiveTab: string = ''
+
+  constructor(callbacks: AppServiceCallbacks) {
+    this.tabService = initializeTabService({
+      onTabAdd: callbacks.onTabAdd,
+      onTabRemove: callbacks.onTabRemove,
+      onTabActivate: callbacks.onTabActivate,
+    })
+    this.navigationService = initializeNavigationService({
+      onTabAdd: (tab) => this.tabService.addTab(tab),
+      onTabRemove: (tabId) => this.tabService.removeTab(tabId),
+      onTabActivate: (tabId) => this.tabService.activateTab(tabId),
+      onSidebarChange: (tabId) => {
+        this.sidebarActiveTab = tabId
+        callbacks.onSidebarChange(tabId)
+      },
+    })
+  }
+
+  openTab(itemId: string, activateTab: boolean = true): boolean {
+    return this.navigationService.openTab(itemId, activateTab)
+  }
+
+  changeSidebarItem(itemId: string): boolean {
+    const changed = this.navigationService.changeSidebarItem(itemId)
+    if (changed) {
+      this.navigationService.openTab(itemId, true) // Open corresponding tab
+    }
+    return changed
+  }
+
+  openSettings(): void {
+    this.navigationService.openSettings()
+  }
+
+  handleTabClick(tabId: string): void {
+    this.tabService.activateTab(tabId)
+    // Synchronize sidebar active item with clicked tab
+    const navigationItem = getNavigationItem(tabId)
+    if (navigationItem) {
+      this.navigationService.changeSidebarItem(tabId)
+    }
+  }
+
+  handleTabClose(tabId: string, _activeTabId: string | null): void {
+    // The TabService's removeTab will trigger useTabs' onTabRemove,
+    // which handles activating the next tab.
+    this.tabService.removeTab(tabId)
+    // No need to explicitly change sidebar item here, as useTabs will handle active tab change,
+    // and AppService's handleTabClick (if a new tab becomes active) or other mechanisms
+    // will synchronize the sidebar.
+  }
+
+  getSidebarActiveTab(): string {
+    return this.sidebarActiveTab
+  }
+}
+
+let appServiceInstance: AppService | null = null
+export const getAppService = (): AppService | null => appServiceInstance
+export const initializeAppService = (callbacks: AppServiceCallbacks): AppService => {
+  if (appServiceInstance) {
+    console.warn('AppService already initialized. Returning existing instance.')
+    return appServiceInstance
+  }
+  appServiceInstance = new AppService(callbacks)
+  return appServiceInstance
+}

@@ -1,0 +1,63 @@
+{
+  "description": "SQLite-specific templates for generating service methods with synchronous queries",
+  "database_type": "sqlite",
+  "method_templates": {
+    "getById": {
+      "pattern": ".*ById$",
+      "template": "{method_name}(id: string): {entity}Response {\n    const stmt = db.prepare('SELECT * FROM {table_name} WHERE id = ?');\n    const row = stmt.get(id) as any;\n    if (!row) throw new Error('{entity} not found');\n    \n    return this.format{entity}Response(row);\n  }",
+      "return_type": "{entity}Response"
+    },
+
+    "getAll": {
+      "pattern": "^(getAll|list).*",
+      "template": "{method_name}(): {entity}Response[] {\n    const stmt = db.prepare('SELECT * FROM {table_name} ORDER BY created_at DESC LIMIT 50');\n    const rows = stmt.all() as any[];\n    return rows.map(row => this.format{entity}Response(row));\n  }",
+      "return_type": "{entity}Response[]"
+    },
+
+    "create": {
+      "pattern": "^create.*",
+      "template": "{method_name}(data: Create{entity}Request): {entity}Response {\n    const id = generateId();\n    const now = getCurrentTimestamp();\n    let { {DESTRUCTURE_FIELDS} } = data;\n    \n    // Convert booleans to integers for SQLite (0 or 1)\n    const convertBool = (val: any) => typeof val === 'boolean' ? (val ? 1 : 0) : val;\n    {BOOLEAN_CONVERSIONS}\n    \n    const stmt = db.prepare('INSERT INTO {table_name} ({INSERT_FIELDS}) VALUES ({INSERT_PARAMS})');\n    stmt.run({PARAM_ARRAY});\n    \n    // Fetch the created record\n    const getStmt = db.prepare('SELECT * FROM {table_name} WHERE id = ?');\n    const row = getStmt.get(id) as any;\n    \n    return this.format{entity}Response(row);\n  }",
+      "return_type": "{entity}Response"
+    },
+
+    "update": {
+      "pattern": "^update.*",
+      "template": "{method_name}(id: string, data: Update{entity}Request): {entity}Response {\n    let { {DESTRUCTURE_FIELDS} } = data;\n    const now = getCurrentTimestamp();\n    \n    // Convert booleans to integers for SQLite (0 or 1)\n    const convertBool = (val: any) => typeof val === 'boolean' ? (val ? 1 : 0) : val;\n    {BOOLEAN_CONVERSIONS}\n    \n    // Check if record exists\n    const checkStmt = db.prepare('SELECT * FROM {table_name} WHERE id = ?');\n    const existing = checkStmt.get(id);\n    if (!existing) throw new Error('{entity} not found');\n    \n    const stmt = db.prepare(`\n      UPDATE {table_name} \n      SET {UPDATE_FIELDS}, updated_at = ?\n      WHERE id = ?\n    `);\n    \n    stmt.run({UPDATE_PARAM_ARRAY}, now, id);\n    \n    // Fetch updated record\n    const row = checkStmt.get(id) as any;\n    return this.format{entity}Response(row);\n  }",
+      "return_type": "{entity}Response"
+    },
+
+    "delete": {
+      "pattern": "^delete.*",
+      "template": "{method_name}(id: string): void {\n    const stmt = db.prepare('DELETE FROM {table_name} WHERE id = ?');\n    const result = stmt.run(id);\n    if (result.changes === 0) throw new Error('{entity} not found');\n  }",
+      "return_type": "void"
+    }
+  },
+
+  "specialized_methods": {
+    "test": {
+      "testKey": {
+        "template": "async {method_name}(id: string): Promise<any> {\n    const stmt = db.prepare('SELECT * FROM {table_name} WHERE id = ?');\n    const row = stmt.get(id) as any;\n    if (!row) throw new Error('{entity} not found');\n    \n    // TODO: Implement actual API key testing logic\n    const testResult = {\n      status: 'valid',\n      message: 'API key test placeholder'\n    };\n    \n    const now = getCurrentTimestamp();\n    const updateStmt = db.prepare(`\n      UPDATE {table_name}\n      SET status = ?, last_tested = ?, updated_at = ?\n      WHERE id = ?\n    `);\n    updateStmt.run(testResult.status, now, now, id);\n    \n    // Fetch updated record\n    const updatedRow = stmt.get(id) as any;\n    \n    return {\n      data: this.format{entity}Response(updatedRow),\n      testResult\n    };\n  }",
+        "return_type": "Promise<any>"
+      }
+    },
+
+    "storage": {
+      "getStorageValue": {
+        "template": "{method_name}(key: string): {entity}Response | null {\n    const stmt = db.prepare('SELECT * FROM {table_name} WHERE key = ?');\n    const row = stmt.get(key) as any;\n    if (!row) return null;\n    \n    return this.format{entity}Response(row);\n  }",
+        "return_type": "{entity}Response | null"
+      },
+
+      "setStorageValue": {
+        "template": "{method_name}(key: string, value: string): {entity}Response {\n    const now = getCurrentTimestamp();\n    \n    // Upsert logic for SQLite\n    const stmt = db.prepare(`\n      INSERT INTO {table_name} (key, value, updated_at)\n      VALUES (?, ?, ?)\n      ON CONFLICT(key) DO UPDATE SET\n        value = excluded.value,\n        updated_at = excluded.updated_at\n    `);\n    \n    stmt.run(key, value, now);\n    \n    // Fetch the record\n    const getStmt = db.prepare('SELECT * FROM {table_name} WHERE key = ?');\n    const row = getStmt.get(key) as any;\n    \n    return this.format{entity}Response(row);\n  }",
+        "return_type": "{entity}Response"
+      },
+
+      "deleteStorageValue": {
+        "template": "{method_name}(key: string): void {\n    const stmt = db.prepare('DELETE FROM {table_name} WHERE key = ?');\n    const result = stmt.run(key);\n    if (result.changes === 0) throw new Error('Storage key not found');\n  }",
+        "return_type": "void"
+      }
+    }
+  },
+
+  "format_method_template": "private format{entity}Response(row: any): {entity}Response {\n    // Convert snake_case DB columns to camelCase using snakeToCamel utility\n    const transformed: any = {};\n    for (const [key, value] of Object.entries(row)) {\n      transformed[snakeToCamel(key)] = value;\n    }\n    \n    return {\n{format_fields}\n    };\n  }"
+}

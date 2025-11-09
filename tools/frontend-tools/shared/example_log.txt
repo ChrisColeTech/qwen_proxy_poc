@@ -1,0 +1,4 @@
+2025-09-16 08:27:05 - unified_logger.demo_tool - INFO - ℹ️ Processing some data
+2025-09-16 08:27:05 - unified_logger.demo_tool - Level 5 - 🔍 Detailed step 1
+2025-09-16 08:27:05 - unified_logger.demo_tool - Level 5 - 🔍 Detailed step 2
+2025-09-16 08:27:05 - unified_logger.demo_tool - WARNING - ⚠️ This is a warning example

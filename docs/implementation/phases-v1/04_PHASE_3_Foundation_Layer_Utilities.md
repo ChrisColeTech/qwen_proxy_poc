@@ -4,7 +4,7 @@
 This phase creates reusable utility functions that follow the DRY principle. These utilities provide foundational helper functions used throughout the application, from data formatting to platform detection.
 
 **Priority**: P0  
-**Files Created**: 7  
+**Files Created**: 6
 **Files Modified**: 0  
 **Description**: Reusable utilities following DRY
 
@@ -16,7 +16,6 @@ This phase creates reusable utility functions that follow the DRY principle. The
 **Files to Create**:
 1. `frontend/src/utils/platform.ts` - Platform detection utilities (isElectron, isBrowser, getPlatform)
 2. `frontend/src/utils/formatters.ts` - Data formatting functions (formatUptime, formatTimestamp, formatTimeRemaining)
-3. `frontend/src/utils/validators.ts` - Input validation utilities (isValidUrl, isValidPort, isValidModelId)
 
 **Validation**:
 - [ ] All functions are pure (no side effects)
@@ -54,8 +53,7 @@ This phase creates reusable utility functions that follow the DRY principle. The
 frontend/src/
 ├── utils/
 │   ├── platform.ts
-│   ├── formatters.ts
-│   └── validators.ts
+│   └── formatters.ts
 ├── lib/
 │   ├── utils.ts
 │   ├── constants.ts

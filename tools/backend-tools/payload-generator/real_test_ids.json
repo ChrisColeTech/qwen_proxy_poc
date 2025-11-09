@@ -1,0 +1,138 @@
+{
+  "user_ids": [
+    "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+    "85c903aa-7d1c-4e9b-8dbf-750b6ed86620",
+    "demo-user-id",
+    "22e97cef-5e9c-4ace-942a-0c108802b308",
+    "9cf1e361-45ae-4392-b9ed-d06b1274c760"
+  ],
+  "user_id": "1f0b8b68-b59f-4522-b960-b75ea7b786fe",
+  "puzzle_ids": [
+    "f7046ae5-ff73-4ecb-a58f-ed5eab8c7625",
+    "1f6121ef-edfd-4985-a004-1d64baf9d5a2",
+    "6bc73a91-193c-4639-87c7-09a8c7a011f5",
+    "ce627f96-0f5b-4c73-93ea-9597fe5e4c96",
+    "67bf0091-18a0-4bc8-9265-b081fbb36644",
+    "1fe93fc4-b4d8-4644-b343-1efb74f8ec75",
+    "7454147b-4097-4ff5-af6f-627e77620b9a",
+    "ae1ea63f-31b1-4e9d-a5ad-3a025f1ebb7e",
+    "4570ee01-4eb5-4be7-88a5-ac5c7f980955",
+    "227b9689-d14d-4e5b-917e-81a2e43f1636"
+  ],
+  "puzzle_id": "f7046ae5-ff73-4ecb-a58f-ed5eab8c7625",
+  "achievement_ids": [
+    "71i8h76gzmewklmrl",
+    "qn28dtt4rmewklmrx",
+    "6hidmznspmewklmsu",
+    "67ghvs7h7mewklmtt",
+    "8gyusahtqmewklmv2"
+  ],
+  "achievement_id": "qn28dtt4rmewklmrx",
+  "content_ids": [
+    "ca47e209-7d59-4f59-965b-b5f518743b24",
+    "09283ca3-ccac-4b9f-ae51-a179d9216697",
+    "71beaa54-c4da-432d-8bd5-1a02a2ce633f",
+    "1d1fbad6-42a6-4183-9afe-a84620d77610",
+    "3cc1d227-5409-433e-a1a5-fbf20a1153df",
+    "ce40c2f4-03d0-412d-bc11-02d22bc805aa"
+  ],
+  "content_id": "ca47e209-7d59-4f59-965b-b5f518743b24",
+  "game_ids": [
+    "ede4bd25-edaa-476f-b4b4-54985d195f92",
+    "f796e234-fc9e-4f8e-98ee-774224fb9e3c",
+    "f6792cfc-72aa-4d01-af10-08b078621c70",
+    "6314216c-c28d-40e3-b5b8-a99b55923bfe",
+    "a6427c0c-21b6-4ffd-92ca-c8b773dc3f7a",
+    "e9d9c042-e279-409b-83a9-db2cde85361b",
+    "f90d390d-c58f-4034-8e97-0e1a097d06e8",
+    "92332126-d2b7-4658-bdb5-d112dd49dcf4"
+  ],
+  "game_id": "ede4bd25-edaa-476f-b4b4-54985d195f92",
+  "profile_ids": [
+    "87084d35-ecc0-4f8f-98c2-875f024836a6",
+    "fe2facc1-83d0-476c-8538-0d278a5a5be7",
+    "3c4ab4a6-806e-41d6-80d0-852f9a811e66"
+  ],
+  "profile_id": "87084d35-ecc0-4f8f-98c2-875f024836a6",
+  "session_ids": [
+    "f51e79cb-12b6-4e60-ad5a-2f030fe8295f",
+    "63a21925-3b90-4d2d-8f3b-7f1e0b31a3dc",
+    "91e13c0b-3245-4b0e-87a1-cd15c87e007a"
+  ],
+  "session_id": "f51e79cb-12b6-4e60-ad5a-2f030fe8295f",
+  "historic_game_ids": [
+    "a8807179-5d78-4ae2-bd6d-1dca993c4788",
+    "75251cf3-8989-4e22-85cf-ee7d0a11a12a",
+    "8d4d6dee-e135-4640-9a07-df3ea4b1d78d",
+    "c616cd31-231a-4c06-9c98-47a80c8dbea0"
+  ],
+  "historic_game_id": "a8807179-5d78-4ae2-bd6d-1dca993c4788",
+  "opening_ids": [
+    "g3foqsapbmewklm2n",
+    "bp3txz0xumewklm3m",
+    "75unlfnz1mex21lxg",
+    "9pu5w62ohmex21lxr",
+    "2g070zh10mex21lyd"
+  ],
+  "opening_id": "g3foqsapbmewklm2n",
+  "puzzle_source_ids": [
+    "871w34jjimewklnso",
+    "iikqizbpomewklnsz",
+    "bt5tnhc0fmewklnta"
+  ],
+  "puzzle_source_id": "871w34jjimewklnso",
+  "puzzle_attempt_ids": [
+    "54e609fc-c59f-415c-a239-db576fdc8c2d",
+    "46a484f2-17b4-44bc-9946-cf0393a2a46d",
+    "c33461e5-4251-4585-bf25-5ff409b17245",
+    "bb2e6d60-fc75-4bad-8bba-6fcaf75f8e89",
+    "62bc6316-3b81-41ae-a36b-b005e4b33301",
+    "0c76eb99-8f0a-4dde-9a1b-b6ea1657d3c2",
+    "889d478f-4f55-4d54-b450-9478d8a4693e",
+    "6bc5ddfb-8e48-4902-a5fc-7f83f63c55c9",
+    "7b2c1f52-8ae1-4635-a63f-b908897a4973",
+    "135b2bce-58e9-48f2-8691-5544abf9faa7",
+    "dafe2ed9-97b5-4ac3-9e16-5ab87b170ca2",
+    "50363f5d-d4c0-4179-b8a7-8d1256667238",
+    "c57905da-f165-4d01-b1d3-377453df4734",
+    "2a180aa7-402f-44cb-953d-2dc6f6a29730",
+    "35cbb66c-6d0b-4cf9-82a2-be10986708b6"
+  ],
+  "puzzle_attempt_id": "54e609fc-c59f-415c-a239-db576fdc8c2d",
+  "user_achievement_ids": [
+    "b8da819f-0ccb-4cd0-85d0-0d600e5e31e6",
+    "854fdf8f-83a0-4ecc-8099-263d2da944c7",
+    "9b79bd13-d1b0-43d3-b060-be610017833e",
+    "c3b40fc5-43d3-4007-9867-1edc38e4727e",
+    "96c43ce2-e927-4228-8f88-6c2d0e40cdd0",
+    "ef76e9ce-123c-4c7b-a439-6b469de5fd63",
+    "04305395-8c09-4947-b5ef-74c3c54061e4",
+    "e6100b05-03e0-40d5-8f43-9d8efe6d10e3",
+    "b030fa63-2607-43ae-92de-063e17d8bf48",
+    "e2bc950d-173c-45de-b4ca-50ac17407b4a"
+  ],
+  "user_achievement_id": "b8da819f-0ccb-4cd0-85d0-0d600e5e31e6",
+  "progress_ids": [
+    "67eb7b7f-d4d4-4d81-be62-ad19f9439e03",
+    "3bc7c637-8ee2-449a-bf43-ae056dd786b7",
+    "3c7d641e-9f65-48d8-81f7-98167d2ad4d6",
+    "2bcd6160-4a40-4d54-96c8-16c3e4b4aac2",
+    "0379a5c0-5cd6-489b-9d32-89940ecaa0bb",
+    "79f68ca2-d992-491c-a75f-fd3de559136e",
+    "7384f124-14aa-4723-871b-1219a18b17c2",
+    "77cd27fd-ac65-4210-aaf1-cd8b75a53013",
+    "8c4e48e3-2d8a-4dc4-b290-a6cc3cae766d",
+    "fa524969-09d1-4520-be61-ee343f1c0c4e",
+    "e896805f-4fe1-4dd1-ad40-f6ebb1350e5d",
+    "2b492f95-05dd-41e2-81e3-ae512fdbc067"
+  ],
+  "progress_id": "67eb7b7f-d4d4-4d81-be62-ad19f9439e03",
+  "tutorial_id": "legacy-tutorial-001",
+  "learning_path_id": "legacy-path-001",
+  "ai_opponent_id": "legacy-ai-001",
+  "subscription_id": "legacy-sub-001",
+  "opening_eco_code": "B92",
+  "learning_module_id": "legacy-module-001",
+  "study_plan_id": "legacy-plan-001",
+  "enrollment_id": "legacy-enrollment-001"
+}

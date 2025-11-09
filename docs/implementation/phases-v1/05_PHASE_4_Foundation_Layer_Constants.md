@@ -4,7 +4,7 @@
 This phase centralizes all application constants and configurations, eliminating magic strings and ensuring consistency across the entire application. Constants are organized by domain and page for maintainability.
 
 **Priority**: P0  
-**Files Created**: 10  
+**Files Created**: 11
 **Files Modified**: 0  
 **Description**: Application constants and configurations
 
@@ -19,6 +19,8 @@ This phase centralizes all application constants and configurations, eliminating
 3. `frontend/src/constants/models.constants.tsx` - Models page constants
 4. `frontend/src/constants/settings.constants.tsx` - Settings page constants
 5. `frontend/src/constants/chat.constants.tsx` - Chat page constants
+6. `frontend/src/constants/modelForm.constants.tsx` - Model form page constants
+7. `frontend/src/constants/providerForm.constants.tsx` - Provider form page constants
 
 **Validation**:
 - [ ] All constants properly typed
@@ -56,6 +58,8 @@ frontend/src/
 │   ├── models.constants.tsx
 │   ├── settings.constants.tsx
 │   ├── chat.constants.tsx
+│   ├── modelForm.constants.tsx
+│   ├── providerForm.constants.tsx
 │   ├── apiGuide.constants.tsx
 │   ├── browserGuide.constants.tsx
 │   ├── desktopGuide.constants.tsx
