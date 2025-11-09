@@ -32,9 +32,11 @@ export function useProviderFormPage(_readOnly: boolean = false) {
     name: '',
     type: '',
     enabled: true,
-    priority: 0,
+    priority: 100, // Default priority
     description: '',
-    config: {}
+    config: {
+      timeout: 30000 // Default timeout 30 seconds
+    }
   });
 
   // Load provider data if editing
@@ -68,32 +70,40 @@ export function useProviderFormPage(_readOnly: boolean = false) {
 
     try {
       if (isEditMode && id) {
-        // Update existing provider
+        // Update existing provider - preserve all existing data including hidden fields
         const updateData: UpdateProviderRequest = {
           name: formData.name,
           type: formData.type,
           enabled: formData.enabled,
-          priority: formData.priority,
+          priority: formData.priority, // Preserve existing priority
           description: formData.description || null
         };
         await providersService.updateProvider(id, updateData);
 
-        // Update config separately
+        // Update config separately - this preserves all existing config values
         if (Object.keys(formData.config).length > 0) {
           await providersService.updateProviderConfig(id, formData.config);
         }
 
         useAlertStore.showAlert('Provider updated successfully', 'success');
       } else {
-        // Create new provider
+        // Create new provider - auto-generate ID from name
+        const generatedId = formData.name
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '');
+
         const createData: CreateProviderRequest = {
-          id: formData.id,
+          id: generatedId,
           name: formData.name,
           type: formData.type,
           enabled: formData.enabled,
-          priority: formData.priority,
+          priority: formData.priority || 100, // Default to 100 if not set
           description: formData.description || null,
-          config: formData.config
+          config: {
+            ...formData.config,
+            timeout: formData.config.timeout || 30000 // Ensure timeout has default
+          }
         };
         await providersService.createProvider(createData);
         useAlertStore.showAlert('Provider created successfully', 'success');
@@ -136,15 +146,39 @@ export function useProviderFormPage(_readOnly: boolean = false) {
   };
 
   const handleReset = () => {
-    setFormData({
-      id: '',
-      name: '',
-      type: '',
-      enabled: true,
-      priority: 0,
-      description: '',
-      config: {}
-    });
+    if (isEditMode && id) {
+      // Reset to original loaded data - reload the provider
+      const reloadProvider = async () => {
+        try {
+          const provider = await providersService.getProviderDetails(id);
+          setFormData({
+            id: provider.id,
+            name: provider.name,
+            type: provider.type,
+            enabled: provider.enabled,
+            priority: provider.priority,
+            description: provider.description || '',
+            config: provider.config || {}
+          });
+        } catch (error) {
+          console.error('Failed to reload provider:', error);
+        }
+      };
+      reloadProvider();
+    } else {
+      // Reset to empty form for new provider
+      setFormData({
+        id: '',
+        name: '',
+        type: '',
+        enabled: true,
+        priority: 100,
+        description: '',
+        config: {
+          timeout: 30000
+        }
+      });
+    }
   };
 
   const handleToggleEnabled = async () => {

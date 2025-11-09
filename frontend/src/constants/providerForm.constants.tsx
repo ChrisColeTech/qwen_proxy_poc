@@ -39,31 +39,31 @@ export const FIELD_LABELS = {
 
   CONFIG_TITLE: 'Configuration',
 
-  BASE_URL: 'baseURL',
+  BASE_URL: 'Base URL',
   BASE_URL_DESC: 'Base URL for the provider API endpoint',
   BASE_URL_PLACEHOLDER: 'http://localhost:1234',
 
-  TIMEOUT: 'timeout',
+  TIMEOUT: 'Timeout',
   TIMEOUT_DESC: 'Request timeout in milliseconds',
   TIMEOUT_PLACEHOLDER: '30000',
 
-  DEFAULT_MODEL: 'defaultModel',
+  DEFAULT_MODEL: 'Default Model',
   DEFAULT_MODEL_DESC: 'Default model to use if none specified',
   DEFAULT_MODEL_PLACEHOLDER: 'qwen-max',
 
-  API_KEY: 'apiKey',
+  API_KEY: 'API Key',
   API_KEY_DESC: 'API key for authentication (OpenAI-compatible providers)',
   API_KEY_PLACEHOLDER: 'sk-...',
 
-  TOKEN: 'token',
+  TOKEN: 'Token',
   TOKEN_DESC: 'Authentication token (Qwen providers)',
   TOKEN_PLACEHOLDER: 'your-api-token',
 
-  COOKIES: 'cookies',
+  COOKIES: 'Cookies',
   COOKIES_DESC: 'Session cookies for authentication',
   COOKIES_PLACEHOLDER: 'cookie1=value1; cookie2=value2',
 
-  EXPIRES_AT: 'expiresAt',
+  EXPIRES_AT: 'Expires At',
   EXPIRES_AT_DESC: 'Token expiration timestamp (Unix milliseconds)',
   EXPIRES_AT_PLACEHOLDER: '1704067200000'
 } as const;
