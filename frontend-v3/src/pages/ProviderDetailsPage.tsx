@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { ArrowLeft, Edit, Trash2, TestTube, RefreshCw, Power, PowerOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipProvider } from '@/components/ui/tooltip';
 import { StatusIndicator } from '@/components/ui/status-indicator';
 import { useAlertStore } from '@/stores/useAlertStore';
 import { useUIStore } from '@/stores/useUIStore';
@@ -147,10 +148,18 @@ export function ProviderDetailsPage() {
     <div className="page-container">
       {/* Back button */}
       <div className="mb-4">
-        <Button variant="ghost" size="sm" onClick={() => setCurrentRoute('/providers')}>
-          <ArrowLeft className="icon-sm mr-2" />
-          Back to Providers
-        </Button>
+        <TooltipProvider>
+          <Tooltip content="Back to providers list">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setCurrentRoute('/providers')}
+              aria-label="Back to providers list"
+            >
+              <ArrowLeft className="icon-sm" />
+            </Button>
+          </Tooltip>
+        </TooltipProvider>
       </div>
 
       {/* Details Card */}
@@ -165,37 +174,46 @@ export function ProviderDetailsPage() {
               </div>
             </div>
 
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleToggleEnabled}
-                disabled={actionLoading === 'toggle'}
-              >
-                {provider.enabled ? (
-                  <><PowerOff className="icon-sm mr-2" />Disable</>
-                ) : (
-                  <><Power className="icon-sm mr-2" />Enable</>
-                )}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentRoute(`/providers/${provider.id}/edit`)}
-              >
-                <Edit className="icon-sm mr-2" />
-                Edit
-              </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={handleDelete}
-                disabled={actionLoading === 'delete'}
-              >
-                <Trash2 className="icon-sm mr-2" />
-                Delete
-              </Button>
-            </div>
+            <TooltipProvider>
+              <div className="flex gap-2">
+                <Tooltip content={provider.enabled ? "Disable provider" : "Enable provider"}>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={handleToggleEnabled}
+                    disabled={actionLoading === 'toggle'}
+                    aria-label={provider.enabled ? "Disable provider" : "Enable provider"}
+                  >
+                    {provider.enabled ? (
+                      <PowerOff className="icon-sm" />
+                    ) : (
+                      <Power className="icon-sm" />
+                    )}
+                  </Button>
+                </Tooltip>
+                <Tooltip content="Edit provider">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setCurrentRoute(`/providers/${provider.id}/edit`)}
+                    aria-label="Edit provider"
+                  >
+                    <Edit className="icon-sm" />
+                  </Button>
+                </Tooltip>
+                <Tooltip content="Delete provider">
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    onClick={handleDelete}
+                    disabled={actionLoading === 'delete'}
+                    aria-label="Delete provider"
+                  >
+                    <Trash2 className="icon-sm" />
+                  </Button>
+                </Tooltip>
+              </div>
+            </TooltipProvider>
           </div>
         </div>
 
@@ -283,24 +301,32 @@ export function ProviderDetailsPage() {
         {/* Actions */}
         <div className="border rounded-lg p-6 space-y-4 mb-6">
           <h2 className="text-lg font-semibold">Actions</h2>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={handleTest}
-              disabled={actionLoading === 'test'}
-            >
-              <TestTube className="icon-sm mr-2" />
-              {actionLoading === 'test' ? 'Testing...' : 'Test Connection'}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={handleReload}
-              disabled={actionLoading === 'reload'}
-            >
-              <RefreshCw className="icon-sm mr-2" />
-              {actionLoading === 'reload' ? 'Reloading...' : 'Reload Provider'}
-            </Button>
-          </div>
+          <TooltipProvider>
+            <div className="flex gap-2">
+              <Tooltip content={actionLoading === 'test' ? 'Testing connection...' : 'Test connection'}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={handleTest}
+                  disabled={actionLoading === 'test'}
+                  aria-label="Test connection"
+                >
+                  <TestTube className="icon-sm" />
+                </Button>
+              </Tooltip>
+              <Tooltip content={actionLoading === 'reload' ? 'Reloading provider...' : 'Reload provider'}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={handleReload}
+                  disabled={actionLoading === 'reload'}
+                  aria-label="Reload provider"
+                >
+                  <RefreshCw className="icon-sm" />
+                </Button>
+              </Tooltip>
+            </div>
+          </TooltipProvider>
         </div>
 
         {/* Metadata */}

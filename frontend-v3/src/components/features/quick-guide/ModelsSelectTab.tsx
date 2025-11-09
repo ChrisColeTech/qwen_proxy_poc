@@ -1,5 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipProvider } from '@/components/ui/tooltip';
 import { Database, RefreshCw, CheckCircle2, XCircle, Check } from 'lucide-react';
 import type { Model } from '@/types/proxy.types';
 import { cn } from '@/lib/utils';
@@ -46,16 +47,20 @@ export function ModelsSelectTab({
                 {models.length} models
               </Badge>
             )}
-            <Button
-              onClick={onRefresh}
-              disabled={loading}
-              size="icon"
-              variant="outline"
-              title="Refresh models"
-              className="model-refresh-button"
-            >
-              <RefreshCw className={cn('model-refresh-icon', loading && 'animate-spin')} />
-            </Button>
+            <TooltipProvider>
+              <Tooltip content={loading ? "Refreshing models..." : "Refresh models"}>
+                <Button
+                  onClick={onRefresh}
+                  disabled={loading}
+                  size="icon"
+                  variant="outline"
+                  aria-label="Refresh models list"
+                  className="model-refresh-button"
+                >
+                  <RefreshCw className={cn('model-refresh-icon', loading && 'animate-spin')} />
+                </Button>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
         {models.length > 0 && (

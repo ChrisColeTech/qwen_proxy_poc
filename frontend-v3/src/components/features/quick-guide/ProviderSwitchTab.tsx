@@ -1,5 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipProvider } from '@/components/ui/tooltip';
 import { StatusIndicator } from '@/components/ui/status-indicator';
 import { Network, RefreshCw, ArrowRight, XCircle } from 'lucide-react';
 import type { Provider } from '@/types/providers.types';
@@ -58,15 +59,19 @@ export function ProviderSwitchTab({
                     <Badge variant="default" className="provider-badge-sm">Active</Badge>
                   )}
                   {!isActive && provider.enabled && (
-                    <Button
-                      onClick={() => onSwitch(provider.id)}
-                      size="icon"
-                      variant="outline"
-                      title="Switch to this provider"
-                      className="provider-switch-button"
-                    >
-                      <ArrowRight className="provider-switch-icon" />
-                    </Button>
+                    <TooltipProvider>
+                      <Tooltip content="Switch to this provider">
+                        <Button
+                          onClick={() => onSwitch(provider.id)}
+                          size="icon"
+                          variant="outline"
+                          aria-label={`Switch to ${provider.name} provider`}
+                          className="provider-switch-button"
+                        >
+                          <ArrowRight className="provider-switch-icon" />
+                        </Button>
+                      </Tooltip>
+                    </TooltipProvider>
                   )}
                   {!provider.enabled && (
                     <Badge variant="outline" className="provider-badge-sm">Disabled</Badge>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipProvider } from '@/components/ui/tooltip';
 import { Send, RefreshCw, Brain, MessageSquare, ChevronDown, ChevronRight } from 'lucide-react';
 import { chatService } from '@/services/chatService';
 
@@ -70,23 +71,23 @@ export function CustomChatTab({ providerRouterUrl, activeModel }: CustomChatTabP
             disabled={loading}
           />
           <div className="flex justify-end">
-            <Button
-              onClick={handleSend}
-              disabled={loading || !prompt.trim()}
-              variant="default"
-            >
-              {loading ? (
-                <>
-                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                  Sending...
-                </>
-              ) : (
-                <>
-                  <Send className="h-4 w-4 mr-2" />
-                  Send
-                </>
-              )}
-            </Button>
+            <TooltipProvider>
+              <Tooltip content={loading ? "Sending message..." : "Send message"}>
+                <Button
+                  onClick={handleSend}
+                  disabled={loading || !prompt.trim()}
+                  variant="outline"
+                  size="icon"
+                  aria-label="Send message"
+                >
+                  {loading ? (
+                    <RefreshCw className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
+                </Button>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
       </div>

@@ -269,8 +269,8 @@ export function ModelFormPage() {
   );
 
   const actions = (
-    <div className="flex gap-2">
-      <TooltipProvider>
+    <TooltipProvider>
+      <div className="flex gap-2">
         <Tooltip content="Back to models list">
           <Button
             type="button"
@@ -282,9 +282,7 @@ export function ModelFormPage() {
             <ArrowLeft className="icon-sm" />
           </Button>
         </Tooltip>
-      </TooltipProvider>
-      {model && model.providers && model.providers.length > 0 && (
-        <TooltipProvider>
+        {model && model.providers && model.providers.length > 0 && (
           <Tooltip content="Set as default model for linked providers">
             <Button
               type="button"
@@ -297,9 +295,9 @@ export function ModelFormPage() {
               <Star className="icon-sm" />
             </Button>
           </Tooltip>
-        </TooltipProvider>
-      )}
-    </div>
+        )}
+      </div>
+    </TooltipProvider>
   );
 
   const tabs = [

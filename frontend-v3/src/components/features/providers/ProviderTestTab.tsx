@@ -91,13 +91,13 @@ export function ProviderTestTab({ providerId, providerName, defaultModel }: Prov
               </Badge>
             )}
             <TooltipProvider>
-              <Tooltip content="Test provider configuration">
+              <Tooltip content={loading ? "Testing provider..." : "Test provider configuration"}>
                 <Button
                   onClick={handleTest}
                   disabled={loading}
                   size="icon"
                   variant="outline"
-                  aria-label="Test provider"
+                  aria-label="Test provider configuration"
                 >
                   {loading ? (
                     <RefreshCw className="h-3.5 w-3.5 animate-spin" />

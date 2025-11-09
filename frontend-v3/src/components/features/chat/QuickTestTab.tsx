@@ -1,5 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipProvider } from '@/components/ui/tooltip';
 import { RefreshCw, Play, Zap } from 'lucide-react';
 import { useQuickChatTest } from '@/hooks/useQuickChatTest';
 import type { QuickTestTabProps } from '@/types/components.types';
@@ -26,20 +27,24 @@ export function QuickTestTab({ providerRouterUrl, model }: QuickTestTabProps) {
                 Waiting...
               </Badge>
             )}
-            <Button
-              onClick={() => handleTest(providerRouterUrl, model)}
-              disabled={loading}
-              size="icon"
-              variant="outline"
-              title="Test chat completion"
-              className="chat-quick-test-button"
-            >
-              {loading ? (
-                <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-              ) : (
-                <Play className="h-3.5 w-3.5" />
-              )}
-            </Button>
+            <TooltipProvider>
+              <Tooltip content={loading ? "Testing chat completion..." : "Test chat completion"}>
+                <Button
+                  onClick={() => handleTest(providerRouterUrl, model)}
+                  disabled={loading}
+                  size="icon"
+                  variant="outline"
+                  aria-label="Test chat completion"
+                  className="chat-quick-test-button"
+                >
+                  {loading ? (
+                    <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Play className="h-3.5 w-3.5" />
+                  )}
+                </Button>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
         {response && (
