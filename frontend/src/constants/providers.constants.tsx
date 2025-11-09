@@ -12,12 +12,12 @@ export const PROVIDERS_TABS = {
   SWITCH: {
     value: 'switch',
     label: 'Switch Provider',
-    description: 'The Provider Router can route to different AI backends. Switch providers dynamically:'
+    description: 'The Provider Router can route to different backends. Switch providers dynamically:'
   },
   ALL: {
     value: 'all',
     label: 'All Providers',
-    description: 'View and manage all configured AI providers'
+    description: 'View and manage all configured LLM providers'
   },
   TEST: {
     value: 'test',
@@ -51,7 +51,7 @@ export const buildProviderSwitchActions = (params: {
     const canSwitch = !isActive && provider.enabled;
 
     return {
-      icon: <StatusIndicator status={isActive ? 'running' : 'stopped'} />,
+      icon: isActive ? <StatusIndicator status={isActive ? 'running' : 'stopped'} /> : undefined,
       title: provider.name,
       description: '',
       actions: createProviderBadge(isActive ? 'default' : 'secondary', provider.type),
@@ -93,7 +93,7 @@ export const buildProviderActions = (params: {
     }
 
     return {
-      icon: <StatusIndicator status={status} />,
+      icon: isActive ? <StatusIndicator status={status} /> : undefined,
       title: provider.name,
       description: provider.type,
       actions: createProviderBadge(badgeVariant, badgeText),

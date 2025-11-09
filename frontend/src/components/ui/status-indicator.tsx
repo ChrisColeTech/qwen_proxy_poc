@@ -24,7 +24,7 @@ export function StatusIndicator({ status, pulse = true, className }: StatusIndic
   const color = colorMap[status];
 
   return (
-    <span className={cn('relative flex h-3 w-3', className)}>
+    <span className={cn('relative flex h-4 w-4', className)}>
       {pulse && (
         <span
           className={cn(
@@ -33,7 +33,7 @@ export function StatusIndicator({ status, pulse = true, className }: StatusIndic
           )}
         ></span>
       )}
-      <span className={cn('relative inline-flex rounded-full h-3 w-3', color)}></span>
+      <span className={cn('relative inline-flex rounded-full h-4 w-4', color)}></span>
     </span>
   );
 }
