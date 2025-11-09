@@ -30,9 +30,11 @@ export function TabCard({ title, icon: Icon, tabs, defaultTab, pageKey }: TabCar
   const setActiveTab = useUIStore((state) => state.setActiveTab);
   const currentRoute = useUIStore((state) => state.currentRoute);
 
-  // Use stored tab if available, otherwise use defaultTab or first visible tab
+  // Use stored tab if available and valid, otherwise use defaultTab or first visible tab
   const key = pageKey || currentRoute;
-  const initialTab = activeTab[key] || defaultTab || visibleTabs[0]?.value;
+  const storedTab = activeTab[key];
+  const isStoredTabValid = storedTab && visibleTabs.some(tab => tab.value === storedTab);
+  const initialTab = isStoredTabValid ? storedTab : (defaultTab || visibleTabs[0]?.value);
 
   // Calculate grid columns based on number of visible tabs
   const getGridCols = () => {
