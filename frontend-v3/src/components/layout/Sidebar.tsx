@@ -68,7 +68,9 @@ export function Sidebar() {
           })
           .map((item) => {
             const Icon = item.icon;
-            const isActive = activeRoute === item.route;
+            // Check if current route matches exactly or starts with the base route (for CRUD pages)
+            const isActive = activeRoute === item.route ||
+                             (item.route !== '/' && activeRoute.startsWith(item.route + '/'));
 
             return (
               <button
