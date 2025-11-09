@@ -1,6 +1,7 @@
 import { Globe, Chrome, CheckCircle, ArrowRight } from 'lucide-react';
 import { ContentCard } from '@/components/ui/content-card';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 export const BROWSER_GUIDE_TABS = {
   GUIDE: {
@@ -18,8 +19,22 @@ export const BROWSER_GUIDE_TABS = {
 export const BROWSER_GUIDE_TITLE = 'Browser Quick Start';
 export const BROWSER_GUIDE_ICON = Globe;
 
+interface BrowserGuideProps {
+  extensionInstalled: boolean;
+  credentialsValid: boolean;
+  proxyRunning: boolean;
+}
+
 // All Steps Combined in One Tab
-export const buildBrowserGuideContent = () => {
+export const buildBrowserGuideContent = ({
+  extensionInstalled,
+  credentialsValid,
+  proxyRunning
+}: BrowserGuideProps) => {
+  const step1Complete = extensionInstalled;
+  const step2Complete = credentialsValid;
+  const step3Complete = proxyRunning;
+
   return (
     <ContentCard icon={Globe} title="Browser Quick Start Guide">
       <div className="vspace-md p-6">
@@ -30,6 +45,18 @@ export const buildBrowserGuideContent = () => {
             The Chrome extension automatically extracts and manages your Qwen credentials.
             No manual configuration needed—just install, authenticate, and start building.
           </p>
+          {/* Progress indicator */}
+          <div className="mt-4 flex items-center gap-2">
+            <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+              <div
+                className="h-full bg-green-600 transition-all duration-500"
+                style={{ width: `${((step1Complete ? 1 : 0) + (step2Complete ? 1 : 0) + (step3Complete ? 1 : 0)) / 3 * 100}%` }}
+              />
+            </div>
+            <span className="text-xs text-muted-foreground font-medium">
+              {((step1Complete ? 1 : 0) + (step2Complete ? 1 : 0) + (step3Complete ? 1 : 0))} of 3 complete
+            </span>
+          </div>
         </div>
 
         <div className="divider-horizontal" />
@@ -38,15 +65,27 @@ export const buildBrowserGuideContent = () => {
         <div className="py-6">
           <div className="flex items-start gap-4">
             <div className="flex-shrink-0">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <Chrome className="h-6 w-6" />
+              <div className={cn(
+                "flex h-12 w-12 items-center justify-center rounded-lg transition-all",
+                step1Complete
+                  ? "bg-green-500/10 text-green-600 dark:text-green-500"
+                  : "bg-primary/10 text-primary"
+              )}>
+                {step1Complete ? (
+                  <CheckCircle className="h-6 w-6" />
+                ) : (
+                  <Chrome className="h-6 w-6" />
+                )}
               </div>
             </div>
             <div className="flex-1 space-y-4">
               <div>
                 <div className="flex items-center gap-3 mb-2">
                   <Badge variant="outline" className="font-mono">Step 1</Badge>
-                  <h4 className="text-base font-semibold">Install Chrome Extension</h4>
+                  <h4 className={cn("text-base font-semibold", step1Complete && "text-green-600 dark:text-green-500")}>
+                    Install Chrome Extension
+                  </h4>
+                  {step1Complete && <Badge variant="default" className="ml-auto bg-green-600">Complete</Badge>}
                 </div>
                 <p className="text-sm text-muted-foreground">
                   One-time setup that takes less than a minute. The extension runs securely in the background.
@@ -88,15 +127,34 @@ export const buildBrowserGuideContent = () => {
         <div className="py-6">
           <div className="flex items-start gap-4">
             <div className="flex-shrink-0">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <CheckCircle className="h-6 w-6" />
+              <div className={cn(
+                "flex h-12 w-12 items-center justify-center rounded-lg transition-all",
+                step2Complete
+                  ? "bg-green-500/10 text-green-600 dark:text-green-500"
+                  : !step1Complete
+                  ? "bg-muted text-muted-foreground"
+                  : "bg-primary/10 text-primary"
+              )}>
+                {step2Complete ? (
+                  <CheckCircle className="h-6 w-6" />
+                ) : (
+                  <CheckCircle className="h-6 w-6" />
+                )}
               </div>
             </div>
             <div className="flex-1 space-y-4">
               <div>
                 <div className="flex items-center gap-3 mb-2">
                   <Badge variant="outline" className="font-mono">Step 2</Badge>
-                  <h4 className="text-base font-semibold">Authenticate with Qwen</h4>
+                  <h4 className={cn(
+                    "text-base font-semibold",
+                    step2Complete && "text-green-600 dark:text-green-500",
+                    !step1Complete && "text-muted-foreground"
+                  )}>
+                    Authenticate with Qwen
+                  </h4>
+                  {step2Complete && <Badge variant="default" className="ml-auto bg-green-600">Complete</Badge>}
+                  {!step1Complete && <Badge variant="secondary" className="ml-auto">Locked</Badge>}
                 </div>
                 <p className="text-sm text-muted-foreground">
                   Sign in to your Qwen account. The extension automatically captures your credentials securely.
@@ -132,16 +190,35 @@ export const buildBrowserGuideContent = () => {
         <div className="py-6">
           <div className="flex items-start gap-4">
             <div className="flex-shrink-0">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-500/10 text-green-600 dark:text-green-500">
-                <ArrowRight className="h-6 w-6" />
+              <div className={cn(
+                "flex h-12 w-12 items-center justify-center rounded-lg transition-all",
+                step3Complete
+                  ? "bg-green-500/10 text-green-600 dark:text-green-500"
+                  : !step2Complete
+                  ? "bg-muted text-muted-foreground"
+                  : "bg-primary/10 text-primary"
+              )}>
+                {step3Complete ? (
+                  <CheckCircle className="h-6 w-6" />
+                ) : (
+                  <ArrowRight className="h-6 w-6" />
+                )}
               </div>
             </div>
             <div className="flex-1 space-y-4">
               <div>
                 <div className="flex items-center gap-3 mb-2">
                   <Badge variant="outline" className="font-mono">Step 3</Badge>
-                  <h4 className="text-base font-semibold">Start Proxy & Build</h4>
-                  <Badge variant="secondary" className="ml-auto">Ready to Use</Badge>
+                  <h4 className={cn(
+                    "text-base font-semibold",
+                    step3Complete && "text-green-600 dark:text-green-500",
+                    !step2Complete && "text-muted-foreground"
+                  )}>
+                    Start Proxy & Build
+                  </h4>
+                  {step3Complete && <Badge variant="default" className="ml-auto bg-green-600">Complete</Badge>}
+                  {!step3Complete && step2Complete && <Badge variant="secondary" className="ml-auto">Ready to Use</Badge>}
+                  {!step2Complete && <Badge variant="secondary" className="ml-auto">Locked</Badge>}
                 </div>
                 <p className="text-sm text-muted-foreground mb-4">
                   You're all set! Start the proxy server and point your application to the local endpoint.

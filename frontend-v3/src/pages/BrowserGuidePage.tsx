@@ -1,5 +1,7 @@
 import { TabCard } from '@/components/ui/tab-card';
 import { useBrowserGuidePage } from '@/hooks/useBrowserGuidePage';
+import { useExtensionDetection } from '@/hooks/useExtensionDetection';
+import { useProxyStore } from '@/stores/useProxyStore';
 import {
   buildBrowserGuideContent,
   BROWSER_GUIDE_TABS,
@@ -13,10 +15,19 @@ import {
 export function BrowserGuidePage() {
   useBrowserGuidePage();
 
+  const { extensionDetected } = useExtensionDetection();
+  const wsProxyStatus = useProxyStore((state) => state.wsProxyStatus);
+  const credentialsValid = wsProxyStatus?.credentials?.valid || false;
+  const proxyRunning = wsProxyStatus?.providerRouter?.running || false;
+
   const tabs = [
     {
       ...BROWSER_GUIDE_TABS.GUIDE,
-      content: buildBrowserGuideContent()
+      content: buildBrowserGuideContent({
+        extensionInstalled: extensionDetected,
+        credentialsValid,
+        proxyRunning
+      })
     }
   ];
 

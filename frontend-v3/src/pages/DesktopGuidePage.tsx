@@ -1,5 +1,6 @@
 import { TabCard } from '@/components/ui/tab-card';
 import { useDesktopGuidePage } from '@/hooks/useDesktopGuidePage';
+import { useProxyStore } from '@/stores/useProxyStore';
 import {
   buildDesktopGuideContent,
   DESKTOP_GUIDE_TABS,
@@ -10,10 +11,17 @@ import {
 export function DesktopGuidePage() {
   useDesktopGuidePage();
 
+  const wsProxyStatus = useProxyStore((state) => state.wsProxyStatus);
+  const credentialsValid = wsProxyStatus?.credentials?.valid || false;
+  const proxyRunning = wsProxyStatus?.providerRouter?.running || false;
+
   const tabs = [
     {
       ...DESKTOP_GUIDE_TABS.GUIDE,
-      content: buildDesktopGuideContent()
+      content: buildDesktopGuideContent({
+        credentialsValid,
+        proxyRunning
+      })
     }
   ];
 
