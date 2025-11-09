@@ -271,6 +271,18 @@ color: hsl(var(--status-success));
 @apply w-full h-12 flex items-center justify-center transition-colors relative mb-2;
 }
 
+.sidebar-nav-indicator {
+@apply absolute w-0.5 h-12 bg-primary;
+}
+
+.sidebar-nav-indicator-left {
+@apply left-0;
+}
+
+.sidebar-nav-indicator-right {
+@apply right-0;
+}
+
 .titlebar {
 @apply h-10 bg-background border-b border-border flex items-center justify-between;
 }
