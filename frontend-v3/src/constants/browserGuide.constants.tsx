@@ -22,89 +22,146 @@ export const BROWSER_GUIDE_ICON = Globe;
 export const buildBrowserGuideContent = () => {
   return (
     <ContentCard icon={Globe} title="Browser Quick Start Guide">
-      <div className="vspace-md p-4">
-        <p className="step-description mb-6">
-          Use the Chrome extension to extract Qwen credentials and proxy requests to Qwen's API.
-          The extension handles authentication automatically after you log in.
-        </p>
+      <div className="vspace-md p-6">
+        {/* Hero Section */}
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold mb-2">Get Started in 3 Simple Steps</h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            The Chrome extension automatically extracts and manages your Qwen credentials.
+            No manual configuration needed—just install, authenticate, and start building.
+          </p>
+        </div>
 
         <div className="divider-horizontal" />
 
-      <div className="flex-row-between">
-        <div className="vspace-tight">
-          <div className="text-setting-label flex items-center gap-2">
-            <Chrome className="h-4 w-4" />
-            Step 1: Install Chrome Extension (First Time)
-          </div>
-          <div className="guide-step-list mt-3">
-            <div className="guide-step-item">
-              <CheckCircle className="guide-step-icon" />
-              <div className="guide-step-text">
-                Go to <span className="step-inline-code">chrome://extensions/</span> and enable "Developer mode"
+        {/* Step 1 */}
+        <div className="py-6">
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <Chrome className="h-6 w-6" />
               </div>
             </div>
-            <div className="guide-step-item">
-              <CheckCircle className="guide-step-icon" />
-              <div className="guide-step-text">
-                Click "Load unpacked" and select the <span className="step-inline-code">/extension</span> folder
+            <div className="flex-1 space-y-4">
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <Badge variant="outline" className="font-mono">Step 1</Badge>
+                  <h4 className="text-base font-semibold">Install Chrome Extension</h4>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  One-time setup that takes less than a minute. The extension runs securely in the background.
+                </p>
               </div>
-            </div>
-            <div className="guide-step-item">
-              <CheckCircle className="guide-step-icon" />
-              <div className="guide-step-text">
-                Extension is ready - no additional configuration needed
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="divider-horizontal" />
-
-      <div className="flex-row-between">
-        <div className="vspace-tight">
-          <div className="text-setting-label flex items-center gap-2">
-            <CheckCircle className="h-4 w-4" />
-            Step 2: Authenticate
-          </div>
-          <div className="guide-step-list mt-3">
-            <div className="guide-step-item">
-              <CheckCircle className="guide-step-icon" />
-              <div className="guide-step-text">
-                Click <span className="step-inline-code">Connect to Qwen</span> to open chat.qwen.ai
-              </div>
-            </div>
-            <div className="guide-step-item">
-              <CheckCircle className="guide-step-icon" />
-              <div className="guide-step-text">Log in with your Qwen account</div>
-            </div>
-            <div className="guide-step-item">
-              <CheckCircle className="guide-step-icon" />
-              <div className="guide-step-text">
-                Extension auto-extracts credentials and dashboard updates in 5 seconds
+              <div className="space-y-3 pl-4 border-l-2 border-muted">
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div className="text-sm">
+                    Navigate to <code className="px-2 py-0.5 rounded bg-muted text-xs font-mono">chrome://extensions/</code> in Chrome
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div className="text-sm">
+                    Enable <strong>Developer mode</strong> using the toggle in the top right
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div className="text-sm">
+                    Click <strong>Load unpacked</strong> and select the <code className="px-2 py-0.5 rounded bg-muted text-xs font-mono">/extension</code> folder
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div className="text-sm">
+                    Extension is now active—you'll see the icon in your browser toolbar
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="divider-horizontal" />
+        <div className="divider-horizontal" />
 
-      <div className="flex-row-between">
-        <div className="vspace-tight">
-          <div className="text-setting-label flex items-center gap-2">
-            <ArrowRight className="h-4 w-4" />
-            Step 3: Start Proxy & Use API
+        {/* Step 2 */}
+        <div className="py-6">
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <CheckCircle className="h-6 w-6" />
+              </div>
+            </div>
+            <div className="flex-1 space-y-4">
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <Badge variant="outline" className="font-mono">Step 2</Badge>
+                  <h4 className="text-base font-semibold">Authenticate with Qwen</h4>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Sign in to your Qwen account. The extension automatically captures your credentials securely.
+                </p>
+              </div>
+              <div className="space-y-3 pl-4 border-l-2 border-muted">
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div className="text-sm">
+                    Click the <strong>Connect to Qwen</strong> button on the dashboard
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div className="text-sm">
+                    Log in to <code className="px-2 py-0.5 rounded bg-muted text-xs font-mono">chat.qwen.ai</code> with your account
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div className="text-sm">
+                    Extension extracts credentials automatically—dashboard updates within 5 seconds
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-2 mt-2">
-            <Badge variant="secondary">Ready to Use</Badge>
-          </div>
-          <p className="text-setting-description mt-3">
-            Click <span className="step-inline-code">Start Proxy</span>, wait for Running status,
-            then point your code to <span className="step-inline-code">http://localhost:3001</span>
-          </p>
         </div>
-      </div>
+
+        <div className="divider-horizontal" />
+
+        {/* Step 3 */}
+        <div className="py-6">
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-500/10 text-green-600 dark:text-green-500">
+                <ArrowRight className="h-6 w-6" />
+              </div>
+            </div>
+            <div className="flex-1 space-y-4">
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <Badge variant="outline" className="font-mono">Step 3</Badge>
+                  <h4 className="text-base font-semibold">Start Proxy & Build</h4>
+                  <Badge variant="secondary" className="ml-auto">Ready to Use</Badge>
+                </div>
+                <p className="text-sm text-muted-foreground mb-4">
+                  You're all set! Start the proxy server and point your application to the local endpoint.
+                </p>
+                <div className="rounded-lg border bg-muted/50 p-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm">
+                      <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                      <span className="font-medium">Local Endpoint:</span>
+                      <code className="px-2 py-1 rounded bg-background text-xs font-mono">http://localhost:3001</code>
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      Use this as your OpenAI API base URL. Authentication happens automatically via stored credentials.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </ContentCard>
   );
