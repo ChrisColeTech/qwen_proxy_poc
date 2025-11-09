@@ -1,40 +1,23 @@
 {
   "summary": {
-    "tsx_files_analyzed": 66,
+    "tsx_files_analyzed": 108,
+    "tsx_count": 66,
+    "ts_count": 42,
     "total_css_classes": 274,
-    "custom_classes_used": 81,
-    "css_classes_used": 47,
-    "css_classes_unused": 227,
-    "usage_percentage": 17.153284671532848
+    "custom_classes_used": 56,
+    "css_classes_used": 55,
+    "css_classes_unused": 219,
+    "usage_percentage": 20.072992700729927
   },
   "used_custom_classes": [
-    "Authenticate",
-    "Build",
-    "Chrome",
-    "Click",
-    "Convenience",
-    "Extension",
-    "Install",
-    "Proxy",
-    "Qwen",
-    "SelectItem",
-    "Start",
-    "TabsTrigger",
-    "ToastClose",
-    "ToastDescription",
-    "TooltipProps",
     "card-title-with-icon",
-    "children",
-    "className",
     "code-block-code",
     "code-block-container",
     "code-block-copy-button",
     "code-block-label",
     "code-block-pre",
     "code-block-wrapper",
-    "component",
-    "const",
-    "dashboard",
+    "dark",
     "demo-container",
     "demo-header",
     "demo-label",
@@ -42,12 +25,11 @@
     "divider-horizontal",
     "icon-primary",
     "icon-sm",
-    "interface",
+    "light",
     "model-filter-group",
     "model-filter-label",
     "model-filters-row",
     "models-filter-select",
-    "on",
     "page-card",
     "page-card-content",
     "page-container",
@@ -58,23 +40,23 @@
     "provider-switch-list",
     "provider-switch-name",
     "provider-switch-type",
-    "proxy",
-    "return",
-    "ring-offset-background",
-    "server",
+    "sidebar",
+    "sidebar-collapsed",
+    "sidebar-guide-button",
     "sidebar-icon",
+    "sidebar-nav-button",
+    "sidebar-nav-button-active",
+    "sidebar-nav-button-inactive",
     "sidebar-nav-container",
+    "sidebar-settings-button",
     "status-icon-success",
     "status-success",
     "statusbar",
     "statusbar-left",
     "statusbar-separator",
     "step-description",
-    "string",
     "tab-container",
     "tab-content",
-    "that",
-    "the",
     "titlebar",
     "titlebar-button",
     "titlebar-button-close",
@@ -82,13 +64,8 @@
     "titlebar-left",
     "titlebar-right",
     "titlebar-title",
-    "to",
-    "toastVariants",
-    "tooltip",
     "vspace-md",
-    "vspace-tight",
-    "with",
-    "wraps"
+    "vspace-tight"
   ],
   "all_css_classes": [
     "api-guide-container",
@@ -374,6 +351,7 @@
     "code-block-label",
     "code-block-pre",
     "code-block-wrapper",
+    "dark",
     "demo-container",
     "demo-header",
     "demo-label",
@@ -395,8 +373,15 @@
     "provider-switch-list",
     "provider-switch-name",
     "provider-switch-type",
+    "sidebar",
+    "sidebar-collapsed",
+    "sidebar-guide-button",
     "sidebar-icon",
+    "sidebar-nav-button",
+    "sidebar-nav-button-active",
+    "sidebar-nav-button-inactive",
     "sidebar-nav-container",
+    "sidebar-settings-button",
     "status-icon-success",
     "status-success",
     "statusbar",
@@ -461,7 +446,6 @@
     "credentials-status-inactive",
     "credentials-status-row",
     "credentials-status-valid",
-    "dark",
     "demo-content",
     "demo-empty-state",
     "demo-error-state",
@@ -582,21 +566,14 @@
     "settings-page",
     "settings-section",
     "settings-section-title",
-    "sidebar",
-    "sidebar-collapsed",
     "sidebar-expanded",
-    "sidebar-guide-button",
     "sidebar-item",
     "sidebar-item-active",
     "sidebar-label",
     "sidebar-nav",
-    "sidebar-nav-button",
-    "sidebar-nav-button-active",
-    "sidebar-nav-button-inactive",
     "sidebar-nav-indicator",
     "sidebar-nav-indicator-left",
     "sidebar-nav-indicator-right",
-    "sidebar-settings-button",
     "sidebar-toggle",
     "status-badge-dot",
     "status-badge-error",
@@ -659,14 +636,14 @@
       "custom_classes": [
         "icon-sm"
       ],
-      "total_classes": 3,
+      "total_classes": 2,
       "custom_count": 1
     },
     "src/constants/home.constants.tsx": {
       "custom_classes": [
         "icon-sm"
       ],
-      "total_classes": 3,
+      "total_classes": 2,
       "custom_count": 1
     },
     "src/constants/chat.constants.tsx": {
@@ -703,7 +680,7 @@
       "custom_classes": [
         "icon-sm"
       ],
-      "total_classes": 3,
+      "total_classes": 2,
       "custom_count": 1
     },
     "src/pages/SettingsPage.tsx": {
@@ -770,26 +747,18 @@
       "custom_count": 1
     },
     "src/components/ui/tabs.tsx": {
-      "custom_classes": [
-        "TabsTrigger",
-        "className",
-        "const",
-        "ring-offset-background"
-      ],
-      "total_classes": 9,
-      "custom_count": 4
+      "custom_classes": [],
+      "total_classes": 17,
+      "custom_count": 0
     },
     "src/components/ui/card.tsx": {
-      "custom_classes": [
-        "className",
-        "return"
-      ],
-      "total_classes": 2,
-      "custom_count": 2
+      "custom_classes": [],
+      "total_classes": 17,
+      "custom_count": 0
     },
     "src/components/ui/status-label.tsx": {
       "custom_classes": [],
-      "total_classes": 20,
+      "total_classes": 16,
       "custom_count": 0
     },
     "src/components/ui/toaster.tsx": {
@@ -799,12 +768,12 @@
     },
     "src/components/ui/environment-badge.tsx": {
       "custom_classes": [],
-      "total_classes": 21,
+      "total_classes": 20,
       "custom_count": 0
     },
     "src/components/ui/status-indicator.tsx": {
       "custom_classes": [],
-      "total_classes": 0,
+      "total_classes": 11,
       "custom_count": 0
     },
     "src/components/ui/label.tsx": {
@@ -813,28 +782,14 @@
       "custom_count": 0
     },
     "src/components/ui/tooltip.tsx": {
-      "custom_classes": [
-        "Convenience",
-        "TooltipProps",
-        "children",
-        "className",
-        "component",
-        "interface",
-        "string",
-        "that",
-        "tooltip",
-        "with",
-        "wraps"
-      ],
-      "total_classes": 13,
-      "custom_count": 11
+      "custom_classes": [],
+      "total_classes": 11,
+      "custom_count": 0
     },
     "src/components/ui/switch.tsx": {
-      "custom_classes": [
-        "className"
-      ],
-      "total_classes": 1,
-      "custom_count": 1
+      "custom_classes": [],
+      "total_classes": 20,
+      "custom_count": 0
     },
     "src/components/ui/toggle-group.tsx": {
       "custom_classes": [],
@@ -862,7 +817,7 @@
         "tab-container",
         "tab-content"
       ],
-      "total_classes": 16,
+      "total_classes": 14,
       "custom_count": 7
     },
     "src/components/ui/badge.tsx": {
@@ -899,38 +854,24 @@
       "custom_count": 0
     },
     "src/components/ui/toast.tsx": {
-      "custom_classes": [
-        "ToastClose",
-        "ToastDescription",
-        "className",
-        "const",
-        "toastVariants"
-      ],
-      "total_classes": 7,
-      "custom_count": 5
+      "custom_classes": [],
+      "total_classes": 29,
+      "custom_count": 0
     },
     "src/components/ui/select.tsx": {
-      "custom_classes": [
-        "SelectItem",
-        "className",
-        "const"
-      ],
-      "total_classes": 14,
-      "custom_count": 3
+      "custom_classes": [],
+      "total_classes": 43,
+      "custom_count": 0
     },
     "src/components/ui/textarea.tsx": {
-      "custom_classes": [
-        "className"
-      ],
-      "total_classes": 1,
-      "custom_count": 1
+      "custom_classes": [],
+      "total_classes": 10,
+      "custom_count": 0
     },
     "src/components/ui/input.tsx": {
-      "custom_classes": [
-        "className"
-      ],
-      "total_classes": 1,
-      "custom_count": 1
+      "custom_classes": [],
+      "total_classes": 13,
+      "custom_count": 0
     },
     "src/components/layout/TitleBar.tsx": {
       "custom_classes": [
@@ -961,27 +902,26 @@
     },
     "src/components/layout/Sidebar.tsx": {
       "custom_classes": [
+        "sidebar",
+        "sidebar-collapsed",
+        "sidebar-guide-button",
         "sidebar-icon",
-        "sidebar-nav-container"
+        "sidebar-nav-button",
+        "sidebar-nav-button-active",
+        "sidebar-nav-button-inactive",
+        "sidebar-nav-container",
+        "sidebar-settings-button"
       ],
-      "total_classes": 4,
-      "custom_count": 2
+      "total_classes": 13,
+      "custom_count": 9
     },
     "src/components/features/desktopGuide/DesktopGuideTab.tsx": {
       "custom_classes": [
-        "Click",
-        "Start",
-        "dashboard",
         "divider-horizontal",
-        "on",
-        "proxy",
-        "server",
-        "the",
-        "to",
         "vspace-md"
       ],
-      "total_classes": 78,
-      "custom_count": 10
+      "total_classes": 66,
+      "custom_count": 2
     },
     "src/components/features/settings/ProxyTab.tsx": {
       "custom_classes": [
@@ -1033,20 +973,11 @@
     },
     "src/components/features/browserGuide/BrowserGuideTab.tsx": {
       "custom_classes": [
-        "Authenticate",
-        "Build",
-        "Chrome",
-        "Extension",
-        "Install",
-        "Proxy",
-        "Qwen",
-        "Start",
         "divider-horizontal",
-        "vspace-md",
-        "with"
+        "vspace-md"
       ],
-      "total_classes": 63,
-      "custom_count": 11
+      "total_classes": 58,
+      "custom_count": 2
     },
     "src/components/features/modelForm/ModelFormActions.tsx": {
       "custom_classes": [
@@ -1061,7 +992,7 @@
         "vspace-md",
         "vspace-tight"
       ],
-      "total_classes": 32,
+      "total_classes": 29,
       "custom_count": 3
     },
     "src/components/features/chat/CustomChatTab.tsx": {
@@ -1075,7 +1006,7 @@
         "provider-switch-list",
         "vspace-md"
       ],
-      "total_classes": 40,
+      "total_classes": 36,
       "custom_count": 8
     },
     "src/components/features/chat/CurlTab.tsx": {
@@ -1089,7 +1020,7 @@
         "provider-switch-list",
         "vspace-md"
       ],
-      "total_classes": 19,
+      "total_classes": 18,
       "custom_count": 8
     },
     "src/components/features/providers/ProviderTestContent.tsx": {
@@ -1102,7 +1033,7 @@
         "provider-switch-list",
         "vspace-md"
       ],
-      "total_classes": 41,
+      "total_classes": 39,
       "custom_count": 7
     },
     "src/components/features/providers/ProviderSwitchTab.tsx": {
@@ -1198,7 +1129,7 @@
         "provider-switch-list",
         "vspace-md"
       ],
-      "total_classes": 39,
+      "total_classes": 37,
       "custom_count": 7
     },
     "src/components/features/providerForm/ProviderFormActionsReadOnly.tsx": {
@@ -1236,6 +1167,219 @@
       ],
       "total_classes": 7,
       "custom_count": 7
+    },
+    "src/vite-env.d.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/types/models.types.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/types/common.types.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/types/home.types.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/types/chat.types.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/types/credentials.types.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/types/providers.types.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/types/index.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/types/quick-guide.types.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/types/proxy.types.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/stores/useProxyStore.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/stores/useAlertStore.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/stores/useLifecycleStore.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/stores/useUIStore.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/stores/useCredentialsStore.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/stores/useSettingsStore.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/utils/platform.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/utils/formatters.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/hooks/useToast.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/hooks/useProviderFormPage.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/hooks/useSettingsPage.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/hooks/useProvidersPage.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/hooks/useModelsPage.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/hooks/useBrowserGuidePage.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/hooks/useApiGuidePage.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/hooks/useModelFormPage.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/hooks/useDarkMode.ts": {
+      "custom_classes": [
+        "dark",
+        "light"
+      ],
+      "total_classes": 2,
+      "custom_count": 2
+    },
+    "src/hooks/useHomePage.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/hooks/useWebSocket.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/hooks/useExtensionDetection.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/hooks/useDesktopGuidePage.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/lib/router.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/lib/api-guide-examples.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/lib/utils.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/lib/constants.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/services/api.service.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/services/websocket.service.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/services/chatService.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/services/credentials.service.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/services/providers.service.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/services/models.service.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
+    },
+    "src/services/proxy.service.ts": {
+      "custom_classes": [],
+      "total_classes": 0,
+      "custom_count": 0
     }
   }
 }

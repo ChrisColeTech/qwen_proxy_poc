@@ -13,7 +13,7 @@ TAILWIND_PREFIXES = {
     'container', 'box-', 'block', 'inline', 'inline-block', 'flex', 'inline-flex', 'table', 'inline-table',
     'table-caption', 'table-cell', 'table-column', 'table-column-group', 'table-footer-group',
     'table-header-group', 'table-row-group', 'table-row', 'flow-root', 'grid', 'inline-grid',
-    'contents', 'list-item', 'hidden',
+    'contents', 'list-item', 'hidden', 'peer', 'group',
     
     # Flexbox & Grid
     'flex-', 'grid-', 'gap-', 'justify-', 'content-', 'items-', 'self-', 'place-',
@@ -52,6 +52,7 @@ TAILWIND_PREFIXES = {
     
     # Interactivity
     'appearance-', 'cursor-', 'outline-', 'pointer-events-', 'resize', 'select-', 'user-select-',
+    'ring-', 'ring-offset-',
     
     # SVG
     'fill-', 'stroke-', 'stroke-',
@@ -113,44 +114,164 @@ def is_tailwind_class(class_name):
 def extract_classes_from_tsx(file_content, include_tailwind=True):
     """Extract CSS classes from TSX file content"""
     all_classes = set()
-    
-    # Pattern for className="..." or className={`...`}
-    patterns = [
-        r'className="([^"]*)"',  # className="class1 class2"
-        r'className=\{`([^`]*)`\}',  # className={`class1 class2`}
-        r'className=\{\s*"([^"]*)"\s*\}',  # className={"class1 class2"}
-        r'className=\{[^}]*"([^"]*)"[^}]*\}',  # className={condition ? "class1" : "class2"}
-    ]
-    
-    for pattern in patterns:
-        matches = re.findall(pattern, file_content, re.MULTILINE | re.DOTALL)
-        for match in matches:
-            # Clean up the match - remove template literal syntax
-            clean_match = re.sub(r'\$\{[^}]*\}', '', match)  # Remove ${...}
-            clean_match = re.sub(r'\s+', ' ', clean_match).strip()  # Normalize whitespace
-            
-            # Split on whitespace and filter out empty strings
-            class_list = [cls.strip() for cls in clean_match.split() if cls.strip()]
+
+    # Remove comments to avoid false positives
+    # Remove single-line comments
+    content_no_comments = re.sub(r'//.*?$', '', file_content, flags=re.MULTILINE)
+    # Remove multi-line comments
+    content_no_comments = re.sub(r'/\*.*?\*/', '', content_no_comments, flags=re.DOTALL)
+
+    # Pattern 1: className="literal string"
+    pattern1 = r'className="([^"]*)"'
+    matches = re.findall(pattern1, content_no_comments)
+    for match in matches:
+        class_list = [cls.strip() for cls in match.split() if cls.strip()]
+        all_classes.update(class_list)
+
+    # Pattern 2: className={'literal string'}
+    pattern2 = r'className=\{\s*["\']([^"\']*)["\']?\s*\}'
+    matches = re.findall(pattern2, content_no_comments)
+    for match in matches:
+        class_list = [cls.strip() for cls in match.split() if cls.strip()]
+        all_classes.update(class_list)
+
+    # Pattern 3: className={`template literal`} (without variables)
+    pattern3 = r'className=\{`([^`$]*)`\}'
+    matches = re.findall(pattern3, content_no_comments)
+    for match in matches:
+        class_list = [cls.strip() for cls in match.split() if cls.strip()]
+        all_classes.update(class_list)
+
+    # Pattern 4: className={cn(...)} - extract strings from cn() calls
+    # This needs to handle nested function calls properly
+    pattern4 = r'className=\{cn\('
+    pos = 0
+    while True:
+        match = re.search(pattern4, content_no_comments[pos:])
+        if not match:
+            break
+
+        start = pos + match.start()
+        paren_start = pos + match.end() - 1  # Position of opening paren
+
+        # Count parens to find the matching closing paren
+        paren_count = 1
+        i = paren_start + 1
+        while i < len(content_no_comments) and paren_count > 0:
+            if content_no_comments[i] == '(':
+                paren_count += 1
+            elif content_no_comments[i] == ')':
+                paren_count -= 1
+            i += 1
+
+        if paren_count == 0:
+            # Found complete cn(...) call
+            cn_content = content_no_comments[paren_start + 1:i - 1]
+
+            # Only extract strings that are:
+            # 1. After && operator (conditional classes)
+            # 2. Not preceded by comparison operators (===, ==, !=, !==)
+            # 3. Not in function parameter assignments (=)
+
+            # Remove comparison values: anything before comparison operators
+            # Replace "var === 'value'" patterns with empty string
+            clean_cn = re.sub(r'[a-zA-Z_$][a-zA-Z0-9_$]*\s*[!=]==?\s*["\'][^"\']*["\']', '', cn_content)
+
+            # Now extract strings that remain
+            quoted_strings = re.findall(r'["\']([^"\']*)["\']', clean_cn)
+            for quoted in quoted_strings:
+                # Only add if it looks like CSS classes (contains spaces or hyphens)
+                # Single lowercase words without hyphens are suspicious (like "popper")
+                if ' ' in quoted or '-' in quoted or '_' in quoted:
+                    class_list = [cls.strip() for cls in quoted.split() if cls.strip()]
+                    all_classes.update(class_list)
+                elif re.match(r'^[a-z][a-z0-9]*(-[a-z0-9]+)+$', quoted, re.IGNORECASE):
+                    # Single kebab-case word is likely a valid class
+                    all_classes.add(quoted)
+            pos = i
+        else:
+            pos = paren_start + 1
+
+    # Pattern 5: className={condition ? "class1" : "class2"} - ternary expressions
+    # Only match ternary operator patterns, not all strings in className={...}
+    pattern5 = r'className=\{[^}]*\?[^}]*:[^}]*\}'
+    ternary_matches = re.findall(pattern5, content_no_comments)
+    for ternary in ternary_matches:
+        # Only extract strings that appear after ? or : (not from function calls)
+        # Match strings that are direct values in the ternary
+        ternary_strings = re.findall(r'[?:]\s*["\']([^"\']*)["\']', ternary)
+        for quoted in ternary_strings:
+            class_list = [cls.strip() for cls in quoted.split() if cls.strip()]
             all_classes.update(class_list)
-    
+
+    # Pattern 6: classList.add('class') or classList.add("class")
+    pattern6 = r'classList\.add\s*\(\s*["\']([^"\']+)["\']\s*\)'
+    matches = re.findall(pattern6, content_no_comments)
+    for match in matches:
+        class_list = [cls.strip() for cls in match.split(',') if cls.strip()]
+        all_classes.update(class_list)
+
+    # Pattern 7: classList.toggle('class') or classList.toggle("class")
+    pattern7 = r'classList\.toggle\s*\(\s*["\']([^"\']+)["\']\s*\)'
+    matches = re.findall(pattern7, content_no_comments)
+    for match in matches:
+        all_classes.add(match.strip())
+
+    # Pattern 8: classList.remove('class1', 'class2', ...) - multiple classes
+    pattern8 = r'classList\.remove\s*\(([^)]+)\)'
+    matches = re.findall(pattern8, content_no_comments)
+    for match in matches:
+        # Extract all quoted strings from the arguments
+        quoted_classes = re.findall(r'["\']([^"\']+)["\']', match)
+        for cls in quoted_classes:
+            all_classes.add(cls.strip())
+
+    # Pattern 9: className = "literal" or element.className = "literal"
+    pattern9 = r'\.className\s*=\s*["\']([^"\']+)["\']'
+    matches = re.findall(pattern9, content_no_comments)
+    for match in matches:
+        class_list = [cls.strip() for cls in match.split() if cls.strip()]
+        all_classes.update(class_list)
+
+    # Pattern 10: Direct string references to class names in variables that might be used for classList
+    # Look for const/let/var declarations with string literals that look like class names
+    # Only capture if the variable name suggests it's a class (contains 'class', 'style', 'theme')
+    pattern10 = r'(?:const|let|var)\s+\w*(?:class|Class|style|Style|theme|Theme)\w*\s*=\s*["\']([a-z][a-z0-9_-]*)["\']'
+    matches = re.findall(pattern10, content_no_comments, re.IGNORECASE)
+    for match in matches:
+        all_classes.add(match.strip())
+
+    # Filter out invalid class names and apply Tailwind filtering
+    valid_classes = set()
+    for class_name in all_classes:
+        # Must match kebab-case pattern (letters, numbers, hyphens, underscores)
+        # Must start with a letter or underscore
+        # Must contain at least one character
+        if not class_name:
+            continue
+
+        # Skip if it's clearly not a CSS class (no hyphens and looks like code)
+        # Valid custom CSS classes should be kebab-case
+        if not re.match(r'^[a-z][a-z0-9]*(-[a-z0-9]+)+$', class_name, re.IGNORECASE):
+            # Also allow single-word classes that start with lowercase
+            if not re.match(r'^[a-z][a-z0-9_]*$', class_name):
+                continue
+
+        valid_classes.add(class_name)
+
     # Filter classes based on include_tailwind flag
     if include_tailwind:
-        # Return all valid classes
-        return {cls for cls in all_classes if cls and re.match(r'^[a-zA-Z][a-zA-Z0-9_:-]*(?:\[[^\]]*\])?(?:/\d+)?$', cls)}
+        return valid_classes
     else:
         # Filter out Tailwind classes
         custom_classes = set()
-        for class_name in all_classes:
-            # Skip invalid class names
-            if not class_name or not re.match(r'^[a-zA-Z][a-zA-Z0-9_-]*$', class_name):
-                continue
-            
+        for class_name in valid_classes:
             # Skip if it's a Tailwind class
             if is_tailwind_class(class_name):
                 continue
-            
+
             custom_classes.add(class_name)
-        
+
         return custom_classes
 
 @click.command()

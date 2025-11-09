@@ -114,16 +114,19 @@ def analyze(tsx_path, css_file, output_dir, verbose):
     
     click.echo("🔍 Running complete CSS analysis...")
     
-    # Step 1: Analyze TSX files for custom classes
+    # Step 1: Analyze TSX and TS files for custom classes
     if verbose:
-        click.echo("📁 Scanning TSX files for custom classes...")
+        click.echo("📁 Scanning TSX and TS files for custom classes...")
     
     used_custom_classes = set()
     all_classes_used = set()
+    # Scan both .tsx and .ts files for class usage
     tsx_files = list(Path(tsx_path).rglob('*.tsx'))
-    
+    ts_files = list(Path(tsx_path).rglob('*.ts'))
+    all_files = tsx_files + ts_files
+
     file_analysis = {}
-    for tsx_file in tsx_files:
+    for tsx_file in all_files:
         try:
             with open(tsx_file, 'r', encoding='utf-8') as f:
                 content = f.read()
@@ -166,7 +169,9 @@ def analyze(tsx_path, css_file, output_dir, verbose):
     # 4a. Save analysis data as JSON
     analysis_data = {
         'summary': {
-            'tsx_files_analyzed': len(tsx_files),
+            'tsx_files_analyzed': len(all_files),
+            'tsx_count': len(tsx_files),
+            'ts_count': len(ts_files),
             'total_css_classes': len(css_classes),
             'custom_classes_used': len(used_custom_classes),
             'css_classes_used': len(used_css_classes),
@@ -234,11 +239,11 @@ def analyze(tsx_path, css_file, output_dir, verbose):
     with open(report_file, 'w') as f:
         f.write("# CSS Analysis Report\n\n")
         f.write(f"**Generated from:** `{css_file}`\n")
-        f.write(f"**TSX Files Scanned:** {len(tsx_files)} files in `{tsx_path}`\n\n")
+        f.write(f"**Files Scanned:** {len(all_files)} files ({len(tsx_files)} .tsx, {len(ts_files)} .ts) in `{tsx_path}`\n\n")
         
         f.write("## Summary\n\n")
         f.write(f"- **Total CSS Classes Defined:** {len(css_classes)}\n")
-        f.write(f"- **Custom Classes Used in TSX:** {len(used_custom_classes)}\n") 
+        f.write(f"- **Custom Classes Used in Code:** {len(used_custom_classes)}\n") 
         f.write(f"- **CSS Classes Actually Used:** {len(used_css_classes)}\n")
         f.write(f"- **CSS Classes Unused:** {len(unused_css_classes)}\n")
         f.write(f"- **Usage Rate:** {analysis_data['summary']['usage_percentage']:.1f}%\n\n")

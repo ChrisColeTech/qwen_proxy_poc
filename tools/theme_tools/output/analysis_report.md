@@ -1,15 +1,15 @@
 # CSS Analysis Report
 
-**Generated from:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/index.css`
-**TSX Files Scanned:** 66 files in `/Users/chris/Projects/qwen_proxy_poc/frontend/src`
+**Generated from:** `../../frontend/src/index.css`
+**Files Scanned:** 108 files (66 .tsx, 42 .ts) in `../../frontend/src`
 
 ## Summary
 
 - **Total CSS Classes Defined:** 274
-- **Custom Classes Used in TSX:** 81
-- **CSS Classes Actually Used:** 47
-- **CSS Classes Unused:** 227
-- **Usage Rate:** 17.2%
+- **Custom Classes Used in Code:** 56
+- **CSS Classes Actually Used:** 55
+- **CSS Classes Unused:** 219
+- **Usage Rate:** 20.1%
 
 ## Used CSS Classes
 
@@ -20,6 +20,7 @@
 - ✅ `code-block-label`
 - ✅ `code-block-pre`
 - ✅ `code-block-wrapper`
+- ✅ `dark`
 - ✅ `demo-container`
 - ✅ `demo-header`
 - ✅ `demo-label`
@@ -41,8 +42,15 @@
 - ✅ `provider-switch-list`
 - ✅ `provider-switch-name`
 - ✅ `provider-switch-type`
+- ✅ `sidebar`
+- ✅ `sidebar-collapsed`
+- ✅ `sidebar-guide-button`
 - ✅ `sidebar-icon`
+- ✅ `sidebar-nav-button`
+- ✅ `sidebar-nav-button-active`
+- ✅ `sidebar-nav-button-inactive`
 - ✅ `sidebar-nav-container`
+- ✅ `sidebar-settings-button`
 - ✅ `status-icon-success`
 - ✅ `status-success`
 - ✅ `statusbar`
@@ -108,7 +116,6 @@
 - ⚠️ `credentials-status-inactive`
 - ⚠️ `credentials-status-row`
 - ⚠️ `credentials-status-valid`
-- ⚠️ `dark`
 - ⚠️ `demo-content`
 - ⚠️ `demo-empty-state`
 - ⚠️ `demo-error-state`
@@ -229,21 +236,14 @@
 - ⚠️ `settings-page`
 - ⚠️ `settings-section`
 - ⚠️ `settings-section-title`
-- ⚠️ `sidebar`
-- ⚠️ `sidebar-collapsed`
 - ⚠️ `sidebar-expanded`
-- ⚠️ `sidebar-guide-button`
 - ⚠️ `sidebar-item`
 - ⚠️ `sidebar-item-active`
 - ⚠️ `sidebar-label`
 - ⚠️ `sidebar-nav`
-- ⚠️ `sidebar-nav-button`
-- ⚠️ `sidebar-nav-button-active`
-- ⚠️ `sidebar-nav-button-inactive`
 - ⚠️ `sidebar-nav-indicator`
 - ⚠️ `sidebar-nav-indicator-left`
 - ⚠️ `sidebar-nav-indicator-right`
-- ⚠️ `sidebar-settings-button`
 - ⚠️ `sidebar-toggle`
 - ⚠️ `status-badge-dot`
 - ⚠️ `status-badge-error`
