@@ -10,7 +10,7 @@ export const CHAT_TABS = {
   },
   CURL: {
     value: 'curl',
-    label: 'cURL Examples',
+    label: 'cURL Example',
     description: 'Test the chat completion endpoint directly from your terminal'
   }
 } as const;

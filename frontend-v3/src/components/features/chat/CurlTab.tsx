@@ -12,7 +12,7 @@ export function CurlTab({ providerRouterUrl, activeModel }: CurlTabProps) {
       <div className="demo-header" style={{ flexShrink: 0 }}>
         <div className="demo-label">
           <MessageSquare className="icon-primary" />
-          <span className="demo-label-text">cURL Examples</span>
+          <span className="demo-label-text">cURL Example</span>
         </div>
       </div>
 
