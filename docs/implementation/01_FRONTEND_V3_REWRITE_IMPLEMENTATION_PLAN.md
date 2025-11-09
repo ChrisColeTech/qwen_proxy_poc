@@ -64,6 +64,7 @@ Complete source code for all phases is available in separate documentation files
 - **Phases 6-7** (Stores, Hooks): [`06_FRONTEND_CODE_PHASES_6-7.md`](./06_FRONTEND_CODE_PHASES_6-7.md)
 - **Phases 8-10** (UI Components, Features, Layout): [`07_FRONTEND_CODE_PHASES_8-10.md`](./07_FRONTEND_CODE_PHASES_8-10.md)
 - **Phases 11-13** (Pages, App Entry, Styling): [`08_FRONTEND_CODE_PHASES_11-13.md`](./08_FRONTEND_CODE_PHASES_11-13.md)
+- **Complete CSS** (Phase 13 Styling): [`09_FRONTEND_COMPLETE_CSS.md`](./09_FRONTEND_COMPLETE_CSS.md)
 
 This document focuses on **planning, architecture, and implementation steps**. Refer to the code documentation files above for complete source code.
 

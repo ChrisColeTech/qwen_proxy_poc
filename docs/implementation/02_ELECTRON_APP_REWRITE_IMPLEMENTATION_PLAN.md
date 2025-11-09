@@ -1,415 +1,210 @@
 # Electron App Rewrite Implementation Plan
 
-## Work Progress Tracking
+## Work Progression Tracking
 
-| Phase | Priority | Status | Files Created | Files Modified | Critical Issues Resolved |
-|-------|----------|--------|---------------|----------------|-------------------------|
-| Phase 1.1: Core Architecture | P0 | ⬜ Not Started | 3 | 0 | Main process foundation |
-| Phase 1.2: IPC Communication | P0 | ⬜ Not Started | 2 | 0 | Secure IPC layer |
-| Phase 1.3: Window Management | P0 | ⬜ Not Started | 2 | 0 | Window lifecycle |
-| Phase 2.1: Qwen Integration | P0 | ⬜ Not Started | 2 | 0 | Credential extraction |
-| Phase 2.2: System Integration | P0 | ⬜ Not Started | 3 | 0 | System tray & clipboard |
-| Phase 2.3: Data Persistence | P0 | ⬜ Not Started | 2 | 0 | Settings & history |
-| Phase 3.1: Security Layer | P0 | ⬜ Not Started | 2 | 0 | Security hardening |
-| Phase 3.2: Error Handling | P0 | ⬜ Not Started | 2 | 0 | Error management |
-| Phase 4.1: Build System | P1 | ⬜ Not Started | 3 | 0 | Build & packaging |
-| Phase 4.2: Development Tools | P1 | ⬜ Not Started | 2 | 0 | Dev tooling |
-
-**Legend:** ⬜ Not Started | 🔄 In Progress | ✅ Complete | ❌ Blocked
-
----
-
-## Key Features Included
-
-This implementation plan includes ALL features from the current Electron app:
-
-### **Core Application Features**
-- **Custom Title Bar**: Frameless window with custom window controls
-- **System Tray Integration**: Minimize to tray with context menu
-- **Multi-Window Support**: Main window and Qwen login window
-- **Cross-Platform Support**: Windows, macOS, and Linux with platform-specific icons
-
-### **Qwen Integration Features**
-- **Automated Login Window**: Dedicated browser window for Qwen login
-- **Credential Extraction**: Automatic cookie and token extraction
-- **JWT Token Decoding**: Proper expiration time extraction
-- **Login Detection**: Smart detection of successful login
-- **Visual Notifications**: In-window notifications for login status
-
-### **System Integration Features**
-- **Clipboard Operations**: Read/write clipboard access
-- **Settings Persistence**: Electron-store based settings
-- **History Management**: Path conversion history with file storage
-- **Window State Management**: Proper window lifecycle handling
-
-### **Security Features**
-- **Context Isolation**: Secure preload script with contextBridge
-- **Session Management**: Secure cookie handling
-- **IPC Security**: Type-safe IPC communication
-- **Content Security**: Proper webPreferences configuration
-
----
+| Phase | Description | Status | Priority |
+|-------|-------------|--------|----------|
+| Phase 1 | Project Setup and Configuration | Not Started | 1 |
+| Phase 2 | Main Process: Basic Window Management | Not Started | 2 |
+| Phase 3 | Main Process: System Tray and App Lifecycle | Not Started | 3 |
+| Phase 4 | Main Process: IPC Handlers for Window Controls | Not Started | 4 |
+| Phase 5 | Main Process: Qwen Authentication Integration | Not Started | 5 |
+| Phase 6 | Main Process: Settings and Storage Management | Not Started | 6 |
+| Phase 7 | Main Process: History Management | Not Started | 7 |
+| Phase 8 | Main Process: Clipboard Operations | Not Started | 8 |
+| Phase 9 | Preload Script: API Exposure | Not Started | 9 |
+| Phase 10 | Build Configuration and Packaging | Not Started | 10 |
+| Phase 11 | Integration Testing and Validation | Not Started | 11 |
 
 ## Overview
+This implementation plan outlines the rewrite of the Electron application for the Qwen Proxy POC project. The current Electron app provides a desktop wrapper for the frontend, handles system tray functionality, manages Qwen authentication via cookie extraction, exposes IPC for settings/history/clipboard, and integrates with the backend at `http://localhost:3002`. 
 
-This implementation plan outlines the complete rewrite of the Electron application, focusing on improved architecture, security, maintainability, and developer experience while preserving all existing functionality.
+The rewrite aims to:
+- Modernize the structure for better maintainability (e.g., modular IPC handlers).
+- Enhance security (e.g., stricter context isolation, improved cookie handling).
+- Improve integration with the frontend (Vite-based) and backend.
+- Add error handling and logging.
+- Ensure cross-platform compatibility (macOS, Windows, Linux).
 
----
+The new structure will maintain the existing `electron/` directory but introduce subdirectories for better organization: `src/main/`, `src/preload/`, `src/handlers/`, and `src/types/`. Icons and assets remain unchanged.
 
-## Phase 1: Core Foundation
+No timelines are included; phases are ordered by dependency and priority.
 
-### Phase 1.1: Core Architecture (Priority: P0)
-
-**Objective**: Establish the main process architecture with proper separation of concerns.
-
-**Files to Create**:
-- `electron/src/main/index.ts` - Main process entry point
-- `electron/src/main/window-manager.ts` - Window management service
-- `electron/src/main/app-lifecycle.ts` - Application lifecycle management
-
-**Integration Points**:
-- All other main process modules will import from these core files
-- Window manager will handle all window creation and lifecycle
-- App lifecycle will manage startup, shutdown, and tray behavior
-
-**Validation**:
-- [ ] Clean separation of concerns
-- [ ] Proper error handling at top level
-- [ ] Event-driven architecture
-
-### Phase 1.2: IPC Communication (Priority: P0)
-
-**Objective**: Implement secure and type-safe IPC communication layer.
-
-**Files to Create**:
-- `electron/src/main/ipc/handlers.ts` - IPC handler registration
-- `electron/src/preload/index.ts` - Preload script with contextBridge
-
-**Integration Points**:
-- Main process handlers will be registered here
-- Preload script exposes secure API to renderer
-- Type definitions for IPC communication
-
-**Validation**:
-- [ ] Type-safe IPC communication
-- [ ] Proper error handling
-- [ ] Security best practices
-
-### Phase 1.3: Window Management (Priority: P0)
-
-**Objective**: Implement comprehensive window management with proper lifecycle.
-
-**Files to Create**:
-- `electron/src/main/windows/main-window.ts` - Main window implementation
-- `electron/src/main/windows/qwen-login-window.ts` - Qwen login window
-
-**Integration Points**:
-- Window manager will use these window classes
-- IPC handlers will interact with windows
-- Proper event handling for window states
-
-**Validation**:
-- [ ] Proper window lifecycle management
-- [ ] Platform-specific behavior
-- [ ] Event handling consistency
-
----
-
-## Phase 2: Feature Implementation
-
-### Phase 2.1: Qwen Integration (Priority: P0)
-
-**Objective**: Implement Qwen login and credential extraction functionality.
-
-**Files to Create**:
-- `electron/src/main/services/qwen-service.ts` - Qwen integration service
-- `electron/src/main/services/credential-extractor.ts` - Credential extraction logic
-
-**Integration Points**:
-- Qwen login window will use these services
-- IPC handlers will expose Qwen functionality
-- Integration with backend API for credential storage
-
-**Validation**:
-- [ ] Robust login detection
-- [ ] Proper credential extraction
-- [ ] Error handling for network issues
-
-### Phase 2.2: System Integration (Priority: P0)
-
-**Objective**: Implement system-level integrations.
-
-**Files to Create**:
-- `electron/src/main/services/tray-service.ts` - System tray management
-- `electron/src/main/services/clipboard-service.ts` - Clipboard operations
-- `electron/src/main/services/settings-service.ts` - Settings management
-
-**Integration Points**:
-- Main app lifecycle will use tray service
-- IPC handlers will expose clipboard and settings
-- Cross-platform compatibility
-
-**Validation**:
-- [ ] Cross-platform tray behavior
-- [ ] Proper clipboard handling
-- [ ] Settings persistence
-
-### Phase 2.3: Data Persistence (Priority: P0)
-
-**Objective**: Implement data persistence for settings and history.
-
-**Files to Create**:
-- `electron/src/main/services/history-service.ts` - History management
-- `electron/src/main/storage/storage-manager.ts` - Storage abstraction
-
-**Integration Points**:
-- Settings service will use storage manager
-- History service for path conversion history
-- File system operations with proper error handling
-
-**Validation**:
-- [ ] Data integrity
-- [ ] Proper error handling
-- [ ] Performance optimization
-
----
-
-## Phase 3: Security & Error Handling
-
-### Phase 3.1: Security Layer (Priority: P0)
-
-**Objective**: Implement comprehensive security measures.
-
-**Files to Create**:
-- `electron/src/main/security/session-manager.ts` - Session security
-- `electron/src/main/security/permissions.ts` - Permission management
-
-**Integration Points**:
-- All windows will use secure sessions
-- IPC handlers will validate permissions
-- Content security policies
-
-**Validation**:
-- [ ] Secure session handling
-- [ ] Proper permission validation
-- [ ] Security best practices
-
-### Phase 3.2: Error Handling (Priority: P0)
-
-**Objective**: Implement comprehensive error handling and logging.
-
-**Files to Create**:
-- `electron/src/main/utils/logger.ts` - Logging utility
-- `electron/src/main/utils/error-handler.ts` - Error handling service
-
-**Integration Points**:
-- All modules will use centralized logging
-- Error handler will catch and report errors
-- User-friendly error messages
-
-**Validation**:
-- [ ] Comprehensive error coverage
-- [ ] Proper logging levels
-- [ ] User-friendly error reporting
-
----
-
-## Phase 4: Build & Development
-
-### Phase 4.1: Build System (Priority: P1)
-
-**Objective**: Set up comprehensive build and packaging system.
-
-**Files to Create**:
-- `electron/build/webpack.config.js` - Webpack configuration
-- `electron/build/package.json` - Build configuration
-- `electron/build/scripts/build.js` - Build scripts
-
-**Integration Points**:
-- Development and production builds
-- Asset optimization
-- Platform-specific packaging
-
-**Validation**:
-- [ ] Successful builds for all platforms
-- [ ] Proper asset handling
-- [ ] Optimized bundle sizes
-
-### Phase 4.2: Development Tools (Priority: P1)
-
-**Objective**: Set up development tooling and debugging.
-
-**Files to Create**:
-- `electron/scripts/dev.js` - Development server
-- `electron/scripts/debug.js` - Debugging utilities
-
-**Integration Points**:
-- Hot reload for development
-- Debugging configuration
-- Development utilities
-
-**Validation**:
-- [ ] Smooth development experience
-- [ ] Proper debugging support
-- [ ] Developer productivity
-
----
-
-## Final Project Structure
-
+## New File and Folder Structure
 ```
 electron/
-├── assets/
-│   └── icons/
-│       ├── mac/
-│       │   ├── icon.icns
-│       │   └── icon.iconset/
-│       ├── png/
-│       │   ├── 16x16.png
-│       │   ├── 32x32.png
-│       │   ├── 48x48.png
-│       │   ├── 64x64.png
-│       │   ├── 128x128.png
-│       │   ├── 256x256.png
-│       │   ├── 512x512.png
-│       │   └── 1024x1024.png
-│       └── win/
-│           └── icon.ico
-├── build/
-│   ├── webpack.config.js
-│   ├── package.json
-│   └── scripts/
-│       └── build.js
-├── scripts/
-│   ├── dev.js
-│   └── debug.js
+├── package.json                  # Updated with new dependencies and scripts
+├── tsconfig.json                 # Enhanced for stricter typing and modules
+├── electron-builder.json         # New: Packaging configuration (moved from root if exists)
+├── assets/                       # Unchanged: Icons for cross-platform
+│   ├── icons/
+│   │   ├── mac/
+│   │   │   ├── icon.icns
+│   │   │   └── icon.iconset/
+│   │   │       ├── icon_16x16.png
+│   │   │       ├── icon_16x16@2x.png
+│   │   │       ├── icon_32x32.png
+│   │   │       ├── icon_32x32@2x.png
+│   │   │       ├── icon_128x128.png
+│   │   │       ├── icon_128x128@2x.png
+│   │   │       ├── icon_256x256.png
+│   │   │       ├── icon_256x256@2x.png
+│   │   │       ├── icon_512x512.png
+│   │   │       └── icon_512x512@2x.png
+│   │   ├── png/
+│   │   │   ├── 16x16.png
+│   │   │   ├── 32x32.png
+│   │   │   ├── 48x48.png
+│   │   │   ├── 64x64.png
+│   │   │   ├── 128x128.png
+│   │   │   ├── 256x256.png
+│   │   │   ├── 512x512.png
+│   │   │   └── 1024x1024.png
+│   │   └── win/
+│   │       └── icon.ico
 ├── src/
 │   ├── main/
-│   │   ├── index.ts
-│   │   ├── app-lifecycle.ts
-│   │   ├── window-manager.ts
-│   │   ├── ipc/
-│   │   │   └── handlers.ts
-│   │   ├── windows/
-│   │   │   ├── main-window.ts
-│   │   │   └── qwen-login-window.ts
-│   │   ├── services/
-│   │   │   ├── qwen-service.ts
-│   │   │   ├── credential-extractor.ts
-│   │   │   ├── tray-service.ts
-│   │   │   ├── clipboard-service.ts
-│   │   │   ├── settings-service.ts
-│   │   │   └── history-service.ts
-│   │   ├── storage/
-│   │   │   └── storage-manager.ts
-│   │   ├── security/
-│   │   │   ├── session-manager.ts
-│   │   │   └── permissions.ts
-│   │   └── utils/
-│   │       ├── logger.ts
-│   │       └── error-handler.ts
-│   └── preload/
-│       └── index.ts
-├── package.json
-└── tsconfig.json
+│   │   ├── index.ts              # Entry point: App lifecycle, window/tray creation
+│   │   ├── windowManager.ts      # Window creation, events, controls
+│   │   └── trayManager.ts        # System tray setup and menu
+│   ├── handlers/
+│   │   ├── ipcHandlers.ts        # All IPC event/invoke handlers (window, app, etc.)
+│   │   ├── qwenAuthHandler.ts    # Qwen login and credential extraction
+│   │   ├── settingsHandler.ts    # electron-store integration
+│   │   └── historyHandler.ts     # File-based history management
+│   ├── preload/
+│   │   └── index.ts              # Expose electronAPI to renderer
+│   └── types/
+│       └── index.ts              # Shared TypeScript interfaces (e.g., Credentials, HistoryEntry)
+└── dist/                         # Build output (generated)
+    ├── main.js
+    └── preload.js
 ```
 
----
+## Phase 1: Project Setup and Configuration
+**Description**: Initialize the Electron project structure, update dependencies, and configure TypeScript/build tools. This establishes the foundation for modular code.
 
-## Implementation Guidelines
+**Files Created/Modified**:
+- `electron/package.json`: Add/update dependencies (e.g., `@electron-forge/cli`, `electron-builder` for packaging; update `electron` to latest stable; add `concurrently` for dev scripts). Update scripts: `dev` to use `electron-forge` or similar; add `build` and `package`.
+- `electron/tsconfig.json`: Enhance with stricter options (e.g., `noImplicitAny: true`, `strictNullChecks: true`); add paths for modular imports.
+- `electron/electron-builder.json`: New file for cross-platform packaging (icons, files, protocols).
+- `electron/src/types/index.ts`: New: Define core types (e.g., `interface Credentials { token: string; cookies: string; expiresAt: number; }`, `interface HistoryEntry { path: string; timestamp: number; usageCount: number; }`).
 
-### **Architecture Principles**
-- **Single Responsibility**: Each module has a clear, single purpose
-- **Dependency Injection**: Services are injected rather than directly instantiated
-- **Event-Driven**: Loose coupling through event-driven architecture
-- **Type Safety**: Full TypeScript coverage with strict typing
+**Integration Points**:
+- Root `electron-builder.json` (if exists): Reference for global build config.
+- `frontend/dist/index.html`: Loaded in production (no changes).
+- Backend at `http://localhost:3002` (no direct integration yet).
 
-### **Security Best Practices**
-- **Context Isolation**: Always use contextBridge for preload scripts
-- **Session Security**: Secure session management for all windows
-- **Input Validation**: Validate all IPC inputs
-- **Principle of Least Privilege**: Minimal permissions for each process
+## Phase 2: Main Process: Basic Window Management
+**Description**: Implement core window creation, loading (dev/prod), and basic events (close, maximize). Ensure frameless window with custom titlebar support.
 
-### **Error Handling Strategy**
-- **Centralized Logging**: All errors logged through centralized logger
-- **Graceful Degradation**: App continues functioning despite non-critical errors
-- **User Feedback**: Clear error messages for users
-- **Developer Debugging**: Detailed error information for development
+**Files Created/Modified**:
+- `electron/src/main/index.ts`: New: App entry; import and initialize window/tray managers; handle `app.whenReady()`.
+- `electron/src/main/windowManager.ts`: New: `createMainWindow()` function; handle dev (`http://localhost:5173`) vs prod loading; events for close (hide to tray), maximize/unmaximize (IPC emit).
 
-### **Performance Considerations**
-- **Lazy Loading**: Load modules only when needed
-- **Memory Management**: Proper cleanup of resources
-- **Async Operations**: Non-blocking operations where possible
-- **Resource Optimization**: Efficient use of system resources
+**Integration Points**:
+- `electron/src/preload/index.ts` (to be created): Preload script path in webPreferences.
+- Assets icons (unchanged): Platform-specific icon loading.
+- Frontend Vite server (dev mode, no changes).
 
----
+## Phase 3: Main Process: System Tray and App Lifecycle
+**Description**: Add system tray with context menu (Show/Quit); handle app events (activate, before-quit, window-all-closed) to persist in tray.
 
-## Testing Strategy
+**Files Created/Modified**:
+- `electron/src/main/trayManager.ts`: New: `createTray()`; platform-specific icons; menu with show/quit; click to toggle visibility.
+- `electron/src/main/index.ts`: Modified: Call `createTray()` in `whenReady`; handle app events (e.g., `isQuitting` flag).
 
-### **Unit Testing**
-- Test all service methods
-- Mock external dependencies
-- Cover edge cases and error conditions
-- Achieve >90% code coverage
+**Integration Points**:
+- `electron/src/main/windowManager.ts` (used for show/focus).
+- Assets icons (unchanged): Tray icon paths.
 
-### **Integration Testing**
-- Test IPC communication
-- Test window interactions
-- Test file system operations
-- Test cross-platform behavior
+## Phase 4: Main Process: IPC Handlers for Window Controls
+**Description**: Implement IPC for window operations (minimize, maximize, close, isMaximized). Centralize in handlers module.
 
-### **End-to-End Testing**
-- Test complete user workflows
-- Test application lifecycle
-- Test error scenarios
-- Test performance under load
+**Files Created/Modified**:
+- `electron/src/handlers/ipcHandlers.ts`: New: Event listeners for `window:minimize`, `window:maximize`, `window:close`; invoke for `window:is-maximized`.
+- `electron/src/main/index.ts`: Modified: Register IPC handlers.
 
----
+**Integration Points**:
+- `electron/src/main/windowManager.ts` (used for actual window ops).
+- Preload (to be created): Exposes these to renderer.
 
-## Migration Strategy
+## Phase 5: Main Process: Qwen Authentication Integration
+**Description**: Rewrite Qwen login window opening, script injection for detection, credential extraction (cookies, JWT decode), and backend POST. Split into focused handler.
 
-### **Phase 1: Foundation**
-1. Set up new project structure
-2. Implement core architecture
-3. Set up IPC communication
-4. Test basic window creation
+**Files Created/Modified**:
+- `electron/src/handlers/qwenAuthHandler.ts`: New: `openLogin()` (create window, inject monitor script, listen for title signal, extract/send credentials); `extractCredentials()` (direct cookie get/decode).
+- `electron/src/main/index.ts`: Modified: Register `qwen:open-login` and `qwen:extract-credentials` invokes.
+- `electron/src/types/index.ts`: Modified: Ensure `Credentials` type.
 
-### **Phase 2: Features**
-1. Migrate Qwen integration
-2. Implement system services
-3. Add data persistence
-4. Test all features
+**Integration Points**:
+- Backend `/api/qwen/credentials` endpoint (POST, no changes).
+- `session.defaultSession.cookies` (Electron API, no changes).
+- Docs/48-QWEN_LOGIN_FLOW_GUIDE.md (reference for logic, no changes).
 
-### **Phase 3: Polish**
-1. Add security measures
-2. Implement error handling
-3. Optimize performance
-4. Complete testing
+## Phase 6: Main Process: Settings and Storage Management
+**Description**: Integrate `electron-store` for UI state (theme, sidebar); add get/set/delete/clear IPC.
 
-### **Phase 4: Deployment**
-1. Set up build system
-2. Configure packaging
-3. Test distribution
-4. Deploy to users
+**Files Created/Modified**:
+- `electron/src/handlers/settingsHandler.ts`: New: Initialize store; IPC invokes for get/set/delete/clear.
+- `electron/src/main/index.ts`: Modified: Register settings IPC.
+- `electron/package.json`: Modified: Ensure `electron-store` dependency.
 
----
+**Integration Points**:
+- Frontend components (e.g., theme provider uses via IPC, no direct changes).
+- Store defaults (uiState: { theme: 'dark', sidebarPosition: 'left' }, unchanged).
 
-## Success Criteria
+## Phase 7: Main Process: History Management
+**Description**: File-based history (JSON in userData); IPC for read/add/clear with caching and trimming.
 
-### **Functional Requirements**
-- [ ] All existing features work correctly
-- [ ] Cross-platform compatibility maintained
-- [ ] Performance improved or maintained
-- [ ] Security enhanced
+**Files Created/Modified**:
+- `electron/src/handlers/historyHandler.ts`: New: `getHistoryFilePath()`; read (cache/load), add (update/trim/save), clear.
+- `electron/src/main/index.ts`: Modified: Register history IPC.
+- `electron/src/types/index.ts`: Modified: Ensure `HistoryEntry` type.
 
-### **Technical Requirements**
-- [ ] Code quality improved
-- [ ] Architecture more maintainable
-- [ ] Error handling comprehensive
-- [ ] Testing coverage adequate
+**Integration Points**:
+- `fs/promises` and `path` (Node APIs, no changes).
+- Frontend path-converter UI (uses history via IPC, no changes).
 
-### **User Experience**
-- [ ] Application starts quickly
-- [ ] Responsive user interface
-- [ ] Stable operation
-- [ ] Clear error messages
+## Phase 8: Main Process: Clipboard Operations
+**Description**: Simple IPC for read/write text.
+
+**Files Created/Modified**:
+- `electron/src/handlers/ipcHandlers.ts`: Modified: Add `clipboard:read` and `clipboard:write` invokes.
+- `electron/src/main/index.ts`: Modified: Register clipboard IPC.
+
+**Integration Points**:
+- `clipboard` module (Electron API, no changes).
+- Frontend components (e.g., copy buttons, no changes).
+
+## Phase 9: Preload Script: API Exposure
+**Description**: Expose modular `electronAPI` object to renderer with all handlers (qwen, clipboard, app, window, history, settings).
+
+**Files Created/Modified**:
+- `electron/src/preload/index.ts`: New: `contextBridge.exposeInMainWorld('electronAPI', { ... })`; nest APIs (e.g., `qwen: { openLogin, extractCredentials }`).
+
+**Integration Points**:
+- All handlers (imported and wrapped in async invokes/sends).
+- Frontend renderer (uses `window.electronAPI`, no changes).
+
+## Phase 10: Build Configuration and Packaging
+**Description**: Configure building (TypeScript to JS), dev/prod modes, and packaging for distribution.
+
+**Files Created/Modified**:
+- `electron/package.json`: Modified: Update build script (e.g., `tsc && electron-builder`); add `postinstall` if needed.
+- `electron/electron-builder.json`: Modified: Define build targets (dmg for macOS, exe for Windows, AppImage for Linux); include frontend dist, icons, protocols.
+- `electron/tsconfig.json`: Modified: Ensure outDir `./dist`, rootDir `./src`.
+
+**Integration Points**:
+- Root build scripts (if any, e.g., concurrent frontend/backend build).
+- Frontend `dist/` (included in package).
+
+## Phase 11: Integration Testing and Validation
+**Description**: Test full app flow: Launch, tray, Qwen auth, settings/history, window controls. Validate cross-platform.
+
+**Files Created/Modified**:
+- None (testing phase; add test scripts if needed in package.json).
+
+**Integration Points**:
+- Full stack: Frontend (Vite dev/prod), backend (localhost:3002), Electron (dev/build).
+- Docs (e.g., 31-ELECTRON_FRONTEND_REBUILD_IMPLEMENTATION_PLAN.md for validation steps, no changes).
