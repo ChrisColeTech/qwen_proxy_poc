@@ -1,8 +1,8 @@
 import { TabCard } from '@/components/ui/tab-card';
 import { useModelFormPage } from '@/hooks/useModelFormPage';
+import { ModelDetailsTab } from '@/components/features/modelForm/ModelDetailsTab';
+import { ModelFormActions } from '@/components/features/modelForm/ModelFormActions';
 import {
-  buildModelFormContent,
-  buildModelFormActions,
   MODEL_FORM_TABS,
   MODEL_FORM_TITLE,
   MODEL_FORM_ICON
@@ -25,22 +25,20 @@ export function ModelFormPage() {
     return null;
   }
 
-  const formContent = buildModelFormContent(model);
-
-  const actions = buildModelFormActions({
-    model,
-    settingDefault,
-    handleBack,
-    handleSetAsDefault
-  });
-
   const tabs = [
     {
       ...MODEL_FORM_TABS.DETAILS,
-      content: formContent,
+      content: <ModelDetailsTab model={model} />,
       contentCardTitle: MODEL_FORM_TABS.DETAILS.label,
       contentCardIcon: MODEL_FORM_ICON,
-      contentCardActions: actions
+      contentCardActions: (
+        <ModelFormActions
+          model={model}
+          settingDefault={settingDefault}
+          onBack={handleBack}
+          onSetAsDefault={handleSetAsDefault}
+        />
+      )
     }
   ];
 

@@ -1,5 +1,6 @@
 import { Database } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 import type { ActionItem } from '@/constants/home.constants';
 import type { CapabilityFilter } from '@/types/models.types';
 
@@ -8,8 +9,10 @@ interface AllModelsTabProps {
   capabilityFilter: CapabilityFilter;
   providerFilter: string;
   providers: string[];
+  searchQuery: string;
   onCapabilityChange: (value: CapabilityFilter) => void;
   onProviderChange: (value: string) => void;
+  onSearchChange: (query: string) => void;
 }
 
 export function AllModelsTab({
@@ -17,8 +20,10 @@ export function AllModelsTab({
   capabilityFilter,
   providerFilter,
   providers,
+  searchQuery,
   onCapabilityChange,
-  onProviderChange
+  onProviderChange,
+  onSearchChange
 }: AllModelsTabProps) {
   return (
     <div className="demo-container" style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
@@ -61,6 +66,17 @@ export function AllModelsTab({
               ))}
             </SelectContent>
           </Select>
+        </div>
+
+        <div className="model-filter-group">
+          <span className="model-filter-label">Search:</span>
+          <Input
+            type="text"
+            placeholder="Search models..."
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="models-filter-select"
+          />
         </div>
       </div>
 

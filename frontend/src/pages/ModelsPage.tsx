@@ -15,7 +15,7 @@ import {
 
 export function ModelsPage() {
   const {
-    availableModels,
+    filteredAvailableModels,
     filteredAllModels,
     activeModel,
     activeProvider,
@@ -23,10 +23,14 @@ export function ModelsPage() {
     providers,
     capabilityFilter,
     providerFilter,
+    searchQuery,
+    allModelsSearchQuery,
     handleModelSelect,
     handleProviderSwitch,
     setCapabilityFilter,
-    setProviderFilter
+    setProviderFilter,
+    setSearchQuery,
+    setAllModelsSearchQuery
   } = useModelsPage();
   const setCurrentRoute = useUIStore((state) => state.setCurrentRoute);
   const providerRouterUrl = useSettingsStore((state) => state.providerRouterUrl);
@@ -38,7 +42,7 @@ export function ModelsPage() {
 
   // Build action items for tabs
   const selectActions = buildModelSelectActions({
-    models: availableModels,
+    models: filteredAvailableModels,
     activeModel,
     onSelect: handleModelSelect
   });
@@ -57,7 +61,9 @@ export function ModelsPage() {
           selectActions={selectActions}
           activeProvider={activeProvider}
           providers={providersData}
+          searchQuery={searchQuery}
           onProviderChange={handleProviderSwitch}
+          onSearchChange={setSearchQuery}
         />
       )
     },
@@ -69,8 +75,10 @@ export function ModelsPage() {
           capabilityFilter={capabilityFilter}
           providerFilter={providerFilter}
           providers={providers}
+          searchQuery={allModelsSearchQuery}
           onCapabilityChange={setCapabilityFilter}
           onProviderChange={setProviderFilter}
+          onSearchChange={setAllModelsSearchQuery}
         />
       )
     },

@@ -1,8 +1,8 @@
 import { TabCard } from '@/components/ui/tab-card';
 import { useDesktopGuidePage } from '@/hooks/useDesktopGuidePage';
 import { useProxyStore } from '@/stores/useProxyStore';
+import { DesktopGuideTab } from '@/components/features/desktopGuide/DesktopGuideTab';
 import {
-  buildDesktopGuideContent,
   DESKTOP_GUIDE_TABS,
   DESKTOP_GUIDE_TITLE,
   DESKTOP_GUIDE_ICON
@@ -18,10 +18,12 @@ export function DesktopGuidePage() {
   const tabs = [
     {
       ...DESKTOP_GUIDE_TABS.GUIDE,
-      content: buildDesktopGuideContent({
-        credentialsValid,
-        proxyRunning
-      })
+      content: (
+        <DesktopGuideTab
+          credentialsValid={credentialsValid}
+          proxyRunning={proxyRunning}
+        />
+      )
     }
   ];
 

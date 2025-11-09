@@ -2,12 +2,12 @@ import { TabCard } from '@/components/ui/tab-card';
 import { useProvidersPage } from '@/hooks/useProvidersPage';
 import { useUIStore } from '@/stores/useUIStore';
 import { useSettingsStore } from '@/stores/useSettingsStore';
+import { ProviderSwitchTab } from '@/components/features/providers/ProviderSwitchTab';
+import { AllProvidersTab } from '@/components/features/providers/AllProvidersTab';
+import { ProviderTestWrapper } from '@/components/features/providers/ProviderTestWrapper';
 import {
   buildProviderActions,
   buildProviderSwitchActions,
-  buildProviderSwitchContent,
-  buildAllProvidersContent,
-  buildProviderTestContent,
   PROVIDERS_TABS,
   PROVIDERS_TITLE,
   PROVIDERS_ICON
@@ -44,25 +44,32 @@ export function ProvidersPage() {
     handleProviderClick: handleProviderClickNavigate,
   });
 
+  const provider = providers.find(p => p.id === activeProvider);
+  const providerName = provider?.name || 'Unknown Provider';
+
   const tabs = [
     {
       ...PROVIDERS_TABS.SWITCH,
-      content: buildProviderSwitchContent(switchActions)
+      content: <ProviderSwitchTab switchActions={switchActions} />
     },
     {
       ...PROVIDERS_TABS.ALL,
-      content: buildAllProvidersContent({
-        providerActions,
-        onAddProvider: handleAddProvider
-      })
+      content: (
+        <AllProvidersTab
+          providerActions={providerActions}
+          onAddProvider={handleAddProvider}
+        />
+      )
     },
     {
       ...PROVIDERS_TABS.TEST,
-      content: buildProviderTestContent({
-        activeProvider,
-        providers,
-        providerRouterUrl: providerRouterUrl || 'http://localhost:3001'
-      })
+      content: (
+        <ProviderTestWrapper
+          activeProvider={activeProvider}
+          providerName={providerName}
+          providerRouterUrl={providerRouterUrl || 'http://localhost:3001'}
+        />
+      )
     }
   ];
 

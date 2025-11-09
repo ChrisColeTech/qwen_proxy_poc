@@ -1,9 +1,9 @@
 import { TabCard } from '@/components/ui/tab-card';
 import { useProviderFormPage } from '@/hooks/useProviderFormPage';
+import { ProviderFormContent } from '@/components/features/providerForm/ProviderFormContent';
+import { ProviderFormActionsReadOnly } from '@/components/features/providerForm/ProviderFormActionsReadOnly';
+import { ProviderFormActionsEdit } from '@/components/features/providerForm/ProviderFormActionsEdit';
 import {
-  buildProviderFormContent,
-  buildProviderFormActionsReadOnly,
-  buildProviderFormActionsEdit,
   PROVIDER_FORM_TABS,
   PROVIDER_FORM_TITLE_EDIT,
   PROVIDER_FORM_TITLE_CREATE,
@@ -31,33 +31,37 @@ export function ProviderFormPage({ readOnly = false }: ProviderFormPageProps = {
     handleEdit
   } = useProviderFormPage(readOnly);
 
-  const formContent = buildProviderFormContent({
-    formData,
-    isEditMode,
-    readOnly,
-    setFormData,
-    handleConfigChange,
-    handleSubmit
-  });
+  const formContent = (
+    <ProviderFormContent
+      formData={formData}
+      isEditMode={isEditMode}
+      readOnly={readOnly}
+      setFormData={setFormData}
+      handleConfigChange={handleConfigChange}
+      handleSubmit={handleSubmit}
+    />
+  );
 
-  const actions = readOnly
-    ? buildProviderFormActionsReadOnly({
-        loading,
-        enabled: formData.enabled,
-        handleBack,
-        handleToggleEnabled,
-        handleEdit,
-        handleDelete
-      })
-    : buildProviderFormActionsEdit({
-        loading,
-        testing,
-        isEditMode,
-        handleBack,
-        handleReset,
-        handleTest,
-        handleSubmit
-      });
+  const actions = readOnly ? (
+    <ProviderFormActionsReadOnly
+      loading={loading}
+      enabled={formData.enabled}
+      handleBack={handleBack}
+      handleToggleEnabled={handleToggleEnabled}
+      handleEdit={handleEdit}
+      handleDelete={handleDelete}
+    />
+  ) : (
+    <ProviderFormActionsEdit
+      loading={loading}
+      testing={testing}
+      isEditMode={isEditMode}
+      handleBack={handleBack}
+      handleReset={handleReset}
+      handleTest={handleTest}
+      handleSubmit={handleSubmit}
+    />
+  );
 
   const tabs = [
     {

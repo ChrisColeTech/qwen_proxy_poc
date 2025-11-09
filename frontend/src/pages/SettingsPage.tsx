@@ -1,9 +1,9 @@
 import { TabCard } from '@/components/ui/tab-card';
 import { useSettingsPage } from '@/hooks/useSettingsPage';
+import { AppearanceTab } from '@/components/features/settings/AppearanceTab';
+import { ProxyTab } from '@/components/features/settings/ProxyTab';
+import { DebugTab } from '@/components/features/settings/DebugTab';
 import {
-  buildAppearanceContent,
-  buildProxyContent,
-  buildDebugContent,
   SETTINGS_TABS,
   SETTINGS_TITLE,
   SETTINGS_ICON
@@ -21,24 +21,26 @@ export function SettingsPage() {
   const tabs = [
     {
       ...SETTINGS_TABS.APPEARANCE,
-      content: buildAppearanceContent({
-        theme: uiState.theme,
-        sidebarPosition: uiState.sidebarPosition,
-        showStatusMessages: uiState.showStatusMessages,
-        showStatusBar: uiState.showStatusBar,
-        handleThemeChange,
-        handleSidebarPositionChange,
-        handleStatusMessagesChange,
-        handleStatusBarChange,
-      })
+      content: (
+        <AppearanceTab
+          theme={uiState.theme}
+          sidebarPosition={uiState.sidebarPosition}
+          showStatusMessages={uiState.showStatusMessages}
+          showStatusBar={uiState.showStatusBar}
+          handleThemeChange={handleThemeChange}
+          handleSidebarPositionChange={handleSidebarPositionChange}
+          handleStatusMessagesChange={handleStatusMessagesChange}
+          handleStatusBarChange={handleStatusBarChange}
+        />
+      )
     },
     {
       ...SETTINGS_TABS.PROXY,
-      content: buildProxyContent()
+      content: <ProxyTab />
     },
     {
       ...SETTINGS_TABS.DEBUG,
-      content: buildDebugContent()
+      content: <DebugTab />
     }
   ];
 

@@ -2,8 +2,8 @@ import { TabCard } from '@/components/ui/tab-card';
 import { useBrowserGuidePage } from '@/hooks/useBrowserGuidePage';
 import { useExtensionDetection } from '@/hooks/useExtensionDetection';
 import { useProxyStore } from '@/stores/useProxyStore';
+import { BrowserGuideTab } from '@/components/features/browserGuide/BrowserGuideTab';
 import {
-  buildBrowserGuideContent,
   BROWSER_GUIDE_TABS,
   BROWSER_GUIDE_TITLE,
   BROWSER_GUIDE_ICON
@@ -23,11 +23,13 @@ export function BrowserGuidePage() {
   const tabs = [
     {
       ...BROWSER_GUIDE_TABS.GUIDE,
-      content: buildBrowserGuideContent({
-        extensionInstalled: extensionDetected,
-        credentialsValid,
-        proxyRunning
-      })
+      content: (
+        <BrowserGuideTab
+          extensionInstalled={extensionDetected}
+          credentialsValid={credentialsValid}
+          proxyRunning={proxyRunning}
+        />
+      )
     }
   ];
 

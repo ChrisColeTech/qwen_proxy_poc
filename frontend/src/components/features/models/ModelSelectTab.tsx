@@ -1,15 +1,18 @@
 import { CheckCircle2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 import type { ActionItem } from '@/constants/home.constants';
 
 interface ModelSelectTabProps {
   selectActions: ActionItem[];
   activeProvider: string;
   providers: { id: string; name: string }[];
+  searchQuery: string;
   onProviderChange: (providerId: string) => void;
+  onSearchChange: (query: string) => void;
 }
 
-export function ModelSelectTab({ selectActions, activeProvider, providers, onProviderChange }: ModelSelectTabProps) {
+export function ModelSelectTab({ selectActions, activeProvider, providers, searchQuery, onProviderChange, onSearchChange }: ModelSelectTabProps) {
   return (
     <div className="demo-container" style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
       <div className="demo-header" style={{ flexShrink: 0 }}>
@@ -19,7 +22,7 @@ export function ModelSelectTab({ selectActions, activeProvider, providers, onPro
         </div>
       </div>
 
-      {/* Provider Filter */}
+      {/* Filters Row */}
       <div className="model-filters-row" style={{ flexShrink: 0 }}>
         <div className="model-filter-group">
           <span className="model-filter-label">Provider:</span>
@@ -35,6 +38,17 @@ export function ModelSelectTab({ selectActions, activeProvider, providers, onPro
               ))}
             </SelectContent>
           </Select>
+        </div>
+
+        <div className="model-filter-group">
+          <span className="model-filter-label">Search:</span>
+          <Input
+            type="text"
+            placeholder="Search models..."
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="models-filter-select"
+          />
         </div>
       </div>
 

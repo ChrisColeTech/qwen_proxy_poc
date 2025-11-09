@@ -14,6 +14,8 @@ export function useModelsPage() {
   const [loadingAll, setLoadingAll] = useState(false);
   const [capabilityFilter, setCapabilityFilter] = useState<CapabilityFilter>('all');
   const [providerFilter, setProviderFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>(''); // Search for select tab
+  const [allModelsSearchQuery, setAllModelsSearchQuery] = useState<string>(''); // Search for all models tab
   const settings = useSettingsStore((state) => state.settings);
   const providerRouterUrl = useSettingsStore((state) => state.providerRouterUrl);
   const activeModel = (settings.active_model as string) || '';
@@ -61,11 +63,30 @@ export function useModelsPage() {
     return Array.from(providerSet).sort();
   }, [allModels]);
 
+  // Filter available models based on search query
+  const filteredAvailableModels = useMemo(() => {
+    if (!searchQuery.trim()) return availableModels;
+
+    const query = searchQuery.toLowerCase();
+    return availableModels.filter((model) =>
+      model.id.toLowerCase().includes(query) ||
+      model.description?.toLowerCase().includes(query)
+    );
+  }, [availableModels, searchQuery]);
+
   // Filter all models based on selected filters (for second tab)
   const filteredAllModels = useMemo(() => {
     return allModels
       .map((model) => modelsService.parseModel(model))
       .filter((parsed) => {
+        // Search filter
+        if (allModelsSearchQuery.trim()) {
+          const query = allModelsSearchQuery.toLowerCase();
+          const matchesSearch = parsed.id.toLowerCase().includes(query) ||
+                               parsed.description.toLowerCase().includes(query);
+          if (!matchesSearch) return false;
+        }
+
         // Provider filter
         if (providerFilter !== 'all' && parsed.provider !== providerFilter) {
           return false;
@@ -84,7 +105,7 @@ export function useModelsPage() {
 
         return true;
       });
-  }, [allModels, capabilityFilter, providerFilter]);
+  }, [allModels, capabilityFilter, providerFilter, allModelsSearchQuery]);
 
   const handleModelSelect = async (modelId: string) => {
     try {
@@ -170,6 +191,7 @@ export function useModelsPage() {
 
   return {
     availableModels,
+    filteredAvailableModels,
     allModels,
     filteredAllModels,
     activeModel,
@@ -180,11 +202,15 @@ export function useModelsPage() {
     providers,
     capabilityFilter,
     providerFilter,
+    searchQuery,
+    allModelsSearchQuery,
     handleModelSelect,
     handleProviderSwitch,
     handleClearFilters,
     setCapabilityFilter,
     setProviderFilter,
+    setSearchQuery,
+    setAllModelsSearchQuery,
     fetchAvailableModels,
     fetchAllModels,
   };

@@ -7,9 +7,9 @@ import { useExtensionDetection } from '@/hooks/useExtensionDetection';
 import { useUIStore } from '@/stores/useUIStore';
 import { useLifecycleStore } from '@/stores/useLifecycleStore';
 import { useSettingsStore } from '@/stores/useSettingsStore';
+import { StatusTab } from '@/components/features/home/StatusTab';
 import {
   buildOverviewActions,
-  buildStatusTabContent,
   HOME_TABS,
   HOME_TITLE,
   SYSTEM_OVERVIEW_TITLE,
@@ -74,7 +74,16 @@ export function HomePage() {
     },
     {
       ...HOME_TABS.STATUS,
-      content: buildStatusTabContent(port, activeProvider, activeModel, baseUrl, copiedUrl, handleCopyUrl),
+      content: (
+        <StatusTab
+          port={port}
+          activeProvider={activeProvider}
+          activeModel={activeModel}
+          baseUrl={baseUrl}
+          copiedUrl={copiedUrl}
+          onCopyUrl={handleCopyUrl}
+        />
+      ),
       hidden: !running
     }
   ];
