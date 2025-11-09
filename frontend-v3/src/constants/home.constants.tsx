@@ -78,6 +78,8 @@ export const buildOverviewActions = (params: {
   uptime: number | undefined;
   lifecycleState: LifecycleState;
   proxyLoading: boolean;
+  activeProvider: string;
+  activeModel: string;
   handleExtensionClick: () => void;
   handleQwenLogin: () => void;
   handleProxyClick: () => void;
@@ -92,6 +94,8 @@ export const buildOverviewActions = (params: {
     uptime,
     lifecycleState,
     proxyLoading,
+    activeProvider,
+    activeModel,
     handleExtensionClick,
     handleQwenLogin,
     handleProxyClick
@@ -128,33 +132,42 @@ export const buildOverviewActions = (params: {
       actions: createActionBadge(proxyBadge.variant, proxyBadge.text),
       onClick: handleProxyClick,
       disabled: proxyLoading
+    },
+    {
+      icon: createActionIcon(activeProvider !== 'None' ? 'running' : 'stopped'),
+      title: `${needsExtension ? '4' : '3'}. Active Configuration`,
+      description: `Provider: ${activeProvider} • Model: ${activeModel}`,
+      actions: createActionBadge(
+        activeProvider !== 'None' ? 'default' : 'secondary',
+        activeProvider !== 'None' ? 'Configured' : 'Not Set'
+      )
     }
   ];
 };
 
-const pythonExample = `from openai import OpenAI
+const getPythonExample = (port: number, model: string) => `from openai import OpenAI
 
 client = OpenAI(
-    base_url="http://localhost:3001/v1",
+    base_url="http://localhost:${port}/v1",
     api_key="dummy-key"
 )
 
 response = client.chat.completions.create(
-    model="qwen3-max",
+    model="${model}",
     messages=[{"role": "user", "content": "Hello!"}]
 )
 
 print(response.choices[0].message.content)`;
 
-const nodeExample = `import OpenAI from 'openai';
+const getNodeExample = (port: number, model: string) => `import OpenAI from 'openai';
 
 const openai = new OpenAI({
-  baseURL: 'http://localhost:3001/v1',
+  baseURL: 'http://localhost:${port}/v1',
   apiKey: 'dummy-key'
 });
 
 const completion = await openai.chat.completions.create({
-  model: 'qwen3-max',
+  model: '${model}',
   messages: [{ role: 'user', content: 'Hello!' }]
 });
 
@@ -162,10 +175,15 @@ console.log(completion.choices[0].message.content);`;
 
 export const buildStatusTabContent = (
   port: number | undefined,
+  activeModel: string,
   baseUrl: string,
   copiedUrl: boolean,
   handleCopyUrl: () => void
-) => (
+) => {
+  const effectivePort = port || 3001;
+  const effectiveModel = activeModel !== 'None' ? activeModel : 'qwen3-max';
+
+  return (
   <div className="space-y-8">
     {/* Base URL Section */}
     <div className="space-y-3">
@@ -201,12 +219,12 @@ export const buildStatusTabContent = (
       <div className="space-y-4">
         <CodeBlock
           label="Check proxy health"
-          code={`curl http://localhost:${port || 3001}/health`}
+          code={`curl http://localhost:${effectivePort}/health`}
         />
         <div className="border-t border-border" />
         <CodeBlock
           label="List available models"
-          code={`curl http://localhost:${port || 3001}/v1/models`}
+          code={`curl http://localhost:${effectivePort}/v1/models`}
         />
       </div>
     </div>
@@ -224,24 +242,25 @@ export const buildStatusTabContent = (
           <TabsTrigger value="curl">cURL</TabsTrigger>
         </TabsList>
         <TabsContent value="python" className="mt-4">
-          <CodeBlock label="Using OpenAI Python SDK" code={pythonExample} />
+          <CodeBlock label="Using OpenAI Python SDK" code={getPythonExample(effectivePort, effectiveModel)} />
         </TabsContent>
         <TabsContent value="node" className="mt-4">
-          <CodeBlock label="Using OpenAI Node.js SDK" code={nodeExample} />
+          <CodeBlock label="Using OpenAI Node.js SDK" code={getNodeExample(effectivePort, effectiveModel)} />
         </TabsContent>
         <TabsContent value="curl" className="mt-4">
           <CodeBlock
             label="Chat completion example"
-            code={`curl http://localhost:${port || 3001}/v1/chat/completions \\
+            code={`curl http://localhost:${effectivePort}/v1/chat/completions \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer any-key" \\
-  -d '{"model": "qwen3-max", "messages": [{"role": "user", "content": "Hello!"}]}'`}
+  -d '{"model": "${effectiveModel}", "messages": [{"role": "user", "content": "Hello!"}]}'`}
           />
         </TabsContent>
       </Tabs>
     </div>
   </div>
-);
+  );
+};
 
 export const HOME_TABS = {
   OVERVIEW: {

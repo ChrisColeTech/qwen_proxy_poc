@@ -6,6 +6,7 @@ import { useApiGuidePage } from '@/hooks/useApiGuidePage';
 import { useExtensionDetection } from '@/hooks/useExtensionDetection';
 import { useUIStore } from '@/stores/useUIStore';
 import { useLifecycleStore } from '@/stores/useLifecycleStore';
+import { useSettingsStore } from '@/stores/useSettingsStore';
 import {
   buildOverviewActions,
   buildStatusTabContent,
@@ -28,12 +29,15 @@ export function HomePage() {
   const { extensionDetected, needsExtension } = useExtensionDetection();
   const setCurrentRoute = useUIStore((state) => state.setCurrentRoute);
   const lifecycleState = useLifecycleStore((state) => state.state);
+  const settings = useSettingsStore((state) => state.settings);
 
   const running = wsProxyStatus?.providerRouter?.running || false;
   const port = wsProxyStatus?.providerRouter?.port;
   const uptime = wsProxyStatus?.providerRouter?.uptime;
   const credentialsValid = wsProxyStatus?.credentials?.valid || false;
   const expiresAt = wsProxyStatus?.credentials?.expiresAt;
+  const activeProvider = settings.active_provider as string || 'None';
+  const activeModel = settings.active_model as string || 'None';
 
   const handleProxyClick = () => {
     if (proxyLoading) return;
@@ -58,6 +62,8 @@ export function HomePage() {
     uptime,
     lifecycleState,
     proxyLoading,
+    activeProvider,
+    activeModel,
     handleExtensionClick,
     handleQwenLogin,
     handleProxyClick
@@ -70,7 +76,7 @@ export function HomePage() {
     },
     {
       ...HOME_TABS.STATUS,
-      content: buildStatusTabContent(port, baseUrl, copiedUrl, handleCopyUrl),
+      content: buildStatusTabContent(port, activeModel, baseUrl, copiedUrl, handleCopyUrl),
       hidden: !running
     }
   ];

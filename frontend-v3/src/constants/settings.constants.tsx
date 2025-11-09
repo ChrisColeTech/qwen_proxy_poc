@@ -115,6 +115,7 @@ export const buildAppearanceContent = (params: {
             type="single"
             value={showStatusMessages ? 'show' : 'hide'}
             onValueChange={handleStatusMessagesChange}
+            disabled={!showStatusBar}
           >
             <ToggleGroupItem value="show">Show</ToggleGroupItem>
             <ToggleGroupItem value="hide">Hide</ToggleGroupItem>
