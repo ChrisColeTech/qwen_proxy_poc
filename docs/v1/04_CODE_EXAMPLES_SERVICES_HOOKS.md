@@ -1,14 +1,14 @@
 # Code Examples - Services & Hooks
 
-**REFERENCE IMPLEMENTATION**: This document uses `frontend-v3` and `backend-v3` as the source of truth for all correct implementations.
+**REFERENCE IMPLEMENTATION**: This document uses `frontend` and `backend` as the source of truth for all correct implementations.
 
 **IMPORTANT**: All file paths in examples use generic naming:
-- Use `frontend/src/...` instead of `frontend-v3/src/...`
-- Use `backend/src/...` instead of `backend-v3/src/...`
+- Use `frontend/src/...` instead of `frontend/src/...`
+- Use `backend/src/...` instead of `backend/src/...`
 
 The actual reference implementations are located at:
-- Frontend: `/Users/chris/Projects/qwen_proxy_poc/frontend-v3/`
-- Backend: `/Users/chris/Projects/qwen_proxy_poc/backend-v3/`
+- Frontend: `/Users/chris/Projects/qwen_proxy_poc/frontend/`
+- Backend: `/Users/chris/Projects/qwen_proxy_poc/backend/`
 
 This document contains code examples for services, hooks, and supporting utilities that power the application.
 
@@ -32,7 +32,7 @@ This document contains code examples for services, hooks, and supporting utiliti
 
 ### frontend/src/services/websocket.service.ts
 
-**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend-v3/src/services/websocket.service.ts`
+**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/services/websocket.service.ts`
 
 ```typescript
 import { io, Socket } from 'socket.io-client';
@@ -194,7 +194,7 @@ export const websocketService = new WebSocketService();
 
 ### frontend/src/hooks/useWebSocket.ts
 
-**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend-v3/src/hooks/useWebSocket.ts`
+**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/hooks/useWebSocket.ts`
 
 ```typescript
 import { useEffect, useState } from 'react';
@@ -286,7 +286,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
 
 ### frontend/src/stores/useLifecycleStore.ts
 
-**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend-v3/src/stores/useLifecycleStore.ts`
+**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/stores/useLifecycleStore.ts`
 
 ```typescript
 import { create } from 'zustand';
@@ -325,7 +325,7 @@ export const useLifecycleStore = create<LifecycleStore>((set) => ({
 
 Services provide the API communication layer between the frontend and backend.
 
-### frontend-v3/src/services/credentials.service.ts
+### frontend/src/services/credentials.service.ts
 
 ```typescript
 import type { CredentialStatus } from '@/types/credentials.types';
@@ -429,7 +429,7 @@ export const credentialsService = new CredentialsService();
 
 ---
 
-### frontend-v3/src/services/proxy.service.ts
+### frontend/src/services/proxy.service.ts
 
 ```typescript
 import type { ProxyStatus } from '@/types/home.types';
@@ -485,7 +485,7 @@ export const proxyService = new ProxyService();
 
 ---
 
-### frontend-v3/src/services/models.service.ts
+### frontend/src/services/models.service.ts
 
 ```typescript
 import type { Model, ParsedModel, Capability } from '@/types/models.types';
@@ -552,7 +552,7 @@ export const modelsService = new ModelsService();
 
 ---
 
-### frontend-v3/src/services/providers.service.ts
+### frontend/src/services/providers.service.ts
 
 ```typescript
 import type { Provider, ProvidersResponse } from '@/types/providers.types';
@@ -662,7 +662,7 @@ export const providersService = new ProvidersService();
 
 Hooks encapsulate reusable logic and state management.
 
-### frontend-v3/src/hooks/useCredentials.ts
+### frontend/src/hooks/useCredentials.ts
 
 ```typescript
 import { useState, useEffect } from 'react';
@@ -747,7 +747,7 @@ export function useCredentials() {
 
 ---
 
-### frontend-v3/src/hooks/useHomePage.ts
+### frontend/src/hooks/useHomePage.ts
 
 ```typescript
 import { useState, useEffect } from 'react';
@@ -874,7 +874,7 @@ export function useHomePage() {
 
 ---
 
-### frontend-v3/src/hooks/useModels.ts
+### frontend/src/hooks/useModels.ts
 
 ```typescript
 import { useState, useEffect, useMemo } from 'react';
@@ -961,7 +961,7 @@ export function useModels() {
 
 ---
 
-### frontend-v3/src/hooks/useDarkMode.ts
+### frontend/src/hooks/useDarkMode.ts
 
 ```typescript
 import { useEffect } from 'react';
@@ -993,7 +993,7 @@ export function useDarkMode() {
 
 State management using Zustand for reactive, persistent application state.
 
-### frontend-v3/src/stores/useUIStore.ts
+### frontend/src/stores/useUIStore.ts
 
 ```typescript
 import { create } from 'zustand';
@@ -1160,7 +1160,7 @@ export const useUIStore = create<UIStore>((set, get) => ({
 
 ---
 
-### frontend-v3/src/stores/useCredentialsStore.ts
+### frontend/src/stores/useCredentialsStore.ts
 
 ```typescript
 import { create } from 'zustand';
@@ -1190,7 +1190,7 @@ export const useCredentialsStore = create<CredentialsStore>((set) => ({
 
 ## Utilities
 
-### frontend-v3/src/utils/platform.ts
+### frontend/src/utils/platform.ts
 
 ```typescript
 export function isElectron(): boolean {
@@ -1207,7 +1207,7 @@ export function isElectron(): boolean {
 
 ## Constants
 
-### frontend-v3/src/lib/constants.ts
+### frontend/src/lib/constants.ts
 
 ```typescript
 export const APP_NAME = 'Qwen Proxy';
@@ -1229,7 +1229,7 @@ export const STATUS_POLL_INTERVAL = 10000; // 10 seconds
 
 ## Component Examples
 
-### frontend-v3/src/components/ui/environment-badge.tsx
+### frontend/src/components/ui/environment-badge.tsx
 
 See `/Users/chris/Projects/qwen_proxy_poc/docs/v1/03_CODE_EXAMPLES.md` for component examples including:
 - TitleBar
@@ -1241,7 +1241,7 @@ See `/Users/chris/Projects/qwen_proxy_poc/docs/v1/03_CODE_EXAMPLES.md` for compo
 
 ## Summary of Updates
 
-This document has been updated with **actual working code from frontend-v3**. All services, hooks, stores, and utilities are production-ready and actively used.
+This document has been updated with **actual working code from frontend**. All services, hooks, stores, and utilities are production-ready and actively used.
 
 ### What Changed
 - **Services**: Updated to class-based patterns with helper methods for UI formatting
@@ -1284,7 +1284,7 @@ This document has been updated with **actual working code from frontend-v3**. Al
 
 ## LEGACY TYPE DEFINITIONS (For Reference)
 
-**NOTE**: The type definitions below are from older documentation. Frontend-v3 uses updated types located in `/Users/chris/Projects/qwen_proxy_poc/frontend-v3/src/types/*.types.ts`
+**NOTE**: The type definitions below are from older documentation. Frontend uses updated types located in `/Users/chris/Projects/qwen_proxy_poc/frontend/src/types/*.types.ts`
 
 ### LEGACY: frontend/src/vite-env.d.ts (CRITICAL - TypeScript Declarations)
 

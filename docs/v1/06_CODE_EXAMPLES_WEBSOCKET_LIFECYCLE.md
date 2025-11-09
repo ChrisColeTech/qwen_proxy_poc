@@ -1,6 +1,6 @@
 # Code Examples: WebSocket & Lifecycle Management
 
-**Reference Implementation:** `/Users/chris/Projects/qwen_proxy_poc/frontend-v3/src/`
+**Reference Implementation:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/`
 
 **Purpose:** Complete examples for WebSocket-based real-time communication and lifecycle management following Docs 67 and 68.
 

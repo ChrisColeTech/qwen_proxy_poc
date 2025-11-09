@@ -4,8 +4,8 @@
 
 **IMPORTANT**: All file paths in examples use generic naming:
 - Use `electron/src/...` for all Electron examples
-- Use `frontend/src/...` instead of `frontend-v3/src/...`
-- Use `backend/src/...` instead of `backend-v3/src/...`
+- Use `frontend/src/...` instead of `frontend/src/...`
+- Use `backend/src/...` instead of `backend/src/...`
 
 The actual reference implementation is located at:
 - Electron: `/Users/chris/Projects/qwen_proxy_poc/electron/`

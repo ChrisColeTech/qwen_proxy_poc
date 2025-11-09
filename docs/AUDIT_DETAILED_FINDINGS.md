@@ -12,16 +12,16 @@
 **Purpose:** Main code examples for architecture and components
 
 **Files Referenced:**
-1. ✅ `frontend/src/services/websocket.service.ts` → EXISTS in frontend-v3
-2. ✅ `frontend/src/hooks/useWebSocket.ts` → EXISTS in frontend-v3
-3. ✅ `frontend/src/hooks/useExtensionDetection.ts` → EXISTS in frontend-v3
-4. ✅ `frontend/src/stores/useLifecycleStore.ts` → EXISTS in frontend-v3
-5. ✅ `frontend/src/pages/HomePage.tsx` → EXISTS in frontend-v3
-6. ✅ `frontend/src/hooks/useHomePage.ts` → EXISTS in frontend-v3
-7. ✅ `frontend/src/constants/home.constants.tsx` → EXISTS in frontend-v3
-8. ✅ `frontend/src/components/ui/tab-card.tsx` → EXISTS in frontend-v3
-9. ✅ `frontend/src/components/ui/action-list.tsx` → EXISTS in frontend-v3
-10. ✅ `frontend/src/utils/platform.ts` → EXISTS in frontend-v3
+1. ✅ `frontend/src/services/websocket.service.ts` → EXISTS in frontend
+2. ✅ `frontend/src/hooks/useWebSocket.ts` → EXISTS in frontend
+3. ✅ `frontend/src/hooks/useExtensionDetection.ts` → EXISTS in frontend
+4. ✅ `frontend/src/stores/useLifecycleStore.ts` → EXISTS in frontend
+5. ✅ `frontend/src/pages/HomePage.tsx` → EXISTS in frontend
+6. ✅ `frontend/src/hooks/useHomePage.ts` → EXISTS in frontend
+7. ✅ `frontend/src/constants/home.constants.tsx` → EXISTS in frontend
+8. ✅ `frontend/src/components/ui/tab-card.tsx` → EXISTS in frontend
+9. ✅ `frontend/src/components/ui/action-list.tsx` → EXISTS in frontend
+10. ✅ `frontend/src/utils/platform.ts` → EXISTS in frontend
 
 **Code Accuracy:**
 - HomePage.tsx: ✅ EXACT MATCH (verified all 89 lines)
@@ -32,7 +32,7 @@
 
 **Legacy Code Sections:**
 - Document correctly labels legacy examples (Phase 7) as "LEGACY"
-- Modern examples (HomePage, TabCard, ActionList) are from frontend-v3
+- Modern examples (HomePage, TabCard, ActionList) are from frontend
 
 **Status:** ✅ ACCURATE - No changes needed
 
@@ -69,7 +69,7 @@
 
 **Legacy Code Sections:**
 - Document includes LEGACY section for older type definitions
-- Modern sections reference actual frontend-v3 code
+- Modern sections reference actual frontend code
 
 **Status:** ✅ ACCURATE - No changes needed
 
@@ -98,11 +98,11 @@
 **Purpose:** WebSocket and lifecycle management examples
 
 **Files Referenced:**
-1. ✅ `frontend/src/services/websocket.service.ts` → EXISTS in frontend-v3
-2. ✅ `frontend/src/hooks/useWebSocket.ts` → EXISTS in frontend-v3
-3. ✅ `frontend/src/stores/useLifecycleStore.ts` → EXISTS in frontend-v3
-4. ✅ `frontend/src/hooks/useExtensionDetection.ts` → EXISTS in frontend-v3
-5. ✅ `frontend/src/utils/platform.ts` → EXISTS in frontend-v3
+1. ✅ `frontend/src/services/websocket.service.ts` → EXISTS in frontend
+2. ✅ `frontend/src/hooks/useWebSocket.ts` → EXISTS in frontend
+3. ✅ `frontend/src/stores/useLifecycleStore.ts` → EXISTS in frontend
+4. ✅ `frontend/src/hooks/useExtensionDetection.ts` → EXISTS in frontend
+5. ✅ `frontend/src/utils/platform.ts` → EXISTS in frontend
 6. ✅ `frontend/src/types/proxy.types.ts` → Referenced (not verified, types file)
 
 **Code Accuracy:**
@@ -121,11 +121,11 @@
 **Purpose:** Page architecture patterns (TabCard, ActionList, hooks pattern)
 
 **Files Referenced:**
-1. ✅ `frontend/src/pages/HomePage.tsx` → EXISTS in frontend-v3
-2. ✅ `frontend/src/hooks/useHomePage.ts` → EXISTS in frontend-v3
-3. ✅ `frontend/src/constants/home.constants.tsx` → EXISTS in frontend-v3
-4. ✅ `frontend/src/components/ui/tab-card.tsx` → EXISTS in frontend-v3
-5. ✅ `frontend/src/components/ui/action-list.tsx` → EXISTS in frontend-v3
+1. ✅ `frontend/src/pages/HomePage.tsx` → EXISTS in frontend
+2. ✅ `frontend/src/hooks/useHomePage.ts` → EXISTS in frontend
+3. ✅ `frontend/src/constants/home.constants.tsx` → EXISTS in frontend
+4. ✅ `frontend/src/components/ui/tab-card.tsx` → EXISTS in frontend
+5. ✅ `frontend/src/components/ui/action-list.tsx` → EXISTS in frontend
 
 **Code Accuracy:**
 - HomePage.tsx: ✅ EXACT MATCH (89 lines)
@@ -146,7 +146,7 @@
 
 ## File Existence Summary
 
-### Services (frontend-v3/src/services/)
+### Services (frontend/src/services/)
 ```
 api.service.ts              ✅ EXISTS (not documented)
 chat.service.ts             ✅ EXISTS (not documented)
@@ -159,7 +159,7 @@ proxy.service.ts            ✅ EXISTS + DOCUMENTED
 websocket.service.ts        ✅ EXISTS + DOCUMENTED
 ```
 
-### Hooks (frontend-v3/src/hooks/)
+### Hooks (frontend/src/hooks/)
 ```
 useApiGuidePage.ts          ✅ EXISTS (not documented)
 useBrowserGuidePage.ts      ✅ EXISTS (not documented)
@@ -181,7 +181,7 @@ useToast.ts                 ✅ EXISTS (not documented)
 useWebSocket.ts             ✅ EXISTS + DOCUMENTED
 ```
 
-### Stores (frontend-v3/src/stores/)
+### Stores (frontend/src/stores/)
 ```
 useAlertStore.ts            ✅ EXISTS + DOCUMENTED
 useCredentialsStore.ts      ✅ EXISTS + DOCUMENTED
@@ -191,7 +191,7 @@ useSettingsStore.ts         ✅ EXISTS + DOCUMENTED
 useUIStore.ts               ✅ EXISTS + DOCUMENTED
 ```
 
-### Pages (frontend-v3/src/pages/)
+### Pages (frontend/src/pages/)
 ```
 BrowserGuidePage.tsx        ✅ EXISTS (not documented)
 ChatPage.tsx                ✅ EXISTS (not documented)
@@ -202,7 +202,7 @@ ProvidersPage.tsx           ✅ EXISTS (not documented)
 SettingsPage.tsx            ✅ EXISTS (not documented)
 ```
 
-### UI Components (frontend-v3/src/components/ui/)
+### UI Components (frontend/src/components/ui/)
 ```
 action-list.tsx             ✅ EXISTS + DOCUMENTED
 alert.tsx                   ✅ EXISTS (shadcn)
@@ -231,7 +231,7 @@ toggle-group.tsx            ✅ EXISTS (shadcn)
 toggle.tsx                  ✅ EXISTS (shadcn)
 ```
 
-### Constants (frontend-v3/src/constants/)
+### Constants (frontend/src/constants/)
 ```
 apiGuide.constants.tsx      ✅ EXISTS (not documented)
 browserGuide.constants.tsx  ✅ EXISTS (not documented)
@@ -244,7 +244,7 @@ providers.constants.tsx     ✅ EXISTS (not documented)
 settings.constants.tsx      ✅ EXISTS (not documented)
 ```
 
-### Utilities (frontend-v3/src/utils/)
+### Utilities (frontend/src/utils/)
 ```
 formatters.ts               ✅ EXISTS + DOCUMENTED
 platform.ts                 ✅ EXISTS + DOCUMENTED
@@ -274,7 +274,7 @@ platform.ts                 ✅ EXISTS + DOCUMENTED
 
 2. **Directory Structure**: Matches documented architecture
    ```
-   frontend-v3/src/
+   frontend/src/
    ├── services/      ✅ Documented
    ├── hooks/         ✅ Documented
    ├── stores/        ✅ Documented
@@ -323,7 +323,7 @@ All documented code examples reference real files that exist in the codebase. No
 
 **STATUS: DOCUMENTATION VERIFIED ✅**
 
-All code examples in documentation reference real, working files in `frontend-v3`. The documentation accurately represents the codebase architecture and implementation.
+All code examples in documentation reference real, working files in `frontend`. The documentation accurately represents the codebase architecture and implementation.
 
 **No changes required.**
 

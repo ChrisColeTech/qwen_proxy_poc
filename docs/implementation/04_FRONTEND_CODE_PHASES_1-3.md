@@ -1,6 +1,6 @@
 # Frontend V3 Code Documentation - Phases 1-3
 
-This document provides complete source code documentation for Phases 1-3 of the Frontend V3 Rewrite Implementation Plan. All code is presented verbatim from the `frontend-v3` directory.
+This document provides complete source code documentation for Phases 1-3 of the Frontend V3 Rewrite Implementation Plan. All code is presented verbatim from the `frontend` directory.
 
 ## Table of Contents
 
@@ -35,7 +35,7 @@ This phase establishes the build system, TypeScript configuration, and styling f
 - HMR (Hot Module Replacement) with error overlay
 
 ```typescript
-// Path: frontend-v3/vite.config.ts
+// Path: frontend/vite.config.ts
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
@@ -75,7 +75,7 @@ export default defineConfig({
 - Base path alias configuration shared across all configs
 
 ```json
-// Path: frontend-v3/tsconfig.json
+// Path: frontend/tsconfig.json
 {
   "files": [],
   "references": [
@@ -103,7 +103,7 @@ export default defineConfig({
 - Bundler module resolution
 
 ```json
-// Path: frontend-v3/tsconfig.app.json
+// Path: frontend/tsconfig.app.json
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
@@ -149,7 +149,7 @@ export default defineConfig({
 - Strict linting rules
 
 ```json
-// Path: frontend-v3/tsconfig.node.json
+// Path: frontend/tsconfig.node.json
 {
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
@@ -194,7 +194,7 @@ export default defineConfig({
 - Responsive container configuration
 
 ```javascript
-// Path: frontend-v3/tailwind.config.js
+// Path: frontend/tailwind.config.js
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -303,7 +303,7 @@ export default {
 - **Theme Variables**: HSL-based color system for easy theme switching
 
 ```css
-/* Path: frontend-v3/src/index.css */
+/* Path: frontend/src/index.css */
 /* Import custom component styles first */
 @import './styles/icons.css';
 @import './styles/home.css';
@@ -370,7 +370,7 @@ export default {
 **Critical Note**: This file is essential for TypeScript compilation. Without it, accessing `window.electronAPI` will cause TypeScript errors. The `?` operator makes the API optional since it's only available in Electron mode.
 
 ```typescript
-// Path: frontend-v3/src/vite-env.d.ts
+// Path: frontend/src/vite-env.d.ts
 /// <reference types="vite/client" />
 
 interface ElectronAPI {
@@ -428,7 +428,7 @@ These files define the core type definitions for shared types and domain models.
 - Proxy status type for server state
 
 ```typescript
-// Path: frontend-v3/src/types/common.types.ts
+// Path: frontend/src/types/common.types.ts
 // Common types shared across the application
 
 export interface UIState {
@@ -451,7 +451,7 @@ export type ProxyStatus = 'running' | 'stopped';
 - Table component props interface
 
 ```typescript
-// Path: frontend-v3/src/types/providers.types.ts
+// Path: frontend/src/types/providers.types.ts
 // Types for ProvidersPage and related components
 
 export interface Provider {
@@ -497,7 +497,7 @@ export interface ProvidersTableProps {
 - Capability and filter types for UI filtering
 
 ```typescript
-// Path: frontend-v3/src/types/models.types.ts
+// Path: frontend/src/types/models.types.ts
 // Model types for the Models page
 
 export interface Model {
@@ -533,7 +533,7 @@ export type CapabilityFilter = 'all' | 'vision' | 'tool-call' | 'chat';
 - CredentialStatus for validation state
 
 ```typescript
-// Path: frontend-v3/src/types/credentials.types.ts
+// Path: frontend/src/types/credentials.types.ts
 // Types for credential management matching /api/qwen/credentials endpoints
 
 export interface QwenCredentials {
@@ -567,7 +567,7 @@ export interface CredentialStatus {
 - Provider and Model interfaces for proxy context
 
 ```typescript
-// Path: frontend-v3/src/types/proxy.types.ts
+// Path: frontend/src/types/proxy.types.ts
 // Types for proxy management matching /api/proxy/* and /api/providers/* endpoints
 
 export interface Provider {
@@ -634,7 +634,7 @@ export interface ProxyControlResponse {
 - ChatCompletionRequest/Response matching OpenAI API format
 
 ```typescript
-// Path: frontend-v3/src/types/chat.types.ts
+// Path: frontend/src/types/chat.types.ts
 /**
  * Chat Service Type Definitions
  * Type definitions for chat-related functionality
@@ -690,7 +690,7 @@ These files define types for UI components and page-specific functionality.
 - Section component props
 
 ```typescript
-// Path: frontend-v3/src/types/components.types.ts
+// Path: frontend/src/types/components.types.ts
 /**
  * Component Props Type Definitions
  * Centralized type definitions for component props
@@ -762,7 +762,7 @@ export interface ModelsCurlTabProps {
 - ProxyControlState for UI loading/error states
 
 ```typescript
-// Path: frontend-v3/src/types/home.types.ts
+// Path: frontend/src/types/home.types.ts
 // Types for HomePage and related components
 
 export interface ProxyStatus {
@@ -808,7 +808,7 @@ export interface ProxyControlState {
 - CodeBlockProps for code display
 
 ```typescript
-// Path: frontend-v3/src/types/quick-guide.types.ts
+// Path: frontend/src/types/quick-guide.types.ts
 // Re-export shared types
 import type { ParsedModel, CapabilityFilter } from './models.types';
 import type { Provider } from './providers.types';
@@ -874,7 +874,7 @@ export interface CodeBlockProps {
 **Architecture Note**: This file serves as the single source of truth for all type imports. Components should always import from `@/types` rather than individual type files.
 
 ```typescript
-// Path: frontend-v3/src/types/index.ts
+// Path: frontend/src/types/index.ts
 // Central type export file
 
 export type { UIState, ProxyStatus } from './common.types';
@@ -968,7 +968,7 @@ These files contain essential utility functions for platform detection, data for
 **Usage**: Used throughout the app to conditionally render UI and call platform-specific APIs.
 
 ```typescript
-// Path: frontend-v3/src/utils/platform.ts
+// Path: frontend/src/utils/platform.ts
 export function isElectron(): boolean {
   return typeof window !== 'undefined' && !!(window as any).electronAPI;
 }
@@ -985,7 +985,7 @@ export function isElectron(): boolean {
 **Usage**: Used in status displays, credential expiry indicators, and uptime counters.
 
 ```typescript
-// Path: frontend-v3/src/utils/formatters.ts
+// Path: frontend/src/utils/formatters.ts
 export function formatUptime(seconds: number): string {
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
@@ -1026,7 +1026,7 @@ These files provide library-specific helper functions and application-wide const
 **Usage**: Used in every component for dynamic className construction.
 
 ```typescript
-// Path: frontend-v3/src/lib/utils.ts
+// Path: frontend/src/lib/utils.ts
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -1048,7 +1048,7 @@ export function cn(...inputs: ClassValue[]) {
 **Usage**: Imported throughout the app for consistent configuration values.
 
 ```typescript
-// Path: frontend-v3/src/lib/constants.ts
+// Path: frontend/src/lib/constants.ts
 export const APP_NAME = 'Qwen Proxy';
 export const APP_VERSION = '1.0.0';
 export const TITLEBAR_HEIGHT = 40;
@@ -1070,7 +1070,7 @@ export const STATUS_POLL_INTERVAL = 10000; // 10 seconds
 **Usage**: Can be used for future dynamic routing needs, currently serves as a foundation for route-based features.
 
 ```typescript
-// Path: frontend-v3/src/lib/router.ts
+// Path: frontend/src/lib/router.ts
 // Simple router utility for pattern matching and param extraction
 
 export interface RouteMatch {
@@ -1143,7 +1143,7 @@ export function buildPath(pattern: string, params: Record<string, string>): stri
 **Usage**: Imported by the API guide page components for displaying integration examples.
 
 ```typescript
-// Path: frontend-v3/src/lib/api-guide-examples.ts
+// Path: frontend/src/lib/api-guide-examples.ts
 export const pythonExample = `from openai import OpenAI
 
 client = OpenAI(
@@ -1243,5 +1243,5 @@ With the foundation layers complete (Phases 1-3), the implementation can proceed
 
 **Document Version**: 1.0
 **Date**: November 8, 2025
-**Source**: frontend-v3 directory
+**Source**: frontend directory
 **Coverage**: Phases 1-3 (Project Initialization, Types, Utilities)

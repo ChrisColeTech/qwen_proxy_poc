@@ -12,7 +12,7 @@ The implementation plan has been updated from the original v1 phase documents wi
 
 ### 1. **Complete Feature Coverage**
 
-All major features from `frontend-v3` are included:
+All major features from `frontend` are included:
 
 #### ✅ **Toast Notifications System**
 - **Phase 6.2**: `useAlertStore.ts` - Zustand store for toast state management
@@ -180,7 +180,7 @@ Domain: Credentials
 
 ## File Inventory Comparison
 
-### **frontend-v3 (Current)**: 143 TypeScript/TSX files + 25 CSS files = **168 files**
+### **frontend (Current)**: 143 TypeScript/TSX files + 25 CSS files = **168 files**
 
 ### **Implementation Plan (New)**: ~160 files
 
@@ -190,7 +190,7 @@ Domain: Credentials
 
 ### **Coverage**: **~95% complete** ✅
 
-All essential files are included. The plan provides comprehensive coverage of the frontend-v3 architecture.
+All essential files are included. The plan provides comprehensive coverage of the frontend architecture.
 
 ---
 
@@ -262,7 +262,7 @@ All essential files are included. The plan provides comprehensive coverage of th
    - Build must complete without errors
 
 3. **Reference Material**
-   - Use `frontend-v3/src/` as reference for all implementations
+   - Use `frontend/src/` as reference for all implementations
    - Copy proven patterns exactly
    - Maintain consistent naming conventions
    - Preserve directory structure
@@ -353,7 +353,7 @@ All essential files are included. The plan provides comprehensive coverage of th
 3. **Follow phases sequentially**: P0 phases first (1-7), then P1 phases (8-13)
 4. **Track progress**: Update tracking table checkboxes as phases complete
 5. **Validate continuously**: Run build after each phase to catch errors early
-6. **Reference v3**: Use `frontend-v3/src/` as the source of truth for implementations
+6. **Reference v3**: Use `frontend/src/` as the source of truth for implementations
 
 ---
 

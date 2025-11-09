@@ -1,14 +1,14 @@
 # Code Examples
 
-**REFERENCE IMPLEMENTATION**: This document uses `frontend-v3` and `backend-v3` as the source of truth for all correct implementations.
+**REFERENCE IMPLEMENTATION**: This document uses `frontend` and `backend` as the source of truth for all correct implementations.
 
 **IMPORTANT**: All file paths in examples use generic naming:
-- Use `frontend/src/...` instead of `frontend-v3/src/...`
-- Use `backend/src/...` instead of `backend-v3/src/...`
+- Use `frontend/src/...` instead of `frontend/src/...`
+- Use `backend/src/...` instead of `backend/src/...`
 
 The actual reference implementations are located at:
-- Frontend: `/Users/chris/Projects/qwen_proxy_poc/frontend-v3/`
-- Backend: `/Users/chris/Projects/qwen_proxy_poc/backend-v3/`
+- Frontend: `/Users/chris/Projects/qwen_proxy_poc/frontend/`
+- Backend: `/Users/chris/Projects/qwen_proxy_poc/backend/`
 
 ## Quick Navigation
 
@@ -848,9 +848,9 @@ export function StatusIndicator({
 
 ---
 
-## FRONTEND-V3 COMPONENTS
+## FRONTEND COMPONENTS
 
-Frontend-v3 contains the current, production-ready React components. Examples below are from the actual codebase.
+Frontend contains the current, production-ready React components. Examples below are from the actual codebase.
 
 ---
 
@@ -858,7 +858,7 @@ Frontend-v3 contains the current, production-ready React components. Examples be
 
 ### frontend/src/pages/HomePage.tsx
 
-**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend-v3/src/pages/HomePage.tsx`
+**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/pages/HomePage.tsx`
 
 ```typescript
 import { Activity } from 'lucide-react';
@@ -963,7 +963,7 @@ export function HomePage() {
 
 ### frontend/src/hooks/useHomePage.ts
 
-**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend-v3/src/hooks/useHomePage.ts`
+**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/hooks/useHomePage.ts`
 
 ```typescript
 import { useState, useEffect } from 'react';
@@ -1092,7 +1092,7 @@ export function useHomePage() {
 
 ### frontend/src/hooks/useExtensionDetection.ts
 
-**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend-v3/src/hooks/useExtensionDetection.ts`
+**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/hooks/useExtensionDetection.ts`
 
 ```typescript
 import { isElectron } from '@/utils/platform';
@@ -1131,7 +1131,7 @@ export function useExtensionDetection() {
 
 ### frontend/src/constants/home.constants.tsx
 
-**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend-v3/src/constants/home.constants.tsx`
+**Reference**: `/Users/chris/Projects/qwen_proxy_poc/frontend/src/constants/home.constants.tsx`
 
 ```typescript
 import type { ReactNode } from 'react';
@@ -1510,7 +1510,7 @@ export function TitleBar() {
 
 ---
 
-### frontend-v3/src/components/layout/StatusBar.tsx
+### frontend/src/components/layout/StatusBar.tsx
 
 ```typescript
 import { useProxyStore } from '@/stores/useProxyStore';
@@ -1602,7 +1602,7 @@ export function StatusBar() {
 
 ## UI Components
 
-### frontend-v3/src/components/ui/environment-badge.tsx
+### frontend/src/components/ui/environment-badge.tsx
 
 ```typescript
 import { Badge } from './badge';
@@ -1631,7 +1631,7 @@ export function EnvironmentBadge() {
 
 ## Phase 7 (LEGACY): Enhanced Layout Components
 
-**NOTE**: The examples below are from older documentation. See frontend-v3 examples above for current implementations.
+**NOTE**: The examples below are from older documentation. See frontend examples above for current implementations.
 
 ### LEGACY: frontend/src/components/layout/AppLayout.tsx
 ```typescript

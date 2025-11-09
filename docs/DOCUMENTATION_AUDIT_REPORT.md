@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-Audited all code examples referenced in the documentation files against the actual `frontend-v3` codebase. **All critical files exist and match the documentation**. The documentation is accurate and references real, working code.
+Audited all code examples referenced in the documentation files against the actual `frontend` codebase. **All critical files exist and match the documentation**. The documentation is accurate and references real, working code.
 
 ---
 
@@ -26,9 +26,9 @@ Audited all code examples referenced in the documentation files against the actu
 
 ### ✅ FILES THAT EXIST AND ARE CORRECTLY DOCUMENTED
 
-All files referenced in the documentation exist in `frontend-v3` and match the examples:
+All files referenced in the documentation exist in `frontend` and match the examples:
 
-#### Services (`frontend-v3/src/services/`)
+#### Services (`frontend/src/services/`)
 - ✅ `websocket.service.ts` - EXISTS, matches documentation
 - ✅ `proxy.service.ts` - EXISTS, matches documentation
 - ✅ `credentials.service.ts` - EXISTS, matches documentation
@@ -37,7 +37,7 @@ All files referenced in the documentation exist in `frontend-v3` and match the e
 - ✅ `api.service.ts` - EXISTS
 - ✅ `chat.service.ts` - EXISTS
 
-#### Hooks (`frontend-v3/src/hooks/`)
+#### Hooks (`frontend/src/hooks/`)
 - ✅ `useWebSocket.ts` - EXISTS, matches documentation
 - ✅ `useExtensionDetection.ts` - EXISTS, matches documentation
 - ✅ `useHomePage.ts` - EXISTS, matches documentation
@@ -54,7 +54,7 @@ All files referenced in the documentation exist in `frontend-v3` and match the e
 - ✅ `useDesktopGuidePage.ts` - EXISTS
 - ✅ `useToast.ts` - EXISTS
 
-#### Stores (`frontend-v3/src/stores/`)
+#### Stores (`frontend/src/stores/`)
 - ✅ `useLifecycleStore.ts` - EXISTS, matches documentation
 - ✅ `useProxyStore.ts` - EXISTS, matches documentation
 - ✅ `useCredentialsStore.ts` - EXISTS, matches documentation
@@ -62,7 +62,7 @@ All files referenced in the documentation exist in `frontend-v3` and match the e
 - ✅ `useAlertStore.ts` - EXISTS, matches documentation
 - ✅ `useSettingsStore.ts` - EXISTS
 
-#### Pages (`frontend-v3/src/pages/`)
+#### Pages (`frontend/src/pages/`)
 - ✅ `HomePage.tsx` - EXISTS, matches documentation
 - ✅ `ChatPage.tsx` - EXISTS
 - ✅ `SettingsPage.tsx` - EXISTS
@@ -71,7 +71,7 @@ All files referenced in the documentation exist in `frontend-v3` and match the e
 - ✅ `BrowserGuidePage.tsx` - EXISTS
 - ✅ `DesktopGuidePage.tsx` - EXISTS
 
-#### UI Components (`frontend-v3/src/components/ui/`)
+#### UI Components (`frontend/src/components/ui/`)
 - ✅ `tab-card.tsx` - EXISTS, matches documentation
 - ✅ `action-list.tsx` - EXISTS, matches documentation
 - ✅ `environment-badge.tsx` - EXISTS
@@ -80,7 +80,7 @@ All files referenced in the documentation exist in `frontend-v3` and match the e
 - ✅ `content-card.tsx` - EXISTS
 - ✅ All shadcn/ui components exist (button, card, input, etc.)
 
-#### Constants (`frontend-v3/src/constants/`)
+#### Constants (`frontend/src/constants/`)
 - ✅ `home.constants.tsx` - EXISTS, matches documentation
 - ✅ `chat.constants.tsx` - EXISTS
 - ✅ `settings.constants.tsx` - EXISTS
@@ -90,7 +90,7 @@ All files referenced in the documentation exist in `frontend-v3` and match the e
 - ✅ `models.constants.tsx` - EXISTS
 - ✅ `providers.constants.tsx` - EXISTS
 
-#### Utilities (`frontend-v3/src/utils/`)
+#### Utilities (`frontend/src/utils/`)
 - ✅ `platform.ts` - EXISTS, matches documentation
 - ✅ `formatters.ts` - EXISTS
 
@@ -187,7 +187,7 @@ The documentation is accurate and all code examples reference real, working file
 
 **Status: PASS ✅**
 
-All code examples in the documentation reference real, working files in `frontend-v3`. The documentation is accurate, comprehensive, and serves as an excellent reference for the codebase architecture.
+All code examples in the documentation reference real, working files in `frontend`. The documentation is accurate, comprehensive, and serves as an excellent reference for the codebase architecture.
 
 No changes are required to the documentation files.
 
@@ -203,13 +203,13 @@ No changes are required to the documentation files.
 - ✅ `docs/v1/07_CODE_EXAMPLES_PAGE_ARCHITECTURE.md` (754 lines)
 
 ### Source Code Directories
-- ✅ `frontend-v3/src/services/` (9 files)
-- ✅ `frontend-v3/src/hooks/` (18 files)
-- ✅ `frontend-v3/src/stores/` (6 files)
-- ✅ `frontend-v3/src/pages/` (7 files)
-- ✅ `frontend-v3/src/components/ui/` (25 files)
-- ✅ `frontend-v3/src/constants/` (8 files)
-- ✅ `frontend-v3/src/utils/` (2 files)
+- ✅ `frontend/src/services/` (9 files)
+- ✅ `frontend/src/hooks/` (18 files)
+- ✅ `frontend/src/stores/` (6 files)
+- ✅ `frontend/src/pages/` (7 files)
+- ✅ `frontend/src/components/ui/` (25 files)
+- ✅ `frontend/src/constants/` (8 files)
+- ✅ `frontend/src/utils/` (2 files)
 
 ---
 

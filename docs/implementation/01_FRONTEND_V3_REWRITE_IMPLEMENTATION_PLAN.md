@@ -71,7 +71,7 @@ This document focuses on **planning, architecture, and implementation steps**. R
 
 ## Overview
 
-This implementation plan outlines the complete rewrite of the frontend application from scratch in the `frontend` folder, following the proven patterns from `frontend-v3` while implementing strict adherence to SRP, DRY, and Domain-Driven Design principles.
+This implementation plan outlines the complete rewrite of the frontend application from scratch in the `frontend` folder, following the proven patterns from `frontend` while implementing strict adherence to SRP, DRY, and Domain-Driven Design principles.
 
 ### Key Principles
 

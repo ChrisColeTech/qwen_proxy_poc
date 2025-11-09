@@ -1,7 +1,7 @@
 # Page Architecture Documentation
 
 ## Overview
-This document describes the established methodology for creating pages in frontend-v3. All pages should follow this pattern for consistency and maintainability.
+This document describes the established methodology for creating pages in frontend. All pages should follow this pattern for consistency and maintainability.
 
 ## Architecture Pattern
 

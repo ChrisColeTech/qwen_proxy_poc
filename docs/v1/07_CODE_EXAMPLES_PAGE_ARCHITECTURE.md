@@ -1,6 +1,6 @@
 # Code Examples: Page Architecture & Component Dependencies
 
-**Reference Implementation:** `/Users/chris/Projects/qwen_proxy_poc/frontend-v3/src/`
+**Reference Implementation:** `/Users/chris/Projects/qwen_proxy_poc/frontend/src/`
 
 **Purpose:** Complete examples for page architecture following Doc 70-PAGE_ARCHITECTURE_GUIDE.md with TabCard, ActionList, and page hooks pattern.
 
@@ -750,4 +750,4 @@ This page architecture provides:
 ✅ **WebSocket Integration**: Real-time updates
 ✅ **Clean Dependencies**: Clear component hierarchy
 
-All patterns follow Doc 70-PAGE_ARCHITECTURE_GUIDE.md and use actual working code from frontend-v3.
+All patterns follow Doc 70-PAGE_ARCHITECTURE_GUIDE.md and use actual working code from frontend.
