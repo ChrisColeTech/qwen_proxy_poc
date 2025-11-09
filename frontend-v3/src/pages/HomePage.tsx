@@ -62,8 +62,6 @@ export function HomePage() {
     uptime,
     lifecycleState,
     proxyLoading,
-    activeProvider,
-    activeModel,
     handleExtensionClick,
     handleQwenLogin,
     handleProxyClick
@@ -76,7 +74,7 @@ export function HomePage() {
     },
     {
       ...HOME_TABS.STATUS,
-      content: buildStatusTabContent(port, activeModel, baseUrl, copiedUrl, handleCopyUrl),
+      content: buildStatusTabContent(port, activeProvider, activeModel, baseUrl, copiedUrl, handleCopyUrl),
       hidden: !running
     }
   ];

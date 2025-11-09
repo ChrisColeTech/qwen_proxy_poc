@@ -78,8 +78,6 @@ export const buildOverviewActions = (params: {
   uptime: number | undefined;
   lifecycleState: LifecycleState;
   proxyLoading: boolean;
-  activeProvider: string;
-  activeModel: string;
   handleExtensionClick: () => void;
   handleQwenLogin: () => void;
   handleProxyClick: () => void;
@@ -94,8 +92,6 @@ export const buildOverviewActions = (params: {
     uptime,
     lifecycleState,
     proxyLoading,
-    activeProvider,
-    activeModel,
     handleExtensionClick,
     handleQwenLogin,
     handleProxyClick
@@ -132,15 +128,6 @@ export const buildOverviewActions = (params: {
       actions: createActionBadge(proxyBadge.variant, proxyBadge.text),
       onClick: handleProxyClick,
       disabled: proxyLoading
-    },
-    {
-      icon: createActionIcon(activeProvider !== 'None' ? 'running' : 'stopped'),
-      title: `${needsExtension ? '4' : '3'}. Active Configuration`,
-      description: `Provider: ${activeProvider} • Model: ${activeModel}`,
-      actions: createActionBadge(
-        activeProvider !== 'None' ? 'default' : 'secondary',
-        activeProvider !== 'None' ? 'Configured' : 'Not Set'
-      )
     }
   ];
 };
@@ -175,6 +162,7 @@ console.log(completion.choices[0].message.content);`;
 
 export const buildStatusTabContent = (
   port: number | undefined,
+  activeProvider: string,
   activeModel: string,
   baseUrl: string,
   copiedUrl: boolean,
@@ -185,8 +173,31 @@ export const buildStatusTabContent = (
 
   return (
   <div className="space-y-8">
+    {/* Active Configuration Section */}
+    <div className="space-y-3">
+      <h3 className="text-sm font-semibold tracking-tight">Active Configuration</h3>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-1">
+          <div className="text-xs text-muted-foreground">Provider</div>
+          <code className="rounded-lg bg-muted px-3 py-2 text-sm font-mono block">
+            {activeProvider}
+          </code>
+        </div>
+        <div className="space-y-1">
+          <div className="text-xs text-muted-foreground">Model</div>
+          <code className="rounded-lg bg-muted px-3 py-2 text-sm font-mono block">
+            {activeModel}
+          </code>
+        </div>
+      </div>
+    </div>
+
+    {/* Divider */}
+    <div className="border-t border-border" />
+
     {/* Base URL Section */}
     <div className="space-y-3">
+      <h3 className="text-sm font-semibold tracking-tight">Base URL</h3>
       <div className="flex items-center gap-2">
         <code className="flex-1 rounded-lg bg-muted px-4 py-3 text-sm font-mono">
           {baseUrl}/v1
