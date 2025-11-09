@@ -2,12 +2,12 @@ import { TabCard } from '@/components/ui/tab-card';
 import { useModelsPage } from '@/hooks/useModelsPage';
 import { useUIStore } from '@/stores/useUIStore';
 import { useSettingsStore } from '@/stores/useSettingsStore';
+import { ModelSelectTab } from '@/components/features/models/ModelSelectTab';
+import { AllModelsTab } from '@/components/features/models/AllModelsTab';
+import { ModelTestWrapper } from '@/components/features/models/ModelTestWrapper';
 import {
   buildModelActions,
   buildModelSelectActions,
-  buildModelSelectContent,
-  buildAllModelsContent,
-  buildModelTestContent,
   MODELS_TABS,
   MODELS_TITLE,
   MODELS_ICON
@@ -36,48 +36,54 @@ export function ModelsPage() {
     setCurrentRoute(`/models/${encodeURIComponent(modelId)}`);
   };
 
-  // First tab: Available models from Provider Router
+  // Build action items for tabs
   const selectActions = buildModelSelectActions({
     models: availableModels,
     activeModel,
     onSelect: handleModelSelect
   });
 
-  // Second tab: All models from API Server (filtered)
   const modelActions = buildModelActions({
     models: filteredAllModels,
-    handleModelClick: handleModelClickNavigate
+    activeModel,
+    handleModelClick: handleModelClickNavigate,
   });
 
   const tabs = [
     {
       ...MODELS_TABS.SELECT,
-      content: buildModelSelectContent({
-        selectActions,
-        activeProvider,
-        providers: providersData,
-        onProviderChange: handleProviderSwitch
-      })
+      content: (
+        <ModelSelectTab
+          selectActions={selectActions}
+          activeProvider={activeProvider}
+          providers={providersData}
+          onProviderChange={handleProviderSwitch}
+        />
+      )
     },
     {
       ...MODELS_TABS.ALL,
-      content: buildAllModelsContent({
-        modelActions,
-        capabilityFilter,
-        providerFilter,
-        providers,
-        onCapabilityChange: setCapabilityFilter,
-        onProviderChange: setProviderFilter
-      })
+      content: (
+        <AllModelsTab
+          modelActions={modelActions}
+          capabilityFilter={capabilityFilter}
+          providerFilter={providerFilter}
+          providers={providers}
+          onCapabilityChange={setCapabilityFilter}
+          onProviderChange={setProviderFilter}
+        />
+      )
     },
     {
       ...MODELS_TABS.TEST,
-      content: buildModelTestContent({
-        activeModel,
-        activeProvider,
-        providers: providersData,
-        providerRouterUrl: providerRouterUrl || 'http://localhost:3001'
-      })
+      content: (
+        <ModelTestWrapper
+          activeModel={activeModel}
+          activeProvider={activeProvider}
+          providers={providersData}
+          providerRouterUrl={providerRouterUrl || 'http://localhost:3001'}
+        />
+      )
     }
   ];
 

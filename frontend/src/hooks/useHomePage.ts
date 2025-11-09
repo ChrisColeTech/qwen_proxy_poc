@@ -79,7 +79,7 @@ export function useHomePage() {
       if (isElectron()) {
         console.log('[useHomePage] Running in Electron - calling electronAPI.qwen.openLogin()');
         // In Electron, call the IPC API to open the login window
-        await window.electronAPI.qwen.openLogin();
+        await window.electronAPI?.qwen.openLogin();
         console.log('[useHomePage] Login window closed');
         useAlertStore.showAlert('Credentials saved successfully!', 'success');
         return;

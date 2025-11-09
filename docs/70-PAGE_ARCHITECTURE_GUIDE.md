@@ -9,11 +9,16 @@ This document describes the established methodology for creating pages in fronte
 ```
 src/
 ├── pages/
-│   └── [PageName]Page.tsx          # Main page component (thin, presentational only)
+│   └── [PageName]Page.tsx                    # Main page component (thin, presentational only)
 ├── hooks/
-│   └── use[PageName]Page.ts        # Custom hook for page logic and state
-└── constants/
-    └── [pageName].constants.tsx    # Constants, builders, and UI helpers
+│   └── use[PageName]Page.ts                  # Custom hook for page logic and state
+├── constants/
+│   └── [pageName].constants.tsx              # Constants and data builders ONLY
+└── components/
+    └── features/
+        └── [pageName]/
+            ├── [FeatureName]Tab.tsx          # Feature components for complex tab layouts
+            └── [FeatureName]Section.tsx      # Feature components for reusable sections
 ```
 
 ### Component Responsibilities
@@ -23,42 +28,72 @@ src/
 
 **Responsibilities:**
 - Import and call the custom hook
-- Call builder functions from constants
-- Render the TabCard component
+- Import feature components for tab content
+- Call data builder functions from constants (to create ActionItem arrays)
+- Render the TabCard component with feature components
 - NO business logic
-- NO inline JSX arrays
+- NO complex inline JSX
 - NO inline event handlers beyond simple wrappers
 
 **Example:**
 ```tsx
 import { TabCard } from '@/components/ui/tab-card';
 import { useModelsPage } from '@/hooks/useModelsPage';
-import { useProxyStore } from '@/stores/useProxyStore';
+import { ModelSelectTab } from '@/components/features/models/ModelSelectTab';
+import { AllModelsTab } from '@/components/features/models/AllModelsTab';
 import {
+  buildModelSelectActions,
   buildModelActions,
-  buildAllModelsContent,
-  buildAdvancedContent,
   MODELS_TABS,
   MODELS_TITLE,
   MODELS_ICON
 } from '@/constants/models.constants';
 
 export function ModelsPage() {
-  const { handleModelClick } = useModelsPage();
-  const wsProxyStatus = useProxyStore((state) => state.wsProxyStatus);
+  const {
+    availableModels,
+    filteredModels,
+    activeModel,
+    activeProvider,
+    providers,
+    handleModelSelect,
+    handleProviderSwitch
+  } = useModelsPage();
 
-  const proxyRunning = wsProxyStatus?.providerRouter?.running || false;
-  const modelActions = buildModelActions({ handleModelClick });
+  // Build data structures (not JSX)
+  const selectActions = buildModelSelectActions({
+    models: availableModels,
+    activeModel,
+    onSelect: handleModelSelect
+  });
+
+  const modelActions = buildModelActions({
+    models: filteredModels,
+    activeModel,
+    handleModelClick: (id) => console.log(id)
+  });
 
   const tabs = [
     {
-      ...MODELS_TABS.ALL,
-      content: buildAllModelsContent(modelActions)
+      ...MODELS_TABS.SELECT,
+      content: (
+        <ModelSelectTab
+          selectActions={selectActions}
+          activeProvider={activeProvider}
+          providers={providers}
+          onProviderChange={handleProviderSwitch}
+        />
+      )
     },
     {
-      ...MODELS_TABS.ADVANCED,
-      content: buildAdvancedContent(),
-      hidden: !proxyRunning  // Hide tab when proxy is not running
+      ...MODELS_TABS.ALL,
+      content: (
+        <AllModelsTab
+          modelActions={modelActions}
+          capabilityFilter="all"
+          onCapabilityChange={() => {}}
+        />
+      )
     }
   ];
 
@@ -68,7 +103,7 @@ export function ModelsPage() {
         title={MODELS_TITLE}
         icon={MODELS_ICON}
         tabs={tabs}
-        defaultTab={MODELS_TABS.ALL.value}
+        defaultTab={MODELS_TABS.SELECT.value}
       />
     </div>
   );
@@ -111,26 +146,31 @@ export function useModelsPage() {
 ```
 
 #### 3. Constants File (`/src/constants/[pageName].constants.tsx`)
-**Purpose:** Centralize all UI configuration and builders
+**Purpose:** Centralize configuration, string constants, and data transformation
 
 **Responsibilities:**
-- Define tab configurations
-- Define action list items
-- Create builder functions for tab content
-- Define helper functions (badge creators, icon creators)
-- Export all string constants
-- Export all icon constants
+- ✅ Define tab configurations (objects with value, label, description)
+- ✅ Export all string constants
+- ✅ Export all icon constants
+- ✅ Define simple helper functions (badge creators with minimal JSX)
+- ✅ Create data builder functions that return **data structures** (like ActionItem[])
+- ❌ **NEVER** create builder functions that return complex JSX layouts (use feature components instead)
 
 **Example:**
 ```tsx
 import { Database, ChevronRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { StatusIndicator } from '@/components/ui/status-indicator';
-import { ActionList } from '@/components/ui/action-list';
 import type { ActionItem } from './home.constants';
+import type { Model } from '@/types/models.types';
 
 // Tab configuration
 export const MODELS_TABS = {
+  SELECT: {
+    value: 'select',
+    label: 'Select Model',
+    description: 'Select an active model to use'
+  },
   ALL: {
     value: 'all',
     label: 'All Models',
@@ -142,33 +182,163 @@ export const MODELS_TABS = {
 export const MODELS_TITLE = 'Models';
 export const MODELS_ICON = Database;
 
-// Helper functions
-const createModelBadge = (variant: 'default' | 'destructive', text: string) => (
+// Helper: Create a badge with chevron (simple JSX helper is OK)
+export const createModelBadge = (variant: 'default' | 'destructive', text: string) => (
   <>
-    <Badge variant={variant}>{text}</Badge>
+    <Badge variant={variant} className="min-w-[180px] justify-center">{text}</Badge>
     <ChevronRight className="icon-sm" style={{ opacity: 0.5 }} />
   </>
 );
 
-// Builder functions
+// Data builder: Returns ActionItem[] data structure (NOT JSX)
 export const buildModelActions = (params: {
+  models: Model[];
+  activeModel: string;
   handleModelClick: (modelId: string) => void;
 }): ActionItem[] => {
-  return [
-    {
-      icon: <StatusIndicator status="running" />,
-      title: 'GPT-4 Turbo',
-      description: 'Most capable model',
-      actions: createModelBadge('default', 'Available'),
-      onClick: () => params.handleModelClick('gpt-4-turbo')
-    }
-  ];
-};
+  const { models, activeModel, handleModelClick } = params;
 
-export const buildAllModelsContent = (modelActions: ActionItem[]) => (
-  <ActionList title="Available Models" icon={Database} items={modelActions} />
-);
+  return models.map((model) => ({
+    icon: model.id === activeModel ? <StatusIndicator status="running" /> : undefined,
+    title: model.id,
+    description: model.description,
+    actions: createModelBadge('default', model.provider),
+    onClick: () => handleModelClick(model.id)
+  }));
+};
 ```
+
+**What NOT to do:**
+```tsx
+// ❌ BAD: Builder returns complex JSX layout
+export const buildAllModelsContent = (modelActions: ActionItem[]) => (
+  <div className="demo-container">
+    <div className="demo-header">
+      <Database className="icon-primary" />
+      <span>Browse Models</span>
+    </div>
+    <div className="model-filters-row">
+      <Select>...</Select>
+    </div>
+    <ActionList items={modelActions} />
+  </div>
+);
+// This should be a feature component instead!
+```
+
+#### 4. Feature Components (`/src/components/features/[pageName]/[ComponentName].tsx`)
+**Purpose:** Encapsulate complex tab layouts and reusable UI sections
+
+**Responsibilities:**
+- ✅ Render complex tab content with multiple elements
+- ✅ Accept data via props (ActionItem arrays, state, callbacks)
+- ✅ Handle layout and styling
+- ✅ Keep components focused and single-purpose
+- ❌ NO business logic (receive handlers via props)
+- ❌ NO direct API calls (receive data via props)
+
+**Example:**
+```tsx
+import { Database } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import type { ActionItem } from '@/constants/home.constants';
+import type { CapabilityFilter } from '@/types/models.types';
+
+interface AllModelsTabProps {
+  modelActions: ActionItem[];
+  capabilityFilter: CapabilityFilter;
+  providerFilter: string;
+  providers: string[];
+  onCapabilityChange: (value: CapabilityFilter) => void;
+  onProviderChange: (value: string) => void;
+}
+
+export function AllModelsTab({
+  modelActions,
+  capabilityFilter,
+  providerFilter,
+  providers,
+  onCapabilityChange,
+  onProviderChange
+}: AllModelsTabProps) {
+  return (
+    <div className="demo-container">
+      <div className="demo-header">
+        <div className="demo-label">
+          <Database className="icon-primary" />
+          <span className="demo-label-text">Browse Models</span>
+        </div>
+      </div>
+
+      {/* Filters Row */}
+      <div className="model-filters-row">
+        <div className="model-filter-group">
+          <span className="model-filter-label">Capability:</span>
+          <Select value={capabilityFilter} onValueChange={onCapabilityChange}>
+            <SelectTrigger className="models-filter-select">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Capabilities</SelectItem>
+              <SelectItem value="chat">Chat</SelectItem>
+              <SelectItem value="vision">Vision</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="model-filter-group">
+          <span className="model-filter-label">Provider:</span>
+          <Select value={providerFilter} onValueChange={onProviderChange}>
+            <SelectTrigger className="models-filter-select">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Providers</SelectItem>
+              {providers.map((provider) => (
+                <SelectItem key={provider} value={provider}>
+                  {provider}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Models List */}
+      <div className="provider-switch-list">
+        {modelActions.map((item, index) => (
+          <div
+            key={index}
+            className="provider-switch-item"
+            onClick={item.onClick}
+          >
+            <div className="provider-switch-info">
+              {item.icon}
+              <div className="provider-switch-details">
+                <div className="provider-switch-name">{item.title}</div>
+                {item.description && (
+                  <div className="provider-switch-type">{item.description}</div>
+                )}
+              </div>
+            </div>
+            {item.actions && (
+              <div className="provider-switch-actions">
+                {item.actions}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+**When to create a feature component:**
+- Tab content has more than 20 lines of JSX
+- Multiple selects, filters, or form elements
+- Complex layout with sections and headers
+- Reusable across multiple tabs or pages
 
 ## Components Usage
 
@@ -283,26 +453,31 @@ export const buildProviderActions = (params: {
 ## Best Practices
 
 ### DO:
-✅ Use builder functions for all tab content
+✅ Use feature components for complex tab content (> 20 lines of JSX)
+✅ Use data builder functions that return ActionItem[] or other data structures
 ✅ Define all text as constants
-✅ Keep page components thin (< 50 lines)
-✅ Put all logic in hooks
-✅ Put all UI configuration in constants
+✅ Keep page components thin (< 100 lines)
+✅ Put all business logic in hooks
+✅ Put all configuration and constants in constants files
 ✅ Use the spread operator with tab constants
 ✅ Use ActionList for clickable lists
 ✅ Use TabCard for all tabbed pages
 ✅ Use `hidden` property for conditional visibility
 ✅ Read state from stores in page components for conditional rendering
+✅ Create simple helper functions in constants (e.g., badge creators with < 5 lines JSX)
 
 ### DON'T:
-❌ Write inline JSX arrays in page components
-❌ Write business logic in page components
+❌ Write complex inline JSX in page components
+❌ Write business logic in page components or feature components
 ❌ Hardcode strings in page components
-❌ Define event handlers inline
+❌ Define event handlers inline (pass them from hooks)
+❌ Create builder functions in constants that return complex JSX layouts
+❌ Put business logic in constants files
 ❌ Import stores directly in page components for business logic (use hooks)
 ❌ Use old Card component (use TabCard instead)
 ❌ Create custom tab layouts (use TabCard)
 ❌ Use conditional array spreading (`...(condition ? [tab] : [])`) - use `hidden` instead
+❌ Make API calls from feature components (pass data via props)
 
 ## Migration Checklist
 
@@ -317,45 +492,62 @@ When migrating an existing page:
 2. **Create Constants File**
    - [ ] Create `/src/constants/[pageName].constants.tsx`
    - [ ] Define tab configurations as constants
-   - [ ] Create builder functions for all tab content
+   - [ ] Create data builder functions that return ActionItem[] or other data structures
    - [ ] Extract all string literals to constants
-   - [ ] Create helper functions (badge creators, etc.)
+   - [ ] Create simple helper functions (badge creators with < 5 lines JSX)
+   - [ ] **DO NOT** create builders that return complex JSX layouts
 
-3. **Refactor Page Component**
+3. **Create Feature Components**
+   - [ ] Create `/src/components/features/[pageName]/` directory
+   - [ ] For each complex tab layout (> 20 lines JSX), create a feature component
+   - [ ] Move complex JSX from constants to feature components
+   - [ ] Define TypeScript interfaces for component props
+   - [ ] Ensure components only receive data/handlers via props
+
+4. **Refactor Page Component**
    - [ ] Import and call the custom hook
-   - [ ] Import constants and builders
-   - [ ] Replace inline arrays with builder function calls
+   - [ ] Import constants and data builders
+   - [ ] Import feature components for tab content
+   - [ ] Call data builders to create ActionItem arrays
+   - [ ] Pass data and handlers to feature components
    - [ ] Replace old Card with TabCard
    - [ ] Remove all inline logic
-   - [ ] Verify component is < 50 lines
+   - [ ] Verify component is < 100 lines
 
-4. **Test**
+5. **Test**
    - [ ] Run `npm run build` - ensure no errors
    - [ ] Test all tab switching
    - [ ] Test all click handlers
+   - [ ] Test all filters and selects
    - [ ] Test conditional rendering (hidden tabs/items)
 
 ## Example: Complete Implementation
 
 See `/src/pages/ModelsPage.tsx` for a complete reference implementation demonstrating:
 - ✅ TabCard usage with 3 tabs
-- ✅ ActionList usage with clickable items
+- ✅ Feature components for complex tab layouts
 - ✅ Proper hook integration
-- ✅ Builder functions for content
+- ✅ Data builder functions (not JSX builders)
 - ✅ Constants for all configuration
 - ✅ Clean separation of concerns
 
 ## Reference Implementation
 
 **Working Examples:**
-- `/src/pages/HomePage.tsx` - Complex page with ActionList and dynamic tabs
-- `/src/pages/ModelsPage.tsx` - Simple page demonstrating the pattern
+- `/src/pages/ModelsPage.tsx` - Demonstrates feature components and data builders
+  - Uses `ModelSelectTab` and `AllModelsTab` feature components
+  - Constants file only has data builders, no complex JSX
 
 **To Study:**
-- `/src/components/ui/tab-card.tsx` - TabCard component
-- `/src/components/ui/action-list.tsx` - ActionList component
-- `/src/constants/home.constants.tsx` - Complex constants file
-- `/src/hooks/useHomePage.ts` - Complex hook with multiple handlers
+- **Page:** `/src/pages/ModelsPage.tsx` - Clean page component
+- **Hook:** `/src/hooks/useModelsPage.ts` - Business logic and state
+- **Constants:** `/src/constants/models.constants.tsx` - Data builders and config (NO complex JSX)
+- **Feature Components:**
+  - `/src/components/features/models/ModelSelectTab.tsx` - Complex tab layout
+  - `/src/components/features/models/AllModelsTab.tsx` - Complex tab layout with filters
+- **UI Components:**
+  - `/src/components/ui/tab-card.tsx` - TabCard component
+  - `/src/components/ui/action-list.tsx` - ActionList component
 
 ## Naming Conventions
 
@@ -369,7 +561,27 @@ See `/src/pages/ModelsPage.tsx` for a complete reference implementation demonstr
 - All constants files use camelCase: `pageName.constants.tsx`
 - Examples: `home.constants.tsx`, `models.constants.tsx`, `chat.constants.tsx`, `providers.constants.tsx`
 
+### Feature Components
+- Organized by page/feature area: `/src/components/features/[pageName]/`
+- Use PascalCase for component names
+- Descriptive names indicating purpose: `[Feature][Type].tsx`
+- Examples:
+  - `ModelSelectTab.tsx` - Tab for selecting models
+  - `AllModelsTab.tsx` - Tab for browsing all models
+  - `ProviderFormSection.tsx` - Section for provider form
+  - `ModelTestWrapper.tsx` - Wrapper for model testing
+
 ### Barrel Files
 - A barrel file (`index.ts`) exists at `/src/constants/index.ts` that re-exports all constants
 - This allows imports like: `import { MODELS_TABS, CHAT_ICON } from '@/constants'`
 - However, explicit imports are preferred for clarity: `import { MODELS_TABS } from '@/constants/models.constants'`
+
+## Summary
+
+**The Golden Rule:** Constants contain data and configuration. Feature components contain complex layouts. Pages wire everything together. Hooks contain business logic.
+
+**Data Flow:**
+1. **Hook** manages state and provides handlers
+2. **Page** calls hook, calls data builders from constants, passes everything to feature components
+3. **Constants** provide data builders that return ActionItem[] or config objects
+4. **Feature Components** receive data/handlers via props and render complex layouts
