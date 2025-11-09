@@ -40,6 +40,19 @@ yarn-error.log*
 .env.*.local
 *.env
 
+# Private keys and certificates (NEVER commit these!)
+*.pem
+*.key
+*.p12
+*.pfx
+*.cer
+*.crt
+*.der
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+
 # OS
 .DS_Store
 Thumbs.db
