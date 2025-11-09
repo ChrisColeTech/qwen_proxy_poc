@@ -201,7 +201,7 @@ export const buildActiveProvidersContent = () => (
   </div>
 );
 
-export const buildTestContent = (params: {
+export const buildProviderTestContent = (params: {
   activeProvider: string;
   providers: Provider[];
   providerRouterUrl: string;

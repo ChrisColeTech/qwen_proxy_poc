@@ -7,7 +7,7 @@ import {
   buildProviderSwitchActions,
   buildProviderSwitchContent,
   buildAllProvidersContent,
-  buildTestContent,
+  buildProviderTestContent,
   PROVIDERS_TABS,
   PROVIDERS_TITLE,
   PROVIDERS_ICON
@@ -57,7 +57,7 @@ export function ProvidersPage() {
     },
     {
       ...PROVIDERS_TABS.TEST,
-      content: buildTestContent({
+      content: buildProviderTestContent({
         activeProvider,
         providers,
         providerRouterUrl: providerRouterUrl || 'http://localhost:3001'

@@ -1,12 +1,13 @@
 import { TabCard } from '@/components/ui/tab-card';
 import { useModelsPage } from '@/hooks/useModelsPage';
 import { useUIStore } from '@/stores/useUIStore';
+import { useSettingsStore } from '@/stores/useSettingsStore';
 import {
   buildModelActions,
   buildModelSelectActions,
   buildModelSelectContent,
   buildAllModelsContent,
-  buildFavoritesContent,
+  buildModelTestContent,
   MODELS_TABS,
   MODELS_TITLE,
   MODELS_ICON
@@ -28,6 +29,7 @@ export function ModelsPage() {
     setProviderFilter
   } = useModelsPage();
   const setCurrentRoute = useUIStore((state) => state.setCurrentRoute);
+  const providerRouterUrl = useSettingsStore((state) => state.providerRouterUrl);
 
   const handleModelClickNavigate = (modelId: string) => {
     // Navigate to model details page
@@ -69,8 +71,13 @@ export function ModelsPage() {
       })
     },
     {
-      ...MODELS_TABS.FAVORITES,
-      content: buildFavoritesContent()
+      ...MODELS_TABS.TEST,
+      content: buildModelTestContent({
+        activeModel,
+        activeProvider,
+        providers: providersData,
+        providerRouterUrl: providerRouterUrl || 'http://localhost:3001'
+      })
     }
   ];
 
