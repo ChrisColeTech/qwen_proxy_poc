@@ -71,54 +71,58 @@ export function ProviderTestTab({ providerId, providerName, defaultModel }: Prov
   };
 
   return (
-    <div className="vspace-md">
-      <p className="text-sm text-muted-foreground mb-4">
-        Send a test chat completion request to <strong>{providerName}</strong> to verify the configuration is working correctly.
-        {defaultModel && ` Using model: ${defaultModel}`}
-      </p>
+    <div className="demo-container" style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
+      <div className="provider-switch-list" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+        <div className="vspace-md">
+          <p className="text-sm text-muted-foreground mb-4">
+            Send a test chat completion request to <strong>{providerName}</strong> to verify the configuration is working correctly.
+            {defaultModel && ` Using model: ${defaultModel}`}
+          </p>
 
-      <div className="demo-container">
-        <div className="demo-header">
-          <div className="demo-label">
-            <Zap className="icon-primary" />
-            <span className="demo-label-text">Test Response</span>
-          </div>
-          <div className="flex items-center gap-2">
-            {loading && (
-              <Badge variant="secondary" className="min-w-[100px] justify-center">
-                <RefreshCw className="h-3 w-3 animate-spin mr-1" />
-                Waiting...
-              </Badge>
+          <div className="demo-container">
+            <div className="demo-header">
+              <div className="demo-label">
+                <Zap className="icon-primary" />
+                <span className="demo-label-text">Test Response</span>
+              </div>
+              <div className="flex items-center gap-2">
+                {loading && (
+                  <Badge variant="secondary" className="min-w-[100px] justify-center">
+                    <RefreshCw className="h-3 w-3 animate-spin mr-1" />
+                    Waiting...
+                  </Badge>
+                )}
+                <TooltipProvider>
+                  <Tooltip content={loading ? "Testing provider..." : "Test provider configuration"}>
+                    <Button
+                      onClick={handleTest}
+                      disabled={loading}
+                      size="icon"
+                      variant="outline"
+                      aria-label="Test provider configuration"
+                    >
+                      {loading ? (
+                        <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Play className="h-3.5 w-3.5" />
+                      )}
+                    </Button>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </div>
+            {response && (
+              <div className="p-4 rounded-lg bg-muted/50 border">
+                <pre className="text-sm whitespace-pre-wrap break-words font-mono">{response}</pre>
+              </div>
             )}
-            <TooltipProvider>
-              <Tooltip content={loading ? "Testing provider..." : "Test provider configuration"}>
-                <Button
-                  onClick={handleTest}
-                  disabled={loading}
-                  size="icon"
-                  variant="outline"
-                  aria-label="Test provider configuration"
-                >
-                  {loading ? (
-                    <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-                  ) : (
-                    <Play className="h-3.5 w-3.5" />
-                  )}
-                </Button>
-              </Tooltip>
-            </TooltipProvider>
+            {!response && !loading && (
+              <div className="flex items-center justify-center py-8 text-muted-foreground">
+                Click the <Play className="h-3.5 w-3.5 mx-1 inline" /> button above to test this provider
+              </div>
+            )}
           </div>
         </div>
-        {response && (
-          <div className="p-4 rounded-lg bg-muted/50 border">
-            <pre className="text-sm whitespace-pre-wrap break-words font-mono">{response}</pre>
-          </div>
-        )}
-        {!response && !loading && (
-          <div className="flex items-center justify-center py-8 text-muted-foreground">
-            Click the <Play className="h-3.5 w-3.5 mx-1 inline" /> button above to test this provider
-          </div>
-        )}
       </div>
     </div>
   );
