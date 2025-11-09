@@ -39,7 +39,7 @@
 
 /* Page Layout */
 .page-container {
-  @apply container max-w-7xl mx-auto p-6 h-full flex flex-col;
+  @apply w-full p-6 h-full flex flex-col;
 }
 
 /* Full-height Card */
